@@ -146,7 +146,8 @@ img { display: block; }
 .art:hover .im img { transform: scale(1.03); }
 .art .tx { padding: 0 12px 10px; }
 .art b { display: block; font-size: 14px; font-weight: 700; letter-spacing: -0.03em; }
-@media (min-width: 768px)  { .art-row { margin-right: 0; padding-right: 0; overflow: visible; } .art { flex: 1 1 0; min-width: 0; } }
+@media (min-width: 768px)  { .art-row { margin-right: 0; padding-right: 0; gap: 16px; } .art { flex: 0 0 200px; } }
+@media (min-width: 1100px) { .art-row { gap: 24px; } .art { flex: 0 0 220px; } }
 .rule { height: 14px; background: var(--line-soft); }
 .reg { border-bottom: 1px solid var(--line-soft); }
 .reg .inner { display: flex; align-items: flex-end; justify-content: space-between; padding-block: 20px; gap: 16px; }
@@ -205,44 +206,7 @@ img { display: block; }
         <button class="arrow prev" id="prev" aria-label="이전 전시"><img src="assets/img/chevron-arrow.svg" width="24" height="24" alt=""></button>
         <button class="arrow next" id="next" aria-label="다음 전시"><img src="assets/img/chevron-arrow.svg" width="24" height="24" alt=""></button>
         <div class="rail" id="rail" tabindex="0" role="group" aria-roledescription="카로셀" aria-label="전시 포스터">
-          <article class="slot" aria-label="순위 9">
-            <div class="poster">
-              <img src="assets/img/poster-left.png" alt="전시 포스터" width="237" height="336" loading="lazy">
-              <span class="dim"></span><span class="shade-side"></span><span class="shade-active"></span><a class="cover" href="exhibition.html" aria-label="전시 상세 보기: 느린 빛"></a>
-              <span class="badge"><svg class="hi" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.2S4.5 15.6 4.5 9.9A4.2 4.2 0 0 1 12 7.6a4.2 4.2 0 0 1 7.5 2.3c0 5.7-7.5 10.3-7.5 10.3z"/></svg>202</span>
-              <span class="rank">9</span>
-            </div>
-            <div class="info">
-              <div class="t"><a class="open" href="exhibition.html"><strong>느린 빛</strong></a><span>새봄대학교 회화과</span></div>
-              <div class="meta"><p><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14">06.05 - 06.14</p><p><img src="assets/img/icon-location.svg" alt="" width="14" height="14">새봄미술관 1관</p></div>
-            </div>
-          </article>
-          <article class="slot is-active" aria-label="순위 1">
-            <div class="poster">
-              <img src="assets/poster-shore-thumb.jpg" alt="전시 포스터: 여넥스" width="232" height="329" fetchpriority="high">
-              <video class="pv" data-src="assets/poster-shore.mp4" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
-              <span class="dim"></span><span class="shade-side"></span><span class="shade-active"></span><a class="cover" href="exhibition.html" aria-label="전시 상세 보기: 여넥스"></a>
-              <span class="badge"><svg class="hi" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.2S4.5 15.6 4.5 9.9A4.2 4.2 0 0 1 12 7.6a4.2 4.2 0 0 1 7.5 2.3c0 5.7-7.5 10.3-7.5 10.3z"/></svg>202</span>
-              <span class="rank">1</span>
-            </div>
-            <div class="info">
-              <div class="t"><a class="open" href="exhibition.html"><strong>여넥스</strong></a><span>한결대학교 시각디자인학과</span></div>
-              <div class="meta"><p><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14">07.29</p><p><img src="assets/img/icon-location.svg" alt="" width="14" height="14">진달래홀</p></div>
-            </div>
-          </article>
-          <article class="slot" aria-label="순위 2">
-            <div class="poster">
-              <img src="assets/img/poster-right.png" alt="전시 포스터" width="237" height="336" loading="lazy">
-              <span class="dim"></span><span class="shade-side"></span><span class="shade-active"></span><a class="cover" href="exhibition.html" aria-label="전시 상세 보기: 도시의 결"></a>
-              <span class="badge"><svg class="hi" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.2S4.5 15.6 4.5 9.9A4.2 4.2 0 0 1 12 7.6a4.2 4.2 0 0 1 7.5 2.3c0 5.7-7.5 10.3-7.5 10.3z"/></svg>202</span>
-              <span class="rank">2</span>
-            </div>
-            <div class="info">
-              <div class="t"><a class="open" href="exhibition.html"><strong>도시의 결</strong></a><span>늘솔대학교 사진학과</span></div>
-              <div class="meta"><p><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14">06.08 - 06.16</p><p><img src="assets/img/icon-location.svg" alt="" width="14" height="14">늘솔갤러리 B1</p></div>
-            </div>
-          </article>
-        </div>
+                  </div>
         <div class="inner list-link" style="padding-block:4px"><a href="#"><img src="assets/img/icon-list.svg" alt="" width="15" height="13">리스트형</a></div>
       </div>
 
@@ -270,12 +234,7 @@ img { display: block; }
         <a class="more" href="#">더보기<img src="assets/img/chevron-more.svg" alt="" width="16" height="16"></a>
       </div>
       <p class="sub">전시 속 작품을 만나보세요</p>
-      <div class="art-row">
-        <a class="art" href="work.html"><div class="im"><div><img src="assets/img/art-1.png" alt="여넥스 작품" width="161" height="215" loading="lazy"></div></div><div class="tx"><b>여넥스</b>김서윤</div></a>
-        <a class="art" href="work.html"><div class="im"><div><img src="assets/img/explore/opt/wk2.jpg" alt="느린 빛 작품" width="161" height="215" loading="lazy"></div></div><div class="tx"><b>느린 빛</b>박도현</div></a>
-        <a class="art" href="work.html"><div class="im"><div><img src="assets/img/art-2.png" alt="도시의 결 작품" width="161" height="215" loading="lazy"></div></div><div class="tx"><b>도시의 결</b>이정우 외 1명</div></a>
-        <a class="art" href="work.html"><div class="im"><div><img src="assets/img/explore/opt/wk3.jpg" alt="손끝의 지도 작품" width="161" height="215" loading="lazy"></div></div><div class="tx"><b>손끝의 지도</b>최하늘</div></a>
-      </div>
+      <div class="art-row" id="art-row"></div>
     </section>
 
     <div class="rule" aria-hidden="true"></div>
@@ -305,12 +264,29 @@ img { display: block; }
   </div>
 </nav>
 
+<script src="assets/demo-data.js"></script>
 <script>
-const rail = document.getElementById('rail'), slots = [...rail.children].filter((e) => e.classList.contains('slot'));
+const rail = document.getElementById('rail'); let slots = [];
+const HEART = '<svg class="hi" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.2S4.5 15.6 4.5 9.9A4.2 4.2 0 0 1 12 7.6a4.2 4.2 0 0 1 7.5 2.3c0 5.7-7.5 10.3-7.5 10.3z"/></svg>';
+/* 포스터 칸: 순위(rank)는 인기 전시 탭에서만 표시 */
+function slotHtml(e, rank) {
+  const src = e.v ? 'assets/poster-shore-thumb.jpg' : `assets/img/explore/opt/${e.img}.jpg`;
+  return `<article class="slot" aria-label="${rank ? '순위 ' + rank + ': ' : ''}${e.t}"><div class="poster"><img src="${src}" alt="전시 포스터: ${e.t}" width="232" height="329" loading="lazy">${e.v ? '<video class="pv" data-src="assets/poster-shore.mp4" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>' : ''}
+    <span class="dim"></span><span class="shade-side"></span><span class="shade-active"></span><a class="cover" href="exhibition.html" aria-label="전시 상세 보기: ${e.t}"></a>
+    <span class="badge">${HEART}${e.l}</span>${rank ? `<span class="rank">${rank}</span>` : ''}</div>
+    <div class="info"><div class="t"><a class="open" href="exhibition.html"><strong>${e.t}</strong></a><span>${e.s}</span></div>
+    <div class="meta"><p><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14">${e.d}</p><p><img src="assets/img/icon-location.svg" alt="" width="14" height="14">${e.p}</p></div></div></article>`;
+}
+/* ARTWORKS: 전시를 돌아가며 한 점씩 뽑아 최대 10점 */
+(function () {
+  const by = DEMO.EXH.map((e) => DEMO.WORKS.filter((w) => w.e === e.i)).filter((l) => l.length), out = [];
+  for (let r = 0; out.length < 10 && by.some((l) => l[r]); r++) by.forEach((l) => { if (l[r] && out.length < 10) out.push(l[r]); });
+  document.getElementById('art-row').innerHTML = out.map((w) => `<a class="art" href="work.html${w.a.length > 1 ? '?authors=' + w.a.length : ''}"><div class="im"><div><img src="assets/img/explore/opt/${w.img}.jpg" alt="${w.t} 작품" width="161" height="215" loading="lazy"></div></div><div class="tx"><b>${w.t}</b>${w.a.length > 1 ? w.a[0] + ' 외 ' + (w.a.length - 1) + '명' : w.a[0]}</div></a>`).join('');
+})();
 const posters = document.getElementById('posters'), empty = document.getElementById('empty'), msg = document.getElementById('empty-msg');
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const emptyText = { live: '진행 중인 전시가 없어요', soon: '예정된 전시가 없어요', end: '곧 끝나는 전시가 없어요' };
-let active = 1;
+const emptyText = { pop: '진행 중이거나 예정된 전시가 없어요', grad: '진행 중이거나 예정된 졸업전시가 없어요', live: '진행 중인 전시가 없어요', soon: '예정된 전시가 없어요', end: '곧 끝나는 전시가 없어요' };
+let active = 0;
 
 function offsetOf(i) { const s = slots[i]; return s.offsetLeft + s.offsetWidth / 2 - rail.clientWidth / 2; }
 function setActive(i) { active = i; slots.forEach((s, n) => { s.classList.toggle('is-active', n === i); s.removeAttribute('aria-current'); }); slots[i].setAttribute('aria-current', 'true'); syncVideos(); }
@@ -334,7 +310,7 @@ function go(i, smooth = true) {
 let ticking = false;
 rail.addEventListener('scroll', () => { if (ticking) return; ticking = true; requestAnimationFrame(() => { ticking = false; const n = nearest(); if (n !== active) setActive(n); }); }, { passive: true });
 /* 가운데 포스터는 전시 상세로 이동, 옆 포스터는 먼저 가운데로 */
-slots.forEach((s, i) => s.addEventListener('click', (e) => { if (i !== active) { e.preventDefault(); go(i); } }));
+rail.addEventListener('click', (e) => { const s = e.target.closest('.slot'); const i = slots.indexOf(s); if (s && i !== active) { e.preventDefault(); go(i); } });
 document.getElementById('prev').addEventListener('click', () => go(active - 1));
 document.getElementById('next').addEventListener('click', () => go(active + 1));
 rail.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') { e.preventDefault(); go(active + 1); } if (e.key === 'ArrowLeft') { e.preventDefault(); go(active - 1); } });
@@ -344,11 +320,12 @@ const tabs = [...document.querySelectorAll('.tab')];
 function pick(tab, focus, silent) {
   const k = tab.dataset.k;
   tabs.forEach((t) => { const on = t === tab; t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; });
-  const isEmpty = k in emptyText;
+  const list = DEMO.TAB[k](), isEmpty = !list.length;
+  rail.innerHTML = list.map((e, i) => slotHtml(e, k === 'pop' ? i + 1 : 0)).join(''); slots = [...rail.children]; active = 0;
   posters.parentElement.querySelector('.list-link').hidden = isEmpty;
-  posters.hidden = isEmpty; empty.hidden = !isEmpty; msg.textContent = emptyText[k] || '';
+  posters.hidden = isEmpty; empty.hidden = !isEmpty; msg.textContent = isEmpty ? emptyText[k] : '';
   document.getElementById('stage').setAttribute('aria-labelledby', tab.id);
-  if (!isEmpty) go(active, false);
+  if (!isEmpty) { setActive(0); rail.scrollLeft = 0; requestAnimationFrame(() => go(0, false)); }
   syncVideos();
   if (focus) tab.focus();
   if (!silent) { const u = new URL(location.href); k === 'pop' ? u.searchParams.delete('tab') : u.searchParams.set('tab', k); try { history.replaceState(null, '', u); } catch (e) {} }
@@ -361,8 +338,8 @@ tabs.forEach((t, i) => {
   });
 });
 const first = tabs.find((t) => t.dataset.k === new URLSearchParams(location.search).get('tab')) || tabs[0];
-requestAnimationFrame(() => { go(1, false); pick(first, false, true); });
-document.fonts && document.fonts.ready.then(() => go(active, false));
+requestAnimationFrame(() => { pick(first, false, true); });
+document.fonts && document.fonts.ready.then(() => slots.length && go(active, false));
 </script>
 <script src="assets/auth.js"></script>
 </body>
