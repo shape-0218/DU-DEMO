@@ -70,15 +70,16 @@ img { display: block; }
 .rail { position: relative; display: flex; align-items: flex-start; gap: var(--gap); overflow-x: auto; scroll-snap-type: x mandatory; padding: 16px calc(50% - var(--a) / 2) 0; scrollbar-width: none; overscroll-behavior-x: contain; }
 .rail::-webkit-scrollbar { display: none; }
 .rail:focus-visible { outline-offset: -2px; }
-.slot { flex: 0 0 var(--a); scroll-snap-align: center; display: flex; flex-direction: column; align-items: center; cursor: pointer; padding-top: calc(var(--a) * 14 / 232); transition: padding-top .45s var(--ease); }
-.slot.is-active { padding-top: 0; cursor: default; }
-.poster { position: relative; width: calc(var(--a) * var(--side)); aspect-ratio: 232 / 329; border-radius: var(--r12); overflow: hidden; background: #797979; transition: width .45s var(--ease); }
-.slot.is-active .poster { width: var(--a); }
+.slot { flex: 0 0 var(--a); scroll-snap-align: center; scroll-snap-stop: always; display: flex; flex-direction: column; align-items: center; cursor: pointer; }   /* 한 번에 한 장씩 넘어감 */
+.slot.is-active { cursor: default; }
+/* 포스터 크기는 늘 같고(레이아웃 고정), 옆 칸 모습은 transform으로: JS가 중앙과의 거리에 따라 손가락을 따라 연속으로 바꿈(paint) */
+.poster { position: relative; width: var(--a); aspect-ratio: 232 / 329; border-radius: var(--r12); overflow: hidden; background: #797979; transform-origin: 50% 0; transform: translateY(calc(var(--a) * 14 / 232)) scale(var(--side)); }
+.slot.is-active .poster { transform: none; }
 .poster img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 /* 영상 포스터: 가운데(활성) 포스터일 때만 소리 없이 반복 재생, 다른 칸은 썸네일(첫 이미지)만 */
 .poster video.pv { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .5s var(--ease); pointer-events: none; }
 .poster video.pv.on { opacity: 1; }
-.dim, .shade-side, .shade-active { position: absolute; inset: 0; pointer-events: none; transition: opacity .45s var(--ease); }
+.dim, .shade-side, .shade-active { position: absolute; inset: 0; pointer-events: none; }
 .dim { background: rgba(0, 0, 0, .6); }
 .shade-side { background: linear-gradient(to bottom, rgba(0, 0, 0, .5), #000); }
 .shade-active { background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 56.5%, #000); opacity: 0; }
@@ -91,11 +92,11 @@ img { display: block; }
 .slot.is-active .info .open:hover strong { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 .badge { position: absolute; top: 12px; right: 12px; display: flex; align-items: center; gap: 2px; padding: 4px 9px; background: #000; border-radius: 9999px; font-size: 12px; font-weight: 500; color: var(--text-disable); backdrop-filter: blur(10px); }
 .badge img, .badge .hi { width: 14px; height: 14px; flex: none; }
-.rank { position: absolute; left: 16px; bottom: 12px; font-size: 36px; line-height: 1.4; font-weight: 700; color: var(--text-teritary); text-shadow: 0 0 20px rgba(0, 0, 0, .25); transition: color .45s var(--ease); }
-.slot.is-active .rank { color: var(--text-quaternary); bottom: 6px; }
-.info { width: calc(var(--a) * var(--side)); display: grid; gap: 8px; text-align: center; padding-top: 14px; transition: width .45s var(--ease); }
-.slot.is-active .info { width: var(--a); }
-.info .t { display: grid; gap: 2px; color: var(--text-teritary); transition: color .45s var(--ease); }
+.rank { position: absolute; left: 16px; bottom: 12px; font-size: 36px; line-height: 1.4; font-weight: 700; color: var(--text-teritary); text-shadow: 0 0 20px rgba(0, 0, 0, .25); transition: color .2s ease-out, transform .25s var(--ease); }
+.slot.is-active .rank { color: var(--text-quaternary); transform: translateY(6px); }
+.info { width: var(--a); display: grid; gap: 8px; text-align: center; padding-top: 14px; transform: translateY(calc(var(--a) * -14 / 232)); }
+.slot.is-active .info { transform: none; }
+.info .t { display: grid; gap: 2px; color: var(--text-teritary); transition: color .2s ease-out; }
 .info .t strong { font-size: 16px; font-weight: 600; letter-spacing: -0.03em; }
 .slot.is-active .info .t { color: var(--text-quaternary); }
 .meta { display: grid; gap: 2px; color: var(--text-teritary); }
@@ -358,15 +359,34 @@ function syncVideos() {
 }
 document.addEventListener('visibilitychange', syncVideos);
 function nearest() { const c = rail.scrollLeft + rail.clientWidth / 2; let b = 0, d = 1e9; slots.forEach((s, i) => { const k = Math.abs(s.offsetLeft + s.offsetWidth / 2 - c); if (k < d) { d = k; b = i; } }); return b; }
-let settle;
+/* 넘기는 모습: 칸마다 중앙과의 거리(p: 1=가운데, 0=한 칸 이상 떨어짐)로 크기·어둡기·위치를 손가락을 따라 연속으로 바꿈.
+   transform·opacity만 직접 바꿔서 레이아웃이 흔들리지 않고, 맞춤(snap)은 브라우저에 맡김(JS 보정 이동 없음) */
+let refs = [], geo = { ty: 14, side: .9138, gap: 12 };
+function cacheRefs() {
+  refs = slots.map((s) => ({ s, p: s.querySelector('.poster'), d: s.querySelector('.dim'), sd: s.querySelector('.shade-side'), a: s.querySelector('.shade-active'), i: s.querySelector('.info') }));
+  const a = slots[0] ? slots[0].offsetWidth : 232, root = getComputedStyle(document.documentElement);
+  geo = { ty: a * 14 / 232, side: parseFloat(root.getPropertyValue('--side')) || .9138, gap: parseFloat(getComputedStyle(rail).columnGap) || 12 };
+}
+function paint() {
+  if (!refs.length || posters.hidden) return;
+  const c = rail.scrollLeft + rail.clientWidth / 2;
+  for (const r of refs) {
+    const w = r.s.offsetWidth; let p = Math.max(0, 1 - Math.abs(r.s.offsetLeft + w / 2 - c) / (w + geo.gap));
+    if (reduce) p = p > .5 ? 1 : 0;   // 움직임 줄이기: 크기가 연속으로 변하지 않고 바로 바뀜
+    r.p.style.transform = `translateY(${((1 - p) * geo.ty).toFixed(2)}px) scale(${(geo.side + (1 - geo.side) * p).toFixed(4)})`;
+    r.i.style.transform = `translateY(${(-(1 - p) * geo.ty).toFixed(2)}px)`;
+    const o = (1 - p).toFixed(3); r.d.style.opacity = o; r.sd.style.opacity = o; r.a.style.opacity = p.toFixed(3);
+  }
+}
 function go(i, smooth = true) {
+  if (!slots.length) return;
   i = Math.max(0, Math.min(slots.length - 1, i));
   rail.scrollTo({ left: offsetOf(i), behavior: smooth && !reduce ? 'smooth' : 'auto' }); setActive(i);
-  clearTimeout(settle);
-  if (smooth) settle = setTimeout(() => { if (Math.abs(rail.scrollLeft - offsetOf(i)) > 2) rail.scrollTo({ left: offsetOf(i), behavior: 'auto' }); }, 700); /* 스크롤 애니메이션이 멈췄을 때 위치 보정 */
+  if (!smooth) { cacheRefs(); paint(); }
 }
 let ticking = false;
-rail.addEventListener('scroll', () => { if (ticking) return; ticking = true; requestAnimationFrame(() => { ticking = false; const n = nearest(); if (n !== active) setActive(n); }); }, { passive: true });
+const frame = (fn) => { let d = false; const f = () => { if (d) return; d = true; fn(); }; requestAnimationFrame(f); setTimeout(f, 34); };   // 화면이 가려져 rAF가 늦어도 끝까지 반영
+rail.addEventListener('scroll', () => { if (ticking) return; ticking = true; frame(() => { ticking = false; paint(); const n = nearest(); if (n !== active) setActive(n); }); }, { passive: true });
 /* 가운데 포스터는 전시 상세로 이동, 옆 포스터는 먼저 가운데로 */
 rail.addEventListener('click', (e) => { const s = e.target.closest('.slot'); const i = slots.indexOf(s); if (s && i !== active) { e.preventDefault(); go(i); } });
 document.getElementById('prev').addEventListener('click', () => go(active - 1));
@@ -379,12 +399,12 @@ function pick(tab, focus, silent) {
   const k = tab.dataset.k;
   tabs.forEach((t) => { const on = t === tab; t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; });
   const list = DEMO.TAB[k](), isEmpty = !list.length;
-  rail.innerHTML = list.map((e, i) => slotHtml(e, k === 'pop' ? i + 1 : 0)).join(''); slots = [...rail.children]; active = 0;
+  rail.innerHTML = list.map((e, i) => slotHtml(e, k === 'pop' ? i + 1 : 0)).join(''); slots = [...rail.children]; active = 0; cacheRefs();
   lst.innerHTML = listHtml(list, k === 'pop');
   vt.parentElement.hidden = isEmpty; empty.hidden = !isEmpty; msg.textContent = isEmpty ? emptyText[k] : '';
   applyView(isEmpty);
   document.getElementById('stage').setAttribute('aria-labelledby', tab.id);
-  if (!isEmpty) { setActive(0); rail.scrollLeft = 0; requestAnimationFrame(() => go(0, false)); }
+  if (!isEmpty) { setActive(0); rail.scrollLeft = 0; frame(() => go(0, false)); }
   syncVideos();
   if (focus) tab.focus();
   if (!silent) { const u = new URL(location.href); k === 'pop' ? u.searchParams.delete('tab') : u.searchParams.set('tab', k); try { history.replaceState(null, '', u); } catch (e) {} }
@@ -397,7 +417,8 @@ tabs.forEach((t, i) => {
   });
 });
 const first = tabs.find((t) => t.dataset.k === new URLSearchParams(location.search).get('tab')) || tabs[0];
-requestAnimationFrame(() => { pick(first, false, true); });
+let booted = false; const boot = () => { if (booted) return; booted = true; pick(first, false, true); };
+requestAnimationFrame(boot); setTimeout(boot, 60);   // 화면이 가려져 있어 rAF가 늦어도 목록이 만들어지도록
 document.fonts && document.fonts.ready.then(() => slots.length && go(active, false));
 </script>
 <script src="assets/auth.js"></script>
