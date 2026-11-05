@@ -145,6 +145,8 @@ img { display: block; }
 .exh img { width: 40px; height: 50px; object-fit: cover; border-radius: var(--r4); background: #000; }
 .exh .state { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
 .dot { width: 7px; height: 7px; border-radius: 9999px; background: var(--text-primary); }
+.dot.soon { background: transparent; box-shadow: inset 0 0 0 1.5px var(--text-primary); }   /* 전시 예정: 속이 빈 점 */
+.dot.end { background: var(--border-primary); }   /* 종료: 회색 점 */
 .exh strong { display: block; font-size: 15px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.4; }
 .exh .sub { display: block; font-size: 12px; font-weight: 500; color: var(--text-teritary); line-height: 1.45; }
 .exh .i { width: 18px; height: 18px; color: var(--text-teritary); transition: transform .3s var(--ease); }
@@ -312,7 +314,6 @@ img { display: block; }
             <span class="state"><i class="dot"></i>전시 중</span>
             <strong>여넥스</strong>
             <span class="sub">한결대학교 시각디자인학과</span>
-            <span class="sub">07.29 · 진달래홀</span>
           </span>
           <svg class="i" aria-hidden="true"><use href="#i-chev"/></svg>
         </a>

@@ -111,6 +111,7 @@ img { display: block; }
 .exh .state { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
 .dot { width: 7px; height: 7px; border-radius: 9999px; background: var(--text-primary); }
 .dot.end { background: var(--border-primary); }
+.dot.soon { background: transparent; box-shadow: inset 0 0 0 1.5px var(--text-primary); }
 .exh strong { display: block; margin-top: 2px; font-size: 16px; font-weight: 600; line-height: 1.35; letter-spacing: -0.03em; }
 .exh .sub { display: flex; align-items: center; gap: 4px; margin-top: 2px; font-size: 12px; font-weight: 500; color: var(--text-secondary); }
 .exh .sub .i { width: 13px; height: 13px; color: var(--text-teritary); }
@@ -219,7 +220,7 @@ const works = [
   { img: 'w2.jpg', title: '작품명', by: 'usun', href: 'work.html' }
 ];
 document.getElementById('exh-list').innerHTML = exhibitions.map((e, i) =>
-  `<a class="exh" href="exhibition.html" style="--n:${i}"><img src="${O}${e.img}" alt="" width="74" height="92"><span><span class="state"><i class="dot ${e.end ? 'end' : ''}"></i>${e.state}</span><strong>${e.title}</strong><span class="sub">${e.school}</span><span class="sub">${ic('i-cal')}${e.date}</span><span class="sub">${ic('i-pin')}${e.place}</span></span>${ic('i-chev')}</a>`).join('') || '<p class="empty">참여한 전시가 없어요</p>';
+  `<a class="exh" href="exhibition.html" style="--n:${i}"><img src="${O}${e.img}" alt="" width="74" height="92"><span><span class="state"><i class="dot ${e.end ? 'end' : ''}"></i>${e.state}</span><strong>${e.title}</strong><span class="sub">${e.school}</span></span>${ic('i-chev')}</a>`).join('') || '<p class="empty">참여한 전시가 없어요</p>';
 document.getElementById('works').innerHTML = works.map((w, i) =>
   `<a class="w" href="${w.href}" style="--n:${i}"><div class="im"><img src="${O}${w.img}" alt="" loading="lazy"></div><b>${w.title}</b><span>${w.by}</span></a>`).join('') || '<p class="empty">등록한 작품이 없어요</p>';
 document.getElementById('n-exh').textContent = exhibitions.length;
