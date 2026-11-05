@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 735" width="520" height="735">
+<rect width="520" height="735" fill="#38393d"/>
+<rect x="90" y="120" width="300" height="42" fill="#8f98a3"/><rect x="130" y="178" width="250" height="42" fill="#c8ced6"/><rect x="90" y="236" width="200" height="42" fill="#6b7480"/><rect x="130" y="294" width="300" height="42" fill="#aeb6c0"/><rect x="90" y="352" width="250" height="42" fill="#e1e5ea"/><rect x="130" y="410" width="200" height="42" fill="#7d8793"/>
+<text x="42" y="612" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" font-size="58" font-weight="700" fill="#f2f2f2" letter-spacing="-2">도시의 층</text>
+<text x="42" y="654" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" font-size="17" font-weight="500" fill="#f2f2f2" opacity=".85">가온대학교 건축학과</text>
+</svg>

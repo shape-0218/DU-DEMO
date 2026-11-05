@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 735" width="520" height="735">
+<rect width="520" height="735" fill="#4b7be5"/>
+<g fill="none" stroke="#ffffff" stroke-opacity=".6" stroke-width="3"><path d="M0 260 C 120 200, 220 330, 330 260 S 480 200, 560 250"/><path d="M0 296 C 120 236, 220 366, 330 296 S 480 236, 560 286"/><path d="M0 332 C 120 272, 220 402, 330 332 S 480 272, 560 322"/><path d="M0 368 C 120 308, 220 438, 330 368 S 480 308, 560 358"/><path d="M0 404 C 120 344, 220 474, 330 404 S 480 344, 560 394"/><path d="M0 440 C 120 380, 220 510, 330 440 S 480 380, 560 430"/><path d="M0 476 C 120 416, 220 546, 330 476 S 480 416, 560 466"/></g>
+<text x="42" y="612" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" font-size="58" font-weight="700" fill="#ffffff" letter-spacing="-2">첫 번째 파도</text>
+<text x="42" y="654" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" font-size="17" font-weight="500" fill="#ffffff" opacity=".85">다온대학교 UXUI동아리</text>
+</svg>

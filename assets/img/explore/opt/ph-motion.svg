@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 735" width="520" height="735">
+<rect width="520" height="735" fill="#e6f04a"/>
+<rect x="60" y="110" width="34" height="300" fill="#111" transform="skewX(-12)"/><rect x="122" y="140" width="34" height="260" fill="#111" transform="skewX(-12)"/><rect x="184" y="170" width="34" height="220" fill="#111" transform="skewX(-12)"/><rect x="246" y="110" width="34" height="180" fill="#111" transform="skewX(-12)"/><rect x="308" y="140" width="34" height="300" fill="#111" transform="skewX(-12)"/><rect x="370" y="170" width="34" height="260" fill="#111" transform="skewX(-12)"/>
+<text x="42" y="612" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" font-size="58" font-weight="700" fill="#111111" letter-spacing="-2">움직임의 기록</text>
+<text x="42" y="654" font-family="Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif" font-size="17" font-weight="500" fill="#111111" opacity=".85">한결대학교 시각디자인학과</text>
+</svg>
