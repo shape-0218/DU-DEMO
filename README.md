@@ -35,6 +35,7 @@ python3 -m http.server 8000
 | `section.html` | 전시 콘텐츠 섹션 편집 | 전시 작업 · 개편안 |
 | `team.html` | 팀원 관리 (대표자) | 팀원 관리 |
 | `work-new.html` | 작품 등록 (`?as=`대신 등록, `?edit=`수정) | 작품 등록 · 규칙 적용 |
+| `map.html` | 지도 (묶음 핀·포스터 핀·필터 칩, `?ex=`선택, `?perm=0`위치 권한 꺼짐, `?f=live\|soon`) | 지도 · 개선안 |
 
 ## 공통 코드 (`assets/`)
 
