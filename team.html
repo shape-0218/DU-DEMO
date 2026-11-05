@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>팀원 관리 · Display U.</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="assets/flow.css">
+<link rel="stylesheet" href="assets/work.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 8v.2"/></symbol>
+  <symbol id="i-avatar" viewBox="0 0 34 34"><circle cx="17" cy="13" r="6" fill="currentColor"/><path d="M4 34c1.2-8 6.6-12 13-12s11.8 4 13 12z" fill="currentColor"/></symbol>
+</defs></svg>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+<div class="page" id="pg">
+  <header class="bar">
+    <a class="back" id="back" href="hub.html" aria-label="전시 관리로 돌아가기"><svg class="i"><use href="#i-back"/></svg></a>
+    <h1>팀원 관리</h1>
+  </header>
+
+  <main id="main" class="body">
+    <div id="main-in">
+      <div class="team-h"><h2>팀원 초대</h2><span>함께 전시를 준비할 팀원을 초대해보세요</span></div>
+      <section class="tcard" id="lk" aria-label="링크로 초대"></section>
+      <section class="tcard" aria-label="닉네임으로 초대">
+        <div class="row1"><h3>닉네임으로 초대</h3><span class="sub">초대할 회원의 디유 닉네임을 검색해주세요</span></div>
+        <form class="nick" id="nf" role="search" autocomplete="off">
+          <span class="at" aria-hidden="true">@</span>
+          <label class="sr" for="nk">초대할 회원의 닉네임</label>
+          <input id="nk" type="text" placeholder="닉네임 입력" maxlength="30" autocapitalize="off" spellcheck="false" enterkeyhint="search">
+          <button type="submit" aria-label="검색"><svg class="i" aria-hidden="true"><use href="#i-search"/></svg></button>
+        </form>
+        <div id="found"></div>
+      </section>
+
+      <div class="mtabs" role="tablist" aria-label="팀원">
+        <button type="button" role="tab" id="t-in" aria-selected="true" aria-controls="p-in">참여 중 <span id="n-in"></span></button>
+        <button type="button" role="tab" id="t-pd" aria-selected="false" aria-controls="p-pd" tabindex="-1">초대 대기 <span id="n-pd"></span></button>
+      </div>
+      <div id="p-in" role="tabpanel" aria-labelledby="t-in"></div>
+      <div id="p-pd" role="tabpanel" aria-labelledby="t-pd" hidden></div>
+      <div class="pad2"></div>
+    </div>
+
+    <!-- 대표자 위임 완료 -->
+    <section class="dg" id="dg" aria-live="polite" hidden>
+      <div class="ring" aria-hidden="true"><svg class="i"><use href="#i-check"/></svg></div>
+      <h2 tabindex="-1" id="dg-h">대표자를 위임했어요</h2>
+      <h3>이제 관리자로 참여해요</h3>
+      <p id="dg-p"></p>
+      <div class="swap" id="dg-s"></div>
+      <a class="big dg-cta" id="dg-go" href="works.html">전시 작업으로 이동</a>
+      <p class="dg-note">관리자 권한으로 전시 작업을 이어갈 수 있어요</p>
+    </section>
+  </main>
+</div>
+
+<script src="assets/flow.js"></script>
+<script src="assets/exdata.js"></script>
+<script>
+const all = exhibitions();
+const e = all.find((x) => x.id === q.get('id')) || all.find((x) => x.role === 'owner') || all[0];
+/* 팀원 관리는 대표자만 들어올 수 있음(관리자·팀원은 전시 작업으로) */
+if (e.role !== 'owner') { location.replace('works.html?id=' + e.id); }
+const d = ExData.get(e);
+$('back').href = 'hub.html?id=' + e.id;
+const T = d.team;
+const RN = { owner: '대표자', manager: '관리자', member: '팀원' };
+const AV = (r, cls = '') => `<span class="av ${cls}" data-r="${r}" aria-hidden="true"><svg viewBox="0 0 34 34"><use href="#i-avatar"/></svg></span>`;
+const slug = String(e.id).replace(/[^a-z0-9]/gi, '').toLowerCase();
+const persist = () => ExData.save(e, d);
+
+/* ---------- 링크로 초대 ---------- */
+function drawLink() {
+  const on = T.link, url = `https://displayu.kr/invite/exhibition/${slug}`;
+  $('lk').className = 'tcard' + (on ? '' : ' off');
+  $('lk').innerHTML = `<div class="row1"><h3>링크로 초대</h3><span class="tag">${on ? '링크 활성화' : '초대 링크 꺼짐'}</span><button type="button" class="sw" id="sw" role="switch" aria-checked="${on}" aria-label="초대 링크"></button></div>
+    <p class="hint">${on ? '링크를 공유하면 초대받은 사람이 이 전시에 참여할 수 있어요' : '초대 링크를 켜고 팀원을 초대해보세요'}</p>
+    <div class="link"><input type="text" readonly value="${on ? url : ''}" placeholder="초대 링크 꺼짐" aria-label="초대 링크"${on ? '' : ' disabled'}><button type="button" class="copy" id="cp"${on ? '' : ' disabled'}><svg class="i" aria-hidden="true"><use href="#i-copy"/></svg>링크 복사</button></div>
+    ${on ? '' : '<p class="offn">이 링크로 새로운 팀원이 참여할 수 없어요\n기존 팀원의 참여 상태는 유지돼요</p>'}`;
+  if (!on) $('lk').querySelector('.offn').style.whiteSpace = 'pre-line';
+  $('sw').addEventListener('click', () => { T.link = !T.link; persist(); drawLink(); });
+  const cp = $('cp'); if (cp) cp.addEventListener('click', async () => { try { await navigator.clipboard.writeText(url); } catch (x) {} toast('링크를 복사했어요'); });
+}
+
+/* ---------- 닉네임으로 초대 ---------- */
+let word = '';
+function drawFound() {
+  const n = word.trim().replace(/^@/, '');
+  if (!n) { $('found').innerHTML = ''; return; }
+  const joined = T.members.some((m) => m.nick === n), waiting = T.pending.some((p) => p.nick === n);
+  const btn = joined ? '<button type="button" class="btn btn-soft" disabled>참여 중</button>' : waiting ? '<button type="button" class="btn btn-soft" disabled>초대 대기</button>' : '<button type="button" class="btn btn-dark" id="inv">초대</button>';
+  $('found').innerHTML = `<div class="found">${AV('pend')}<span class="nm">@${esc(n)}</span>${btn}</div>${joined || waiting ? '' : '<p class="tnote">초대 후 작가 인증과 수락이 완료되어야 참여할 수 있어요</p>'}`;
+  const inv = $('inv'); if (inv) inv.addEventListener('click', () => { T.pending.unshift({ id: 'p' + Date.now().toString(36), nick: n }); persist(); drawFound(); drawList(); });
+}
+$('nk').addEventListener('input', () => { word = $('nk').value; drawFound(); });
+$('nf').addEventListener('submit', (ev) => { ev.preventDefault(); word = $('nk').value; drawFound(); });
+
+/* ---------- 목록 ---------- */
+function drawList() {
+  $('n-in').textContent = T.members.length; $('n-pd').textContent = T.pending.length;
+  const groups = ['owner', 'manager', 'member'].map((r) => [r, T.members.filter((m) => m.role === r)]).filter(([, l]) => l.length);
+  $('p-in').innerHTML = groups.map(([r, l]) => `<section class="grp" aria-label="${RN[r]}"><h4>${RN[r]}</h4>${l.map((m) => `<div class="mrow" data-id="${m.id}">${AV(r)}<div class="nm"><b>${esc(m.name)}<span class="badge" data-r="${r}">${RN[r]}</span></b><small>@${esc(m.nick)}</small></div>${m.me ? '<span class="me">나</span>' : r === 'owner' ? '' : `<button type="button" class="dots" data-a="more" data-id="${m.id}" aria-label="${esc(m.name)} 메뉴" aria-haspopup="dialog"><svg class="i" aria-hidden="true"><use href="#i-more"/></svg></button>`}</div>`).join('')}</section>`).join('');
+  $('p-pd').innerHTML = T.pending.length
+    ? `<div class="pend-list">${T.pending.map((p, i) => `<div class="mrow">${AV('pend', i % 2 ? '' : 'p2')}<div class="nm"><b>@${esc(p.nick)}</b></div><button type="button" class="cancel" data-a="cancel" data-id="${p.id}" aria-label="@${esc(p.nick)} 초대 취소">초대 취소</button></div>`).join('')}</div><div class="pnote"><svg class="i" aria-hidden="true"><use href="#i-info"/></svg><p>팀원 초대 수락을 기다리고 있어요\n대표자 위임과는 별개예요</p></div>`
+    : '<p class="mnone">초대 대기 중인 팀원이 없어요</p>';
+}
+function pick(k, focus) {
+  const pd = k === 'pd';
+  $('t-in').setAttribute('aria-selected', !pd); $('t-pd').setAttribute('aria-selected', pd); $('t-in').tabIndex = pd ? -1 : 0; $('t-pd').tabIndex = pd ? 0 : -1;
+  $('p-in').hidden = pd; $('p-pd').hidden = !pd; if (focus) (pd ? $('t-pd') : $('t-in')).focus();
+}
+$('t-in').addEventListener('click', () => pick('in')); $('t-pd').addEventListener('click', () => pick('pd'));
+[$('t-in'), $('t-pd')].forEach((b) => b.addEventListener('keydown', (ev) => { if (ev.key === 'ArrowRight') { ev.preventDefault(); pick('pd', true); } if (ev.key === 'ArrowLeft') { ev.preventDefault(); pick('in', true); } }));
+
+$('p-pd').addEventListener('click', (ev) => {
+  const b = ev.target.closest('[data-a="cancel"]'); if (!b) return;
+  T.pending = T.pending.filter((p) => p.id !== b.dataset.id); persist(); drawList(); drawFound(); toast('초대를 취소했어요');
+});
+$('p-in').addEventListener('click', (ev) => { const b = ev.target.closest('[data-a="more"]'); if (b) menu(T.members.find((m) => m.id === b.dataset.id), b); });
+
+/* ---------- ⋯ 메뉴(시트) → 확인 모달 ---------- */
+function menu(m, trigger) {
+  const chev = '<svg class="i" aria-hidden="true"><use href="#i-chev"/></svg>';
+  const first = m.role === 'manager' ? ['unadmin', '관리자 해제'] : ['admin', '관리자 지정'];
+  showSheet(`<div class="sh-who"><div><small>선택한 팀원</small><b>${esc(m.name)}</b></div><span class="badge" data-r="${m.role}">${RN[m.role]}</span></div>
+    <div class="sh-list"><button type="button" data-a="${first[0]}">${first[1]}${chev}</button><button type="button" data-a="owner">대표자 위임${chev}</button><button type="button" class="red" data-a="kick">팀원 내보내기${chev}</button></div>`, `${m.name} 메뉴`, (s) => {
+    s.querySelector('.sh-list').addEventListener('click', (ev) => { const a = ev.target.closest('[data-a]'); if (!a) return; closeSheet(); ask(a.dataset.a, m); });
+  });
+}
+function ask(a, m) {
+  const n = m.name;
+  if (a === 'admin') modal({ title: '관리자로 지정할까요?', body: '전시 콘텐츠와 전체 작품을 관리할 수 있어요\n전시 등록, 팀원 관리, 공개 설정은 대표자만 관리해요', acts: [{ label: '취소', cls: 'btn-soft' }, { label: '관리자 지정', cls: 'btn-dark', fn: () => { m.role = 'manager'; persist(); drawList(); toast(`${n}님을 관리자로 지정했어요`); } }] });
+  else if (a === 'unadmin') modal({ title: '관리자 권한을 해제할까요?', body: '팀원으로 변경되며, 본인의 작품만 관리할 수 있어요', acts: [{ label: '취소', cls: 'btn-soft' }, { label: '권한 해제', cls: 'btn-dark', fn: () => { m.role = 'member'; persist(); drawList(); toast(`${n}님이 팀원으로 변경됐어요`); } }] });
+  else if (a === 'owner') modal({ title: '대표자를 위임할까요?', body: '전시 관리 권한이 즉시 이전되고 관리자로 변경돼요\n이후 대표자 변경은 새 대표자만 할 수 있어요', acts: [{ label: '취소', cls: 'btn-soft' }, { label: '대표자 위임', cls: 'btn-dark', fn: () => delegate(m) }] });
+  else modal({ title: '전시에서 내보낼까요?', body: '이 전시의 작업 공간에 접근할 수 없게 돼요', warn: ['작품 삭제 안내', '작가로 등록된 작품이 있다면 함께 삭제돼요\n삭제된 작품은 복구할 수 없어요'], acts: [{ label: '취소', cls: 'btn-soft' }, { label: '내보내기', cls: 'btn-red', fn: () => { T.members = T.members.filter((x) => x.id !== m.id); d.works = d.works.filter((w) => w.author !== m.name); persist(); drawList(); toast(`${n}님을 전시에서 내보냈어요`); } }] });
+}
+
+/* ---------- 대표자 위임: 즉시 반영(수락 절차 없음), 본인은 관리자 ---------- */
+function delegate(m) {
+  const me = T.members.find((x) => x.me);
+  m.role = 'owner'; me.role = 'manager';
+  persist(); saveExhibitions(exhibitions().map((x) => x.id === e.id ? { ...x, role: 'manager' } : x));
+  $('dg-p').textContent = `${m.name}님이 새로운 대표자가 되었어요\n대표자 전용 전시 관리 접근은 종료됐어요`;
+  $('dg-s').innerHTML = `<div class="u">${AV('owner')}<span>${esc(m.name)}</span><span class="badge" data-r="owner">대표자</span></div><svg class="i arr" aria-hidden="true"><use href="#i-chev"/></svg><div class="u">${AV('manager')}<span>${esc(me.name)}</span><span class="badge" data-r="manager">관리자</span></div>`;
+  $('dg-go').href = 'works.html?id=' + e.id; $('back').href = 'works.html?id=' + e.id;
+  $('main-in').hidden = true; $('dg').hidden = false; window.scrollTo(0, 0); $('dg-h').focus({ preventScroll: true });
+}
+
+drawLink(); drawList(); drawFound(); if (q.get('tab') === 'pending') pick('pd');
+</script>
+<script src="assets/auth.js"></script>
+</body>
+</html>

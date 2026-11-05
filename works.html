@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>전시 작업 · Display U.</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="assets/flow.css">
+<link rel="stylesheet" href="assets/work.css">
+<style>
+.opts { display: grid; gap: 8px; margin-top: 20px; }
+.opt { display: block; width: 100%; padding: 16px; border: 1px solid var(--border-primary); border-radius: var(--r12); text-align: left; transition: background .2s, border-color .2s; }
+.opt:hover { background: var(--bg-secondary); }
+.opt b { display: block; font-size: 16px; font-weight: 600; }
+.opt span { display: block; margin-top: 4px; font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+.tabs2 { display: grid; grid-template-columns: 1fr 1fr; margin-top: 16px; border-bottom: 1px solid var(--bg-teritary); }
+.tabs2 button { position: relative; height: 44px; font-size: 14px; font-weight: 500; color: var(--text-teritary); }
+.tabs2 button[aria-selected="true"] { color: var(--text-primary); font-weight: 600; }
+.tabs2 button[aria-selected="true"]::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--text-primary); }
+.plist { margin-top: 8px; display: grid; }
+.plist label { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--bg-teritary); cursor: pointer; }
+.plist .nm b { display: block; font-size: 16px; font-weight: 600; } .plist .nm small { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+.plist .nm { flex: 1; }
+.plist input { width: 22px; height: 22px; accent-color: #18181b; }
+.pnone { padding: 28px 0; text-align: center; }
+.pnone b { display: block; font-size: 14px; font-weight: 600; } .pnone span { display: block; margin-top: 6px; font-size: 12px; font-weight: 500; line-height: 1.5; color: var(--text-secondary); white-space: pre-line; }
+.sheet .big { margin-top: 20px; }
+.sheet .tsub { margin-top: 16px; font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="i-lines" viewBox="0 0 24 24"><path d="M5 9h14M5 15h14"/></symbol>
+  <symbol id="i-grip" viewBox="0 0 24 24"><path d="M5 9h14M5 15h14"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2.5"/><circle cx="9" cy="10" r="1.6"/><path d="m5 17 5-4.5 3.5 3L16 13l3 3"/></symbol>
+  <symbol id="i-avatar" viewBox="0 0 34 34"><circle cx="17" cy="13" r="6" fill="currentColor"/><path d="M4 34c1.2-8 6.6-12 13-12s11.8 4 13 12z" fill="currentColor"/></symbol>
+</defs></svg>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+<div class="page wide">
+  <header class="bar">
+    <a class="back" id="back" href="manage.html" aria-label="뒤로"><svg class="i"><use href="#i-back"/></svg></a>
+    <h1>전시 작업</h1>
+  </header>
+  <main id="main" class="body">
+    <div id="sumc"></div>
+    <div class="wtabs" id="tabs" role="tablist" aria-label="전시 작업">
+      <button type="button" role="tab" id="t-w" aria-selected="true" aria-controls="p-w">전시작</button>
+      <button type="button" role="tab" id="t-c" aria-selected="false" aria-controls="p-c" tabindex="-1">전시 콘텐츠</button>
+    </div>
+    <div id="p-w" role="tabpanel" aria-labelledby="t-w"></div>
+    <div id="p-c" role="tabpanel" aria-labelledby="t-c" hidden></div>
+  </main>
+</div>
+
+<script src="assets/flow.js"></script>
+<script src="assets/exdata.js"></script>
+<script>
+const all = exhibitions();
+const e = all.find((x) => x.id === q.get('id')) || all[0];
+const d = ExData.get(e);
+const canManage = e.role !== 'member';       /* 대표자·관리자: 두 탭 + 순서 편집 / 팀원: 전시작만 */
+const MAXW = 50, MAXS = 5;
+$('back').href = e.role === 'owner' ? 'hub.html?id=' + e.id : 'manage.html';
+$('back').setAttribute('aria-label', e.role === 'owner' ? '전시 관리로 돌아가기' : '내 전시 관리로 돌아가기');
+document.title = `전시 작업 · ${e.title}`;
+const persist = () => ExData.save(e, d);
+const flash = sessionStorage.getItem('du.toast'); if (flash) { sessionStorage.removeItem('du.toast'); setTimeout(() => toast(flash), 300); }
+
+/* ---------- 전시 요약 ---------- */
+$('sumc').innerHTML = `<div class="sumc rise"><div class="poster"><img src="${esc(e.poster)}" alt=""></div><div class="tx">
+  <div class="top"><span class="st" data-s="${e.status}">${STATUS[e.status]}</span><a class="prev" href="exhibition.html?id=${e.id}" target="_blank" rel="noopener">전시 미리보기<svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></a></div>
+  <h2>${esc(e.title)}</h2><p class="org">${esc(e.org)}</p>
+  <p class="meta"><svg class="i" aria-hidden="true"><use href="#i-cal"/></svg><span>${range(e).replace(' - ', '–')}</span></p>
+  <p class="meta"><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg><span>${esc(e.place)}</span></p></div></div>`;
+
+/* ---------- 탭 ---------- */
+let tab = canManage && q.get('tab') === 'content' ? 'c' : 'w', orderMode = false, secMode = false;
+if (!canManage) $('tabs').classList.add('one');
+function pick(k, focus) {
+  if (orderMode || secMode) { orderMode = false; secMode = false; drawW(); drawC(); }   /* 편집 중 다른 탭으로 가면 편집 모드 종료(변경은 이미 저장됨) */
+  tab = k; const c = k === 'c';
+  $('t-w').setAttribute('aria-selected', !c); $('t-c').setAttribute('aria-selected', c); $('t-w').tabIndex = c ? -1 : 0; $('t-c').tabIndex = c ? 0 : -1;
+  $('p-w').hidden = c; $('p-c').hidden = !c; if (focus) (c ? $('t-c') : $('t-w')).focus();
+  try { const u = new URL(location.href); c ? u.searchParams.set('tab', 'content') : u.searchParams.delete('tab'); history.replaceState(null, '', u); } catch (x) {}
+}
+$('t-w').addEventListener('click', () => pick('w')); $('t-c').addEventListener('click', () => pick('c'));
+[$('t-w'), $('t-c')].forEach((b) => b.addEventListener('keydown', (ev) => { if (ev.key === 'ArrowRight') { ev.preventDefault(); pick('c', true); } if (ev.key === 'ArrowLeft') { ev.preventDefault(); pick('w', true); } }));
+
+/* ---------- 끌어서 순서 바꾸기 ---------- */
+function sortable(box, itemSel, handleSel, done) {
+  box.addEventListener('pointerdown', (ev) => {
+    if (ev.button || ev.target.closest('.x, .tr')) return;
+    const h = ev.target.closest(handleSel); if (!h || !box.contains(h)) return;
+    const el = h.closest(itemSel); if (!el) return;
+    ev.preventDefault(); el.classList.add('drag'); el.style.pointerEvents = 'none';
+    const move = (m) => {
+      const t = document.elementFromPoint(m.clientX, m.clientY), o = t && t.closest(itemSel);
+      if (!o || o === el || o.parentNode !== box) return;
+      if (el.compareDocumentPosition(o) & Node.DOCUMENT_POSITION_FOLLOWING) o.after(el); else o.before(el);
+    };
+    const up = () => { document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', up); document.removeEventListener('pointercancel', up); el.classList.remove('drag'); el.style.pointerEvents = ''; done([...box.querySelectorAll(itemSel)].map((x) => x.dataset.id)); };
+    document.addEventListener('pointermove', move); document.addEventListener('pointerup', up); document.addEventListener('pointercancel', up);
+  });
+}
+
+/* ================= 전시작 ================= */
+const canEdit = (w) => canManage || w.mine;
+function drawW() {
+  const L = d.works, box = $('p-w');
+  if (!L.length) { box.innerHTML = `<button type="button" class="emptyt" id="add"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg><b>전시작 추가</b><span>작품을 등록해 주세요</span></button>`; $('add').addEventListener('click', addWork); return; }
+  const tool = orderMode
+    ? `<div class="tool"><span class="note">끌어서 순서를 바꾸면 자동으로 저장돼요</span><button type="button" class="lnk" id="done">완료</button></div>`
+    : `<div class="tool"><b>전시작 ${L.length}</b>${canManage ? '<button type="button" class="lnk" id="order"><svg class="i" aria-hidden="true"><use href="#i-lines"/></svg>순서 편집</button>' : ''}</div>`;
+  const add = !orderMode && L.length < MAXW ? '<button type="button" class="addbtn" id="add"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg>전시작 추가</button>' : '';
+  box.innerHTML = tool + add + `<div class="wgrid${orderMode ? ' edit' : ''}" id="wg">${L.map((w, i) => `<article class="wc" data-id="${w.id}"><div class="im"><img src="${esc(w.img)}" alt="" loading="lazy">${orderMode ? `<span class="no">${i + 1}</span><span class="grip" aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><use href="#i-grip"/></svg></span>` : canEdit(w) ? `<button type="button" class="more" data-a="more" data-id="${w.id}" aria-label="${esc(w.title)} 메뉴" aria-haspopup="menu" aria-expanded="false"><svg class="i" aria-hidden="true"><use href="#i-more"/></svg></button>` : ''}${w.mine && !orderMode ? '<span class="mine">내 작품</span>' : ''}</div><h3>${esc(w.title)}</h3><p>${esc(w.author)}</p></article>`).join('')}</div>`;
+  const a = $('add'); if (a) a.addEventListener('click', addWork);
+  const o = $('order'); if (o) o.addEventListener('click', () => { orderMode = true; closePop(); drawW(); });
+  const dn = $('done'); if (dn) dn.addEventListener('click', () => { orderMode = false; drawW(); });
+  if (orderMode) sortable($('wg'), '.wc', '.wc', (ids) => { d.works = ids.map((id) => d.works.find((w) => w.id === id)); persist(); drawW(); });
+}
+/* 카드 누르기 → 작품 미리보기, ⋯ → 수정하기/삭제하기 */
+let pop = null;
+function closePop() { if (pop) { pop.btn.setAttribute('aria-expanded', 'false'); pop.el.remove(); pop = null; } }
+$('p-w').addEventListener('click', (ev) => {
+  const b = ev.target.closest('[data-a="more"]');
+  if (b) {
+    const same = pop && pop.btn === b; closePop(); if (same) return;
+    const el = document.createElement('div'); el.className = 'pop'; el.setAttribute('role', 'menu');
+    el.innerHTML = '<button type="button" role="menuitem" data-m="edit">수정하기</button><button type="button" role="menuitem" class="del" data-m="del">삭제하기</button>';
+    b.closest('.wc').appendChild(el); b.setAttribute('aria-expanded', 'true'); pop = { el, btn: b, id: b.dataset.id }; el.querySelector('button').focus();
+    el.addEventListener('click', (x) => { const m = x.target.closest('[data-m]'); if (!m) return; const id = pop.id; closePop(); m.dataset.m === 'edit' ? (location.href = `work-new.html?ex=${e.id}&edit=${id}`) : delWork(id); });
+    return;
+  }
+  if (ev.target.closest('.pop')) return;
+  const c = ev.target.closest('.wc'); if (c && !orderMode) location.href = `work.html?preview=1&ex=${e.id}&w=${c.dataset.id}`;
+});
+document.addEventListener('click', (ev) => { if (pop && !ev.target.closest('.pop, .more')) closePop(); });
+document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && pop) { const b = pop.btn; closePop(); b.focus(); } });
+function delWork(id) {
+  modal({ title: '작품을 삭제할까요?', body: '삭제하면 이 작품이 전시에서 사라져요', warn: ['삭제 안내', '삭제된 작품은 복구할 수 없어요'], acts: [{ label: '취소', cls: 'btn-soft' }, { label: '삭제하기', cls: 'btn-red', fn: () => { d.works = d.works.filter((w) => w.id !== id); persist(); drawW(); toast('작품을 삭제했어요'); } }] });
+}
+
+/* 전시작 추가: 팀원은 바로 작품 등록, 대표자·관리자는 먼저 "누구의 작품인가요?" 시트 */
+function addWork() {
+  if (!canManage) { location.href = 'work-new.html?ex=' + e.id; return; }
+  showSheet(`<h2>누구의 작품을 등록하시나요?</h2><p class="sub">내 작품을 올리거나, 다른 작가의 작품을 대신 등록할 수 있어요</p>
+    <div class="opts"><button type="button" class="opt" data-o="me"><b>내 작품 등록하기</b><span>이 전시에서 사용하는 내 작가명으로 등록해요</span></button>
+    <button type="button" class="opt" data-o="proxy"><b>다른 작가의 작품 대신 등록하기</b><span>작가로 표시할 팀원을 선택하거나, 이름을 직접 입력해요</span></button></div>`, '누구의 작품을 등록하시나요?', (s) => {
+    s.querySelector('.opts').addEventListener('click', (ev) => { const b = ev.target.closest('[data-o]'); if (!b) return; if (b.dataset.o === 'me') location.href = 'work-new.html?ex=' + e.id; else proxySheet(); });
+  });
+}
+function proxySheet() {
+  const cand = d.team.members.filter((m) => !m.me);
+  let t = cand.length ? 'team' : 'name', sel = null, nm = '';
+  const s = showSheet('<div id="px"></div>', '작가 정보 입력');
+  const draw = () => {
+    const ok = t === 'team' ? !!sel : !!nm.trim();
+    s.querySelector('#px').innerHTML = `<h2>작가 정보를 어떻게 입력할까요?</h2><p class="sub">대신 등록할 작품의 작가 정보를 선택해주세요</p>
+      <div class="tabs2" role="tablist"><button type="button" role="tab" data-t="team" aria-selected="${t === 'team'}">전시 팀원에서 선택</button><button type="button" role="tab" data-t="name" aria-selected="${t === 'name'}">직접 이름 입력</button></div>` +
+      (t === 'team'
+        ? (cand.length ? `<p class="tsub">전시 팀원의 작가명과 프로필을 연결해요</p><div class="plist" role="radiogroup">${cand.map((m) => `<label><span class="av" data-r="${m.role}" aria-hidden="true" style="width:44px;height:44px"><svg viewBox="0 0 34 34" style="width:32px;height:32px"><use href="#i-avatar"/></svg></span><span class="nm"><b>${esc(m.name)}</b><small>@${esc(m.nick)}</small></span><input type="radio" name="pm" value="${m.id}" ${sel === m.id ? 'checked' : ''}></label>`).join('')}</div>`
+          : '<div class="pnone"><b>선택할 수 있는 팀원이 없어요</b><span>팀원을 초대하면 여기에서 고를 수 있어요\n지금은 이름 직접 입력으로 등록할 수 있어요</span></div>')
+        : `<div class="field" style="margin-top:20px"><label for="px-n"><span>작가명<span class="req" aria-hidden="true">*</span></span></label><div class="ul"><input id="px-n" type="text" maxlength="20" placeholder="작가명을 입력해주세요" value="${esc(nm)}" autocomplete="off"></div><p class="help">실명 또는 이 전시에서 사용할 작가명을 입력해주세요</p><p class="help">직접 입력한 경우 작가프로필과 연결되지 않아요</p></div>`) +
+      `<button type="button" class="big" id="px-ok"${ok ? '' : ' disabled'}>선택 완료</button>`;
+    s.querySelectorAll('[data-t]').forEach((b) => b.addEventListener('click', () => { t = b.dataset.t; draw(); }));
+    s.querySelectorAll('input[name="pm"]').forEach((r) => r.addEventListener('change', () => { sel = r.value; s.querySelector('#px-ok').disabled = false; }));
+    const inp = s.querySelector('#px-n'); if (inp) inp.addEventListener('input', () => { nm = inp.value; s.querySelector('#px-ok').disabled = !nm.trim(); });
+    s.querySelector('#px-ok').addEventListener('click', () => {
+      if (t === 'team') { const m = cand.find((x) => x.id === sel); if (m) location.href = `work-new.html?ex=${e.id}&as=member&n=${encodeURIComponent(m.name)}&h=${encodeURIComponent('@' + m.nick)}`; }
+      else if (nm.trim()) location.href = `work-new.html?ex=${e.id}&as=name&n=${encodeURIComponent(nm.trim())}`;
+    });
+  };
+  draw();
+}
+
+/* ================= 전시 콘텐츠(섹션) ================= */
+function drawC() {
+  const L = d.secs, box = $('p-c');
+  if (!L.length) { box.innerHTML = '<button type="button" class="addbtn" id="sadd"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg>섹션 추가</button>'; $('sadd').addEventListener('click', addSec); return; }
+  const tool = secMode
+    ? `<div class="tool"><span class="note">순서 변경과 삭제는 자동으로 저장돼요</span><button type="button" class="lnk" id="sdone">완료</button></div>`
+    : `<div class="tool"><b>섹션 ${L.length}/${MAXS}</b><button type="button" class="lnk" id="sedit">편집</button></div>`;
+  box.innerHTML = tool + `<div class="slist${secMode ? ' edit' : ''}" id="sl">${L.map((s) => `<div class="srow" role="${secMode ? 'listitem' : 'link'}" ${secMode ? '' : 'tabindex="0"'} data-id="${s.id}"><div class="th">${s.photos.length ? `<img src="${esc(s.photos[0])}" alt="" loading="lazy">` : '<svg class="i" aria-hidden="true"><use href="#i-image"/></svg>'}</div><div class="tx"><h3>${esc(s.title)}</h3>${s.desc ? `<p class="ds">${esc(s.desc)}</p>` : ''}<span class="ct">사진 ${s.photos.length}/20</span></div>${secMode ? `<div class="ed"><button type="button" class="tr" data-a="del" data-id="${s.id}" aria-label="${esc(s.title)} 삭제"><svg class="i" aria-hidden="true"><use href="#i-trash"/></svg></button><span class="gr" aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><use href="#i-grip"/></svg></span></div>` : '<svg class="i ch" aria-hidden="true"><use href="#i-chev"/></svg>'}</div>`).join('')}</div>` +
+    (!secMode && L.length < MAXS ? '<button type="button" class="addbtn" id="sadd"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg>섹션 추가</button>' : '');
+  const a = $('sadd'); if (a) a.addEventListener('click', addSec);
+  const ed = $('sedit'); if (ed) ed.addEventListener('click', () => { secMode = true; drawC(); });
+  const dn = $('sdone'); if (dn) dn.addEventListener('click', () => { secMode = false; drawC(); });
+  if (secMode) sortable($('sl'), '.srow', '.gr', (ids) => { d.secs = ids.map((id) => d.secs.find((s) => s.id === id)); persist(); drawC(); });
+}
+$('p-c').addEventListener('click', (ev) => {
+  const t = ev.target.closest('[data-a="del"]');
+  if (t) { const id = t.dataset.id; modal({ title: '섹션을 삭제할까요?', body: '섹션에 등록된 사진도 함께 삭제돼요', warn: ['삭제 안내', '삭제된 섹션은 복구할 수 없어요'], acts: [{ label: '취소', cls: 'btn-soft' }, { label: '삭제하기', cls: 'btn-red', fn: () => { d.secs = d.secs.filter((s) => s.id !== id); persist(); drawC(); toast('섹션을 삭제했어요'); } }] }); return; }
+  const r = ev.target.closest('.srow'); if (r && !secMode) location.href = `section.html?ex=${e.id}&s=${r.dataset.id}`;
+});
+$('p-c').addEventListener('keydown', (ev) => { if (ev.key === 'Enter' && ev.target.matches('.srow') && !secMode) location.href = `section.html?ex=${e.id}&s=${ev.target.dataset.id}`; });
+
+/* 섹션 추가는 바텀시트: 제목(필수)·설명(선택)을 먼저 받아서 제목 없는 섹션이 생기지 않게 */
+function addSec() {
+  showSheet(`<h2>섹션 추가</h2>
+    <div class="field" style="margin-top:20px"><label for="sn-t"><span>섹션 제목<span class="req" aria-hidden="true">*</span></span></label><div class="ul"><input id="sn-t" type="text" maxlength="30" placeholder="섹션 제목을 입력해주세요" autocomplete="off"></div></div>
+    <div class="field"><label for="sn-d"><span>섹션 설명<small style="margin-left:6px;font-size:12px;font-weight:500;color:var(--text-secondary)">· 선택</small></span></label><textarea class="ta" id="sn-d" maxlength="100" placeholder="섹션 설명을 입력해주세요" style="height:100px"></textarea><p class="cnt-r" id="sn-n">0 / 100</p></div>
+    <button type="button" class="big" id="sn-ok" disabled>추가하기</button>`, '섹션 추가', (s) => {
+    const t = s.querySelector('#sn-t'), dd = s.querySelector('#sn-d'), ok = s.querySelector('#sn-ok');
+    t.addEventListener('input', () => { ok.disabled = !t.value.trim(); });
+    dd.addEventListener('input', () => { s.querySelector('#sn-n').textContent = `${dd.value.length} / 100`; });
+    ok.addEventListener('click', () => { const title = t.value.trim(); if (!title) return; const sec = { id: 's' + Date.now().toString(36), title, desc: dd.value.trim(), photos: [] }; d.secs.push(sec); persist(); location.href = `section.html?ex=${e.id}&s=${sec.id}`; });
+  });
+}
+
+drawW(); drawC(); pick(tab);
+</script>
+<script src="assets/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>전시 관리 · Display U.</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="assets/flow.css">
+<style>
+/* 전시 관리 허브 v3(1727:13447): 요약 카드 → 상태 배너 → 전시 작업 → 팀원·기본 정보 → 공개 시점 → 하단 버튼 */
+.sumc { display: grid; grid-template-columns: 82px minmax(0, 1fr); column-gap: 14px; margin-top: 8px; padding: 12px; border: 1px solid var(--border-primary); border-radius: var(--r12); }
+.sumc .tx { display: grid; gap: 2px; align-content: start; min-width: 0; }
+.sumc .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.sumc .prev { display: inline-flex; align-items: center; gap: 2px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.sumc .prev .i { width: 14px; height: 14px; transition: transform .3s var(--ease); }
+.sumc .prev:hover .i { transform: translateX(2px); }
+.sumc h2 { margin-top: 4px; font-size: 16px; font-weight: 600; line-height: 1.35; letter-spacing: -0.03em; }
+.sumc .org { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+.sumc .meta { margin-top: 2px; } .sumc .meta + .meta { margin-top: 0; }
+.ban { margin-top: 16px; padding: 16px; border-radius: var(--r12); animation: rise .45s var(--ease) backwards; }
+.ban b { display: block; font-size: 14px; font-weight: 600; }
+.ban p { margin-top: 4px; font-size: 12px; font-weight: 500; line-height: 1.5; }
+.ban[data-s="prep"] { background: var(--bg-secondary); }
+.ban[data-s="review"] { background: #dbeafe; } .ban[data-s="review"] b { color: #2563eb; }
+.ban[data-s="reject"] { background: #ffe0e0; } .ban[data-s="reject"] b { color: var(--notice); }
+.ban[data-s="live"] { background: #dcfce7; } .ban[data-s="live"] b { color: #00a846; }
+.ban p { color: var(--text-secondary); }
+
+.work, .tile { display: block; width: 100%; text-align: left; border: 1px solid var(--border-primary); border-radius: var(--r12); background: #fff; transition: border-color .2s, transform .3s var(--ease); }
+.work:hover, .tile:hover { border-color: #a1a1aa; }
+.work:active, .tile:active { transform: scale(.995); }
+.work { margin-top: 20px; padding: 18px 16px; }
+.hd { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; }
+.hd .i { width: 24px; height: 24px; stroke-width: 1.6; }
+.hd .ch { margin-left: auto; width: 18px; height: 18px; transition: transform .3s var(--ease); }
+.work:hover .ch, .tile:hover .ch { transform: translateX(3px); }
+.stats { display: grid; grid-template-columns: 1fr 1fr; margin-top: 16px; }
+.stats > div { padding-left: 4px; }
+.stats > div + div { padding-left: 16px; border-left: 1px solid var(--border-primary); }
+.stats small { display: block; font-size: 12px; font-weight: 500; }
+.stats strong { font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.stats strong + span { font-size: 12px; font-weight: 500; margin-left: 2px; }
+.none { margin-top: 14px; padding-left: 34px; font-size: 14px; font-weight: 500; color: var(--text-secondary); }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+.tile { padding: 16px; }
+.tile .hd { gap: 8px; }
+.tile .hd .i { width: 22px; height: 22px; }
+.tile .ch { margin-left: auto; width: 16px; height: 16px; color: var(--text-teritary); }
+.tile ul { margin-top: 14px; display: grid; gap: 4px; font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+.tile .pend { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--text-primary); }
+.tile .pend::before { content: ""; width: 8px; height: 8px; border-radius: 9999px; background: var(--warn); }
+
+.pub { margin-top: 32px; scroll-margin-top: 24px; }
+.pub h3 { font-size: 16px; font-weight: 600; }
+.pub .two { margin-top: 12px; gap: 16px; }
+.pub .rel { position: relative; }
+.pub .lb2 { font-size: 12px; font-weight: 600; }
+.pub .ul { margin-top: 4px; height: 44px; }
+.pub .pick { font-size: 16px; }
+.pub .help { margin-top: 6px; }
+.auto { margin-top: 16px; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
+.menu { position: absolute; z-index: 10; left: 0; right: 0; top: calc(100% + 4px); padding: 4px 0; background: #fff; border: 1px solid var(--border-primary); border-radius: var(--r12); box-shadow: 0 12px 32px rgba(0,0,0,.12); animation: pop .2s var(--ease); }
+@keyframes pop { from { opacity: 0; transform: translateY(-4px); } }
+.menu button { display: flex; align-items: center; justify-content: space-between; width: 100%; height: 48px; padding: 0 14px; font-size: 15px; font-weight: 500; text-align: left; transition: background .15s; }
+.menu button:hover { background: var(--bg-secondary); }
+.menu button[aria-selected="true"] { background: var(--bg-secondary); font-weight: 600; }
+.menu .i { width: 18px; height: 18px; }
+.hubgrid { display: flex; flex-direction: column; }
+.h-cta { margin-top: auto; }
+.pad { height: 24px; }
+/* 노트북: 왼쪽에 요약·상태·버튼, 오른쪽에 전시 작업·팀원·기본 정보·공개 시점 */
+@media (min-width: 900px) {
+  .hubgrid { display: grid; grid-template-columns: 380px minmax(0, 1fr); grid-template-rows: auto auto 1fr; column-gap: 56px; align-items: start; padding-top: 8px; }
+  .h-sum { grid-column: 1; grid-row: 1; } .h-ban { grid-column: 1; grid-row: 2; }
+  .h-cta { grid-column: 1; grid-row: 3; position: static; margin-top: 8px; padding: 16px 0 0; background: none; align-self: start; }
+  .h-r { grid-column: 2; grid-row: 1 / span 3; }
+  .work { margin-top: 0; padding: 24px 24px; }
+  .work .hd { font-size: 16px; }
+  .stats strong { font-size: 24px; }
+  .tile { padding: 20px 24px; }
+  .tile ul { font-size: 14px; }
+  .pub { margin-top: 40px; }
+  .pub .two { gap: 32px; }
+  .pad { display: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+<div class="page wide">
+  <!-- 허브 -->
+  <section class="screen" id="hub">
+    <header class="bar">
+      <a class="back" href="manage.html" aria-label="내 전시 관리로 돌아가기"><svg class="i"><use href="#i-back"/></svg></a>
+      <h1>전시 관리</h1>
+    </header>
+    <main id="main" class="body hubgrid">
+      <div id="sumc" class="h-sum"></div>
+      <div id="ban" class="h-ban"></div>
+      <div class="h-r">
+      <button type="button" class="work" id="work"></button>
+      <div class="pair">
+        <button type="button" class="tile" id="team"></button>
+        <button type="button" class="tile" id="info"></button>
+      </div>
+      <section class="pub" id="pub" aria-labelledby="pub-h">
+        <h3 id="pub-h">공개 시점</h3>
+        <div class="two">
+          <div class="rel"><span class="lb2" id="pw-l">작품</span><button type="button" class="ul pick" id="pw" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="pw-l pw"><span></span><svg class="i"><use href="#i-updown"/></svg></button><div class="menu" id="pw-m" role="listbox" aria-labelledby="pw-l" hidden></div><p class="help" id="pw-h"></p></div>
+          <div class="rel"><span class="lb2" id="pc-l">전시 콘텐츠</span><button type="button" class="ul pick" id="pc" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="pc-l pc"><span></span><svg class="i"><use href="#i-updown"/></svg></button><div class="menu" id="pc-m" role="listbox" aria-labelledby="pc-l" hidden></div><p class="help" id="pc-h"></p></div>
+        </div>
+        <p class="auto">변경 사항은 자동으로 저장돼요</p>
+      </section>
+      <div class="pad"></div>
+      <p class="demo" id="demo" style="margin-top:8px"><b>데모용</b> 주소 끝에 <b>?s=prep · empty · review · reject · live</b>를 붙이면 상태별 화면을 바로 볼 수 있어요(저장되지 않아요)</p>
+      </div>
+      <div class="cta h-cta" id="cta"></div>
+    </main>
+  </section>
+
+  <!-- 등록 요청 완료 -->
+  <section class="done" id="req" aria-label="등록을 요청했어요" hidden>
+    <div class="top">
+      <div class="ring" aria-hidden="true"><svg class="i"><use href="#i-check"/></svg></div>
+      <h2 tabindex="-1" id="req-h">등록을 요청했어요</h2>
+      <p class="sub">승인된 시점부터 관람객에게 자동으로 공개돼요<br>심사 중에도 내용을 수정할 수 있어요</p>
+    </div>
+    <ol class="steps" id="steps" aria-label="진행 단계"></ol>
+    <dl class="sum">
+      <div><dt>전시명</dt><dd id="r-t"></dd></div>
+      <div><dt>상태</dt><dd>심사 중</dd></div>
+      <div><dt>공개 방식</dt><dd>승인된 시점부터 자동 공개</dd></div>
+    </dl>
+    <p class="note">승인 결과는 알림으로 알려드릴 예정이에요</p>
+    <div style="flex:1"></div>
+    <div class="cta"><a class="big" href="manage.html">내 전시 관리로 이동</a></div>
+  </section>
+</div>
+
+<script src="assets/flow.js"></script>
+<script src="assets/media.js"></script>
+<script src="assets/exdata.js"></script>
+<script>
+const all = exhibitions();
+const id = q.get('id');
+const real = all.find((e) => e.id === id) || all.find((e) => e.role === 'owner') || all[0];
+let e = real;
+/* ?s= 로 상태별 화면을 바로 보기(저장 안 함) */
+const forced = q.get('s');
+if (forced) {
+  e = { ...real, pubWork: real.pubWork, pubCont: real.pubCont };
+  if (forced === 'empty') Object.assign(e, { status: 'prep', works: 0, sections: 0, members: 1, pending: 0 });
+  else if (STATUS[forced]) { e.status = forced; if (forced === 'reject' && !e.rejectNote) e.rejectNote = '이미지 출처를 확인할 수 없어요 수정한 뒤 다시 요청해 주세요'; }
+}
+const live = !forced; /* 강제 보기일 때는 저장하지 않음 */
+$('demo').hidden = !!live && !q.get('demo');
+function save() { if (!live) return; const l = exhibitions().map((x) => x.id === e.id ? e : x); saveExhibitions(l); }
+
+const BAN = {
+  prep: ['전시 등록을 준비 중이에요', '준비를 마치면 등록을 요청해 보세요\n작품이나 팀원이 없어도 요청할 수 있어요'],
+  review: ['등록을 심사하고 있어요', '심사 중에도 수정할 수 있어요 승인되면 저장된 내용이 공개돼요'],
+  live: ['전시가 공개 중이에요', '공개된 뒤에도 내용을 수정할 수 있어요']
+};
+const OPT = { approve: '심사 승인 시', start: '전시 시작일' };
+
+function render() {
+  document.title = `전시 관리 · ${e.title}`;
+  $('sumc').innerHTML = `<div class="sumc rise"><div class="poster"><img src="${esc(e.poster)}" alt="">${e.posterVideo ? '<span class="vbadge" aria-label="영상 포스터"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg></span>' : ''}</div><div class="tx">
+    <div class="top"><span class="st" data-s="${e.status}">${STATUS[e.status]}</span><a class="prev" href="exhibition.html?id=${e.id}" target="_blank" rel="noopener">전시 미리보기<svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></a></div>
+    <h2>${esc(e.title)}</h2><p class="org">${esc(e.org)}</p>
+    <p class="meta"><svg class="i" aria-hidden="true"><use href="#i-cal"/></svg><span>${range(e)}</span></p>
+    <p class="meta"><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg><span>${esc(e.place)}</span></p></div></div>`;
+  const b = e.status === 'reject' ? ['등록이 반려됐어요', e.rejectNote || '수정한 뒤 다시 요청해 주세요'] : BAN[e.status];
+  $('ban').innerHTML = `<div class="ban" data-s="${e.status}" role="status"><b>${b[0]}</b><p style="white-space:pre-line">${esc(b[1])}</p></div>`;
+  const empty = !e.works && !e.sections;
+  $('work').innerHTML = `<span class="hd"><svg class="i" aria-hidden="true"><use href="#i-folder"/></svg>전시 작업<svg class="i ch" aria-hidden="true"><use href="#i-chev"/></svg></span>` +
+    (empty ? '<p class="none">아직 등록된 작품과 전시 콘텐츠가 없어요</p>'
+      : `<span class="stats"><span><small>작품</small><strong>${e.works}</strong><span>점</span></span><span><small>전시 콘텐츠</small><strong>${e.sections}</strong><span>섹션</span></span></span>`);
+  $('team').innerHTML = `<span class="hd"><svg class="i" aria-hidden="true"><use href="#i-team"/></svg>팀원 관리<svg class="i ch" aria-hidden="true"><use href="#i-chev"/></svg></span><ul><li>참여 ${e.members}명</li><li>${e.pending ? `<span class="pend">초대 대기 ${e.pending}명</span>` : '초대 대기 0명'}</li></ul>`;
+  $('info').innerHTML = `<span class="hd"><svg class="i" aria-hidden="true"><use href="#i-pencil"/></svg>기본 정보<svg class="i ch" aria-hidden="true"><use href="#i-chev"/></svg></span><ul><li>전시명·소개·일정</li><li>장소·유의사항</li></ul>`;
+  renderPub();
+  const c = $('cta');
+  c.innerHTML = e.status === 'review' ? '<button type="button" class="big soft" id="act">요청 취소하기</button>' : e.status === 'live' ? '<button type="button" class="big soft" id="act">비공개로 전환</button>' : '<button type="button" class="big" id="act">등록 요청하기</button>';
+  $('act').addEventListener('click', onAct);
+}
+function renderPub() {
+  const fill = (key, p, h, m) => {
+    $(p).querySelector('span').textContent = OPT[e[key]];
+    $(h).textContent = e[key] === 'start' ? `${md(e.start)}부터 노출돼요` : '승인되면 바로 노출돼요';
+    $(m).innerHTML = ['approve', 'start'].map((k) => `<button type="button" role="option" data-v="${k}" aria-selected="${e[key] === k}">${OPT[k]}${e[key] === k ? '<svg class="i" aria-hidden="true"><use href="#i-check"/></svg>' : ''}</button>`).join('');
+  };
+  fill('pubWork', 'pw', 'pw-h', 'pw-m'); fill('pubCont', 'pc', 'pc-h', 'pc-m');
+}
+[['pw', 'pw-m', 'pubWork'], ['pc', 'pc-m', 'pubCont']].forEach(([btn, m, key]) => {
+  $(btn).addEventListener('click', () => { const open = $(m).hidden; closeMenus(); $(m).hidden = !open; $(btn).setAttribute('aria-expanded', open); });
+  $(m).addEventListener('click', (ev) => { const o = ev.target.closest('[data-v]'); if (!o) return; e[key] = o.dataset.v; save(); renderPub(); closeMenus(); });
+});
+function closeMenus() { ['pw', 'pc'].forEach((b) => { $(b).setAttribute('aria-expanded', 'false'); $(b + '-m').hidden = true; }); }
+document.addEventListener('click', (ev) => { if (!ev.target.closest('.rel')) closeMenus(); });
+document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') closeMenus(); });
+
+/* 아직 없는 하위 화면은 안내만 */
+$('work').addEventListener('click', () => { location.href = 'works.html?id=' + e.id; });
+$('team').addEventListener('click', () => { location.href = 'team.html?id=' + e.id; });
+$('info').addEventListener('click', () => { location.href = 'exhibition-new.html?edit=' + e.id; });
+
+function onAct() {
+  if (e.status === 'review') {
+    modal({ title: '등록 요청을 취소할까요?', body: '심사 요청을 철회하고 준비 중 상태로 돌아가요\n작성한 내용은 그대로 유지돼요', acts: [{ label: '돌아가기', cls: 'btn-soft' }, { label: '요청 취소하기', cls: 'btn-dark', fn: () => { e.status = 'prep'; save(); render(); toast('등록 요청을 취소했어요'); } }] });
+  } else if (e.status === 'live') {
+    modal({ title: '비공개로 전환할까요?', body: '전시가 준비 중 상태로 돌아가요', warn: ['다시 공개하려면 등록 요청이 필요해요', '비공개 중에는 검색과 저장 보관함에서 보이지 않아요'], acts: [{ label: '취소', cls: 'btn-soft' }, { label: '비공개로 전환', cls: 'btn-dark', fn: () => { e.status = 'prep'; save(); render(); toast('비공개로 전환했어요'); } }] });
+  } else {
+    modal({ title: '전시 등록을 요청할까요?', list: ['작품이나 팀원이 없어도 요청할 수 있어요', '심사 중에도 내용을 수정할 수 있어요', '승인된 시점부터 관람객에게 공개돼요', '공개 후에도 내용을 수정할 수 있어요'], acts: [{ label: '취소', cls: 'btn-soft' }, { label: '등록 요청하기', cls: 'btn-dark', fn: () => { e.status = 'review'; e.rejectNote = ''; save(); $('r-t').textContent = e.title; stepper($('steps'), 2); $('hub').hidden = true; $('req').hidden = false; window.scrollTo(0, 0); $('req-h').focus({ preventScroll: true }); } }] });
+  }
+}
+render();
+const flash = sessionStorage.getItem('du.toast'); if (flash) { sessionStorage.removeItem('du.toast'); setTimeout(() => toast(flash), 300); }
+if (location.hash === '#pub') setTimeout(() => $('pub').scrollIntoView({ block: 'center' }), 150);
+</script>
+<script src="assets/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>고상준 · 작가 · Display U.</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/* 값은 Figma 변수(마이 - 작가 페이지 / 관람자 1120:8299, 1120:8320)에서 가져옴 */
+:root {
+  --text-primary: #18181b;
+  --text-secondary: #3f3f47;
+  --text-teritary: #71717b;
+  --border-primary: #d4d4d8;
+  --bg-secondary: #f4f4f5;
+  --bg-teritary: #f0f0f3;
+  --link: #1d5fe0;
+  --r4: 4px; --r8: 8px; --r12: 12px;
+  --ease: cubic-bezier(.16, 1, .3, 1);
+  --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  --pad: 20px;
+  --top: 56px;
+  --body: 14px;
+  color-scheme: light;
+}
+@media (min-width: 768px) { :root { --pad: 32px; --top: 64px; } }
+@media (min-width: 900px) { :root { --body: 15px; } }
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scrollbar-color: var(--border-primary) transparent; scrollbar-width: thin; scroll-padding-top: 120px; }
+body { margin: 0; background: #fff; color: var(--text-primary); font: 400 var(--body)/1.6 var(--font); letter-spacing: -0.03em; -webkit-font-smoothing: antialiased; padding-bottom: 48px; }
+::selection { background: var(--text-primary); color: #fff; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; letter-spacing: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+a, button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+h1, h2, p, ul { margin: 0; padding: 0; }
+ul { list-style: none; }
+img { display: block; }
+:focus-visible { outline: 2px solid var(--text-primary); outline-offset: 2px; border-radius: 6px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.skip { position: absolute; left: 16px; top: -64px; z-index: 60; height: 44px; padding: 0 16px; display: inline-flex; align-items: center; background: var(--text-primary); color: #fff; border-radius: var(--r12); font-weight: 600; transition: top .2s var(--ease); }
+.skip:focus-visible { top: 8px; }
+.i { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+
+/* 상단: 모바일은 뒤로가기만, 태블릿 이상은 로고·검색 */
+.top { position: sticky; top: 0; z-index: 30; height: var(--top); background: #fff; border-bottom: 1px solid var(--bg-teritary); }
+.top .in { height: 100%; max-width: 1240px; margin-inline: auto; padding-inline: calc(var(--pad) - 8px) var(--pad); display: flex; align-items: center; gap: 4px; }
+.back { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 9999px; transition: background .2s, transform .25s var(--ease); }
+.back:hover { background: var(--bg-secondary); }
+.back:active { transform: scale(.94); }
+.logo, .search { display: none; }
+@media (min-width: 768px) {
+  .top .in { padding-inline: var(--pad); justify-content: space-between; }
+  .back { display: none; }
+  .logo, .search { display: block; }
+}
+
+.layout { max-width: 1240px; margin-inline: auto; padding-inline: var(--pad); }
+@media (min-width: 900px) {
+  .layout { display: grid; grid-template-columns: minmax(300px, 360px) minmax(0, 1fr); column-gap: 72px; padding-top: 40px; align-items: start; }
+  .profile { position: sticky; top: calc(var(--top) + 32px); }
+}
+
+/* 프로필 */
+.profile { padding-top: 24px; }
+@media (min-width: 900px) { .profile { padding-top: 0; } }
+.id { display: flex; align-items: center; gap: 16px; }
+.avatar { width: 88px; height: 88px; border-radius: 9999px; background: var(--bg-teritary); display: grid; place-items: end center; overflow: hidden; color: #fff; flex: none; }
+.avatar svg { width: 76px; height: 76px; }
+@media (min-width: 900px) { .avatar { width: 112px; height: 112px; } .avatar svg { width: 98px; height: 98px; } .id { flex-direction: column; align-items: flex-start; gap: 20px; } }
+.who h1 { font-size: 22px; line-height: 1.3; font-weight: 700; letter-spacing: -0.035em; }
+@media (min-width: 900px) { .who h1 { font-size: 28px; } }
+.school { margin-top: 2px; color: var(--text-secondary); font-size: 14px; }
+.fields { margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap; }
+.fields li { height: 22px; padding: 0 8px; display: inline-flex; align-items: center; border: 1px solid var(--border-primary); border-radius: var(--r4); color: var(--text-secondary); font-size: 11px; font-weight: 500; }
+.bio { margin-top: 20px; color: var(--text-primary); text-wrap: pretty; }
+.links { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 4px 16px; }
+.links a { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; color: var(--link); font-size: 13px; font-weight: 500; transition: opacity .2s; }
+.links a:hover { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.links .i { width: 16px; height: 16px; }
+.links .out { width: 12px; height: 12px; opacity: .7; }
+.actions { margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.btn { height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 0 12px; border-radius: var(--r12); font-weight: 600; font-size: 14px; transition: background .2s, transform .2s var(--ease); white-space: nowrap; }
+.btn:active { transform: scale(.98); }
+.btn-soft { background: var(--bg-teritary); }
+.btn-soft:hover { background: #e4e4e7; }
+.btn-soft[aria-pressed="true"] .i { fill: currentColor; }
+.btn-dark { background: var(--text-primary); color: #fff; }
+.btn-dark:hover { background: #2f2f35; }
+.btn .i { width: 18px; height: 18px; }
+
+/* 탭 */
+.content { min-width: 0; }
+.tabs { position: sticky; top: var(--top); z-index: 20; display: flex; margin-top: 24px; background: #fff; border-bottom: 1px solid var(--bg-teritary); }
+.tab { position: relative; flex: 1; height: 48px; font-weight: 600; color: var(--text-teritary); transition: color .2s; }
+.tab small { margin-left: 4px; font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.tab:hover { color: var(--text-primary); }
+.tab[aria-selected="true"] { color: var(--text-primary); }
+.tab[aria-selected="true"]::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--text-primary); }
+@media (min-width: 900px) { .tabs { margin-top: 0; top: var(--top); } .tab { flex: none; padding: 0 24px; } .tab[aria-selected="true"]::after { left: 16px; right: 16px; } }
+.panel[hidden] { display: none; }
+.panel { padding-top: 20px; }
+
+/* 참여한 전시 */
+.exh-list { display: grid; gap: 12px; }
+.exh { display: grid; grid-template-columns: 74px minmax(0, 1fr) 20px; align-items: center; column-gap: 16px; padding: 16px; border: 1px solid var(--bg-teritary); border-radius: var(--r12); transition: border-color .2s; animation: rise .6s var(--ease) backwards; animation-delay: calc(var(--n, 0) * 60ms); }
+.exh:hover { border-color: var(--border-primary); }
+.exh img { width: 74px; height: 92px; object-fit: cover; border-radius: var(--r12); background: #000; }
+.exh .state { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
+.dot { width: 7px; height: 7px; border-radius: 9999px; background: var(--text-primary); }
+.dot.end { background: var(--border-primary); }
+.exh strong { display: block; margin-top: 2px; font-size: 16px; font-weight: 600; line-height: 1.35; letter-spacing: -0.03em; }
+.exh .sub { display: flex; align-items: center; gap: 4px; margin-top: 2px; font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+.exh .sub .i { width: 13px; height: 13px; color: var(--text-teritary); }
+.exh > .i { width: 18px; height: 18px; color: var(--text-teritary); transition: transform .3s var(--ease); }
+.exh:hover > .i { transform: translateX(3px); }
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+
+/* 작품 */
+.works { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 12px; }
+@media (min-width: 900px) { .works { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 20px; } }
+.w { display: block; animation: rise .6s var(--ease) backwards; animation-delay: calc(var(--n, 0) * 60ms); }
+.w .im { aspect-ratio: 3 / 4; border-radius: var(--r12); overflow: hidden; background: var(--bg-teritary); }
+.w .im img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
+.w:hover .im img { transform: scale(1.03); }
+.w b { display: block; margin-top: 10px; font-weight: 600; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.w span { display: block; font-size: 12px; font-weight: 500; color: var(--text-teritary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.empty { padding: 56px 0; text-align: center; color: var(--text-teritary); }
+
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom)); transform: translate(-50%, 16px); opacity: 0; pointer-events: none; z-index: 70; padding: 12px 18px; border-radius: 9999px; background: var(--text-primary); color: #fff; font-size: 14px; font-weight: 500; transition: opacity .25s, transform .35s var(--ease); }
+.toast.on { opacity: 1; transform: translate(-50%, 0); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+    <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M7 4h10a1 1 0 0 1 1 1v15l-6-3.8L6 20V5a1 1 0 0 1 1-1z"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 15V4.5M8 8l4-4 4 4"/><path d="M5 13v5.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V13"/></symbol>
+    <symbol id="i-out" viewBox="0 0 24 24"><path d="M14 5h5v5M19 5l-8 8"/><path d="M17 14v4a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h4"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+    <symbol id="i-insta" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4.5"/><circle cx="12" cy="12" r="3.7"/><circle cx="16.8" cy="7.2" r=".9" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="14.5" rx="2.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s6.2-5.4 6.2-10.2a6.2 6.2 0 1 0-12.4 0C5.8 15.6 12 21 12 21z"/><circle cx="12" cy="10.8" r="2.2"/></symbol>
+    <symbol id="i-avatar" viewBox="0 0 34 34"><circle cx="17" cy="13" r="6" fill="currentColor"/><path d="M4 34c1.2-8 6.6-12 13-12s11.8 4 13 12z" fill="currentColor"/></symbol>
+  </defs>
+</svg>
+
+<header class="top">
+  <div class="in">
+    <a class="back" id="back" href="home.html" aria-label="뒤로가기"><svg class="i" aria-hidden="true"><use href="#i-back"/></svg></a>
+    <a class="logo" href="home.html" aria-label="Display U. 홈"><img src="assets/img/logo.svg" width="124" height="28" alt="Display U."></a>
+    <a class="search" href="explore.html" aria-label="검색"><img src="assets/img/search-header.svg" width="28" height="28" alt=""></a>
+  </div>
+</header>
+
+<main id="main">
+  <div class="layout">
+    <section class="profile" aria-label="작가 정보">
+      <div class="id">
+        <div class="avatar"><svg aria-hidden="true"><use href="#i-avatar"/></svg></div>
+        <div class="who">
+          <h1>고상준</h1>
+          <p class="school">한결대학교</p>
+          <ul class="fields" aria-label="작가 분야"><li>그래픽</li><li>브랜딩</li></ul>
+        </div>
+      </div>
+      <p class="bio" id="bio">빛과 색의 경계를 탐구하며, 일상에서 발견한 순간들을 작품으로 표현합니다.</p>
+      <ul class="links" id="links" aria-label="외부 링크"></ul>
+      <div class="actions">
+        <button class="btn btn-soft save" id="save" aria-pressed="false"><svg class="i" aria-hidden="true"><use href="#i-bookmark"/></svg>작가 저장</button>
+        <button class="btn btn-dark" id="share">프로필 공유하기<svg class="i" aria-hidden="true"><use href="#i-upload"/></svg></button>
+      </div>
+    </section>
+
+    <div class="content">
+      <div class="tabs" role="tablist" aria-label="작가 활동">
+        <button class="tab" role="tab" id="t-exh" aria-selected="true" aria-controls="p-exh" data-k="exh">전시<small id="n-exh"></small></button>
+        <button class="tab" role="tab" id="t-works" aria-selected="false" aria-controls="p-works" data-k="works" tabindex="-1">작품<small id="n-works"></small></button>
+      </div>
+      <div class="panel" id="p-exh" role="tabpanel" aria-labelledby="t-exh"><div class="exh-list" id="exh-list"></div></div>
+      <div class="panel" id="p-works" role="tabpanel" aria-labelledby="t-works" hidden><div class="works" id="works"></div></div>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="assets/save.js"></script>
+<script>
+const q = new URLSearchParams(location.search);
+const ic = (id, cls = '') => `<svg class="i ${cls}" aria-hidden="true"><use href="#${id}"/></svg>`;
+const O = 'assets/img/work/opt/';
+
+/* ---------- 외부 링크 (포트폴리오·인스타 등, 예시) — ?links=0~3 로 개수 확인 ---------- */
+const allLinks = [
+  { icon: 'i-link', label: 'portfolio.usun_moment.com', href: 'https://portfolio.usun_moment.com' },
+  { icon: 'i-insta', label: '@usun_moment', href: 'https://www.instagram.com/usun_moment' },
+  { icon: 'i-link', label: 'usun-moment.notion.site', href: 'https://usun-moment.notion.site' }
+];
+const nLinks = Math.max(0, Math.min(3, q.has('links') ? +q.get('links') : 2));
+const linksEl = document.getElementById('links');
+linksEl.innerHTML = allLinks.slice(0, nLinks).map((l) => `<li><a href="${l.href}" target="_blank" rel="noopener noreferrer">${ic(l.icon)}${l.label}${ic('i-out', 'out')}<span class="sr">(새 창)</span></a></li>`).join('');
+linksEl.hidden = nLinks === 0;
+
+/* ---------- 참여한 전시 / 작품 (예시 데이터) ---------- */
+const exhibitions = [
+  { img: 'exh.jpg', state: '전시 중', end: false, title: '여넥스', school: '한결대학교 시각디자인학과', date: '07.29', place: '진달래홀' },
+  { img: 'ex2.jpg', state: '종료', end: true, title: '공간유랑', school: '새봄여자대학교 시각디자인과', date: '03.10 - 03.17', place: '2층 갤러리' }
+];
+const works = [
+  { img: 'w1.jpg', title: '머문 자리의 온기', by: 'usun', href: 'work.html' },
+  { img: 'w2.jpg', title: '작품명', by: 'usun', href: 'work.html' }
+];
+document.getElementById('exh-list').innerHTML = exhibitions.map((e, i) =>
+  `<a class="exh" href="exhibition.html" style="--n:${i}"><img src="${O}${e.img}" alt="" width="74" height="92"><span><span class="state"><i class="dot ${e.end ? 'end' : ''}"></i>${e.state}</span><strong>${e.title}</strong><span class="sub">${e.school}</span><span class="sub">${ic('i-cal')}${e.date}</span><span class="sub">${ic('i-pin')}${e.place}</span></span>${ic('i-chev')}</a>`).join('') || '<p class="empty">참여한 전시가 없어요</p>';
+document.getElementById('works').innerHTML = works.map((w, i) =>
+  `<a class="w" href="${w.href}" style="--n:${i}"><div class="im"><img src="${O}${w.img}" alt="" loading="lazy"></div><b>${w.title}</b><span>${w.by}</span></a>`).join('') || '<p class="empty">등록한 작품이 없어요</p>';
+document.getElementById('n-exh').textContent = exhibitions.length;
+document.getElementById('n-works').textContent = works.length;
+
+/* ---------- 탭 (?tab=works 연동) ---------- */
+const tabs = [...document.querySelectorAll('.tab')], panels = { exh: document.getElementById('p-exh'), works: document.getElementById('p-works') };
+function pick(tab, focus, silent) {
+  tabs.forEach((t) => { const on = t === tab; t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; });
+  for (const k in panels) panels[k].hidden = k !== tab.dataset.k;
+  if (focus) tab.focus();
+  if (!silent) { const u = new URL(location.href); tab.dataset.k === 'exh' ? u.searchParams.delete('tab') : u.searchParams.set('tab', tab.dataset.k); try { history.replaceState(null, '', u); } catch (e) {} }
+}
+tabs.forEach((t, i) => {
+  t.addEventListener('click', () => pick(t));
+  t.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') { e.preventDefault(); pick(tabs[(i + 1) % tabs.length], true); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); pick(tabs[(i + tabs.length - 1) % tabs.length], true); }
+  });
+});
+pick(tabs.find((t) => t.dataset.k === q.get('tab')) || tabs[0], false, true);
+
+/* ---------- 작가 저장 · 프로필 공유하기 ---------- */
+const save = document.getElementById('save');
+SaveBtn.init([save], { kind: '작가', id: 'a1' });
+const toastEl = document.getElementById('toast'); let tt;
+function toast(msg) { toastEl.textContent = msg; toastEl.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => toastEl.classList.remove('on'), 2200); }
+document.getElementById('share').addEventListener('click', async () => {
+  const data = { title: '고상준 · 작가 · Display U.', url: location.href };
+  if (navigator.share) { try { await navigator.share(data); } catch (e) {} return; }
+  try { await navigator.clipboard.writeText(location.href); toast('링크를 복사했어요'); } catch (e) { toast('주소를 복사해 주세요'); }
+});
+
+/* ---------- 뒤로가기: 온 곳으로 ---------- */
+document.getElementById('back').addEventListener('click', (e) => { if (history.length > 1 && document.referrer && new URL(document.referrer).origin === location.origin) { e.preventDefault(); history.back(); } });
+</script>
+<script src="assets/auth.js"></script>
+</body>
+</html>

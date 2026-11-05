@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>섹션 편집 · Display U.</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="assets/flow.css">
+<link rel="stylesheet" href="assets/work.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="i-grip" viewBox="0 0 24 24"><path d="M5 9h14M5 15h14"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 8v.2"/></symbol>
+</defs></svg>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+<div class="page">
+  <header class="bar">
+    <a class="back" id="back" href="works.html" aria-label="전시 작업으로 돌아가기"><svg class="i"><use href="#i-back"/></svg></a>
+    <h1>섹션 편집</h1>
+  </header>
+  <main id="main" class="body">
+    <form class="sec-f" id="sf" novalidate autocomplete="off" onsubmit="return false">
+      <div class="field">
+        <label for="st"><span>섹션 제목<span class="req" aria-hidden="true">*</span></span></label>
+        <div class="ul"><input id="st" type="text" maxlength="30" placeholder="섹션 제목을 입력해주세요"></div>
+      </div>
+      <div class="field">
+        <label for="sd"><span>섹션 설명<small style="margin-left:6px;font-size:12px;font-weight:500;color:var(--text-secondary)">· 선택</small></span></label>
+        <textarea class="ta" id="sd" maxlength="100" placeholder="섹션 설명을 입력해주세요" style="height:132px"></textarea>
+        <p class="cnt-r" id="sd-n">0 / 100</p>
+      </div>
+      <div class="ptool" id="pt"></div>
+      <div id="up"></div>
+      <div class="pgrid" id="pg"></div>
+    </form>
+  </main>
+</div>
+
+<script src="assets/flow.js"></script>
+<script src="assets/media.js"></script>
+<script src="assets/exdata.js"></script>
+<script>
+const all = exhibitions();
+const e = all.find((x) => x.id === q.get('ex')) || all[0];
+const d = ExData.get(e);
+const sec = d.secs.find((s) => s.id === q.get('s')) || d.secs[0];
+const MAXP = 20;
+const BACK = 'works.html?id=' + e.id + '&tab=content';
+if (!sec) { location.replace(BACK); }
+$('back').href = BACK;
+const persist = () => ExData.save(e, d);
+$('st').value = sec.title; $('sd').value = sec.desc; $('sd-n').textContent = `${sec.desc.length} / 100`;
+document.title = `섹션 편집 · ${sec.title}`;
+
+/* 자동 저장: 제목·설명은 입력칸을 벗어나거나 화면을 나갈 때, 사진은 바로. 제목을 비운 채 나가면 직전 제목으로 복원 */
+function saveText() {
+  const t = $('st').value.trim();
+  if (!t) $('st').value = sec.title; else sec.title = t;
+  sec.desc = $('sd').value.trim(); persist();
+}
+$('st').addEventListener('change', saveText); $('sd').addEventListener('change', saveText);
+$('st').addEventListener('blur', saveText); $('sd').addEventListener('blur', saveText);
+$('sd').addEventListener('input', () => { $('sd-n').textContent = `${$('sd').value.length} / 100`; });
+$('back').addEventListener('click', saveText);
+addEventListener('pagehide', saveText);
+
+/* ---------- 사진 ---------- */
+let editing = false;
+const notes = { n: 0 };
+function draw() {
+  const P = sec.photos;
+  $('pt').innerHTML = editing
+    ? '<span class="note">순서 변경과 삭제는 자동으로 저장돼요</span><button type="button" class="lnk" id="pdone">완료</button>'
+    : `<b>사진 ${P.length}/${MAXP}</b>${P.length ? '<button type="button" class="lnk" id="pedit">편집</button>' : ''}`;
+  $('up').innerHTML = notes.n ? `<div class="upnote" role="status"><svg class="i" aria-hidden="true"><use href="#i-info"/></svg><p><b>${notes.n}장은 올리지 못했어요</b>지원하지 않는 형식이거나 20MB를 넘는 파일이에요</p></div>` : '';
+  $('pg').className = 'pgrid' + (editing ? ' edit' : '');
+  $('pg').innerHTML = (!editing && P.length < MAXP ? '<button type="button" class="addp" id="addp"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg>사진 추가</button>' : '') +
+    P.map((src, i) => `<div class="ph" data-id="${i}"><img src="${esc(src)}" alt="사진 ${i + 1}" draggable="false"><span class="no">${i + 1}</span><button type="button" class="x" data-i="${i}" aria-label="사진 ${i + 1} 삭제"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button></div>`).join('');
+  const a = $('addp'); if (a) a.addEventListener('click', () => picker.click());
+  const ed = $('pedit'); if (ed) ed.addEventListener('click', () => { editing = true; draw(); });
+  const dn = $('pdone'); if (dn) dn.addEventListener('click', () => { editing = false; draw(); });
+}
+/* 사진 삭제는 확인·되돌리기 없이 즉시 */
+$('pg').addEventListener('click', (ev) => { const x = ev.target.closest('.x'); if (!x) return; sec.photos.splice(+x.dataset.i, 1); persist(); if (!sec.photos.length) editing = false; draw(); });
+/* 끌어서 순서 변경(편집 모드) */
+$('pg').addEventListener('pointerdown', (ev) => {
+  if (!editing || ev.button || ev.target.closest('.x')) return;
+  const el = ev.target.closest('.ph'); if (!el) return; const box = $('pg');
+  ev.preventDefault(); el.classList.add('drag'); el.style.pointerEvents = 'none';
+  const move = (m) => { const t = document.elementFromPoint(m.clientX, m.clientY), o = t && t.closest('.ph'); if (!o || o === el || o.parentNode !== box) return; if (el.compareDocumentPosition(o) & Node.DOCUMENT_POSITION_FOLLOWING) o.after(el); else o.before(el); };
+  const up = () => { document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', up); document.removeEventListener('pointercancel', up); const order = [...box.querySelectorAll('.ph')].map((x) => +x.dataset.id); sec.photos = order.map((i) => sec.photos[i]); persist(); draw(); };
+  document.addEventListener('pointermove', move); document.addEventListener('pointerup', up); document.addEventListener('pointercancel', up);
+});
+
+const picker = document.createElement('input'); picker.type = 'file'; picker.multiple = true; picker.hidden = true; picker.accept = 'image/jpeg,image/png,image/webp,image/heic,image/heif'; document.body.appendChild(picker);
+picker.addEventListener('change', async () => {
+  const files = [...picker.files]; picker.value = ''; let bad = 0, over = false;
+  for (const f of files) {
+    if (sec.photos.length >= MAXP) { over = true; break; }
+    if (!MEDIA.isImage(f) || f.size > MEDIA.maxImageMB * 1024 * 1024) { bad++; continue; }
+    const t = await imageThumb(f); if (!t) { bad++; continue; }
+    sec.photos.push(t); persist();
+  }
+  notes.n = bad; draw(); if (over) toast(`사진은 최대 ${MAXP}장까지 올릴 수 있어요`);
+});
+
+draw();
+</script>
+<script src="assets/auth.js"></script>
+</body>
+</html>

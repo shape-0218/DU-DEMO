@@ -1,0 +1,11 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Icon/Solid/home">
+<path id="Icon" d="M21.4142 4.58579C20.6332 3.80474 19.3668 3.80474 18.5858 4.58579L4.58579 18.5858C3.80474 19.3668 3.80474 20.6332 4.58579 21.4142C5.36683 22.1953 6.63316 22.1953 7.41421 21.4142L8 20.8284V34C8 35.1046 8.89543 36 10 36H14C15.1046 36 16 35.1046 16 34V30C16 28.8954 16.8954 28 18 28H22C23.1046 28 24 28.8954 24 30V34C24 35.1046 24.8954 36 26 36H30C31.1046 36 32 35.1046 32 34V20.8284L32.5858 21.4142C33.3668 22.1953 34.6332 22.1953 35.4142 21.4142C36.1953 20.6332 36.1953 19.3668 35.4142 18.5858L21.4142 4.58579Z" fill="url(#paint0_linear_0_862)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_862" x1="20" y1="4" x2="20" y2="36" gradientUnits="userSpaceOnUse">
+<stop stop-color="#FAFAFA"/>
+<stop offset="1" stop-color="#FAFAFA" stop-opacity="0.7"/>
+</linearGradient>
+</defs>
+</svg>

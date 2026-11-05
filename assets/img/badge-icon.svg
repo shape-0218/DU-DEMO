@@ -1,0 +1,9 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Icon/Outline/location-marker">
+<mask id="stroke0_0_847" maskUnits="userSpaceOnUse" x="2" y="2.5" width="10" height="10" fill="black">
+<rect fill="white" x="2" y="2.5" width="10" height="10"/>
+<path d="M7.08695 10.5C-1.18245 3.84333 5.40436 1.71874 6.9204 5.06027C6.9654 5.15946 7.16251 5.14669 7.1965 5.04321C8.2865 1.72519 15.2463 3.8542 7.08695 10.5Z"/>
+</mask>
+<path id="Vector 35" d="M6.9204 5.06027C5.40436 1.71874 -1.18245 3.84333 7.08695 10.5C15.2463 3.8542 8.2865 1.72519 7.1965 5.04321C7.16251 5.14669 6.9654 5.15946 6.9204 5.06027Z" stroke-width="2" stroke="#D4D4D8" mask="url(#stroke0_0_847)"/>
+</g>
+</svg>

@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>머문 자리의 온기 · 이정우 · Display U.</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/* 값은 Figma 변수(작품 상세 - 소개 1866:16263 / 방명록 1888:18667)에서 가져옴 */
+:root {
+  --text-primary: #18181b;
+  --text-secondary: #3f3f47;
+  --text-teritary: #71717b;
+  --border-primary: #d4d4d8;
+  --bg-secondary: #f4f4f5;
+  --bg-teritary: #f0f0f3;
+  --alert: #e5484d;
+  --r4: 4px; --r8: 8px; --r12: 12px;
+  --ease: cubic-bezier(.16, 1, .3, 1);
+  --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  --pad: 20px;
+  --top: 0px;
+  --body: 14px;
+  color-scheme: light;
+}
+@media (min-width: 768px) { :root { --pad: 32px; --top: 64px; } }
+@media (min-width: 900px) { :root { --body: 15px; } }
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scrollbar-color: var(--border-primary) transparent; scrollbar-width: thin; scroll-padding-top: 120px; }
+body { margin: 0; background: #fff; color: var(--text-primary); font: 400 var(--body)/1.6 var(--font); letter-spacing: -0.03em; -webkit-font-smoothing: antialiased; padding-bottom: calc(140px + env(safe-area-inset-bottom)); }
+@media (min-width: 900px) { body { padding-bottom: 0; } }
+::selection { background: var(--text-primary); color: #fff; }
+a { color: inherit; text-decoration: none; }
+button, input { font: inherit; letter-spacing: inherit; color: inherit; }
+button { background: none; border: 0; padding: 0; cursor: pointer; }
+a, button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+h1, h2, h3, p, ul, dl, dd { margin: 0; padding: 0; }
+ul { list-style: none; }
+img { display: block; }
+:focus-visible { outline: 2px solid var(--text-primary); outline-offset: 2px; border-radius: 6px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.skip { position: absolute; left: 16px; top: -64px; z-index: 60; height: 44px; padding: 0 16px; display: inline-flex; align-items: center; background: var(--text-primary); color: #fff; border-radius: var(--r12); font-weight: 600; transition: top .2s var(--ease); }
+.skip:focus-visible { top: 8px; }
+.i { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+
+.top { display: none; position: sticky; top: 0; z-index: 30; height: 64px; background: #fff; border-bottom: 1px solid var(--bg-teritary); }
+.top .in { height: 100%; max-width: 1240px; margin-inline: auto; padding-inline: var(--pad); display: flex; align-items: center; justify-content: space-between; }
+@media (min-width: 768px) { .top { display: block; } }
+
+/* 구성: 작품이 주인공 */
+.layout { max-width: 1240px; margin-inline: auto; }
+@media (min-width: 900px) {
+  .layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(380px, .9fr); column-gap: 72px; padding: 32px var(--pad) 96px; align-items: start; }
+  .viewer { position: sticky; top: 96px; }
+}
+.stage { position: relative; background: #0c0f1d; aspect-ratio: 402 / 554; overflow: hidden; }
+@media (min-width: 600px) and (max-width: 899px) { .stage { aspect-ratio: auto; height: 78vh; } }
+@media (min-width: 900px) { .stage { aspect-ratio: auto; height: min(78vh, 820px); border-radius: var(--r12); } }
+.track { display: flex; height: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
+.track::-webkit-scrollbar { display: none; }
+.slide { flex: 0 0 100%; height: 100%; scroll-snap-align: center; background: #0c0f1d; }
+.slide img { width: 100%; height: 100%; object-fit: cover; }
+@media (min-width: 600px) { .slide img { object-fit: contain; } }
+/* 감상 방식: 한 장씩(기본) / 이어보기(이미지가 여백 없이 세로로 이어 붙음) */
+.ovl { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+.ovl > * { pointer-events: auto; }
+.vmode { position: absolute; right: 20px; top: max(16px, env(safe-area-inset-top)); z-index: 4; display: inline-flex; gap: 2px; padding: 4px; border-radius: 9999px; background: rgba(255, 255, 255, .78); backdrop-filter: blur(10px); }
+.vmode[hidden] { display: none; }
+.vmode button { width: 36px; height: 32px; display: grid; place-items: center; border-radius: 9999px; color: var(--text-secondary); transition: background .2s, color .2s; }
+.vmode button[aria-pressed="true"] { background: var(--text-primary); color: #fff; }
+.vmode .i { width: 18px; height: 18px; }
+.stackv { display: none; }
+.stackv img { display: block; width: 100%; height: auto; background: #0c0f1d; }
+.viewer.stack .track, .viewer.stack .nav-btn { display: none !important; }
+.viewer.stack .stackv { display: block; }
+.viewer.stack .stage { aspect-ratio: auto; height: auto; overflow: visible; background: none; border-radius: 0; }
+.viewer.stack .ovl { position: sticky; inset: auto; top: 0; height: 0; width: 100%; }
+@media (min-width: 768px) { .viewer.stack .ovl { top: 64px; } }
+.viewer.stack .pager { top: calc(max(16px, env(safe-area-inset-top)) + 10px); bottom: auto; right: 112px; }
+@media (min-width: 900px) {
+  .viewer.stack { position: static; }
+  .viewer.stack .thumbs { position: sticky; top: 96px; left: auto; bottom: auto; align-self: flex-start; }
+  .viewer.stack .stackv { border-radius: var(--r12); overflow: hidden; }
+}
+.back { position: absolute; left: 20px; top: max(16px, env(safe-area-inset-top)); z-index: 3; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 9999px; background: rgba(255, 255, 255, .78); color: var(--text-primary); backdrop-filter: blur(10px); transition: transform .25s var(--ease); }
+.back:hover { transform: translateX(-2px); }
+.back:active { transform: scale(.94); }
+.pager { position: absolute; right: 16px; bottom: 16px; z-index: 3; padding: 3px 8px; border-radius: 9999px; background: rgba(0, 0, 0, .6); color: #fff; font-size: 10px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.nav-btn { display: none; position: absolute; top: 50%; z-index: 3; width: 44px; height: 44px; margin-top: -22px; place-items: center; border-radius: 9999px; background: rgba(255, 255, 255, .82); color: var(--text-primary); backdrop-filter: blur(10px); transition: transform .25s var(--ease), opacity .2s; }
+.nav-btn:hover { transform: scale(1.06); }
+.nav-btn[disabled] { opacity: .35; cursor: default; transform: none; }
+.nav-btn.prev { left: 16px; } .nav-btn.prev .i { transform: scaleX(-1); }
+.nav-btn.next { right: 16px; }
+@media (min-width: 900px) { .nav-btn { display: grid; } }
+/* 상세 썸네일: 폰·태블릿은 생략(장수 칩만) / 노트북(900~)은 이미지 왼쪽에 세로로 늘 보임 */
+.viewer { position: relative; }
+.thumbs { position: absolute; left: 50%; bottom: 56px; z-index: 3; transform: translate(-50%, 8px); display: none; gap: 6px; padding: 6px; max-width: calc(100% - 32px); overflow-x: auto; border-radius: 14px; background: rgba(0,0,0,.45); backdrop-filter: blur(10px); scrollbar-width: none; opacity: 0; visibility: hidden; transition: opacity .25s var(--ease), transform .25s var(--ease), visibility 0s .25s; }
+.thumbs::-webkit-scrollbar { display: none; }
+.thumbs[hidden] { display: none !important; }
+.thumb { position: relative; flex: none; width: 36px; height: 54px; border-radius: 6px; overflow: hidden; border: 2px solid transparent; opacity: .7; transition: opacity .2s, border-color .2s; }
+.thumb img { width: 100%; height: 100%; object-fit: cover; }
+.thumb:hover { opacity: 1; }
+.thumb[aria-current="true"] { border-color: #fff; opacity: 1; }
+.thumb .mk { position: absolute; left: 2px; bottom: 2px; width: 16px; height: 16px; display: grid; place-items: center; border-radius: 9999px; background: rgba(0,0,0,.6); color: #fff; }
+.thumb .mk .i { width: 8px; height: 8px; }
+@media (min-width: 900px) {
+  .viewer { display: flex; align-items: flex-start; gap: 12px; }
+  .thumbs { display: flex; position: static; order: -1; flex: none; flex-direction: column; transform: none; max-width: none; max-height: min(78vh, 820px); overflow-x: hidden; overflow-y: auto; padding: 0; border-radius: 0; background: none; backdrop-filter: none; opacity: 1; visibility: visible; transition: none; }
+  .thumb { width: 48px; height: 64px; opacity: .55; }
+  .thumb[aria-current="true"] { border-color: var(--text-primary); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) { .thumbs { transition: none; } }
+.viewer > .stage { flex: 1; min-width: 0; }
+
+/* 작품 이름표: 제목 > 작가 > 규격 > 소속 전시 */
+.info { min-width: 0; }
+.wrap { padding-inline: var(--pad); }
+@media (min-width: 900px) { .wrap { padding-inline: 0; } }
+.label { padding-top: 24px; }
+.head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.pvb { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 8px var(--pad); background: #18181b; color: #fff; font-size: 13px; text-align: center; }
+.pvb[hidden] { display: none; }
+.pvb b { flex: none; padding: 1px 8px; border-radius: 9999px; background: #fff; color: #18181b; font-size: 12px; font-weight: 600; }
+.is-pv .top { top: 40px; }
+.is-pv .btn[disabled], .is-pv .like[disabled] { opacity: .45; cursor: not-allowed; }
+.head h1 { font-size: 22px; line-height: 1.35; font-weight: 700; letter-spacing: -0.035em; text-wrap: balance; }
+@media (min-width: 900px) { .head h1 { font-size: 30px; } }
+.like { display: grid; justify-items: center; min-width: 32px; margin-top: 2px; font-size: 12px; font-weight: 500; transition: transform .25s var(--ease); }
+.like:active { transform: scale(.92); }
+.like .i { width: 24px; height: 24px; transition: transform .35s var(--ease); }
+.like[aria-pressed="true"] .i { fill: currentColor; transform: scale(1.1); }
+.artists { margin-top: 4px; display: flex; flex-wrap: wrap; column-gap: 14px; }
+.artist { display: inline-flex; align-items: center; gap: 2px; min-height: 32px; font-size: 15px; font-weight: 600; letter-spacing: -0.03em; transition: opacity .2s; }
+.artist .i { width: 16px; height: 16px; color: var(--text-teritary); transition: transform .3s var(--ease); }
+.artist:hover .i { transform: translateX(3px); }
+.more-a { color: var(--text-teritary); font-weight: 500; }
+.more-a .i { transform: rotate(90deg); }
+.more-a:hover .i { transform: rotate(90deg) translateX(3px); }
+@media (min-width: 900px) { .artist { font-size: 17px; } }
+.spec { font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+.exh { margin-top: 20px; display: grid; grid-template-columns: 40px minmax(0, 1fr) 20px; align-items: center; column-gap: 14px; padding: 14px 0; border-block: 1px solid var(--bg-teritary); transition: background .2s; }
+.exh img { width: 40px; height: 50px; object-fit: cover; border-radius: var(--r4); background: #000; }
+.exh .state { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
+.dot { width: 7px; height: 7px; border-radius: 9999px; background: var(--text-primary); }
+.exh strong { display: block; font-size: 15px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.4; }
+.exh .sub { display: block; font-size: 12px; font-weight: 500; color: var(--text-teritary); line-height: 1.45; }
+.exh .i { width: 18px; height: 18px; color: var(--text-teritary); transition: transform .3s var(--ease); }
+.exh:hover .i { transform: translateX(3px); }
+.exh:hover strong { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+
+/* 탭 */
+.tabs { position: sticky; top: var(--top); z-index: 20; display: flex; gap: 8px; margin-top: 12px; padding: 0 calc(var(--pad) - 8px); background: #fff; border-bottom: 1px solid var(--bg-teritary); }
+@media (min-width: 900px) { .tabs { padding-inline: 0; margin-left: -8px; margin-right: 0; top: 64px; } }
+.tab { position: relative; height: 48px; padding: 0 16px; font-weight: 600; color: var(--text-teritary); transition: color .2s; }
+.tab:hover { color: var(--text-primary); }
+.tab[aria-selected="true"] { color: var(--text-primary); }
+.tab[aria-selected="true"]::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: -1px; height: 2px; background: var(--text-primary); }
+.panel[hidden] { display: none; }
+
+/* 소개: 제목 없이 글만 */
+.about { padding-top: 28px; }
+.desc { color: var(--text-primary); text-wrap: pretty; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.desc.open { display: block; }
+.more { margin-top: 4px; text-align: right; }
+.more button { height: 28px; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
+.more button:hover { color: var(--text-primary); }
+.note { margin-top: 20px; padding: 18px 18px; background: var(--bg-secondary); border-radius: var(--r12); color: var(--text-secondary); text-wrap: pretty; }
+/* 작업과정: 어두운 띠 + "작업과정 5"(개수) + 4:5 카드(반경 16, 간격 8) — 사용자 규격(11-03) */
+.process { margin-top: 28px; background: #18181b; padding: 28px 0; }
+.process h2 { display: flex; align-items: baseline; gap: 8px; padding-inline: var(--pad); color: #fff; font-size: 18px; font-weight: 600; letter-spacing: -0.02em; }
+.process h2 .cnt { color: #a1a1aa; font-weight: 500; font-variant-numeric: tabular-nums; }
+.proc-row { margin-top: 12px; display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x proximity; scroll-padding-inline: var(--pad); scrollbar-width: none; padding-inline: var(--pad); }
+.proc-row::-webkit-scrollbar { display: none; }
+.pc { position: relative; flex: 0 0 162px; aspect-ratio: 162 / 203; border-radius: 16px; overflow: hidden; background: #27272a; scroll-snap-align: start; transition: transform .3s var(--ease); }
+.pc:active { transform: scale(.98); }
+.pc img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
+.pc:hover img { transform: scale(1.04); }
+@media (min-width: 900px) {
+  .process { margin-top: 40px; padding: 28px 24px 28px; border-radius: 20px; }
+  .process h2 { padding-inline: 0; }
+  .proc-row { padding-inline: 0; flex-wrap: wrap; overflow: visible; }
+  .pc { flex: 0 0 calc((100% - 16px) / 3); }
+}
+.end { height: 24px; }
+
+/* 방명록 */
+.gb { padding-top: 8px; padding-bottom: 8px; }
+.cm { padding: 20px 0 4px; }
+.row { display: grid; grid-template-columns: 40px minmax(0, 1fr); column-gap: 12px; }
+.av { width: 40px; height: 40px; border-radius: 9999px; background: var(--bg-teritary); display: grid; place-items: end center; overflow: hidden; color: #fff; }
+.av svg { width: 34px; height: 34px; }
+.head2 { position: relative; display: flex; align-items: center; gap: 8px; min-height: 40px; }
+.nm { font-weight: 600; }
+.cm.gone .nm, .cm.gone .dt { color: var(--text-teritary); }
+.tag { height: 18px; padding: 0 6px; display: inline-flex; align-items: center; border-radius: 4px; background: var(--bg-teritary); color: var(--text-secondary); font-size: 10px; font-weight: 500; }
+.dt { color: var(--text-teritary); font-size: 12px; font-weight: 500; }
+.dots { margin-left: auto; width: 32px; height: 32px; margin-right: -6px; display: grid; place-items: center; border-radius: 9999px; transition: background .2s; }
+.dots:hover { background: var(--bg-teritary); }
+.menu { position: absolute; right: 0; top: 36px; z-index: 5; min-width: 112px; padding: 4px; background: #fff; border: 1px solid var(--bg-teritary); border-radius: var(--r12); box-shadow: 0 5px 50px rgba(0, 0, 0, .07); }
+.menu[hidden] { display: none; }
+.menu button { width: 100%; height: 40px; padding: 0 12px; text-align: left; border-radius: 8px; font-weight: 500; }
+.menu button:hover { background: var(--bg-teritary); }
+.ph { margin-top: 4px; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+.ph::-webkit-scrollbar { display: none; }
+.ph img { flex: 0 0 calc((100% - 16px) / 3); min-width: 96px; aspect-ratio: 1 / 1.05; object-fit: cover; border-radius: var(--r12); }
+.tx2 { margin-top: 10px; text-wrap: pretty; }
+.act { margin-top: 8px; display: flex; align-items: center; gap: 12px; color: var(--text-teritary); font-size: 12px; font-weight: 500; }
+.act button { display: inline-flex; align-items: center; gap: 4px; height: 32px; padding-right: 4px; transition: color .2s; }
+.act button:hover { color: var(--text-primary); }
+.act .lk { color: var(--text-primary); }
+.act .lk .i { width: 18px; height: 18px; transition: transform .35s var(--ease); }
+.act .lk[aria-pressed="true"] .i { fill: currentColor; transform: scale(1.12); }
+.rl { margin-left: 24px; }
+.rl .cm { padding-top: 16px; }
+.mr { margin-top: 12px; margin-left: 52px; height: 32px; color: var(--text-secondary); font-size: 12px; font-weight: 500; }
+.mr:hover { color: var(--text-primary); }
+.gone-note { padding: 20px 0 0 52px; color: var(--text-teritary); }
+
+/* 하단: 탭에 따라 바뀜 (소개=공유·저장, 방명록=그리기·입력) */
+.btn { height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 0 20px; border-radius: var(--r12); font-weight: 600; transition: background .2s, transform .2s var(--ease); white-space: nowrap; }
+.btn:active { transform: scale(.98); }
+.btn-primary { background: var(--text-primary); color: #fff; flex: 1; }
+.btn-primary:hover { background: #2f2f35; }
+.btn-primary[aria-pressed="true"] .i { fill: currentColor; }
+.btn-icon { width: 44px; padding: 0; flex: none; }
+.btn-icon:hover { background: var(--bg-secondary); }
+.bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: #fff; border-top: 1px solid var(--bg-teritary); padding: 12px 20px max(12px, env(safe-area-inset-bottom)); }
+.bar[hidden] { display: none; }
+.bar-save { display: flex; align-items: center; gap: 12px; }
+.bar-gb { display: grid; gap: 10px; }
+.draw { justify-self: end; height: 40px; padding: 0 16px; border-radius: 9999px; background: var(--text-primary); color: #fff; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; transition: background .2s, transform .2s var(--ease); }
+.draw:hover { background: #2f2f35; } .draw:active { transform: scale(.97); }
+.draw .i { width: 16px; height: 16px; }
+.field { display: flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 12px 0 16px; border-radius: var(--r12); background: var(--bg-teritary); }
+.field input { flex: 1; min-width: 0; height: 48px; border: 0; outline: 0; background: none; font-size: 16px; }
+.field input::placeholder { color: var(--text-teritary); }
+.field:focus-within { outline: 2px solid var(--text-primary); outline-offset: 1px; }
+.field button { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 9999px; color: var(--text-secondary); }
+.field button:hover { background: #e4e4e7; }
+.actions { display: none; margin-top: 20px; margin-bottom: 4px; gap: 8px; }
+.actions .btn-primary { max-width: 320px; }
+/* 저장: 폰은 하단 바, 노트북은 정보 영역 바로 아래(탭 위) — 전시 상세와 같은 자리·같은 크기 */
+.actions .btn-icon { border: 1px solid var(--border-primary); }
+@media (min-width: 900px) { .bar { display: none; } .actions { display: flex; } .gb-compose { display: block; } }
+.gb-compose { display: none; margin-top: 12px; }
+.gb-compose .field { margin-top: 12px; }
+.gb-compose .draw { justify-self: auto; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20.2S4.5 15.6 4.5 9.9A4.2 4.2 0 0 1 12 7.6a4.2 4.2 0 0 1 7.5 2.3c0 5.7-7.5 10.3-7.5 10.3z"/></symbol>
+    <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M7 4h10a1 1 0 0 1 1 1v15l-6-3.8L6 20V5a1 1 0 0 1 1-1z"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><circle cx="6.5" cy="12" r="2.4"/><circle cx="17.5" cy="6" r="2.4"/><circle cx="17.5" cy="18" r="2.4"/><path d="m8.6 10.8 6.8-3.6M8.6 13.2l6.8 3.6"/></symbol>
+    <symbol id="i-dots" viewBox="0 0 24 24"><circle cx="5.5" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="18.5" cy="12" r="1.7" fill="currentColor" stroke="none"/></symbol>
+    <symbol id="i-pencil" viewBox="0 0 24 24"><path d="m4 20 1-4L16.5 4.5a2 2 0 0 1 3 3L8 19z"/><path d="m14.5 6.5 3 3"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2.5"/><circle cx="9" cy="10" r="1.6"/><path d="m5 17 5-4.5 3.5 3L16 13l3 3"/></symbol>
+    <symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 4.5 21 19H3z"/><path d="M12 10v4.2M12 16.6v.2"/></symbol>
+    <symbol id="i-avatar" viewBox="0 0 34 34"><circle cx="17" cy="13" r="6" fill="currentColor"/><path d="M4 34c1.2-8 6.6-12 13-12s11.8 4 13 12z" fill="currentColor"/></symbol>
+  </defs>
+</svg>
+
+<div class="pvb" id="pvb" role="status" hidden><b>미리보기</b><span>공개 전 모습이에요. 저장·좋아요·방명록 작성은 할 수 없어요</span></div>
+<header class="top">
+  <div class="in">
+    <a href="home.html" aria-label="Display U. 홈"><img src="assets/img/logo.svg" width="124" height="28" alt="Display U."></a>
+    <a href="explore.html" aria-label="검색"><img src="assets/img/search-header.svg" width="28" height="28" alt=""></a>
+  </div>
+</header>
+
+<main id="main">
+  <div class="layout">
+    <section class="viewer" aria-label="작품 이미지">
+      <div class="stage">
+        <div class="ovl">
+          <a class="back" id="back" href="exhibition.html?tab=works" aria-label="뒤로가기"><svg class="i" aria-hidden="true"><use href="#i-back"/></svg></a>
+          <div class="vmode" id="vmode" role="group" aria-label="감상 방식">
+            <button type="button" data-m="one" aria-pressed="true" aria-label="한 장씩 보기" title="한 장씩 보기"><svg class="i" aria-hidden="true" viewBox="0 0 24 24"><rect x="6.5" y="3.5" width="11" height="17" rx="2"/></svg></button>
+            <button type="button" data-m="stack" aria-pressed="false" aria-label="이어서 보기" title="이어서 보기"><svg class="i" aria-hidden="true" viewBox="0 0 24 24"><rect x="6.5" y="3.5" width="11" height="17" rx="2"/><path d="M6.5 9.2h11M6.5 14.8h11"/></svg></button>
+          </div>
+          <span class="pager" id="pager" aria-live="polite"></span>
+        </div>
+        <div class="track" id="track" tabindex="0" role="group" aria-roledescription="이미지 슬라이더" aria-label="작품 이미지"></div>
+        <div class="stackv" id="stackv" aria-label="작품 이미지 이어보기"></div>
+                <button class="nav-btn prev" id="prev" aria-label="이전 이미지"><svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></button>
+        <button class="nav-btn next" id="next" aria-label="다음 이미지"><svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></button>
+      </div>
+      <div class="thumbs" id="thumbs" role="list" aria-label="이미지 목록"></div>
+    </section>
+
+    <div class="info">
+      <div class="wrap label">
+        <div class="head">
+          <h1>머문 자리의 온기</h1>
+          <button class="like" id="like" aria-pressed="false" aria-label="좋아요"><svg class="i" aria-hidden="true"><use href="#i-heart"/></svg><span id="like-n">204</span></button>
+        </div>
+        <div class="artists" id="artists"></div>
+        <p class="spec">회화 · 2026 · 90 x 120cm · 아크릴, 캔버스</p>
+
+        <a class="exh" href="exhibition.html" aria-label="소속 전시 보기: 여넥스">
+          <img src="assets/poster-shore-thumb.jpg" alt="" width="40" height="50">
+          <span>
+            <span class="state"><i class="dot"></i>전시 중</span>
+            <strong>여넥스</strong>
+            <span class="sub">한결대학교 시각디자인학과</span>
+            <span class="sub">07.29 · 진달래홀</span>
+          </span>
+          <svg class="i" aria-hidden="true"><use href="#i-chev"/></svg>
+        </a>
+        <div class="actions">
+          <button class="btn btn-primary save" aria-pressed="false"><svg class="i" aria-hidden="true"><use href="#i-bookmark"/></svg>작품 저장</button>
+          <button class="btn btn-icon share" aria-label="공유"><svg class="i" aria-hidden="true"><use href="#i-share"/></svg></button>
+        </div>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="작품 상세">
+        <button class="tab" role="tab" id="t-intro" aria-selected="true" aria-controls="p-intro" data-k="intro">소개</button>
+        <button class="tab" role="tab" id="t-guest" aria-selected="false" aria-controls="p-guest" data-k="guest" tabindex="-1">방명록</button>
+      </div>
+
+      <!-- 소개: 제목 없이 -->
+      <div class="panel" id="p-intro" role="tabpanel" aria-labelledby="t-intro">
+        <div class="wrap about">
+          <p class="desc" id="desc">도시의 오후, 사람들이 잠시 머물다 간 자리에 남은 온기를 일러스트로 기록했습니다. 한결대학교 시각디자인학과 졸업 전시 「여넥스 — 선명하되, 투명한 연결」을 위해 제작한 작품으로, 겹겹이 쌓인 색의 층으로 시간의 흐름을 표현했습니다.</p>
+          <p class="more" id="more"><button id="more-btn" aria-expanded="false" aria-controls="desc">더보기</button></p>
+          <p class="note">이 작품은 사물의 형태보다 사물들이 놓인 관계와 분위기에 집중해 감상하면 좋습니다. 붉은 배경은 따뜻함과 생동감을, 회색 벽면은 고요함과 여백을 만들어냅니다.</p>
+        </div>
+        <section class="process" aria-labelledby="h-proc">
+          <h2 id="h-proc">작업과정<span class="cnt" id="proc-n"></span></h2>
+          <div class="proc-row" id="proc"></div>
+        </section>
+        <div class="wrap"><div class="end"></div></div>
+      </div>
+
+      <!-- 방명록 -->
+      <div class="panel" id="p-guest" role="tabpanel" aria-labelledby="t-guest" hidden>
+        <div class="wrap gb">
+          <ul id="cm-list" aria-live="polite"></ul>
+          <div class="gb-compose">
+            <button class="draw"><svg class="i" aria-hidden="true"><use href="#i-pencil"/></svg>그리기</button>
+            <div class="field"><input type="text" placeholder="글을 입력하세요." aria-label="방명록 글 입력"><button aria-label="사진 추가"><svg class="i" aria-hidden="true"><use href="#i-image"/></svg></button><button aria-label="안내"><svg class="i" aria-hidden="true"><use href="#i-warn"/></svg></button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="bar bar-save" id="bar-intro">
+  <button class="btn btn-icon share" aria-label="공유"><svg class="i" aria-hidden="true"><use href="#i-share"/></svg></button>
+  <button class="btn btn-primary save" aria-pressed="false"><svg class="i" aria-hidden="true"><use href="#i-bookmark"/></svg>작품 저장</button>
+</div>
+<div class="bar bar-gb" id="bar-guest" hidden>
+  <button class="draw"><svg class="i" aria-hidden="true"><use href="#i-pencil"/></svg>그리기</button>
+  <div class="field"><input type="text" placeholder="글을 입력하세요." aria-label="방명록 글 입력"><button aria-label="사진 추가"><svg class="i" aria-hidden="true"><use href="#i-image"/></svg></button><button aria-label="안내"><svg class="i" aria-hidden="true"><use href="#i-warn"/></svg></button></div>
+</div>
+
+<script src="assets/save.js"></script>
+<script>
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const O = 'assets/img/work/opt/';
+
+/* ---------- 이미지 슬라이더 (사진 5장) ---------- */
+const imgs = [['main', 'th1'], ['s2', 'th2'], ['s3', 'th3'], ['s4', 'th4'], ['s5', 'th5']];
+const photos = imgs.length;
+const track = document.getElementById('track'), thumbs = document.getElementById('thumbs'), pager = document.getElementById('pager');
+const prev = document.getElementById('prev'), next = document.getElementById('next');
+track.innerHTML = imgs.map(([f], i) => `<div class="slide"><img src="${O}${f}.jpg" alt="머문 자리의 온기 ${i + 1}/${photos}" ${i ? 'loading="lazy"' : 'fetchpriority="high"'}></div>`).join('');
+thumbs.innerHTML = imgs.map(([, t], i) => `<button class="thumb" role="listitem" data-i="${i}" aria-label="${i + 1}번째 이미지 보기"><img src="${O}${t}.jpg" alt="" width="40" height="60"></button>`).join('');
+let cur = 0, settle;
+thumbs.hidden = photos < 2; pager.hidden = photos < 2;
+function show(i) { cur = i; pager.textContent = `${i + 1} / ${photos}`; [...thumbs.children].forEach((t, n) => t.setAttribute('aria-current', n === i)); prev.disabled = i === 0; next.disabled = i === photos - 1; }
+function go(i) {
+  i = Math.max(0, Math.min(photos - 1, i)); const left = i * track.clientWidth;
+  track.scrollTo({ left, behavior: reduce ? 'auto' : 'smooth' }); show(i);
+  clearTimeout(settle); settle = setTimeout(() => { if (Math.abs(track.scrollLeft - left) > 2) track.scrollTo({ left, behavior: 'auto' }); }, 700);
+}
+track.addEventListener('scroll', () => { const i = Math.round(track.scrollLeft / track.clientWidth); if (i !== cur && i >= 0 && i < photos) show(i); }, { passive: true });
+thumbs.addEventListener('click', (e) => { const b = e.target.closest('.thumb'); if (b) (mode === 'stack' ? scrollToImg(+b.dataset.i) : go(+b.dataset.i)); });
+
+/* ---------- 감상 방식 전환: 한 장씩 ↔ 이어보기 (고른 방식은 이 기기에 기억) ---------- */
+const viewer = document.querySelector('.viewer'), vmode = document.getElementById('vmode'), stackv = document.getElementById('stackv');
+stackv.innerHTML = imgs.map(([f], i) => `<img src="${O}${f}.jpg" alt="머문 자리의 온기 ${i + 1}/${photos}" loading="lazy" style="aspect-ratio:4/5" onload="this.style.aspectRatio=''">`).join('');
+vmode.hidden = photos < 2;
+let mode = 'one'; try { if (photos > 1 && localStorage.getItem('du.view') === 'stack') mode = 'stack'; } catch (e) {}
+const headH = () => (matchMedia('(min-width:768px)').matches ? 64 : 0);
+function scrollToImg(i) { const el = stackv.children[i]; if (el) scrollTo({ top: el.getBoundingClientRect().top + scrollY - headH(), behavior: reduce ? 'auto' : 'smooth' }); }
+function setMode(m, byUser) {
+  mode = m; viewer.classList.toggle('stack', m === 'stack');
+  vmode.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.m === m)));
+  try { localStorage.setItem('du.view', m); } catch (e) {}
+  if (m === 'stack') { if (byUser) requestAnimationFrame(() => scrollToImg(cur)); }
+  else { track.scrollLeft = cur * track.clientWidth; if (byUser) scrollTo({ top: Math.max(0, viewer.getBoundingClientRect().top + scrollY - headH()), behavior: 'auto' }); }
+}
+vmode.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b && b.dataset.m !== mode) setMode(b.dataset.m, true); });
+let stk = false;
+addEventListener('scroll', () => { if (mode !== 'stack' || stk) return; stk = true; requestAnimationFrame(() => { stk = false; const line = innerHeight * 0.4; let k = 0; [...stackv.children].forEach((el, i) => { if (el.getBoundingClientRect().top <= line) k = i; }); if (k !== cur) show(k); }); }, { passive: true });
+prev.addEventListener('click', () => go(cur - 1)); next.addEventListener('click', () => go(cur + 1));
+track.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') { e.preventDefault(); go(cur + 1); } if (e.key === 'ArrowLeft') { e.preventDefault(); go(cur - 1); } });
+addEventListener('resize', () => track.scrollTo({ left: cur * track.clientWidth, behavior: 'auto' }));
+show(0); if (mode === 'stack') setMode('stack', false);
+
+/* ---------- 탭 (주소 ?tab=guest 연동) ---------- */
+const tabs = [...document.querySelectorAll('.tab')];
+const panels = { intro: document.getElementById('p-intro'), guest: document.getElementById('p-guest') };
+const bars = { intro: document.getElementById('bar-intro'), guest: document.getElementById('bar-guest') };
+function pick(tab, focus, silent) {
+  tabs.forEach((t) => { const on = t === tab; t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; });
+  for (const k in panels) { panels[k].hidden = k !== tab.dataset.k; bars[k].hidden = k !== tab.dataset.k; }
+  if (focus) tab.focus();
+  if (!silent) {
+    const u = new URL(location.href); tab.dataset.k === 'intro' ? u.searchParams.delete('tab') : u.searchParams.set('tab', tab.dataset.k);
+    try { history.replaceState(null, '', u); } catch (e) {}
+    const top = document.querySelector('.tabs').getBoundingClientRect().top + scrollY - (matchMedia('(min-width:768px)').matches ? 64 : 0);
+    if (scrollY > top) scrollTo({ top, behavior: 'auto' });
+  }
+}
+tabs.forEach((t, i) => {
+  t.addEventListener('click', () => pick(t));
+  t.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') { e.preventDefault(); pick(tabs[(i + 1) % tabs.length], true); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); pick(tabs[(i + tabs.length - 1) % tabs.length], true); }
+  });
+});
+pick(tabs.find((t) => t.dataset.k === new URLSearchParams(location.search).get('tab')) || tabs[0], false, true);
+
+/* ---------- 작가 표기 (11-02 확정): 상세는 4명까지 전부, 5명부터 앞 3명 + "외 N명"(누르면 그 자리에서 전부) ----------
+   ?authors=N 으로 인원 확인 (예시 이름은 가상). 이름마다 각자의 프로필로 이동 */
+const ALL = ['이정우', '김서윤', '박도현', '이채원', '정우진', '한지아', '오민석', '류하린'];
+const total = Math.max(1, Math.min(ALL.length, +new URLSearchParams(location.search).get('authors') || 1));
+const names = ALL.slice(0, total), box = document.getElementById('artists');
+const chev = '<svg class="i" aria-hidden="true"><use href="#i-chev"/></svg>';
+function renderAuthors(expanded) {
+  const collapsed = names.length >= 5 && !expanded, shown = collapsed ? names.slice(0, 3) : names;
+  box.innerHTML = shown.map((n) => `<a class="artist" href="artist.html" aria-label="작가 ${n} 프로필 보기">${n}${chev}</a>`).join('') +
+    (collapsed ? `<button class="artist more-a" aria-expanded="false" aria-label="나머지 작가 ${names.length - 3}명 모두 보기">외 ${names.length - 3}명${chev}</button>` : '');
+  document.title = `머문 자리의 온기 · ${names.length > 1 ? `${names[0]} 외 ${names.length - 1}명` : names[0]} · Display U.`;
+}
+box.addEventListener('click', (e) => { if (e.target.closest('.more-a')) { renderAuthors(true); const f = box.querySelectorAll('.artist')[3]; if (f) f.focus(); } });
+renderAuthors(false);
+
+/* ---------- 작업과정 ---------- */
+document.getElementById('proc').innerHTML = [1, 2, 3, 4, 5].map((n) => `<a class="pc" href="#"><img src="${O}p${n}.jpg" alt="작업과정 ${n}" loading="lazy"></a>`).join('');
+document.getElementById('proc-n').textContent = document.getElementById('proc').children.length;
+
+/* ---------- 소개 더보기 ---------- */
+const desc = document.getElementById('desc'), moreBtn = document.getElementById('more-btn');
+requestAnimationFrame(() => { if (desc.scrollHeight <= desc.clientHeight + 1) document.getElementById('more').hidden = true; });
+moreBtn.addEventListener('click', () => { desc.classList.add('open'); moreBtn.setAttribute('aria-expanded', 'true'); document.getElementById('more').hidden = true; });
+
+/* ---------- 좋아요 · 저장 ---------- */
+const like = document.getElementById('like'), likeN = document.getElementById('like-n');
+like.addEventListener('click', () => { const on = like.getAttribute('aria-pressed') !== 'true'; like.setAttribute('aria-pressed', on); likeN.textContent = on ? 205 : 204; });
+SaveBtn.init(document.querySelectorAll('.save'), { kind: '작품', id: 'w1' });
+
+/* ---------- 뒤로가기: 온 곳으로 ---------- */
+document.getElementById('back').addEventListener('click', (e) => { if (history.length > 1 && document.referrer && new URL(document.referrer).origin === location.origin) { e.preventDefault(); history.back(); } });
+
+/* ---------- 방명록 (댓글 개선안과 같은 구성) ---------- */
+const TXT = '작품들이 전시 주제와 잘 연결되어 있어서 천천히 보게 되었어요. 특히 색을 다루는 방식이 인상 깊었습니다.';
+const ic = (id) => `<svg class="i" aria-hidden="true"><use href="#${id}"/></svg>`;
+const avatar = `<span class="av">${ic('i-avatar')}</span>`;
+let comments = [
+  { id: 1, name: 'User name', date: '2026.05.24', photos: 3, likes: 12, replies: [{ name: 'User name', team: true, date: '2026.05.24', likes: 12 }], hidden: 2 },
+  { id: 2, name: '탈퇴한 회원', gone: true, date: '7시간', likes: 12 },
+  { id: 3, name: 'User name', date: '3시간', likes: 12, mine: true }
+];
+const expanded = new Set();
+function item(c, reply) {
+  const photos = c.photos ? `<div class="ph">${Array.from({ length: c.photos }, () => `<img src="assets/img/detail/opt/gallery.jpg" alt="방명록 사진" loading="lazy">`).join('')}</div>` : '';
+  return `<li class="cm ${c.gone ? 'gone' : ''}" data-id="${c.id}">
+    <div class="row">${avatar}<div>
+      <div class="head2"><span class="nm">${c.name}</span>${c.team ? '<span class="tag">전시 팀원</span>' : ''}<span class="dt">${c.date}</span>
+        <button class="dots" aria-label="더보기" aria-haspopup="menu" aria-expanded="false">${ic('i-dots')}</button>
+        <div class="menu" role="menu" hidden><button role="menuitem" data-do="${c.mine ? 'del' : 'report'}">${c.mine ? '삭제하기' : '신고하기'}</button></div>
+      </div>
+      ${photos}
+      <p class="tx2">${TXT}</p>
+      <div class="act"><button class="lk" aria-pressed="false" aria-label="좋아요">${ic('i-heart')}<span>${c.likes}</span></button><button>답글 달기</button></div>
+    </div></div>
+    ${reply ? '' : repliesOf(c)}
+  </li>`;
+}
+function repliesOf(c) {
+  const shown = c.replies || [];
+  const extra = expanded.has(c.id) ? Array.from({ length: c.hidden || 0 }, () => ({ name: 'User name', date: '3시간', likes: 12 })) : [];
+  const list = [...shown, ...extra];
+  if (!list.length && !c.hidden) return '';
+  const btn = c.hidden ? `<button class="mr" data-toggle="${c.id}">${expanded.has(c.id) ? '답글 접기' : `답글 ${c.hidden}개 더 보기`}</button>` : '';
+  return `<ul class="rl">${list.map((r) => item({ ...r, id: c.id + '-r' }, true)).join('')}</ul>${btn}`;
+}
+function renderComments() {
+  document.getElementById('cm-list').innerHTML = comments.map((c) => c.deleted ? `<li class="cm" data-id="${c.id}"><p class="gone-note">삭제된 댓글이에요</p>${repliesOf(c)}</li>` : item(c)).join('');
+}
+renderComments();
+const listEl = document.getElementById('cm-list');
+function closeMenus() { listEl.querySelectorAll('.menu').forEach((m) => { m.hidden = true; }); listEl.querySelectorAll('.dots').forEach((d) => d.setAttribute('aria-expanded', 'false')); }
+listEl.addEventListener('click', (e) => {
+  const dots = e.target.closest('.dots'), lk = e.target.closest('.lk'), tg = e.target.closest('[data-toggle]'), act = e.target.closest('[data-do]');
+  if (dots) { const m = dots.parentElement.querySelector('.menu'), open = m.hidden; closeMenus(); m.hidden = !open; dots.setAttribute('aria-expanded', open); if (open) m.querySelector('button').focus(); return; }
+  if (lk) { const on = lk.getAttribute('aria-pressed') !== 'true', s = lk.querySelector('span'); lk.setAttribute('aria-pressed', on); s.textContent = +s.textContent + (on ? 1 : -1); return; }
+  if (tg) { const id = +tg.dataset.toggle; expanded.has(id) ? expanded.delete(id) : expanded.add(id); renderComments(); return; }
+  if (act) { const id = +act.closest('.cm').dataset.id;
+    if (act.dataset.do === 'del') { const c = comments.find((x) => x.id === id); if (c) { (c.replies && c.replies.length) || c.hidden ? (c.deleted = true) : (comments = comments.filter((x) => x.id !== id)); renderComments(); } }
+    else closeMenus(); }
+});
+document.addEventListener('click', (e) => { if (!e.target.closest('.head2')) closeMenus(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenus(); });
+</script>
+<script src="assets/auth.js">
+/* ---------- 미리보기(?preview=1&ex=전시id&w=작품id): 전시 작업에서 카드를 누르면 들어옴 ---------- */
+(() => {
+  const P = new URLSearchParams(location.search); if (!P.get('preview')) return;
+  document.body.classList.add('is-pv'); document.getElementById('pvb').hidden = false;
+  try {
+    const d = JSON.parse(localStorage.getItem('du.d.' + P.get('ex')) || 'null'), w = d && d.works.find((x) => x.id === P.get('w'));
+    if (w) { document.querySelector('.head h1').textContent = w.title; document.title = `${w.title} · 미리보기 · Display U.`; if (/^data:/.test(w.img)) { const im = document.querySelector('#track .slide img'); if (im) im.src = w.img; const si = document.querySelector('#stackv img'); if (si) si.src = w.img; } }
+  } catch (e) {}
+  document.getElementById('like').disabled = true;
+  document.querySelectorAll('.save, .share').forEach((b) => { b.disabled = true; b.title = '공개 전에는 사용할 수 없어요'; });
+  document.querySelectorAll('input[aria-label$="글 입력"]').forEach((i) => { i.disabled = true; });
+  const back = document.getElementById('back'); if (back && P.get('ex')) back.href = 'works.html?id=' + P.get('ex');
+})();
+</script>
+</body>
+</html>

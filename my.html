@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>마이 · Display U.</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/* 값은 Figma 변수와 마이 A(2508:25034 인증 전 / 2508:25104 인증 후), 설정 드로어(2639:29714·29784)에서 가져옴 */
+:root {
+  --text-primary: #18181b;
+  --text-secondary: #3f3f47;
+  --text-teritary: #71717b;
+  --text-disable: #d4d4d8;
+  --border-primary: #d4d4d8;
+  --bg-secondary: #f4f4f5;
+  --bg-teritary: #f0f0f3;
+  --notice: #e5484d;
+  --avatar: #e3eeff;
+  --r12: 12px; --r20: 20px;
+  --ease: cubic-bezier(.16, 1, .3, 1);
+  --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  --pad: 20px;
+  color-scheme: light;
+}
+@media (min-width: 768px)  { :root { --pad: 32px; } }
+@media (min-width: 1100px) { :root { --pad: 48px; } }
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scrollbar-color: var(--border-primary) transparent; scrollbar-width: thin; }
+body { margin: 0; background: #fff; color: var(--text-primary); font: 500 12px/1.4 var(--font); letter-spacing: -0.03em; -webkit-font-smoothing: antialiased; padding-bottom: 150px; }
+body.lock { overflow: hidden; }
+::selection { background: var(--text-primary); color: #fff; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; letter-spacing: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+a, button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+h1, h2, h3, p, ul { margin: 0; padding: 0; }
+ul { list-style: none; }
+img { display: block; }
+:focus-visible { outline: 2px solid var(--text-primary); outline-offset: 2px; border-radius: 6px; }
+.dark :focus-visible, .nav :focus-visible { outline-color: #fafafa; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.skip { position: absolute; left: 16px; top: -64px; z-index: 90; height: 44px; padding: 0 16px; display: inline-flex; align-items: center; background: var(--text-primary); color: #fff; border-radius: var(--r12); font-size: 14px; font-weight: 600; transition: top .2s var(--ease); }
+.skip:focus-visible { top: 8px; }
+.i { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.wrap { width: 100%; max-width: 1320px; margin-inline: auto; padding-inline: var(--pad); }
+[hidden] { display: none !important; }
+
+/* 구성 */
+.layout { padding-top: max(12px, env(safe-area-inset-top)); }
+@media (min-width: 900px) {
+  .layout { display: grid; grid-template-columns: minmax(300px, 380px) minmax(0, 1fr); column-gap: 64px; align-items: start; padding-top: 32px; }
+  .side { position: sticky; top: 24px; }
+}
+
+/* 상단: 프로필 + 알림함·설정 */
+.head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.me { display: flex; align-items: center; gap: 14px; min-width: 0; padding: 4px 4px 4px 0; border-radius: var(--r12); }
+.avatar { width: 52px; height: 52px; border-radius: 9999px; background: var(--avatar); display: grid; place-items: end center; overflow: hidden; color: #fff; flex: none; }
+.avatar svg { width: 46px; height: 46px; }
+.me b { display: block; font-size: 20px; font-weight: 700; line-height: 1.3; letter-spacing: -0.035em; }
+.me small { display: block; color: var(--text-teritary); font-size: 12px; font-weight: 500; }
+.me .i { width: 20px; height: 20px; color: var(--text-teritary); transition: transform .3s var(--ease); }
+.me:hover .i { transform: translateX(3px); }
+.tools { display: flex; padding: 2px; background: var(--bg-secondary); border-radius: 9999px; flex: none; }
+.tool { position: relative; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 9999px; transition: background .2s; }
+.tool:hover { background: #e4e4e7; }
+.tool .i { width: 24px; height: 24px; }
+.tool .dot { position: absolute; top: 9px; right: 9px; width: 8px; height: 8px; border-radius: 9999px; background: var(--notice); border: 2px solid var(--bg-secondary); box-sizing: content-box; }
+
+/* 작가 인증 / 작가 프로필 카드 (검정) */
+.dark { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 20px; padding: 20px; background: #000; color: #fff; border-radius: var(--r20); transition: transform .3s var(--ease); }
+.dark:active { transform: scale(.99); }
+.dark .t { min-width: 0; }
+.dark h2 { font-size: 16px; font-weight: 600; line-height: 1.4; letter-spacing: -0.03em; }
+.dark p { margin-top: 4px; color: #a1a1aa; font-size: 12px; font-weight: 500; }
+.go { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 9999px; background: #3f3f46; color: #fff; flex: none; transition: background .2s, transform .3s var(--ease); }
+.dark:hover .go { background: #52525b; transform: translateX(2px); }
+.go .i { width: 22px; height: 22px; }
+.pro { display: block; }
+.pro .row { display: flex; align-items: center; gap: 14px; }
+.pro .thumb { width: 44px; height: 44px; border-radius: 9999px; overflow: hidden; background: #27272a; flex: none; }
+.pro .thumb img { width: 100%; height: 100%; object-fit: cover; }
+.pro .lbl { color: #a1a1aa; font-size: 12px; font-weight: 500; }
+.pro .nm { font-size: 18px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.3; }
+.pro .meta { display: flex; align-items: center; gap: 6px; margin-top: 14px; flex-wrap: wrap; }
+.pro .chip { height: 26px; padding: 0 10px; display: inline-flex; align-items: center; border-radius: 9999px; background: #3f3f46; font-size: 12px; font-weight: 500; }
+.pro .cnt { color: #a1a1aa; font-size: 12px; font-weight: 500; }
+.pro .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+
+/* 받은 초대 · 내 전시 관리 */
+.inv-row { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding: 0 18px; height: 56px; width: 100%; border-radius: var(--r12); background: var(--bg-secondary); font-size: 16px; font-weight: 600; text-align: left; transition: background .2s; }
+.inv-row:hover { background: #ececee; }
+.inv-row em { font-style: normal; color: var(--notice); margin-left: 6px; font-variant-numeric: tabular-nums; }
+.inv-row .i { color: var(--text-teritary); width: 20px; height: 20px; }
+.rows { margin-top: 12px; }
+.rows li + li { border-top: 1px solid var(--bg-teritary); }
+.rows li:first-child { border-top: 1px solid var(--bg-teritary); }
+.rows li:last-child { border-bottom: 1px solid var(--bg-teritary); }
+.rw { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 68px; padding: 12px 2px; text-align: left; transition: background .2s; border-radius: 0; }
+.rw:hover .rt .i { transform: translateX(3px); }
+.rw .tt { display: grid; gap: 2px; min-width: 0; }
+.rw b { font-size: 16px; font-weight: 600; letter-spacing: -0.03em; }
+.rw small { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+.rw .rt { display: inline-flex; align-items: center; gap: 6px; flex: none; }
+.rw .rt strong { font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.rw .rt strong.red { color: var(--notice); }
+.rw .rt .i { width: 20px; height: 20px; color: var(--text-teritary); transition: transform .3s var(--ease); }
+.rw .plus { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 9999px; border: 1px solid var(--border-primary); flex: none; transition: background .2s, transform .3s var(--ease); }
+.rw:hover .plus { background: var(--bg-secondary); transform: rotate(90deg); }
+.rw .plus .i { width: 22px; height: 22px; }
+
+/* 보관함 */
+.vault { margin-top: 32px; }
+@media (min-width: 900px) { .vault { margin-top: 0; } }
+.vhead { display: flex; align-items: baseline; justify-content: space-between; }
+.vhead h2 { font-size: 20px; font-weight: 600; letter-spacing: -0.03em; }
+.vhead span { display: inline-flex; align-items: center; gap: 2px; font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+.vhead .i { width: 18px; height: 18px; }
+.seg { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 14px; padding: 4px; border-radius: 9999px; background: var(--bg-secondary); }
+.seg button { height: 40px; border-radius: 9999px; font-size: 14px; font-weight: 600; color: var(--text-secondary); font-variant-numeric: tabular-nums; transition: background .25s var(--ease), color .2s; }
+.seg button[aria-selected="true"] { background: #000; color: #fff; }
+.grid { margin-top: 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (min-width: 640px)  { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
+@media (min-width: 1280px) { .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.card { display: block; background: #000; border-radius: var(--r12); overflow: hidden; color: #fff; animation: rise .55s var(--ease) backwards; animation-delay: calc(var(--n, 0) * 35ms); transition: transform .3s var(--ease); }
+.card:active { transform: scale(.98); }
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+.card .im { padding: 7px; }
+.card .im div { position: relative; border-radius: var(--r12); overflow: hidden; background: #111; }
+.card.ex .im div { aspect-ratio: 161 / 241; }
+.card.wk .im div { aspect-ratio: 161 / 215; }
+.card .im img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
+.card:hover .im img { transform: scale(1.03); }
+.badge { position: absolute; top: 8px; right: 8px; display: inline-flex; align-items: center; gap: 2px; padding: 3px 8px; border-radius: 9999px; background: rgba(255, 255, 255, .72); color: var(--text-primary); font-size: 12px; font-weight: 500; backdrop-filter: blur(10px); }
+.badge .i { width: 13px; height: 13px; }
+.tx { padding: 2px 12px 12px; display: grid; gap: 2px; }
+.tx b { font-size: 14px; font-weight: 700; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tx .l { font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tx .m { display: flex; align-items: center; gap: 3px; font-size: 12px; font-weight: 500; color: #a1a1aa; white-space: nowrap; overflow: hidden; }
+.tx .m img { width: 14px; height: 14px; flex: none; }
+.tx .m:first-of-type { margin-top: 6px; }
+.artists { margin-top: 8px; }
+.ar { display: grid; grid-template-columns: 52px minmax(0, 1fr) 20px; align-items: center; column-gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--bg-teritary); animation: rise .5s var(--ease) backwards; animation-delay: calc(var(--n, 0) * 35ms); }
+.ar .avatar { width: 52px; height: 52px; }
+.ar b { display: block; font-size: 14px; font-weight: 600; }
+.ar span { display: block; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
+.ar .tag { display: inline-flex; margin-top: 4px; height: 20px; padding: 0 7px; align-items: center; border: 1px solid var(--border-primary); border-radius: 4px; color: var(--text-secondary); font-size: 10px; }
+.ar > .i { color: var(--text-teritary); width: 18px; height: 18px; transition: transform .3s var(--ease); }
+.ar:hover > .i { transform: translateX(3px); }
+.empty { padding: 96px 0 40px; text-align: center; font-size: 16px; font-weight: 500; color: var(--text-teritary); }
+
+/* 시트(알림함·받은 초대·드로어)·모달 */
+.scrim { position: fixed; inset: 0; z-index: 70; background: rgba(0, 0, 0, .5); animation: fade .25s ease; }
+@keyframes fade { from { opacity: 0; } }
+.sheet { position: fixed; z-index: 71; background: #fff; display: flex; flex-direction: column; animation: slideUp .35s var(--ease); }
+@keyframes slideUp { from { transform: translateY(24px); opacity: 0; } }
+.sheet.full { inset: 0; }
+.sheet.right { top: 0; right: 0; bottom: 0; width: min(322px, 82vw); border-radius: var(--r20) 0 0 var(--r20); animation-name: slideIn; }
+@keyframes slideIn { from { transform: translateX(32px); opacity: 0; } }
+@media (min-width: 768px) { .sheet.full { inset: 5vh auto 5vh 50%; width: 480px; margin-left: -240px; border-radius: var(--r20); } }
+.sh-head { display: flex; align-items: center; gap: 4px; height: 56px; padding: 0 12px; flex: none; }
+.sh-head h2 { font-size: 18px; font-weight: 600; margin-left: 4px; }
+.sh-x { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 9999px; transition: background .2s; }
+.sh-x:hover { background: var(--bg-secondary); }
+.sh-body { flex: 1; overflow-y: auto; padding: 4px 20px 32px; overscroll-behavior: contain; }
+.noti { display: grid; grid-template-columns: 8px minmax(0, 1fr); column-gap: 12px; width: 100%; padding: 16px 0; border-bottom: 1px solid var(--bg-teritary); text-align: left; }
+.noti i { width: 8px; height: 8px; margin-top: 7px; border-radius: 9999px; background: transparent; }
+.noti.new i { background: var(--notice); }
+.noti p { font-size: 14px; font-weight: 500; line-height: 1.45; }
+.noti small { display: block; margin-top: 2px; color: var(--text-teritary); font-size: 12px; }
+.invite { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--bg-teritary); }
+.invite img { width: 64px; height: 84px; object-fit: cover; border-radius: var(--r12); background: #000; }
+.invite b { display: block; font-size: 16px; font-weight: 600; }
+.invite span { display: block; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
+.invite .btns { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 4px; }
+.btn { height: 44px; display: inline-flex; align-items: center; justify-content: center; border-radius: var(--r12); font-size: 14px; font-weight: 600; transition: background .2s, transform .2s var(--ease); }
+.btn:active { transform: scale(.98); }
+.btn-soft { background: var(--bg-teritary); } .btn-soft:hover { background: #e4e4e7; }
+.btn-dark { background: var(--text-primary); color: #fff; } .btn-dark:hover { background: #2f2f35; }
+.btn-red { background: var(--notice); color: #fff; } .btn-red:hover { background: #d63c41; }
+
+.dr { padding: 28px 20px 0; display: flex; flex-direction: column; height: 100%; }
+.dr .logo img { width: 124px; height: 28px; }
+.dr .prof { display: flex; align-items: center; gap: 12px; margin-top: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--bg-teritary); width: 100%; text-align: left; }
+.dr .prof .avatar { width: 48px; height: 48px; } .dr .prof .avatar svg { width: 42px; height: 42px; }
+.dr .prof b { display: block; font-size: 14px; font-weight: 600; } .dr .prof span { display: block; font-size: 12px; color: var(--text-teritary); }
+.dr .prof .i { margin-left: auto; color: var(--text-primary); }
+.dr .cert { display: flex; align-items: center; justify-content: space-between; width: 100%; height: 56px; font-size: 16px; font-weight: 500; text-align: left; }
+.dr .cert small { font-size: 12px; font-weight: 500; color: var(--text-teritary); }
+.dr .grow { flex: 1; }
+.dr .bot { border-top: 1px solid var(--bg-teritary); }
+.dr .bot button { display: block; width: 100%; height: 56px; text-align: left; font-size: 16px; font-weight: 500; }
+.dr .bot button.mute { color: var(--text-teritary); }
+.dr .foot { margin: 0 -20px; padding: 18px 20px max(20px, env(safe-area-inset-bottom)); border-top: 1px solid var(--bg-teritary); }
+.dr .foot nav { display: flex; gap: 12px; align-items: center; font-size: 12px; font-weight: 500; }
+.dr .foot nav i { width: 1px; height: 10px; background: var(--border-primary); }
+.dr .foot small { display: block; margin-top: 8px; font-size: 10px; font-weight: 400; color: var(--text-teritary); }
+
+dialog.modal { width: min(322px, calc(100vw - 80px)); padding: 24px 20px 20px; border: 0; border-radius: var(--r20); background: #fff; color: var(--text-primary); text-align: left; animation: pop .25s var(--ease); }
+dialog.modal::backdrop { background: rgba(0, 0, 0, .5); }
+@keyframes pop { from { opacity: 0; transform: scale(.96); } }
+.modal h2 { font-size: 18px; font-weight: 600; line-height: 1.4; letter-spacing: -0.03em; }
+.modal p { margin-top: 8px; font-size: 14px; font-weight: 500; line-height: 1.5; color: var(--text-secondary); white-space: pre-line; }
+.modal .warn { margin-top: 16px; padding: 12px 14px; border-radius: var(--r12); background: var(--bg-secondary); }
+.modal .warn b { display: block; font-size: 12px; font-weight: 600; color: var(--notice); }
+.modal .warn span { display: block; margin-top: 2px; font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+.modal .acts { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8px; margin-top: 20px; }
+.toast { position: fixed; left: 50%; bottom: calc(110px + env(safe-area-inset-bottom)); transform: translate(-50%, 16px); opacity: 0; pointer-events: none; z-index: 95; padding: 12px 18px; border-radius: 9999px; background: var(--text-primary); color: #fff; font-size: 14px; font-weight: 500; white-space: nowrap; transition: opacity .25s, transform .35s var(--ease); }
+.toast.on { opacity: 1; transform: translate(-50%, 0); }
+
+/* 하단 알약 탭 (마이 활성) */
+.nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: flex; justify-content: center; padding: 24px 20px max(16px, env(safe-area-inset-bottom)); background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #fff); pointer-events: none; }
+.nav .pill { pointer-events: auto; width: 362px; max-width: 100%; height: 70px; background: #000; border-radius: 9999px; box-shadow: 2px 8px 18px rgba(4, 0, 250, .06); display: flex; align-items: center; justify-content: space-around; overflow: hidden; }
+.nav a { position: relative; width: 56px; height: 47px; display: grid; place-items: center; padding-top: 7px; }
+.nav a img.ic { width: 40px; height: 40px; }
+.nav a[aria-current="page"] .bar-i { position: absolute; inset: 0; width: 56px; height: 47px; }
+.nav a:not([aria-current]) { transition: transform .25s var(--ease); }
+.nav a:not([aria-current]):hover { transform: translateY(-2px); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M4 13.5 6.2 6.4A1.5 1.5 0 0 1 7.6 5.3h8.8a1.5 1.5 0 0 1 1.4 1.1L20 13.5V18a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18z"/><path d="M4 13.5h4.6a1 1 0 0 1 .9.6l.4.8a1 1 0 0 0 .9.6h2.4a1 1 0 0 0 .9-.6l.4-.8a1 1 0 0 1 .9-.6H20"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 14.5a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3h0a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5h0a1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8v0a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9.5 6 6 6-6"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20.2S4.5 15.6 4.5 9.9A4.2 4.2 0 0 1 12 7.6a4.2 4.2 0 0 1 7.5 2.3c0 5.7-7.5 10.3-7.5 10.3z"/></symbol>
+    <symbol id="i-avatar" viewBox="0 0 34 34"><circle cx="17" cy="13" r="6" fill="currentColor"/><path d="M4 34c1.2-8 6.6-12 13-12s11.8 4 13 12z" fill="currentColor"/></symbol>
+  </defs>
+</svg>
+
+<main id="main" class="wrap layout">
+  <h1 class="sr">마이</h1>
+  <div class="side">
+    <div class="head">
+      <a class="me" href="#" id="me" aria-label="기본 정보 수정">
+        <span class="avatar"><svg aria-hidden="true"><use href="#i-avatar"/></svg></span>
+        <span><b>상준</b><small>@sangjun</small></span>
+        <svg class="i" aria-hidden="true"><use href="#i-chev"/></svg>
+      </a>
+      <div class="tools">
+        <button class="tool" id="btn-noti" aria-label="알림함"><svg class="i" aria-hidden="true"><use href="#i-inbox"/></svg><i class="dot" id="noti-dot" hidden></i></button>
+        <button class="tool" id="btn-set" aria-label="설정" aria-haspopup="dialog"><svg class="i" aria-hidden="true"><use href="#i-gear"/></svg></button>
+      </div>
+    </div>
+
+    <!-- 작가 인증 전 -->
+    <a class="dark" href="verify.html" id="cert-card">
+      <span class="t"><h2>작가로 활동하고 있나요?</h2><p>인증하면 작가 프로필을 만들고 전시를 등록할 수 있어요</p></span>
+      <span class="go"><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+    </a>
+    <!-- 작가 인증 후 -->
+    <a class="dark pro" href="artist.html" id="pro-card" aria-label="내 작가 프로필 보기">
+      <span class="top">
+        <span class="row">
+          <span class="thumb"><img src="assets/img/work/opt/th1.jpg" alt="" width="44" height="44"></span>
+          <span><span class="lbl">작가 프로필</span><br><span class="nm">고상준</span></span>
+        </span>
+        <span class="go"><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span>
+      </span>
+      <span class="meta"><span class="chip">그래픽</span><span class="chip">브랜딩</span><span class="cnt">작품 6 · 전시 2</span></span>
+    </a>
+
+    <ul class="rows" id="rows" aria-label="작가 활동">
+      <li><a class="rw" id="rw-manage" href="manage.html"><span class="tt"><b>내 전시 관리</b><small>참여 중인 전시를 한곳에서 관리해요</small></span><span class="rt"><strong id="n-manage">3</strong><svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></span></a></li>
+      <li><button class="rw" id="rw-inv"><span class="tt"><b>받은 초대</b></span><span class="rt"><strong class="red" id="n-inv-rw">1</strong><svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></span></button></li>
+      <li><a class="rw" href="exhibition-new.html" id="rw-new"><span class="tt"><b>새 전시 등록</b><small>전시를 만들고 팀원을 초대해요</small></span><span class="plus" aria-hidden="true"><svg class="i"><use href="#i-plus"/></svg></span></a></li>
+    </ul>
+    <button class="inv-row" id="row-inv"><span>받은 초대<em id="n-inv-row">1</em></span><svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></button>
+  </div>
+
+  <section class="vault" aria-labelledby="v-title">
+    <div class="vhead"><h2 id="v-title">보관함</h2></div>
+    <div class="seg" role="tablist" aria-label="보관함">
+      <button role="tab" id="s-exh" aria-selected="true" data-k="exh">전시 <span id="c-exh"></span></button>
+      <button role="tab" id="s-wk" aria-selected="false" data-k="works" tabindex="-1">작품 <span id="c-wk"></span></button>
+      <button role="tab" id="s-ar" aria-selected="false" data-k="artists" tabindex="-1">작가 <span id="c-ar"></span></button>
+    </div>
+    <div id="vault" role="tabpanel" aria-labelledby="s-exh"></div>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<nav class="nav" aria-label="하단 메뉴">
+  <div class="pill">
+    <a href="home.html" aria-label="홈"><img class="ic" src="assets/img/nav-home.svg" alt="" width="40" height="40" style="opacity:.55"></a>
+    <a href="explore.html" aria-label="검색"><img class="ic" src="assets/img/nav-search.svg" alt="" width="40" height="40"></a>
+    <a href="my.html" aria-current="page" aria-label="마이"><img class="bar-i" src="assets/img/tab-bar.svg" alt="" width="56" height="47"><img class="ic" src="assets/img/nav-user.svg" alt="" width="40" height="40" style="position:relative;filter:brightness(2.4)"></a>
+  </div>
+</nav>
+
+<script>
+/* ============ 예시 데이터 (가상) ============ */
+const Q = new URLSearchParams(location.search);
+const verified = Q.get('state') !== 'before';             /* ?state=before : 작가 인증 전 */
+const nInv = Math.max(0, Math.min(5, Q.has('invites') ? +Q.get('invites') : 1));   /* ?invites=0~5 */
+const nNoti = Math.max(0, Math.min(9, Q.has('noti') ? +Q.get('noti') : 1));        /* ?noti=0 : 안 읽은 알림 없음 */
+const hasOwner = Q.get('owner') === '1';                  /* ?owner=1 : 대표로 있는 전시가 있는 계정(탈퇴 불가 모달) */
+const savedEmpty = Q.get('saved') === '0';                /* ?saved=0 : 보관함 비어 있음 */
+const EXH = [
+  ['여넥스', '한결대학교 시각디자인학과', '07.29', '진달래홀', 202, 'ex0'], ['NEW TURN', '한결대학교 미디어아트학과', '05.20 - 06.01', '미디어랩', 188, 'ex2'],
+  ['에스페란토', '새봄여자대학교 시각디자인과', '05.25 - 06.08', '2층 로비', 164, 'ex3'], ['바람의 갤러리', '가온대학교 건축학과', '04.01 - 04.12', '건축관 1층', 150, 'ex4'],
+  ['잇다', '한결대학교 산업디자인학과', '06.10 - 06.20', '중앙홀', 143, 'ex5'], ['다시, 사진으로', '다온대학교 사진동아리', '05.30 - 06.07', '학생회관 갤러리', 131, 'ex6'],
+  ['여백의 계절', '새봄대학교 회화과', '06.12 - 06.19', '회화관', 120, 'ex1'], ['오후 네 시의 방', '한결대학교 공간디자인과', '03.18 - 03.25', '3층 전시실', 95, 'ex2'],
+  ['손끝의 지도', '가온대학교 공예과', '05.15 - 06.02', '공예관', 88, 'ex3'], ['느린 윤곽', '새봄여자대학교 조소과', '03.02 - 03.10', '조형관', 76, 'ex4'],
+  ['첫 번째 파도', '다온대학교 UXUI동아리', '06.15 - 06.22', '동아리방', 64, 'ex5'], ['작은 소란', '연합 기타', '05.29 - 06.06', '카페 갤러리', 40, 'ex6']
+];
+const WORKS = [
+  ['머문 자리의 온기', ['이정우', '김서윤'], 204, 'wk1'], ['비명', ['김유진'], 190, 'wk2'], ['꽃의 무게', ['박도현'], 171, 'wk3'], ['낯선 얼굴', ['이채원', '정우진', '한지아'], 160, 'wk4'],
+  ['입체의 오후', ['류하린'], 142, 'wk5'], ['단면 모형', ['오민석'], 133, 'wk6'], ['은빛 행렬', ['문재이'], 120, 'wk7'], ['도시의 층', ['강태오'], 99, 'wk8'], ['겹치는 면', ['백이든'], 85, 'wk9']
+];
+const ARTISTS = [['송하윤', '새봄여자대학교', '디자인'], ['이정우', '한결대학교', '회화'], ['김서윤', '한결대학교', '그래픽'], ['박도현', '다온대학교', '사진'], ['이채원', '가온대학교', '공예'], ['정우진', '한결대학교', '건축'], ['한지아', '새봄여자대학교', '조소'], ['류하린', '다온대학교', 'UXUI']];
+const INVITES = EXH.slice(0, 5).map((e) => ({ t: e[0], s: e[1], d: e[2], p: e[3], img: e[5] })).slice(0, nInv);
+/* 알림 예시 — 문구는 초안(알림 종류·문구는 아직 미정) */
+const NOTIS = [
+  { t: '“여넥스” 전시에 초대받았어요', w: '방금', k: 'invite' }, { t: '“사이의 온도” 전시 등록 요청이 승인됐어요', w: '1시간 전', k: 'x' },
+  { t: '“머문 자리의 온기” 작품에 공동 작가로 추가됐어요', w: '어제', k: 'x' }, { t: '저장한 작가 송하윤님의 새 전시가 올라왔어요', w: '2일 전', k: 'x' }
+];
+const ic = (id) => `<svg class="i" aria-hidden="true"><use href="#${id}"/></svg>`;
+const $ = (id) => document.getElementById(id);
+const O = 'assets/img/explore/opt/';
+
+/* ============ 상태에 따라 화면 구성 ============ */
+$('cert-card').hidden = verified; $('pro-card').hidden = !verified;
+$('rows').hidden = !verified;
+$('row-inv').hidden = verified || nInv === 0;
+$('n-inv-rw').textContent = nInv; $('n-inv-row').textContent = nInv; $('n-manage').textContent = 3;
+$('noti-dot').hidden = nNoti === 0;
+$('n-inv-rw').classList.toggle('red', nInv > 0);
+
+/* ============ 보관함 ============ */
+let tab = ['works', 'artists'].includes(Q.get('tab')) ? Q.get('tab') : 'exh';
+const data = { exh: savedEmpty ? [] : EXH, works: savedEmpty ? [] : WORKS, artists: savedEmpty ? [] : ARTISTS };
+const empties = { exh: '저장된 전시가 없습니다.', works: '저장된 작품이 없습니다.', artists: '저장된 작가가 없습니다.' };
+const by = (a) => (a.length === 1 ? a[0] : `${a[0]} 외 ${a.length - 1}명`);
+function renderVault() {
+  $('c-exh').textContent = data.exh.length; $('c-wk').textContent = data.works.length; $('c-ar').textContent = data.artists.length;
+  document.querySelectorAll('.seg button').forEach((b) => { const on = b.dataset.k === tab; b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1; });
+  const list = data[tab], el = $('vault');
+  if (!list.length) { el.innerHTML = `<p class="empty">${empties[tab]}</p>`; return; }
+  if (tab === 'exh') el.innerHTML = '<div class="grid">' + list.map((e, n) => `<a class="card ex" href="exhibition.html" style="--n:${Math.min(n, 10)}"><div class="im"><div><img src="${O}${e[5]}.jpg" alt="${e[0]} 포스터" width="161" height="241" loading="${n < 4 ? 'eager' : 'lazy'}"><span class="badge">${ic('i-heart')}${e[4]}</span></div></div><div class="tx"><b>${e[0]}</b><span class="l">${e[1]}</span><span class="m"><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14">${e[2]}</span><span class="m"><img src="assets/img/icon-location.svg" alt="" width="14" height="14">${e[3]}</span></div></a>`).join('') + '</div>';
+  else if (tab === 'works') el.innerHTML = '<div class="grid">' + list.map((w, n) => `<a class="card wk" href="work.html${w[1].length > 1 ? '?authors=' + w[1].length : ''}" style="--n:${Math.min(n, 10)}"><div class="im"><div><img src="${O}${w[3]}.jpg" alt="${w[0]}" width="161" height="215" loading="${n < 4 ? 'eager' : 'lazy'}"><span class="badge">${ic('i-heart')}${w[2]}</span></div></div><div class="tx"><b>${w[0]}</b><span class="l">${by(w[1])}</span></div></a>`).join('') + '</div>';
+  else el.innerHTML = '<ul class="artists">' + list.map((a, n) => `<li><a class="ar" href="artist.html" style="--n:${n}"><span class="avatar"><svg aria-hidden="true"><use href="#i-avatar"/></svg></span><span><b>${a[0]}</b><span>${a[1]}</span><span class="tag">${a[2]}</span></span>${ic('i-chev')}</a></li>`).join('') + '</ul>';
+  $('vault').setAttribute('aria-labelledby', 's-' + (tab === 'exh' ? 'exh' : tab === 'works' ? 'wk' : 'ar'));
+}
+document.querySelector('.seg').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; tab = b.dataset.k; renderVault(); const u = new URL(location.href); tab === 'exh' ? u.searchParams.delete('tab') : u.searchParams.set('tab', tab); try { history.replaceState(null, '', u); } catch (x) {} });
+document.querySelector('.seg').addEventListener('keydown', (e) => { const bs = [...document.querySelectorAll('.seg button')], i = bs.indexOf(document.activeElement); if (e.key === 'ArrowRight' && i > -1) { e.preventDefault(); bs[(i + 1) % 3].click(); bs[(i + 1) % 3].focus(); } if (e.key === 'ArrowLeft' && i > -1) { e.preventDefault(); bs[(i + 2) % 3].click(); bs[(i + 2) % 3].focus(); } });
+renderVault();
+
+/* ============ 토스트 · 준비 중 화면 ============ */
+let tt; function toast(m) { $('toast').textContent = m; $('toast').classList.add('on'); clearTimeout(tt); tt = setTimeout(() => $('toast').classList.remove('on'), 2200); }
+document.addEventListener('click', (e) => { const a = e.target.closest('[data-todo]'); if (a) { e.preventDefault(); toast(`${a.dataset.todo} 화면은 아직 준비 중이에요`); } });
+$('me').addEventListener('click', (e) => { e.preventDefault(); toast('기본 정보 수정 화면은 아직 준비 중이에요'); });
+
+/* ============ 시트 · 모달 도우미 ============ */
+let lastFocus = null, openSheet = null;
+function closeSheet() { if (!openSheet) return; openSheet.sheet.remove(); openSheet.scrim.remove(); document.body.classList.remove('lock'); openSheet = null; if (lastFocus) lastFocus.focus(); }
+function showSheet(cls, html, label) {
+  closeSheet(); lastFocus = document.activeElement;
+  const scrim = document.createElement('div'); scrim.className = 'scrim'; scrim.addEventListener('click', closeSheet);
+  const sheet = document.createElement('div'); sheet.className = 'sheet ' + cls; sheet.setAttribute('role', 'dialog'); sheet.setAttribute('aria-modal', 'true'); sheet.setAttribute('aria-label', label); sheet.innerHTML = html;
+  document.body.append(scrim, sheet); document.body.classList.add('lock'); openSheet = { sheet, scrim };
+  sheet.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', closeSheet));
+  (sheet.querySelector('[data-close]') || sheet).focus(); return sheet;
+}
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !document.querySelector('dialog.modal[open]')) closeSheet(); });
+function modal({ title, body, warn, acts }) {
+  const d = document.createElement('dialog'); d.className = 'modal';
+  d.innerHTML = `<h2>${title}</h2>${body ? `<p>${body}</p>` : ''}${warn ? `<div class="warn"><b>${warn[0]}</b><span>${warn[1]}</span></div>` : ''}<div class="acts">${acts.map((a, i) => `<button class="btn ${a.cls}" data-i="${i}">${a.label}</button>`).join('')}</div>`;
+  document.body.append(d); d.showModal();
+  d.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { const a = acts[+b.dataset.i]; d.close(); d.remove(); a.fn && a.fn(); } else if (e.target === d) { d.close(); d.remove(); } });
+  d.addEventListener('close', () => d.remove());
+}
+
+/* ============ 알림함 ============ */
+let unread = nNoti;
+function openNoti() {
+  const items = nNoti === 0 && false ? [] : NOTIS.slice(0, Math.max(NOTIS.length, 1));
+  const s = showSheet('full', `<div class="sh-head"><button class="sh-x" data-close aria-label="닫기">${ic('i-back')}</button><h2>알림함</h2></div><div class="sh-body">${items.map((n, i) => `<button class="noti ${i < unread ? 'new' : ''}" data-k="${n.k}"><i></i><span><p>${n.t}</p><small>${n.w}</small></span></button>`).join('')}</div>`, '알림함');
+  unread = 0; $('noti-dot').hidden = true;
+  s.addEventListener('click', (e) => { const b = e.target.closest('.noti'); if (b && b.dataset.k === 'invite') { closeSheet(); openInvites(); } });
+}
+$('btn-noti').addEventListener('click', openNoti);
+
+/* ============ 받은 초대 (미인증도 확인·거절 가능, 수락은 작가 인증 필요) ============ */
+let invites = INVITES.slice();
+function openInvites() {
+  const render = () => `<div class="sh-head"><button class="sh-x" data-close aria-label="닫기">${ic('i-back')}</button><h2>받은 초대</h2></div><div class="sh-body">${invites.length ? invites.map((v, i) => `<div class="invite"><img src="${O}${v.img}.jpg" alt=""><span><b>${v.t}</b><span>${v.s}</span><span>${v.d} · ${v.p}</span></span><div class="btns"><button class="btn btn-soft" data-a="no" data-i="${i}">거절</button><button class="btn btn-dark" data-a="yes" data-i="${i}">수락</button></div></div>`).join('') : '<p class="empty">받은 초대가 없어요</p>'}</div>`;
+  const s = showSheet('full', render(), '받은 초대');
+  s.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-a]'); if (!b) return; const i = +b.dataset.i, v = invites[i];
+    if (b.dataset.a === 'no') modal({ title: '초대를 거절할까요?', body: `“${v.t}” 전시 초대를 거절해요`, acts: [{ label: '취소', cls: 'btn-soft' }, { label: '거절하기', cls: 'btn-dark', fn: () => { invites.splice(i, 1); syncInv(); s.innerHTML = render(); s.querySelectorAll('[data-close]').forEach((x) => x.addEventListener('click', closeSheet)); } }] });
+    else if (!verified) modal({ title: '작가 인증이 필요해요', body: '초대를 수락하려면 학교 이메일로 작가 인증을 먼저 해주세요', acts: [{ label: '취소', cls: 'btn-soft' }, { label: '작가 인증하기', cls: 'btn-dark', fn: () => { location.href = 'verify.html?next=' + encodeURIComponent('my.html?state=after'); } }] });
+    else { closeSheet(); toast('전시 작가명 입력 화면은 아직 준비 중이에요'); }
+  });
+}
+function syncInv() { $('n-inv-rw').textContent = invites.length; $('n-inv-row').textContent = invites.length; $('row-inv').hidden = verified || invites.length === 0; $('n-inv-rw').classList.toggle('red', invites.length > 0); }
+$('rw-inv').addEventListener('click', openInvites); $('row-inv').addEventListener('click', openInvites);
+syncInv();
+
+/* ============ 설정 드로어 ============ */
+$('btn-set').addEventListener('click', () => {
+  const s = showSheet('right', `<div class="dr"><button class="sh-x" data-close aria-label="닫기" style="position:absolute;right:12px;top:12px">${ic('i-close')}</button>
+    <a class="logo" href="home.html" aria-label="Display U. 홈"><img src="assets/img/logo.svg" alt="Display U." width="124" height="28"></a>
+    <button class="prof" id="dr-prof"><span class="avatar"><svg aria-hidden="true"><use href="#i-avatar"/></svg></span><span><b>상준</b><span>@sangjun</span></span>${ic('i-chev')}</button>
+    <button class="cert" id="dr-cert"><span>작가 인증</span><small>${verified ? '인증 완료' : '미인증'}</small></button>
+    <div class="grow"></div>
+    <div class="bot"><button id="dr-out">로그아웃</button><button class="mute" id="dr-del">회원 탈퇴</button></div>
+    <div class="foot"><nav><a href="#">이용약관</a><i></i><a href="#">개인정보처리방침</a></nav><small>© 2026 displayU. All rights reserved.</small></div></div>`, '설정');
+  s.querySelector('#dr-prof').addEventListener('click', () => toast('기본 정보 수정 화면은 아직 준비 중이에요'));
+  s.querySelector('#dr-cert').addEventListener('click', () => { if (!verified) location.href = 'verify.html'; });
+  s.querySelector('#dr-out').addEventListener('click', () => modal({ title: '로그아웃할까요?', body: '로그아웃 후에도 저장한 전시와 기록은\n계정에 유지돼요', acts: [{ label: '취소', cls: 'btn-soft' }, { label: '로그아웃하기', cls: 'btn-dark', fn: () => { closeSheet(); if (window.Auth) Auth.logout(); location.href = 'home.html'; } }] }));
+  s.querySelector('#dr-del').addEventListener('click', () => hasOwner
+    ? modal({ title: '탈퇴할 수 없어요', body: '대표로 있는 전시를 위임하거나 삭제한 뒤\n탈퇴할 수 있어요', acts: [{ label: '닫기', cls: 'btn-soft' }, { label: '전시 관리로 이동', cls: 'btn-dark', fn: () => { location.href = 'manage.html'; } }] })
+    : modal({ title: '탈퇴할까요?', body: '참여 중인 전시에서도 나가게 돼요', warn: ['삭제 안내', '작가 프로필과 작가로 연결된 작품은 복구할 수 없어요'], acts: [{ label: '취소', cls: 'btn-soft' }, { label: '탈퇴하기', cls: 'btn-red', fn: () => { closeSheet(); toast('탈퇴 처리 화면은 아직 준비 중이에요'); } }] }));
+});
+</script>
+<script src="assets/auth.js"></script>
+</body>
+</html>

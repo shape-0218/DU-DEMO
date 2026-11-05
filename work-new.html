@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>작품 등록 · Display U.</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="assets/flow.css">
+<style>
+/* 작품 등록(내 작품) — Figma `작품 등록 · 규칙 적용` 1931:18217 (01·02·03·04, E1~E4). 영상 올리기는 Figma에 없어 새로 설계(❓) */
+.sec-h { font-size: 16px; font-weight: 600; letter-spacing: -0.03em; }
+.sec-s { margin-top: 4px; font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+.authors { margin-top: 12px; border: 1px solid var(--border-primary); border-radius: var(--r12); overflow: hidden; }
+.ar { display: flex; align-items: center; gap: 12px; padding: 16px; }
+.ar + .ar { border-top: 1px solid var(--border-primary); }
+.av { flex: none; width: 46px; height: 46px; display: grid; place-items: end center; overflow: hidden; border-radius: 9999px; background: #dbeafe; color: #fff; }
+.av svg { width: 34px; height: 34px; }
+.ar b { display: block; font-size: 14px; font-weight: 600; }
+.ar small { display: block; font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+.ar .nm { flex: 1; min-width: 0; }
+.ar .rm { width: 32px; height: 32px; margin-right: -6px; display: grid; place-items: center; border-radius: 9999px; }
+.ar .rm:hover { background: var(--bg-secondary); }
+.ar .rm .i { width: 18px; height: 18px; }
+.addco { display: flex; align-items: center; gap: 8px; width: 100%; padding: 16px; border-top: 1px solid var(--border-primary); font-size: 14px; font-weight: 600; text-align: left; transition: background .2s; }
+.addco:hover { background: var(--bg-secondary); }
+.addco .i { width: 20px; height: 20px; } .addco small { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+.info { margin-top: 40px; }
+.info > .field:first-of-type { margin-top: 16px; }
+.mh { display: flex; align-items: center; gap: 4px; font-size: 14px; font-weight: 600; }
+.mh .opt { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+.mh .ct { margin-left: auto; font-size: 12px; font-weight: 500; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.mhelp { margin-top: 4px; font-size: 12px; font-weight: 500; line-height: 1.45; color: var(--text-secondary); }
+.row { display: flex; gap: 8px; margin: 12px calc(var(--gx) * -1) 0; padding: 0 var(--gx); overflow-x: auto; scroll-snap-type: x proximity; scroll-padding-inline: var(--gx); scrollbar-width: none; }
+.row::-webkit-scrollbar { display: none; }
+.tile, .add { flex: none; width: 96px; height: 120px; border-radius: var(--r12); scroll-snap-align: start; }
+.add { display: grid; place-content: center; justify-items: center; gap: 4px; border: 1px solid var(--border-primary); font-size: 12px; font-weight: 500; color: var(--text-secondary); transition: background .2s; }
+.add:hover { background: var(--bg-secondary); }
+.add .i { width: 24px; height: 24px; stroke-width: 1.6; color: var(--text-primary); }
+.tile { position: relative; overflow: hidden; background: #000; animation: rise .35s var(--ease) backwards; }
+.tile img { width: 100%; height: 100%; object-fit: contain; background: #000; }
+.tile .x { position: absolute; top: 4px; right: 4px; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 12px; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.18); }
+.tile .x .i { width: 14px; height: 14px; stroke-width: 2.2; }
+.tile .rep { position: absolute; left: 4px; bottom: 4px; padding: 2px 6px; border-radius: 4px; background: #000; color: #fff; font-size: 10px; font-weight: 600; box-shadow: 0 0 0 1px rgba(255,255,255,.25); }
+.tile .vbadge { top: 4px; left: 4px; }
+.tile .chg { right: 4px; bottom: 4px; }
+.tile.v .rep { left: 4px; }
+.errbox { display: flex; align-items: center; gap: 12px; margin-top: 12px; padding: 14px 16px; border-radius: var(--r12); background: #ffe4e4; }
+.errbox .bang { flex: none; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 9999px; background: var(--notice); color: #fff; font-size: 14px; font-weight: 700; }
+.errbox b { display: block; font-size: 14px; font-weight: 600; color: var(--notice); }
+.errbox span { display: block; font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+.errbox button { margin-left: auto; flex: none; height: 32px; padding: 0 12px; border-radius: 8px; background: #fff; font-size: 12px; font-weight: 600; }
+.two-c { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.opt-i { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+.chips { margin-top: 8px; }
+.ta.tall { height: 128px; }
+
+.tabs { display: grid; grid-template-columns: 1fr 1fr; margin: 16px 0 0; padding: 4px; border-radius: 9999px; background: var(--bg-secondary); }
+.tabs button { height: 40px; border-radius: 9999px; font-size: 14px; font-weight: 600; color: var(--text-secondary); transition: background .25s var(--ease), color .2s; }
+.tabs button[aria-selected="true"] { background: #000; color: #fff; }
+.members { margin-top: 8px; }
+.members li { border-bottom: 1px solid var(--bg-teritary); }
+.members button { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 0; text-align: left; }
+.members .ck { margin-left: auto; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 9999px; border: 1px solid var(--border-primary); color: #fff; }
+.members button[aria-pressed="true"] .ck { background: var(--text-primary); border-color: var(--text-primary); }
+.members .ck .i { width: 14px; height: 14px; stroke-width: 2.6; }
+.members button:disabled { opacity: .45; cursor: default; }
+.sum2 { margin-top: 32px; }
+.done .cta { margin-top: auto; }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="i-avatar" viewBox="0 0 34 34"><circle cx="17" cy="13" r="6" fill="currentColor"/><path d="M4 34c1.2-8 6.6-12 13-12s11.8 4 13 12z" fill="currentColor"/></symbol></defs></svg>
+
+<div class="page">
+  <header class="bar" id="bar">
+    <button type="button" class="back" id="back" aria-label="뒤로"><svg class="i"><use href="#i-back"/></svg></button>
+    <h1>작품 등록</h1>
+  </header>
+
+  <main id="main" style="flex:1;display:flex;flex-direction:column">
+  <form class="screen" id="form" novalidate autocomplete="off">
+    <div class="body">
+      <!-- 작가 -->
+      <section aria-labelledby="au-h" style="margin-top:20px">
+        <h2 class="sec-h" id="au-h">작가</h2>
+        <p class="sec-s">전시작은 관람자에게 작가명으로 표시돼요</p>
+        <div class="authors" id="authors"></div>
+      </section>
+
+      <!-- 작품 정보 -->
+      <section class="info" aria-labelledby="in-h">
+        <h2 class="sec-h" id="in-h">작품 정보</h2>
+
+        <div class="field" id="f-media">
+          <div class="mh"><span id="m-l">작품 이미지<span class="req" aria-hidden="true">*</span></span><span class="ct" id="m-ct" aria-live="polite">0/10</span></div>
+          <p class="mhelp">첫 번째 사진이 대표 이미지예요<br>JPG, PNG, WEBP, HEIC · 장당 최대 20MB<br>영상은 1개까지 · MP4, MOV, WEBM · 3분 이내 · 500MB 이하</p>
+          <div id="m-err"></div>
+          <div class="row" id="m-row" role="list" aria-labelledby="m-l"></div>
+          <p class="mhelp" id="m-hint" style="margin-top:8px">가로로 밀어서 더 볼 수 있어요<br>비율이 다른 사진은 검정 배경으로 채워서 전체가 보여요<br>영상은 목록·카드에서 썸네일로 보이고, 작품 상세에서 재생돼요</p>
+        </div>
+
+        <div class="field" style="margin-top:24px">
+          <label for="title"><span>작품명<span class="req" aria-hidden="true">*</span></span></label>
+          <div class="ul"><input id="title" type="text" maxlength="60" placeholder="입력해 주세요"></div>
+        </div>
+
+        <div class="field" style="margin-top:24px">
+          <label for="desc"><span>작품 설명 <span class="opt-i">· 선택</span></span></label>
+          <p class="mhelp">작품의 주제나 제작 의도를 소개해주세요</p>
+          <textarea class="ta tall" id="desc" maxlength="1500" placeholder="입력해 주세요" style="margin-top:8px"></textarea>
+          <p class="cnt-r" id="desc-n">0 / 1500</p>
+        </div>
+
+        <div class="field" style="margin-top:24px">
+          <div class="mh"><span id="fl">작품분야<span class="req" aria-hidden="true">*</span></span><span class="ct" id="fcnt" aria-live="polite">0/3</span></div>
+          <div class="chips" id="chips" role="group" aria-labelledby="fl"></div>
+        </div>
+
+        <div class="two-c" style="margin-top:24px">
+          <div class="field" style="margin-top:0">
+            <label for="year"><span>제작 연도<span class="req" aria-hidden="true">*</span></span></label>
+            <div class="ul"><input id="year" type="text" inputmode="numeric" maxlength="4" pattern="[0-9]*" placeholder="2026"></div>
+          </div>
+          <div class="field" style="margin-top:0">
+            <label for="medium"><span>재료 / 매체<span class="req" aria-hidden="true">*</span></span></label>
+            <div class="ul"><input id="medium" type="text" maxlength="40" placeholder="입력해 주세요"></div>
+          </div>
+        </div>
+
+        <div class="field" style="margin-top:24px">
+          <label for="size"><span>규격 <span class="opt-i">· 선택</span></span></label>
+          <div class="ul"><input id="size" type="text" maxlength="40" placeholder="90 × 120 cm"></div>
+        </div>
+
+        <div class="field" id="f-proc" style="margin-top:24px">
+          <div class="mh"><span id="p-l">작업 과정 <span class="opt-i">· 선택</span></span><span class="ct" id="p-ct">0/10</span></div>
+          <p class="mhelp">작품을 만든 과정을 보여주는 사진을 추가해요</p>
+          <div class="row" id="p-row" role="list" aria-labelledby="p-l"></div>
+        </div>
+
+        <div class="field" style="margin-top:24px">
+          <label for="point"><span>감상 포인트 <span class="opt-i">· 선택</span></span></label>
+          <p class="mhelp">관람객이 눈여겨보면 좋을 부분을 알려주세요</p>
+          <textarea class="ta tall" id="point" maxlength="1500" placeholder="입력해 주세요" style="margin-top:8px"></textarea>
+          <p class="cnt-r" id="point-n">0 / 1500</p>
+        </div>
+      </section>
+      <p class="demo" style="margin-top:28px"><b>데모용</b> 사진·영상은 내 기기에서 고르며 서버에는 올라가지 않아요.</p>
+    </div>
+    <div class="cta"><button type="submit" class="big" id="go" disabled>작품 등록</button></div>
+  </form>
+
+  <!-- 등록 완료 -->
+  <section class="done" id="done" aria-label="작품 등록이 완료되었어요" hidden>
+    <div class="top">
+      <div class="ring" aria-hidden="true"><svg class="i"><use href="#i-check"/></svg></div>
+      <h2 tabindex="-1" id="done-h">작품 등록이 완료되었어요</h2>
+      <p class="sub">등록한 작품은 전시 작업에서 확인할 수 있어요</p>
+    </div>
+    <dl class="sum sum2">
+      <div><dt>작품명</dt><dd id="d-t"></dd></div>
+      <div><dt>작가</dt><dd id="d-a"></dd></div>
+      <div><dt>전시</dt><dd id="d-e"></dd></div>
+    </dl>
+    <div class="cta"><a class="big" id="d-ok" href="hub.html">확인</a></div>
+  </section>
+  </main>
+</div>
+
+<script src="assets/flow.js"></script>
+<script src="assets/media.js"></script>
+<script src="assets/exdata.js"></script>
+<script>
+const FIELDS = ['회화', '조소', '사진', '그래픽', '브랜딩', '제품', '가구', '공간', '건축', 'UXUI', '공예', '기타'];
+const MAXM = 10, MAXP = 10, MAXF = 3;
+const all = exhibitions();
+const ex = all.find((e) => e.id === q.get('ex')) || all.find((e) => e.role === 'owner') || all[0];
+const myName = ex.myName || '김디유';
+/* 대신 등록(?as=member|name&n=이름&h=@닉네임)이면 첫 작가는 선택한 사람으로 고정하고 등록자(나)를 따로 표시, ?edit=작품id 이면 수정 */
+const AS = q.get('as'), PROXY = (AS === 'member' || AS === 'name') && q.get('n') ? { n: q.get('n'), h: AS === 'member' ? (q.get('h') || '') : '직접 입력' } : null;
+const author = PROXY ? PROXY.n : myName;
+const exd = ExData.get(ex), EDIT = q.get('edit'), editing = EDIT ? exd.works.find((w) => w.id === EDIT) : null;
+const WORKS = 'works.html?id=' + ex.id;
+/* 데모용 전시 팀원(가상) — 실제로는 전시 팀원 목록 API */
+const TEAM = [{ n: '이정우', h: '@quietroom', ok: true }, { n: '김서윤', h: '@blue.note', ok: true }, { n: '박서준', h: '@seojun', ok: true }, { n: '최하늘', h: '작가 인증 필요', ok: false }];
+$('d-ok').href = WORKS;
+
+const st = { media: [], proc: [], fields: new Set(), co: [], errMedia: false, errProc: false, left: false };
+const dirty = () => !!(st.media.length || st.proc.length || st.fields.size || st.co.length || $('title').value || $('desc').value || $('year').value || $('medium').value || $('size').value || $('point').value);
+
+/* ---------- 작가 ---------- */
+const AV = '<span class="av" aria-hidden="true"><svg><use href="#i-avatar"/></svg></span>';
+function renderAuthors() {
+  $('authors').innerHTML = `<div class="ar">${AV}<div class="nm"><b>${esc(author)}</b><small>${PROXY ? '작가 · ' + esc(PROXY.h) : '작가 · 나'}</small></div></div>` +
+    st.co.map((c, i) => `<div class="ar">${AV}<div class="nm"><b>${esc(c.n)}</b><small>${esc(c.h)}</small></div><button type="button" class="rm" data-i="${i}" aria-label="${esc(c.n)} 제외"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button></div>`).join('') +
+    (PROXY ? `<p class="help" style="margin:4px 0 0">등록자 · ${esc(myName)} (나)</p>` : '') +
+    `<button type="button" class="addco" id="addco"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg>공동 작가 추가<small>· 선택</small></button>`;
+  $('addco').addEventListener('click', coSheet);
+  $('authors').querySelectorAll('.rm').forEach((b) => b.addEventListener('click', () => { st.co.splice(+b.dataset.i, 1); renderAuthors(); }));
+}
+function coSheet() {
+  let tab = 'team', pick = new Set(st.co.filter((c) => c.team).map((c) => c.n));
+  showSheet(`<h2>공동 작가 추가</h2><p class="sub">함께 만든 작가를 추가해요</p>
+    <div class="tabs" role="tablist"><button type="button" role="tab" id="tb-t" aria-selected="true">전시 팀원</button><button type="button" role="tab" id="tb-n" aria-selected="false">직접 입력</button></div>
+    <div id="co-body"></div><button type="button" class="big" id="co-ok" style="margin-top:20px">추가 완료</button>`, '공동 작가 추가', (sh) => {
+    const body = sh.querySelector('#co-body'), ok = sh.querySelector('#co-ok'); let typed = st.co.filter((c) => !c.team).map((c) => c.n);
+    const draw = () => {
+      sh.querySelector('#tb-t').setAttribute('aria-selected', tab === 'team'); sh.querySelector('#tb-n').setAttribute('aria-selected', tab === 'name');
+      if (tab === 'team') {
+        body.innerHTML = `<ul class="members">${TEAM.map((m, i) => `<li><button type="button" data-i="${i}" aria-pressed="${pick.has(m.n)}" ${m.ok ? '' : 'disabled'}>${AV}<span class="nm"><b style="display:block;font-size:14px">${esc(m.n)}</b><small style="font-size:12px;color:var(--text-secondary)">${esc(m.h)}</small></span><span class="ck"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg></span></button></li>`).join('')}</ul>`;
+        body.querySelectorAll('[data-i]').forEach((b) => b.addEventListener('click', () => { const m = TEAM[+b.dataset.i]; pick.has(m.n) ? pick.delete(m.n) : pick.add(m.n); b.setAttribute('aria-pressed', pick.has(m.n)); }));
+      } else {
+        body.innerHTML = `<div class="field" style="margin-top:20px"><label for="co-n"><span>작가명<span class="req" aria-hidden="true">*</span></span></label><div class="ul"><input id="co-n" type="text" maxlength="20" placeholder="이름 또는 활동명을 입력해주세요"></div><p class="help">이름만 표시되고 작가 프로필은 연결되지 않아요</p></div><ul class="members" id="typed"></ul>`;
+        const inp = body.querySelector('#co-n'), list = body.querySelector('#typed');
+        const dl = () => { list.innerHTML = typed.map((n, i) => `<li><button type="button" data-i="${i}" aria-label="${esc(n)} 제외">${AV}<span class="nm"><b style="display:block;font-size:14px">${esc(n)}</b><small style="font-size:12px;color:var(--text-secondary)">직접 입력</small></span><svg class="i" style="width:18px;height:18px;margin-left:auto" aria-hidden="true"><use href="#i-close"/></svg></button></li>`).join(''); list.querySelectorAll('[data-i]').forEach((b) => b.addEventListener('click', () => { typed.splice(+b.dataset.i, 1); dl(); })); };
+        inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); const v = inp.value.trim(); if (v && !typed.includes(v)) { typed.push(v); inp.value = ''; dl(); } } });
+        dl();
+      }
+    };
+    sh.querySelector('#tb-t').addEventListener('click', () => { tab = 'team'; draw(); }); sh.querySelector('#tb-n').addEventListener('click', () => { tab = 'name'; draw(); });
+    ok.addEventListener('click', () => {
+      const inp = sh.querySelector('#co-n'); if (inp && inp.value.trim() && !typed.includes(inp.value.trim())) typed.push(inp.value.trim());
+      st.co = [...TEAM.filter((m) => pick.has(m.n)).map((m) => ({ n: m.n, h: m.h, team: true })), ...typed.map((n) => ({ n, h: '직접 입력', team: false }))];
+      closeSheet(); renderAuthors();
+    });
+    draw();
+  });
+}
+
+/* ---------- 사진·영상 올리기 ---------- */
+function tileHtml(m, i, allowVideo) {
+  return `<div class="tile ${m.video ? 'v' : ''}" role="listitem"><img src="${m.video ? m.thumb : m.url}" alt="${m.video ? '영상 썸네일' : '사진'} ${i + 1}">${m.video ? `<span class="vbadge"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg>${mmss(m.duration)}</span><button type="button" class="chg" data-a="chg" data-i="${i}" aria-label="영상 썸네일 변경">썸네일</button>` : ''}${i === 0 && allowVideo ? '<span class="rep">대표 사진</span>' : ''}${i === 0 && !allowVideo ? '<span class="rep">대표 사진</span>' : ''}<button type="button" class="x" data-a="rm" data-i="${i}" aria-label="${i + 1}번째 삭제"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button></div>`;
+}
+function renderRow(key) {
+  const isM = key === 'media', list = st[key], max = isM ? MAXM : MAXP, row = $(isM ? 'm-row' : 'p-row');
+  $(isM ? 'm-ct' : 'p-ct').textContent = `${list.length}/${max}`;
+  row.innerHTML = (list.length < max ? `<button type="button" class="add" data-a="add"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg>${isM ? '사진·영상 추가' : '사진 추가'}</button>` : '') + list.map((m, i) => tileHtml(m, i, isM)).join('');
+  if (isM) {
+    $('m-err').innerHTML = st.errMedia ? '<div class="errbox" role="alert"><span class="bang" aria-hidden="true">!</span><div><b>업로드하지 못했어요</b><span>네트워크 상태를 확인하고 다시 시도해주세요</span></div><button type="button" id="m-retry">다시 시도</button></div>' : '';
+    const r = $('m-retry'); if (r) r.addEventListener('click', () => { st.errMedia = false; renderRow('media'); pickFiles('media'); });
+    $('m-hint').hidden = list.length > 0;
+  }
+  validate();
+}
+const picker = document.createElement('input'); picker.type = 'file'; picker.multiple = true; picker.hidden = true; document.body.appendChild(picker);
+let pickKey = 'media';
+function pickFiles(key) { pickKey = key; picker.accept = key === 'media' ? 'image/jpeg,image/png,image/webp,image/heic,image/heif,video/mp4,video/quicktime,video/webm' : 'image/jpeg,image/png,image/webp,image/heic,image/heif'; picker.click(); }
+picker.addEventListener('change', async () => {
+  const files = [...picker.files]; picker.value = ''; const key = pickKey, list = st[key], max = key === 'media' ? MAXM : MAXP; let bad = false, msg = '';
+  for (const f of files) {
+    if (list.length >= max) { msg = `${key === 'media' ? '작품 이미지' : '작업 과정 사진'}는 최대 ${max}장까지 올릴 수 있어요`; break; }
+    if (key === 'media' && MEDIA.isVideo(f)) {
+      if (list.some((m) => m.video)) { msg = '영상은 1개만 올릴 수 있어요'; continue; }
+      if (f.size > MEDIA.work.mb * 1024 * 1024) { msg = `영상은 ${MEDIA.work.mb}MB 이하로 올려주세요`; continue; }
+      try { const v = await readVideo(f); if (v.duration > MEDIA.work.sec) { URL.revokeObjectURL(v.url); msg = '영상은 3분 이내로 올려주세요'; continue; } list.push({ video: true, name: f.name, ...v }); } catch (e) { bad = true; }
+    } else if (MEDIA.isImage(f) && f.size <= MEDIA.maxImageMB * 1024 * 1024) list.push({ url: URL.createObjectURL(f), name: f.name, file: f });
+    else if (MEDIA.isVideo(f)) { msg = '작업 과정에는 사진만 올릴 수 있어요'; } else bad = true;
+  }
+  if (key === 'media') st.errMedia = bad; else if (bad) msg = msg || '올릴 수 없는 파일이에요';
+  renderRow(key); if (msg) toast(msg);
+});
+['m-row', 'p-row'].forEach((id) => $(id).addEventListener('click', (e) => {
+  const b = e.target.closest('[data-a]'); if (!b) return; const key = id === 'm-row' ? 'media' : 'proc';
+  if (b.dataset.a === 'add') pickFiles(key);
+  else if (b.dataset.a === 'rm') { const m = st[key][+b.dataset.i]; if (m.url) URL.revokeObjectURL(m.url); st[key].splice(+b.dataset.i, 1); renderRow(key); }
+  else if (b.dataset.a === 'chg') { const m = st[key][+b.dataset.i]; thumbSheet(m, (t) => { m.thumb = t; renderRow(key); }); }
+}));
+
+/* ---------- 입력칸 ---------- */
+$('chips').innerHTML = FIELDS.map((f) => `<button type="button" class="chip" aria-pressed="false" data-f="${f}">${f}</button>`).join('');
+$('chips').addEventListener('click', (e) => {
+  const b = e.target.closest('.chip'); if (!b) return; const f = b.dataset.f;
+  if (st.fields.has(f)) st.fields.delete(f); else if (st.fields.size >= MAXF) { toast(`분야는 최대 ${MAXF}개까지 선택할 수 있어요`); return; } else st.fields.add(f);
+  [...$('chips').children].forEach((c) => { const on = st.fields.has(c.dataset.f); c.setAttribute('aria-pressed', on); c.innerHTML = (on ? '<svg class="i" aria-hidden="true"><use href="#i-check"/></svg>' : '') + c.dataset.f; });
+  $('fcnt').textContent = `${st.fields.size}/${MAXF}`; validate();
+});
+$('year').addEventListener('input', () => { $('year').value = $('year').value.replace(/\D/g, '').slice(0, 4); validate(); });
+['title', 'medium'].forEach((id) => $(id).addEventListener('input', validate));
+$('desc').addEventListener('input', () => { $('desc-n').textContent = `${$('desc').value.length} / 1500`; });
+$('point').addEventListener('input', () => { $('point-n').textContent = `${$('point').value.length} / 1500`; });
+function validate() { $('go').disabled = !(st.media.length && $('title').value.trim() && st.fields.size && /^\d{4}$/.test($('year').value) && $('medium').value.trim()); }
+
+/* ---------- 등록 ---------- */
+$('form').addEventListener('submit', async (ev) => {
+  ev.preventDefault(); if ($('go').disabled) return; $('go').disabled = true;
+  const first = st.media[0];
+  const img = first.video ? first.thumb : (first.existing ? first.url : ((first.file ? await imageThumb(first.file) : null) || first.url));
+  const work = { id: 'w' + Date.now().toString(36), exId: ex.id, title: $('title').value.trim(), fields: [...st.fields], year: $('year').value, medium: $('medium').value.trim(), size: $('size').value.trim(), desc: $('desc').value.trim(), point: $('point').value.trim(), authors: [author, ...st.co.map((c) => c.n)], media: st.media.length, video: st.media.some((m) => m.video), proc: st.proc.length, thumb: img };
+  if (editing) {
+    ExData.updateWork(ex.id, editing.id, { title: work.title, fields: work.fields, year: work.year, medium: work.medium, img });
+    st.left = true; sessionStorage.setItem('du.toast', '작품을 수정했어요'); location.href = WORKS; return;
+  }
+  const w = store.get('du.works', []); w.unshift(work); store.set('du.works', w);
+  ExData.addWork(ex.id, { title: work.title, author: work.authors.length > 1 ? work.authors[0] : work.authors[0], authors: work.authors, img, mine: !PROXY, fields: work.fields, year: work.year, medium: work.medium });
+  $('d-t').textContent = work.title; $('d-a').textContent = work.authors.length > 1 ? `${work.authors[0]} 외 ${work.authors.length - 1}명` : work.authors[0]; $('d-e').textContent = ex.title;
+  st.left = true; $('form').hidden = true; $('bar').hidden = true; $('done').hidden = false; window.scrollTo(0, 0); $('done-h').focus({ preventScroll: true });
+});
+
+/* ---------- 뒤로 ---------- */
+const backTo = WORKS;
+$('back').addEventListener('click', () => {
+  if (!editing && !dirty()) { location.href = backTo; return; }
+  modal({ title: editing ? '작품 수정을 나갈까요?' : '작품 등록을 나갈까요?', body: editing ? '수정한 내용은 저장되지 않아요' : '입력한 내용은 저장되지 않아요', acts: [{ label: editing ? '계속 수정' : '계속 작성', cls: 'btn-soft' }, { label: '나가기', cls: 'btn-dark', fn: () => { st.left = true; location.href = backTo; } }] });
+});
+window.addEventListener('beforeunload', (ev) => { if (!st.left && !editing && dirty()) ev.preventDefault(); });
+/* 수정: 등록된 값을 채움(작가 행은 그대로 고정) */
+if (editing) {
+  document.querySelector('#bar h1').textContent = '작품 수정'; document.title = '작품 수정 · Display U.'; $('go').textContent = '수정 완료';
+  $('title').value = editing.title || ''; $('year').value = editing.year || ''; $('medium').value = editing.medium || ''; $('size').value = editing.size || ''; $('desc').value = editing.desc || ''; $('point').value = editing.point || '';
+  $('desc-n').textContent = `${$('desc').value.length} / 1500`; $('point-n').textContent = `${$('point').value.length} / 1500`;
+  st.fields = new Set(editing.fields || []);
+  [...$('chips').children].forEach((c) => { const on = st.fields.has(c.dataset.f); c.setAttribute('aria-pressed', on); c.innerHTML = (on ? '<svg class="i" aria-hidden="true"><use href="#i-check"/></svg>' : '') + c.dataset.f; });
+  $('fcnt').textContent = `${st.fields.size}/${MAXF}`;
+  st.media = [{ url: editing.img, name: '등록된 이미지', existing: true }];
+}
+renderAuthors(); renderRow('media'); renderRow('proc'); validate();
+</script>
+<script src="assets/auth.js"></script>
+</body>
+</html>

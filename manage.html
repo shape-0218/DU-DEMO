@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>내 전시 관리 · Display U.</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="assets/flow.css">
+<style>
+/* 내 전시 관리 1766:24897 + ⋯ 메뉴 1789:13939·1789:14080 */
+.head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-top: 12px; }
+.head h2 { font-size: 20px; font-weight: 600; letter-spacing: -0.035em; }
+.head p { margin-top: 4px; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
+.new { flex: none; display: grid; justify-items: center; gap: 0; min-width: 48px; padding: 0 2px; font-size: 11px; font-weight: 600; line-height: 1.2; }
+.new .i { width: 28px; height: 28px; stroke-width: 1.6; transition: transform .3s var(--ease); }
+.new:hover .i { transform: rotate(90deg); }
+.list { display: grid; gap: 12px; margin-top: 20px; padding-bottom: 40px; }
+.card { position: relative; display: grid; grid-template-columns: 82px minmax(0, 1fr); column-gap: 12px; padding: 12px; border: 1px solid var(--border-primary); border-radius: var(--r12); background: #fff; animation: rise .5s var(--ease) backwards; animation-delay: calc(var(--n, 0) * 45ms); transition: border-color .2s, transform .3s var(--ease); }
+.card.go { cursor: pointer; }
+.card.go:hover { border-color: #a1a1aa; }
+.card.go:active { transform: scale(.995); }
+.card .tx { display: grid; gap: 2px; align-content: start; min-width: 0; padding-right: 28px; }
+.card .top { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+.card h3 { margin-top: 4px; font-size: 16px; font-weight: 600; line-height: 1.35; letter-spacing: -0.03em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.card .org { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+.card .meta { margin-top: 2px; }
+.card .meta + .meta { margin-top: 0; }
+.more { position: absolute; top: 8px; right: 6px; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 9999px; transition: background .2s; }
+.more:hover { background: var(--bg-secondary); }
+.more .i { width: 22px; height: 22px; }
+.pop { position: absolute; z-index: 30; top: 44px; right: 10px; width: 164px; padding: 6px 0; background: #fff; border: 1px solid var(--border-primary); border-radius: var(--r12); box-shadow: 0 12px 32px rgba(0,0,0,.12); animation: pop .2s var(--ease); }
+@keyframes pop { from { opacity: 0; transform: translateY(-4px); } }
+.pop button { display: block; width: 100%; height: 44px; padding: 0 16px; font-size: 14px; font-weight: 500; text-align: left; transition: background .15s; }
+.pop button:hover { background: var(--bg-secondary); }
+.pop .del { color: var(--notice); }
+.head { margin-top: 20px; }
+@media (min-width: 900px) {
+  .head { margin-top: 24px; align-items: flex-end; }
+  .head h2 { font-size: 24px; } .head p { font-size: 14px; }
+  .new { grid-auto-flow: column; align-items: center; gap: 6px; min-width: 0; height: 44px; padding: 0 18px 0 12px; border-radius: 9999px; background: var(--text-primary); color: #fff; font-size: 14px; }
+  .new .i { width: 20px; height: 20px; }
+  .list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 28px; }
+  .card { grid-template-columns: 96px minmax(0, 1fr); padding: 16px; column-gap: 16px; }
+  .poster { width: 96px; }
+  .card h3 { font-size: 18px; }
+}
+@media (min-width: 1200px) { .list { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.empty { padding: 96px 0 40px; text-align: center; font-size: 16px; font-weight: 500; color: var(--text-teritary); }
+.empty a { display: inline-flex; margin-top: 16px; height: 44px; align-items: center; padding: 0 20px; border-radius: var(--r12); background: var(--text-primary); color: #fff; font-size: 14px; font-weight: 600; }
+.name-field { margin-top: 28px; }
+.lead { margin-top: 12px; font-size: 16px; font-weight: 600; }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+<div class="page wide">
+  <header class="bar">
+    <a class="back" href="my.html?state=after" aria-label="마이로 돌아가기"><svg class="i"><use href="#i-back"/></svg></a>
+    <h1>내 전시 관리</h1>
+  </header>
+  <main id="main">
+    <div class="head">
+      <div><h2>참여 중인 전시</h2><p>전시를 등록하거나 참여 중인 전시를 관리해요</p></div>
+      <a class="new" href="exhibition-new.html" aria-label="전시 등록"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg>전시 등록</a>
+    </div>
+    <ul class="list" id="list"></ul>
+  </main>
+</div>
+
+<script src="assets/flow.js"></script>
+<script src="assets/media.js"></script>
+<script>
+const list = $('list');
+let data = exhibitions();
+if (q.get('empty')) data = [];
+
+function render() {
+  if (!data.length) { list.outerHTML = '<div class="empty" id="list">참여 중인 전시가 없어요<br><a href="exhibition-new.html">전시 등록</a></div>'; return; }
+  list.innerHTML = data.map((e, i) => `<li class="card ${e.role === 'owner' ? 'go' : ''}" style="--n:${i}" data-id="${e.id}">
+    <div class="poster"><img src="${esc(e.poster)}" alt="" loading="lazy">${e.posterVideo ? '<span class="vbadge" aria-label="영상 포스터"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg></span>' : ''}</div>
+    <div class="tx">
+      <div class="top"><span class="st" data-s="${e.status}">${STATUS[e.status]}</span><span>· ${ROLE[e.role]}(${esc(e.myName)})</span></div>
+      <h3>${e.role === 'owner' ? `<a href="hub.html?id=${e.id}" class="stretch">${esc(e.title)}</a>` : esc(e.title)}</h3>
+      <p class="org">${esc(e.org)}</p>
+      <p class="meta"><svg class="i" aria-hidden="true"><use href="#i-cal"/></svg><span>${range(e)}</span></p>
+      <p class="meta"><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg><span>${esc(e.place)}</span></p>
+    </div>
+    <button type="button" class="more" aria-haspopup="menu" aria-expanded="false" aria-label="${esc(e.title)} 메뉴" data-id="${e.id}"><svg class="i" aria-hidden="true"><use href="#i-more"/></svg></button>
+  </li>`).join('');
+}
+render();
+
+/* 카드 전체 누르기: 대표자는 전시 관리 허브, 관리자·팀원은 전시 작업 */
+list.addEventListener('click', (ev) => {
+  if (ev.target.closest('.more, .pop, a')) return;
+  const c = ev.target.closest('.card'); if (!c) return;
+  const e = data.find((x) => x.id === c.dataset.id);
+  if (e.role === 'owner') location.href = 'hub.html?id=' + e.id;
+  else location.href = 'works.html?id=' + e.id;
+});
+/* 링크 대신 카드 전체가 눌리도록 */
+const css = document.createElement('style'); css.textContent = '.card .stretch::after { content: ""; position: absolute; inset: 0; border-radius: 12px; } .more { z-index: 2; }'; document.head.appendChild(css);
+
+/* ⋯ 메뉴 */
+let pop = null;
+function closePop() { if (pop) { pop.btn.setAttribute('aria-expanded', 'false'); pop.el.remove(); pop = null; } }
+list.addEventListener('click', (ev) => {
+  const b = ev.target.closest('.more'); if (!b) return;
+  const same = pop && pop.btn === b; closePop(); if (same) return;
+  const e = data.find((x) => x.id === b.dataset.id);
+  const el = document.createElement('div'); el.className = 'pop'; el.setAttribute('role', 'menu');
+  el.innerHTML = `<button type="button" role="menuitem" data-a="name">전시 작가명 수정</button><button type="button" role="menuitem" class="del" data-a="${e.role === 'owner' ? 'delete' : 'leave'}">${e.role === 'owner' ? '전시 삭제하기' : '전시 나가기'}</button>`;
+  b.closest('.card').appendChild(el); b.setAttribute('aria-expanded', 'true'); pop = { el, btn: b, e };
+  el.querySelector('button').focus();
+  el.addEventListener('click', (x) => { const a = x.target.closest('[data-a]'); if (!a) return; const ex = pop.e; closePop(); act(a.dataset.a, ex); });
+});
+document.addEventListener('click', (ev) => { if (pop && !ev.target.closest('.pop, .more')) closePop(); });
+document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape') { const b = pop && pop.btn; closePop(); if (b) b.focus(); } });
+
+function persist() { saveExhibitions(exhibitions().filter((e) => data.some((d) => d.id === e.id)).map((e) => data.find((d) => d.id === e.id) || e)); }
+function act(a, e) {
+  if (a === 'name') nameSheet(e);
+  else if (a === 'delete') modal({ title: '전시를 삭제할까요?', body: '삭제하면 이 전시와 등록된 작품이 모두 사라져요', warn: ['삭제 안내', '삭제된 전시는 복구할 수 없어요'], acts: [{ label: '취소', cls: 'btn-soft' }, { label: '삭제하기', cls: 'btn-red', fn: () => remove(e, '전시를 삭제했어요') }] });
+  else modal({ title: '전시에서 나갈까요?', body: '나가면 이 전시의 작업 공간에 접근할 수 없어요\n다시 참여하려면 다시 초대받아야 해요', warn: ['작품 삭제 안내', '내가 작가로 등록된 작품이 있다면 삭제돼요\n삭제된 작품은 복구할 수 없어요'], acts: [{ label: '취소', cls: 'btn-soft' }, { label: '나가기', cls: 'btn-red', fn: () => remove(e, '전시에서 나갔어요') }] });
+}
+function remove(e, msg) {
+  const all = exhibitions().filter((x) => x.id !== e.id); saveExhibitions(all);
+  data = data.filter((x) => x.id !== e.id); render(); toast(msg);
+}
+function nameSheet(e) {
+  showSheet(`<h2>전시 작가명</h2><p class="lead" style="font-size:14px;font-weight:600;margin-top:14px">이 전시에서 사용할 작가명을 입력해주세요</p><p class="sub">작품을 등록할 때 작가명으로 사용할 이름이에요</p>
+    <div class="field name-field"><label for="nm"><span>전시 작가명<span class="req" aria-hidden="true">*</span></span></label><div class="ul"><input id="nm" type="text" maxlength="20" value="${esc(e.myName)}" autocomplete="off"></div>
+    <p class="help">관람객에게도 보이는 이름이에요 실명을 권장하며, 나중에 [내 전시 관리]에서 바꿀 수 있어요</p></div>
+    <button type="button" class="big" id="nm-ok" style="margin-top:24px">수정 완료</button>`, '전시 작가명 수정', (s) => {
+    const inp = s.querySelector('#nm'), ok = s.querySelector('#nm-ok');
+    const chk = () => { ok.disabled = !inp.value.trim(); }; inp.addEventListener('input', chk);
+    inp.addEventListener('keydown', (k) => { if (k.key === 'Enter' && !ok.disabled) ok.click(); });
+    ok.addEventListener('click', () => { const v = inp.value.trim(); if (!v) return; e.myName = v; persist(); closeSheet(); render(); toast('전시 작가명을 바꿨어요'); });
+    inp.setSelectionRange(inp.value.length, inp.value.length);
+  });
+}
+</script>
+<script src="assets/auth.js"></script>
+</body>
+</html>

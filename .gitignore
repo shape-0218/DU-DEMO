@@ -1,0 +1,7 @@
+.DS_Store
+.vercel
+node_modules
+*.zip
+# 저작권이 있는 영상·원본 백업은 저장소에 올리지 않음
+assets/poster-shore.mp4
+assets/_orig_samples/

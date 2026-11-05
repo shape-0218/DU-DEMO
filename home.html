@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Display U. · 홈</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/* 값은 Figma 변수(UuCPBJWbsAY64wI93X1ORF · 홈 2609:52999)에서 가져옴 */
+:root {
+  --text-primary: #18181b;
+  --text-secondary: #3f3f47;
+  --text-teritary: #71717b;
+  --text-quaternary: #fafafa;
+  --text-disable: #d4d4d8;
+  --border-primary: #d4d4d8;
+  --bg-white: #ffffff;
+  --bg-black: #000000;
+  --line-soft: #f0f0f0;
+  --r12: 12px;
+  --r20: 20px;
+  --ease: cubic-bezier(.16, 1, .3, 1);
+  --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  /* 카로셀: 가운데 포스터 폭(앱 232). 노트북에서는 아래 미디어쿼리로 키움(제안) */
+  --a: 232px;
+  --gap: 12px;
+  --side: .9138;
+  --wrap: 1320px;
+  --pad: 20px;
+  color-scheme: light;
+}
+@media (min-width: 768px)  { :root { --a: 264px; --gap: 16px; --pad: 32px; } }
+@media (min-width: 1100px) { :root { --a: 320px; --gap: 24px; --pad: 48px; } }
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scrollbar-color: var(--border-primary) transparent; scrollbar-width: thin; }
+body { margin: 0; background: var(--bg-white); color: var(--text-primary); font: 500 12px/1.4 var(--font); letter-spacing: -0.03em; -webkit-font-smoothing: antialiased; padding-bottom: 132px; }
+::selection { background: var(--text-primary); color: #fff; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; letter-spacing: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+a, button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+h1, h2, h3, p { margin: 0; }
+img { display: block; }
+:focus-visible { outline: 2px solid var(--text-primary); outline-offset: 2px; border-radius: 4px; }
+.dark :focus-visible { outline-color: var(--text-quaternary); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.skip { position: absolute; left: 16px; top: -64px; z-index: 30; height: 44px; padding: 0 16px; display: inline-flex; align-items: center; background: var(--text-primary); color: #fff; border-radius: var(--r12); font-size: 14px; font-weight: 600; transition: top .2s var(--ease); }
+.skip:focus-visible { top: 8px; }
+.inner { width: 100%; max-width: calc(var(--wrap) + var(--pad) * 2); margin-inline: auto; padding-inline: var(--pad); }
+
+/* 헤더 */
+.head { background: var(--bg-white); }
+.head .inner { height: 44px; display: flex; align-items: center; justify-content: space-between; }
+.head .logo img { width: 124px; height: 28.3px; }
+.head .search { width: 28px; height: 28px; }
+@media (min-width: 768px) { .head .inner { height: 64px; } }
+
+/* 검정 영역 */
+.dark { position: relative; background: var(--bg-black); color: var(--text-quaternary); padding-bottom: 26px; }
+.tabs { display: flex; justify-content: safe center; padding-top: 6px; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { flex: none; padding: 8px 12px; font-size: 14px; font-weight: 600; color: var(--text-teritary); border-bottom: 2px solid transparent; transition: color .2s; }
+.tab:hover { color: var(--text-quaternary); }
+.tab[aria-selected="true"] { color: var(--text-quaternary); border-bottom-color: var(--text-quaternary); }
+.tabs-wrap { padding-inline: calc(var(--pad) - 12px); max-width: calc(var(--wrap) + var(--pad) * 2); margin-inline: auto; }
+
+.stage { position: relative; }
+.rail { position: relative; display: flex; align-items: flex-start; gap: var(--gap); overflow-x: auto; scroll-snap-type: x mandatory; padding: 16px calc(50% - var(--a) / 2) 0; scrollbar-width: none; overscroll-behavior-x: contain; }
+.rail::-webkit-scrollbar { display: none; }
+.rail:focus-visible { outline-offset: -2px; }
+.slot { flex: 0 0 var(--a); scroll-snap-align: center; display: flex; flex-direction: column; align-items: center; cursor: pointer; padding-top: calc(var(--a) * 14 / 232); transition: padding-top .45s var(--ease); }
+.slot.is-active { padding-top: 0; cursor: default; }
+.poster { position: relative; width: calc(var(--a) * var(--side)); aspect-ratio: 232 / 329; border-radius: var(--r12); overflow: hidden; background: #797979; transition: width .45s var(--ease); }
+.slot.is-active .poster { width: var(--a); }
+.poster img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* 영상 포스터: 가운데(활성) 포스터일 때만 소리 없이 반복 재생, 다른 칸은 썸네일(첫 이미지)만 */
+.poster video.pv { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .5s var(--ease); pointer-events: none; }
+.poster video.pv.on { opacity: 1; }
+.dim, .shade-side, .shade-active { position: absolute; inset: 0; pointer-events: none; transition: opacity .45s var(--ease); }
+.dim { background: rgba(0, 0, 0, .6); }
+.shade-side { background: linear-gradient(to bottom, rgba(0, 0, 0, .5), #000); }
+.shade-active { background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 56.5%, #000); opacity: 0; }
+.slot.is-active .dim, .slot.is-active .shade-side { opacity: 0; }
+.slot.is-active .shade-active { opacity: 1; }
+.cover { position: absolute; inset: 0; z-index: 2; cursor: pointer; }
+.cover:focus-visible { outline-offset: -3px; border-radius: var(--r12); }
+.slot.is-active .cover:active { background: rgba(255, 255, 255, .06); }
+.info .open { color: inherit; }
+.slot.is-active .info .open:hover strong { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.badge { position: absolute; top: 12px; right: 12px; display: flex; align-items: center; gap: 2px; padding: 4px 9px; background: #000; border-radius: 9999px; font-size: 12px; font-weight: 500; color: var(--text-disable); backdrop-filter: blur(10px); }
+.badge img, .badge .hi { width: 14px; height: 14px; flex: none; }
+.rank { position: absolute; left: 16px; bottom: 12px; font-size: 36px; line-height: 1.4; font-weight: 700; color: var(--text-teritary); text-shadow: 0 0 20px rgba(0, 0, 0, .25); transition: color .45s var(--ease); }
+.slot.is-active .rank { color: var(--text-quaternary); bottom: 6px; }
+.info { width: calc(var(--a) * var(--side)); display: grid; gap: 8px; text-align: center; padding-top: 14px; transition: width .45s var(--ease); }
+.slot.is-active .info { width: var(--a); }
+.info .t { display: grid; gap: 2px; color: var(--text-teritary); transition: color .45s var(--ease); }
+.info .t strong { font-size: 16px; font-weight: 600; letter-spacing: -0.03em; }
+.slot.is-active .info .t { color: var(--text-quaternary); }
+.meta { display: grid; gap: 2px; color: var(--text-teritary); }
+.meta p { display: flex; align-items: center; justify-content: center; gap: 2px; }
+.meta img { width: 14px; height: 14px; }
+.list-link { display: flex; justify-content: flex-end; padding: 4px var(--pad); }
+.list-link a { display: inline-flex; align-items: center; gap: 3px; color: var(--text-teritary); text-decoration: underline; text-underline-offset: 2px; }
+.list-link img { width: 14.8px; height: 13px; }
+.arrow { display: none; position: absolute; top: 190px; z-index: 2; width: 44px; height: 44px; border-radius: 9999px; border: 1px solid #2d2d30; background: #000; place-items: center; transition: background .2s, transform .2s var(--ease); }
+.arrow:hover { background: #18181b; }
+.arrow:active { transform: scale(.96); }
+.arrow img { width: 24px; height: 24px; }
+.arrow.prev { left: var(--pad); } .arrow.prev img { transform: scaleX(-1); }
+.arrow.next { right: var(--pad); }
+@media (min-width: 1100px) { .arrow { display: grid; } .tabs { justify-content: center; } }
+
+.empty { min-height: 280px; display: grid; place-content: center; justify-items: center; gap: 12px; text-align: center; }
+.empty p { font-size: 16px; font-weight: 600; color: var(--text-quaternary); }
+.empty a { color: var(--text-teritary); text-decoration: underline; text-underline-offset: 2px; }
+[hidden] { display: none !important; }
+
+.map { display: block; border-top: 1px solid #2d2d30; margin-top: 16px; }
+.map .inner { display: flex; align-items: center; justify-content: space-between; padding-block: 20px; }
+.map .l { display: flex; align-items: center; gap: 14px; }
+.map .pin { width: 34px; height: 34px; display: grid; place-items: center; }
+.map .pin img { width: 21.56px; height: 27.48px; }
+.map strong { display: block; font-size: 16px; font-weight: 600; color: var(--text-quaternary); letter-spacing: -0.03em; }
+.map span { display: block; padding-top: 2px; color: var(--text-teritary); }
+.map .go { width: 32px; height: 32px; }
+.map:hover .go { transform: translateX(2px); }
+.map .go { transition: transform .3s var(--ease); }
+
+/* 흰 영역 */
+.sheet { position: relative; margin-top: -20px; background: var(--bg-white); border-radius: var(--r20) var(--r20) 0 0; }
+.works { padding-block: 20px; }
+.works .hd { display: flex; align-items: center; justify-content: space-between; }
+.works h2 { font-size: 18px; font-weight: 600; letter-spacing: -0.03em; color: var(--text-primary); }
+.works .more { display: inline-flex; align-items: center; color: var(--text-teritary); }
+.works .more img { width: 16px; height: 16px; }
+.works .sub { margin-top: 2px; color: var(--text-teritary); }
+.art-row { margin-top: 16px; display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; padding-right: var(--pad); margin-right: calc(var(--pad) * -1); }
+.art-row::-webkit-scrollbar { display: none; }
+.art { flex: 0 0 175px; scroll-snap-align: start; display: block; background: #000; border-radius: var(--r12); overflow: hidden; color: var(--text-quaternary); transition: transform .3s var(--ease); }
+.art:active { transform: scale(.98); }
+.art .im { padding: 7px; }
+.art .im div { aspect-ratio: 161 / 215; border-radius: var(--r12); overflow: hidden; }
+.art .im img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
+.art:hover .im img { transform: scale(1.03); }
+.art .tx { padding: 0 12px 10px; }
+.art b { display: block; font-size: 14px; font-weight: 700; letter-spacing: -0.03em; }
+@media (min-width: 768px)  { .art-row { margin-right: 0; padding-right: 0; overflow: visible; } .art { flex: 1 1 0; min-width: 0; } }
+.rule { height: 14px; background: var(--line-soft); }
+.reg { border-bottom: 1px solid var(--line-soft); }
+.reg .inner { display: flex; align-items: flex-end; justify-content: space-between; padding-block: 20px; gap: 16px; }
+.reg h2 { font-size: 18px; font-weight: 600; letter-spacing: -0.03em; }
+.reg p { color: var(--text-teritary); }
+.reg a { display: inline-flex; align-items: center; gap: 3px; font-weight: 600; color: var(--text-secondary); text-decoration: underline; text-underline-offset: 2px; white-space: nowrap; }
+.reg a img { width: 12px; height: 12px; }
+.foot .inner { padding-block: 20px; display: grid; gap: 8px; }
+.foot .logo img { width: 99px; height: 22.6px; }
+.foot .links { display: flex; align-items: center; gap: 12px; color: var(--text-teritary); }
+.foot .links i { width: 1px; height: 10px; background: var(--border-primary); }
+.foot a:hover { color: var(--text-primary); }
+.foot small { font-size: 10px; font-weight: 400; color: var(--text-teritary); letter-spacing: -0.03em; }
+
+/* 하단 알약 탭 */
+.nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: flex; justify-content: center; padding: 24px 20px max(16px, env(safe-area-inset-bottom)); background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #fff); pointer-events: none; }
+.nav .pill { pointer-events: auto; width: 362px; max-width: 100%; height: 70px; background: #000; border-radius: 9999px; box-shadow: 2px 8px 18px rgba(4, 0, 250, .06); display: flex; align-items: center; justify-content: space-around; overflow: hidden; }
+.nav a { position: relative; width: 56px; height: 47px; display: grid; place-items: center; padding-top: 7px; }
+.nav a img.ic { width: 40px; height: 40px; }
+.nav a[aria-current="page"] .bar { position: absolute; inset: 0; width: 56px; height: 47px; }
+.nav a:not([aria-current]) { transition: transform .25s var(--ease); }
+.nav a:not([aria-current]):hover { transform: translateY(-2px); }
+.nav a:focus-visible { outline-color: #fafafa; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+
+<header class="head">
+  <div class="inner">
+    <a class="logo" href="#" aria-label="Display U. 홈"><img src="assets/img/logo.svg" width="124" height="28" alt="Display U."></a>
+    <a class="search" href="explore.html" aria-label="검색"><img src="assets/img/search-header.svg" width="28" height="28" alt=""></a>
+  </div>
+</header>
+
+<main id="main">
+  <h1 class="sr">Display U. 홈</h1>
+
+  <section class="dark" aria-label="전시 둘러보기">
+    <div class="tabs-wrap">
+      <div class="tabs" role="tablist" aria-label="전시 분류">
+        <button class="tab" role="tab" id="t-pop"  data-k="pop"  aria-selected="true"  aria-controls="stage">인기 전시</button>
+        <button class="tab" role="tab" id="t-grad" data-k="grad" aria-selected="false" aria-controls="stage" tabindex="-1">졸업전시</button>
+        <button class="tab" role="tab" id="t-live" data-k="live" aria-selected="false" aria-controls="stage" tabindex="-1">전시 중</button>
+        <button class="tab" role="tab" id="t-soon" data-k="soon" aria-selected="false" aria-controls="stage" tabindex="-1">전시 예정</button>
+        <button class="tab" role="tab" id="t-end"  data-k="end"  aria-selected="false" aria-controls="stage" tabindex="-1">마감 임박</button>
+      </div>
+    </div>
+
+    <div class="stage" id="stage" role="tabpanel" aria-labelledby="t-pop">
+      <div id="posters">
+        <button class="arrow prev" id="prev" aria-label="이전 전시"><img src="assets/img/chevron-arrow.svg" width="24" height="24" alt=""></button>
+        <button class="arrow next" id="next" aria-label="다음 전시"><img src="assets/img/chevron-arrow.svg" width="24" height="24" alt=""></button>
+        <div class="rail" id="rail" tabindex="0" role="group" aria-roledescription="카로셀" aria-label="전시 포스터">
+          <article class="slot" aria-label="순위 9">
+            <div class="poster">
+              <img src="assets/img/poster-left.png" alt="전시 포스터" width="237" height="336" loading="lazy">
+              <span class="dim"></span><span class="shade-side"></span><span class="shade-active"></span><a class="cover" href="exhibition.html" aria-label="전시 상세 보기: 느린 빛"></a>
+              <span class="badge"><svg class="hi" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.2S4.5 15.6 4.5 9.9A4.2 4.2 0 0 1 12 7.6a4.2 4.2 0 0 1 7.5 2.3c0 5.7-7.5 10.3-7.5 10.3z"/></svg>202</span>
+              <span class="rank">9</span>
+            </div>
+            <div class="info">
+              <div class="t"><a class="open" href="exhibition.html"><strong>느린 빛</strong></a><span>새봄대학교 회화과</span></div>
+              <div class="meta"><p><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14">06.05 - 06.14</p><p><img src="assets/img/icon-location.svg" alt="" width="14" height="14">새봄미술관 1관</p></div>
+            </div>
+          </article>
+          <article class="slot is-active" aria-label="순위 1">
+            <div class="poster">
+              <img src="assets/poster-shore-thumb.jpg" alt="전시 포스터: 여넥스" width="232" height="329" fetchpriority="high">
+              <video class="pv" data-src="assets/poster-shore.mp4" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
+              <span class="dim"></span><span class="shade-side"></span><span class="shade-active"></span><a class="cover" href="exhibition.html" aria-label="전시 상세 보기: 여넥스"></a>
+              <span class="badge"><svg class="hi" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.2S4.5 15.6 4.5 9.9A4.2 4.2 0 0 1 12 7.6a4.2 4.2 0 0 1 7.5 2.3c0 5.7-7.5 10.3-7.5 10.3z"/></svg>202</span>
+              <span class="rank">1</span>
+            </div>
+            <div class="info">
+              <div class="t"><a class="open" href="exhibition.html"><strong>여넥스</strong></a><span>한결대학교 시각디자인학과</span></div>
+              <div class="meta"><p><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14">07.29</p><p><img src="assets/img/icon-location.svg" alt="" width="14" height="14">진달래홀</p></div>
+            </div>
+          </article>
+          <article class="slot" aria-label="순위 2">
+            <div class="poster">
+              <img src="assets/img/poster-right.png" alt="전시 포스터" width="237" height="336" loading="lazy">
+              <span class="dim"></span><span class="shade-side"></span><span class="shade-active"></span><a class="cover" href="exhibition.html" aria-label="전시 상세 보기: 도시의 결"></a>
+              <span class="badge"><svg class="hi" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.2S4.5 15.6 4.5 9.9A4.2 4.2 0 0 1 12 7.6a4.2 4.2 0 0 1 7.5 2.3c0 5.7-7.5 10.3-7.5 10.3z"/></svg>202</span>
+              <span class="rank">2</span>
+            </div>
+            <div class="info">
+              <div class="t"><a class="open" href="exhibition.html"><strong>도시의 결</strong></a><span>늘솔대학교 사진학과</span></div>
+              <div class="meta"><p><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14">06.08 - 06.16</p><p><img src="assets/img/icon-location.svg" alt="" width="14" height="14">늘솔갤러리 B1</p></div>
+            </div>
+          </article>
+        </div>
+        <div class="inner list-link" style="padding-block:4px"><a href="#"><img src="assets/img/icon-list.svg" alt="" width="15" height="13">리스트형</a></div>
+      </div>
+
+      <div class="empty" id="empty" hidden>
+        <p id="empty-msg"></p>
+        <a href="#">지난 전시 둘러보기</a>
+      </div>
+    </div>
+
+    <a class="map" href="#">
+      <span class="inner">
+        <span class="l">
+          <span class="pin"><img src="assets/img/map-pin.svg" alt="" width="22" height="27"></span>
+          <span><strong>가까운 전시 찾기</strong><span>지도에서 전시 위치를 확인해보세요</span></span>
+        </span>
+        <img class="go" src="assets/img/chevron-map.svg" alt="" width="32" height="32">
+      </span>
+    </a>
+  </section>
+
+  <div class="sheet">
+    <section class="works inner" aria-labelledby="works-title">
+      <div class="hd">
+        <h2 id="works-title">ARTWORKS</h2>
+        <a class="more" href="#">더보기<img src="assets/img/chevron-more.svg" alt="" width="16" height="16"></a>
+      </div>
+      <p class="sub">전시 속 작품을 만나보세요</p>
+      <div class="art-row">
+        <a class="art" href="work.html"><div class="im"><div><img src="assets/img/art-1.png" alt="여넥스 작품" width="161" height="215" loading="lazy"></div></div><div class="tx"><b>여넥스</b>김서윤</div></a>
+        <a class="art" href="work.html"><div class="im"><div><img src="assets/img/explore/opt/wk2.jpg" alt="느린 빛 작품" width="161" height="215" loading="lazy"></div></div><div class="tx"><b>느린 빛</b>박도현</div></a>
+        <a class="art" href="work.html"><div class="im"><div><img src="assets/img/art-2.png" alt="도시의 결 작품" width="161" height="215" loading="lazy"></div></div><div class="tx"><b>도시의 결</b>이정우 외 1명</div></a>
+        <a class="art" href="work.html"><div class="im"><div><img src="assets/img/explore/opt/wk3.jpg" alt="손끝의 지도 작품" width="161" height="215" loading="lazy"></div></div><div class="tx"><b>손끝의 지도</b>최하늘</div></a>
+      </div>
+    </section>
+
+    <div class="rule" aria-hidden="true"></div>
+
+    <section class="reg" aria-label="전시 등록 안내">
+      <div class="inner">
+        <div><h2>준비 중인 전시가 있나요?</h2><p>디유에 전시와 작품을 소개해보세요</p></div>
+        <a href="#">전시 등록하기<img src="assets/img/icon-go.svg" alt="" width="12" height="12"></a>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <div class="inner">
+        <a class="logo" href="#" aria-label="Display U. 홈"><img src="assets/img/logo-footer.svg" width="99" height="23" alt="Display U."></a>
+        <div class="links"><a href="#">이용약관</a><i></i><a href="#">개인정보처리방침</a></div>
+        <small>© 2026 displayU. All rights reserved.</small>
+      </div>
+    </footer>
+  </div>
+</main>
+
+<nav class="nav" aria-label="하단 메뉴">
+  <div class="pill">
+    <a href="#" aria-current="page" aria-label="홈"><img class="bar" src="assets/img/tab-bar.svg" alt="" width="56" height="47"><img class="ic" src="assets/img/nav-home.svg" alt="" width="40" height="40" style="position:relative"></a>
+    <a href="explore.html" aria-label="검색"><img class="ic" src="assets/img/nav-search.svg" alt="" width="40" height="40"></a>
+    <a href="my.html" aria-label="마이"><img class="ic" src="assets/img/nav-user.svg" alt="" width="40" height="40"></a>
+  </div>
+</nav>
+
+<script>
+const rail = document.getElementById('rail'), slots = [...rail.children].filter((e) => e.classList.contains('slot'));
+const posters = document.getElementById('posters'), empty = document.getElementById('empty'), msg = document.getElementById('empty-msg');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const emptyText = { live: '진행 중인 전시가 없어요', soon: '예정된 전시가 없어요', end: '곧 끝나는 전시가 없어요' };
+let active = 1;
+
+function offsetOf(i) { const s = slots[i]; return s.offsetLeft + s.offsetWidth / 2 - rail.clientWidth / 2; }
+function setActive(i) { active = i; slots.forEach((s, n) => { s.classList.toggle('is-active', n === i); s.removeAttribute('aria-current'); }); slots[i].setAttribute('aria-current', 'true'); syncVideos(); }
+/* 영상 포스터: 활성 칸이면 재생, 아니면 멈추고 썸네일로. 움직임 줄이기 설정이면 계속 썸네일 */
+function syncVideos() {
+  rail.querySelectorAll('video.pv').forEach((v) => {
+    const on = !reduce && !document.hidden && !posters.hidden && v.closest('.slot').classList.contains('is-active');
+    if (on) { if (!v.src) v.src = v.dataset.src; v.play().then(() => v.classList.add('on')).catch(() => {}); }
+    else { v.classList.remove('on'); v.pause(); }
+  });
+}
+document.addEventListener('visibilitychange', syncVideos);
+function nearest() { const c = rail.scrollLeft + rail.clientWidth / 2; let b = 0, d = 1e9; slots.forEach((s, i) => { const k = Math.abs(s.offsetLeft + s.offsetWidth / 2 - c); if (k < d) { d = k; b = i; } }); return b; }
+let settle;
+function go(i, smooth = true) {
+  i = Math.max(0, Math.min(slots.length - 1, i));
+  rail.scrollTo({ left: offsetOf(i), behavior: smooth && !reduce ? 'smooth' : 'auto' }); setActive(i);
+  clearTimeout(settle);
+  if (smooth) settle = setTimeout(() => { if (Math.abs(rail.scrollLeft - offsetOf(i)) > 2) rail.scrollTo({ left: offsetOf(i), behavior: 'auto' }); }, 700); /* 스크롤 애니메이션이 멈췄을 때 위치 보정 */
+}
+let ticking = false;
+rail.addEventListener('scroll', () => { if (ticking) return; ticking = true; requestAnimationFrame(() => { ticking = false; const n = nearest(); if (n !== active) setActive(n); }); }, { passive: true });
+/* 가운데 포스터는 전시 상세로 이동, 옆 포스터는 먼저 가운데로 */
+slots.forEach((s, i) => s.addEventListener('click', (e) => { if (i !== active) { e.preventDefault(); go(i); } }));
+document.getElementById('prev').addEventListener('click', () => go(active - 1));
+document.getElementById('next').addEventListener('click', () => go(active + 1));
+rail.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') { e.preventDefault(); go(active + 1); } if (e.key === 'ArrowLeft') { e.preventDefault(); go(active - 1); } });
+addEventListener('resize', () => go(active, false));
+
+const tabs = [...document.querySelectorAll('.tab')];
+function pick(tab, focus, silent) {
+  const k = tab.dataset.k;
+  tabs.forEach((t) => { const on = t === tab; t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; });
+  const isEmpty = k in emptyText;
+  posters.parentElement.querySelector('.list-link').hidden = isEmpty;
+  posters.hidden = isEmpty; empty.hidden = !isEmpty; msg.textContent = emptyText[k] || '';
+  document.getElementById('stage').setAttribute('aria-labelledby', tab.id);
+  if (!isEmpty) go(active, false);
+  syncVideos();
+  if (focus) tab.focus();
+  if (!silent) { const u = new URL(location.href); k === 'pop' ? u.searchParams.delete('tab') : u.searchParams.set('tab', k); try { history.replaceState(null, '', u); } catch (e) {} }
+}
+tabs.forEach((t, i) => {
+  t.addEventListener('click', () => pick(t));
+  t.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') { e.preventDefault(); pick(tabs[(i + 1) % tabs.length], true); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); pick(tabs[(i + tabs.length - 1) % tabs.length], true); }
+  });
+});
+const first = tabs.find((t) => t.dataset.k === new URLSearchParams(location.search).get('tab')) || tabs[0];
+requestAnimationFrame(() => { go(1, false); pick(first, false, true); });
+document.fonts && document.fonts.ready.then(() => go(active, false));
+</script>
+<script src="assets/auth.js"></script>
+</body>
+</html>
