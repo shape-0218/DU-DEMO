@@ -16,12 +16,12 @@
 .sumc .prev { display: inline-flex; align-items: center; gap: 2px; font-size: 12px; font-weight: 600; white-space: nowrap; }
 .sumc .prev .i { width: 14px; height: 14px; transition: transform .3s var(--ease); }
 .sumc .prev:hover .i { transform: translateX(2px); }
-.sumc h2 { margin-top: 4px; font-size: 16px; font-weight: 600; line-height: 1.35; letter-spacing: -0.03em; }
+.sumc h2 { margin-top: 4px; font-size: 16px; font-weight: 600; line-height: 1.4; letter-spacing: -0.03em; }
 .sumc .org { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
 .sumc .meta { margin-top: 2px; } .sumc .meta + .meta { margin-top: 0; }
 .ban { margin-top: 16px; padding: 16px; border-radius: var(--r12); animation: rise .45s var(--ease) backwards; }
 .ban b { display: block; font-size: 14px; font-weight: 600; }
-.ban p { margin-top: 4px; font-size: 12px; font-weight: 500; line-height: 1.5; }
+.ban p { margin-top: 4px; font-size: 12px; font-weight: 500; line-height: 1.4; }
 .ban[data-s="prep"] { background: var(--bg-secondary); }
 .ban[data-s="review"] { background: #dbeafe; } .ban[data-s="review"] b { color: #2563eb; }
 .ban[data-s="reject"] { background: #ffe0e0; } .ban[data-s="reject"] b { color: var(--notice); }
@@ -40,7 +40,7 @@
 .stats > div { padding-left: 4px; }
 .stats > div + div { padding-left: 16px; border-left: 1px solid var(--border-primary); }
 .stats small { display: block; font-size: 12px; font-weight: 500; }
-.stats strong { font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.stats strong { font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .stats strong + span { font-size: 12px; font-weight: 500; margin-left: 2px; }
 .none { margin-top: 14px; padding-left: 34px; font-size: 14px; font-weight: 500; color: var(--text-secondary); }
 .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
@@ -48,8 +48,8 @@
 .tile .hd { gap: 8px; }
 .tile .hd .i { width: 22px; height: 22px; }
 .tile .ch { margin-left: auto; width: 16px; height: 16px; color: var(--text-teritary); }
-.tile ul { margin-top: 14px; display: grid; gap: 4px; font-size: 13px; font-weight: 500; color: var(--text-secondary); }
-.tile .pend { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--text-primary); }
+.tile ul { margin-top: 14px; display: grid; gap: 4px; font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+.tile .pend { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: var(--text-primary); }
 .tile .pend::before { content: ""; width: 8px; height: 8px; border-radius: 9999px; background: var(--warn); }
 
 .pub { margin-top: 32px; scroll-margin-top: 24px; }
@@ -63,7 +63,7 @@
 .auto { margin-top: 16px; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
 .menu { position: absolute; z-index: 10; left: 0; right: 0; top: calc(100% + 4px); padding: 4px 0; background: #fff; border: 1px solid var(--border-primary); border-radius: var(--r12); box-shadow: 0 12px 32px rgba(0,0,0,.12); animation: pop .2s var(--ease); }
 @keyframes pop { from { opacity: 0; transform: translateY(-4px); } }
-.menu button { display: flex; align-items: center; justify-content: space-between; width: 100%; height: 48px; padding: 0 14px; font-size: 15px; font-weight: 500; text-align: left; transition: background .15s; }
+.menu button { display: flex; align-items: center; justify-content: space-between; width: 100%; height: 48px; padding: 0 14px; font-size: 16px; font-weight: 500; text-align: left; transition: background .15s; }
 .menu button:hover { background: var(--bg-secondary); }
 .menu button[aria-selected="true"] { background: var(--bg-secondary); font-weight: 600; }
 .menu .i { width: 18px; height: 18px; }

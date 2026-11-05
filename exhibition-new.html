@@ -23,7 +23,7 @@
 .add:hover { background: var(--bg-secondary); }
 .add .i { width: 28px; height: 28px; stroke-width: 1.6; }
 .pf-empty .tx { padding-top: 2px; }
-.fhelp { margin-top: 4px; font-size: 11px; font-weight: 500; line-height: 1.5; color: var(--text-secondary); }
+.fhelp { margin-top: 4px; font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-secondary); }
 .thumbs { display: flex; gap: 8px; margin: 12px calc(var(--gx) * -1) 0; padding: 0 var(--gx); overflow-x: auto; scroll-snap-type: x proximity; scroll-padding-inline: var(--gx); scrollbar-width: none; }
 .thumbs::-webkit-scrollbar { display: none; }
 .thumbs .add { width: 76px; height: 100px; scroll-snap-align: start; }
@@ -32,9 +32,9 @@
 .th img { width: 100%; height: 100%; object-fit: cover; }
 .th .x { position: absolute; top: 6px; right: 6px; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 9999px; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.15); }
 .th .x .i { width: 12px; height: 12px; stroke-width: 2.4; }
-.th .rep { position: absolute; left: 6px; bottom: 6px; height: 20px; padding: 0 6px; display: inline-flex; align-items: center; border-radius: 4px; background: #000; color: #fff; font-size: 11px; font-weight: 600; }
+.th .rep { position: absolute; left: 6px; bottom: 6px; height: 20px; padding: 0 6px; display: inline-flex; align-items: center; border-radius: 4px; background: #000; color: #fff; font-size: 10px; font-weight: 600; }
 .errbox { display: flex; align-items: center; gap: 12px; margin-top: 16px; padding: 14px 16px; border-radius: var(--r12); background: #ffe4e4; }
-.errbox .bang { flex: none; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 9999px; background: var(--notice); color: #fff; font-size: 14px; font-weight: 700; }
+.errbox .bang { flex: none; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 9999px; background: var(--notice); color: #fff; font-size: 14px; font-weight: 600; }
 .errbox b { display: block; font-size: 14px; font-weight: 600; color: var(--notice); }
 .errbox span { display: block; font-size: 12px; font-weight: 500; color: var(--text-secondary); }
 .errbox button { margin-left: auto; flex: none; height: 32px; padding: 0 12px; border-radius: 8px; background: #fff; font-size: 12px; font-weight: 600; }
@@ -47,7 +47,7 @@
 
 /* 달력 */
 .range { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; padding: 14px 16px; border-radius: var(--r12); background: var(--bg-secondary); }
-.range small { display: block; font-size: 11px; font-weight: 500; color: var(--text-secondary); }
+.range small { display: block; font-size: 12px; font-weight: 500; color: var(--text-secondary); }
 .range b { display: block; margin-top: 2px; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .range b.ph { color: var(--text-disable); }
 .cal-h { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
@@ -56,7 +56,7 @@
 .cal-h button:hover { background: var(--bg-secondary); }
 .cal-h .i { width: 18px; height: 18px; }
 .dow, .days { display: grid; grid-template-columns: repeat(7, 1fr); }
-.dow span { height: 32px; display: grid; place-items: center; font-size: 11px; font-weight: 500; color: var(--text-secondary); }
+.dow span { height: 32px; display: grid; place-items: center; font-size: 12px; font-weight: 500; color: var(--text-secondary); }
 .days button { height: 44px; display: grid; place-items: center; font-size: 14px; font-weight: 500; font-variant-numeric: tabular-nums; transition: background .15s; }
 .days button:disabled { color: var(--text-disable); cursor: default; }
 .days button.mid { background: var(--bg-secondary); }
@@ -70,7 +70,7 @@
 .wheel { height: 240px; margin-top: 8px; overflow-y: auto; scroll-snap-type: y mandatory; padding: 96px 0; scrollbar-width: none; overscroll-behavior: contain; }
 .wheel::-webkit-scrollbar { display: none; }
 .wheel button { display: grid; place-items: center; width: 100%; height: 48px; scroll-snap-align: center; font-size: 14px; font-weight: 500; color: var(--text-secondary); font-variant-numeric: tabular-nums; border-radius: 10px; transition: background .15s, color .15s; }
-.wheel button[aria-selected="true"] { background: var(--bg-secondary); color: var(--text-primary); font-weight: 700; }
+.wheel button[aria-selected="true"] { background: var(--bg-secondary); color: var(--text-primary); font-weight: 600; }
 .times .col { position: relative; }
 
 /* 주소 검색 */
@@ -91,7 +91,7 @@
 .res .zip { font-size: 12px; font-weight: 600; color: var(--text-secondary); }
 .res .ln { display: flex; align-items: baseline; gap: 8px; margin-top: 8px; font-size: 14px; font-weight: 500; line-height: 1.4; }
 .res .ln.j { color: var(--text-teritary); margin-top: 6px; }
-.tag { flex: none; display: inline-flex; align-items: center; height: 20px; padding: 0 6px; border-radius: 4px; font-size: 11px; font-weight: 600; background: var(--bg-teritary); color: var(--text-secondary); }
+.tag { flex: none; display: inline-flex; align-items: center; height: 20px; padding: 0 6px; border-radius: 4px; font-size: 10px; font-weight: 600; background: var(--bg-teritary); color: var(--text-secondary); }
 .tag.r { background: #e3efff; color: #2563eb; }
 .res button:hover .ln:first-of-type { text-decoration: underline; text-underline-offset: 3px; }
 .empty { margin-top: 32px; font-size: 14px; }

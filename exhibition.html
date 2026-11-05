@@ -30,13 +30,13 @@
 }
 @media (min-width: 768px)  { :root { --pad: 32px; --top: 64px; } }
 
-*, *::before, *::after { box-sizing: border-box; }
+*, *::before, *::after { box-sizing: border-box; letter-spacing: -0.03em; }
 html { -webkit-text-size-adjust: 100%; scrollbar-color: var(--border-primary) transparent; scrollbar-width: thin; scroll-padding-top: 120px; }
-body { margin: 0; background: var(--bg-white); color: var(--text-primary); font: 400 14px/1.45 var(--font); letter-spacing: -0.03em; -webkit-font-smoothing: antialiased; padding-bottom: calc(88px + env(safe-area-inset-bottom)); }
+body { margin: 0; background: var(--bg-white); color: var(--text-primary); font: 400 14px/1.4 var(--font); letter-spacing: -0.03em; -webkit-font-smoothing: antialiased; padding-bottom: calc(88px + env(safe-area-inset-bottom)); }
 @media (min-width: 900px) { body { padding-bottom: 0; } }
 ::selection { background: var(--text-primary); color: #fff; }
 a { color: inherit; text-decoration: none; }
-button { font: inherit; letter-spacing: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+button { font: inherit; letter-spacing: -0.03em; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
 a, button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 h1, h2, h3, p, ul, dl, dd { margin: 0; padding: 0; }
 ul { list-style: none; }
@@ -49,7 +49,7 @@ img { display: block; }
 .i.fill { fill: currentColor; stroke: none; }
 
 /* 상단(태블릿 이상) */
-.pvb { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 8px var(--pad); background: #18181b; color: #fff; font-size: 13px; text-align: center; }
+.pvb { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 8px var(--pad); background: #18181b; color: #fff; font-size: 12px; text-align: center; }
 .pvb[hidden] { display: none; }
 .pvb b { flex: none; padding: 1px 8px; border-radius: 9999px; background: #fff; color: #18181b; font-size: 12px; font-weight: 600; }
 .is-pv .top { top: 40px; }
@@ -90,7 +90,7 @@ img { display: block; }
 }
 @media (prefers-reduced-motion: reduce) { .thumbs { transition: none; } }
 .poster-col > .poster { flex: 1; min-width: 0; }
-.ppager { position: absolute; right: 16px; top: 16px; z-index: 2; padding: 3px 8px; border-radius: 9999px; background: rgba(0,0,0,.6); color: #fff; font-size: 11px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.ppager { position: absolute; right: 16px; top: 16px; z-index: 2; padding: 3px 8px; border-radius: 9999px; background: rgba(0,0,0,.6); color: #fff; font-size: 10px; font-weight: 500; font-variant-numeric: tabular-nums; }
 .ppager[hidden] { display: none; }
 .pdots { position: absolute; left: 0; right: 0; bottom: 36px; z-index: 2; display: flex; justify-content: center; gap: 6px; pointer-events: none; }
 .pdots button { pointer-events: auto; width: 6px; height: 6px; padding: 0; border-radius: 9999px; background: rgba(255,255,255,.55); box-shadow: 0 0 0 1px rgba(0,0,0,.12); transition: width .3s var(--ease), background .2s; }
@@ -168,7 +168,7 @@ img { display: block; }
 .sec:has(> h2.sr) { padding-top: 20px; }
 .sec > h2.sr + * { margin-top: 0; }
 .sec h2 { font-size: 20px; line-height: 1.4; font-weight: 700; letter-spacing: -0.03em; }
-.sec .lead { margin-top: 12px; color: var(--text-secondary); line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-wrap: pretty; }
+.sec .lead { margin-top: 12px; color: var(--text-secondary); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-wrap: pretty; }
 .more { margin-top: 8px; display: flex; justify-content: flex-end; }
 .more a { display: inline-flex; align-items: center; gap: 2px; color: var(--text-teritary); font-size: 12px; font-weight: 500; }
 .more .i { width: 14px; height: 14px; }
@@ -232,7 +232,7 @@ dialog.player video { display: block; width: 100%; max-height: 82vh; background:
 dialog.player .x { position: absolute; right: 12px; top: 12px; z-index: 2; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 9999px; background: #fff; color: var(--text-primary); }
 dialog.player .miss { padding: 64px 20px; text-align: center; color: var(--text-disable); }
 dialog.player .miss[hidden] { display: none; }
-.w b { display: block; font-weight: 700; }
+.w b { display: block; font-weight: 600; }
 .w .tx > span { display: block; font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* 댓글(개선안 2627:29136) */
@@ -280,7 +280,7 @@ dialog.player .miss[hidden] { display: none; }
 .rfield input { flex: 1; min-width: 0; height: 48px; border: 0; outline: 0; background: none; font: inherit; font-size: 16px; }
 
 /* 정보 섹션(전시콘텐츠·위치·유의사항·주최): 제목은 16px SemiBold, 구분은 연한 선 하나, 큰 회색 띠는 없앰 */
-.sec h2 { font-size: 16px; font-weight: 600; letter-spacing: -0.02em; }
+.sec h2 { font-size: 16px; font-weight: 600; letter-spacing: -0.03em; }
 .band { margin-top: 0; background: none; padding-bottom: 0; }
 .sec[aria-labelledby="h-content"], .sec[aria-labelledby="h-place"], .sec[aria-labelledby="h-notes"], .sec[aria-labelledby="h-host"] { position: relative; margin-top: 28px; padding-top: 28px; }
 .sec[aria-labelledby="h-content"]::before, .sec[aria-labelledby="h-place"]::before, .sec[aria-labelledby="h-notes"]::before, .sec[aria-labelledby="h-host"]::before { content: ""; position: absolute; top: 0; left: var(--pad); right: var(--pad); height: 1px; background: var(--bg-soft); }

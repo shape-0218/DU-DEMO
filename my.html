@@ -28,13 +28,13 @@
 @media (min-width: 768px)  { :root { --pad: 32px; } }
 @media (min-width: 1100px) { :root { --pad: 48px; } }
 
-*, *::before, *::after { box-sizing: border-box; }
+*, *::before, *::after { box-sizing: border-box; letter-spacing: -0.03em; }
 html { -webkit-text-size-adjust: 100%; scrollbar-color: var(--border-primary) transparent; scrollbar-width: thin; }
 body { margin: 0; background: #fff; color: var(--text-primary); font: 500 12px/1.4 var(--font); letter-spacing: -0.03em; -webkit-font-smoothing: antialiased; padding-bottom: 150px; }
 body.lock { overflow: hidden; }
 ::selection { background: var(--text-primary); color: #fff; }
 a { color: inherit; text-decoration: none; }
-button { font: inherit; letter-spacing: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+button { font: inherit; letter-spacing: -0.03em; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
 a, button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 h1, h2, h3, p, ul { margin: 0; padding: 0; }
 ul { list-style: none; }
@@ -60,7 +60,7 @@ img { display: block; }
 .me { display: flex; align-items: center; gap: 14px; min-width: 0; padding: 4px 4px 4px 0; border-radius: var(--r12); }
 .avatar { width: 52px; height: 52px; border-radius: 9999px; background: var(--avatar); display: grid; place-items: end center; overflow: hidden; color: #fff; flex: none; }
 .avatar svg { width: 46px; height: 46px; }
-.me b { display: block; font-size: 20px; font-weight: 700; line-height: 1.3; letter-spacing: -0.035em; }
+.me b { display: block; font-size: 20px; font-weight: 700; line-height: 1.4; letter-spacing: -0.03em; }
 .me small { display: block; color: var(--text-teritary); font-size: 12px; font-weight: 500; }
 .me .i { width: 20px; height: 20px; color: var(--text-teritary); transition: transform .3s var(--ease); }
 .me:hover .i { transform: translateX(3px); }
@@ -84,7 +84,7 @@ img { display: block; }
 .pro .thumb { width: 44px; height: 44px; border-radius: 9999px; overflow: hidden; background: #27272a; flex: none; }
 .pro .thumb img { width: 100%; height: 100%; object-fit: cover; }
 .pro .lbl { color: #a1a1aa; font-size: 12px; font-weight: 500; }
-.pro .nm { font-size: 18px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.3; }
+.pro .nm { font-size: 18px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.4; }
 .pro .meta { display: flex; align-items: center; gap: 6px; margin-top: 14px; flex-wrap: wrap; }
 .pro .chip { height: 26px; padding: 0 10px; display: inline-flex; align-items: center; border-radius: 9999px; background: #3f3f46; font-size: 12px; font-weight: 500; }
 .pro .cnt { color: #a1a1aa; font-size: 12px; font-weight: 500; }
@@ -137,7 +137,7 @@ img { display: block; }
 .badge { position: absolute; top: 8px; right: 8px; display: inline-flex; align-items: center; gap: 2px; padding: 3px 8px; border-radius: 9999px; background: rgba(255, 255, 255, .72); color: var(--text-primary); font-size: 12px; font-weight: 500; backdrop-filter: blur(10px); }
 .badge .i { width: 13px; height: 13px; }
 .tx { padding: 2px 12px 12px; display: grid; gap: 2px; }
-.tx b { font-size: 14px; font-weight: 700; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tx b { font-size: 14px; font-weight: 600; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tx .l { font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tx .m { display: flex; align-items: center; gap: 3px; font-size: 12px; font-weight: 500; color: #a1a1aa; white-space: nowrap; overflow: hidden; }
 .tx .m img { width: 14px; height: 14px; flex: none; }
@@ -169,7 +169,7 @@ img { display: block; }
 .noti { display: grid; grid-template-columns: 8px minmax(0, 1fr); column-gap: 12px; width: 100%; padding: 16px 0; border-bottom: 1px solid var(--bg-teritary); text-align: left; }
 .noti i { width: 8px; height: 8px; margin-top: 7px; border-radius: 9999px; background: transparent; }
 .noti.new i { background: var(--notice); }
-.noti p { font-size: 14px; font-weight: 500; line-height: 1.45; }
+.noti p { font-size: 14px; font-weight: 500; line-height: 1.4; }
 .noti small { display: block; margin-top: 2px; color: var(--text-teritary); font-size: 12px; }
 .invite { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 14px; padding: 16px 0; border-bottom: 1px solid var(--bg-teritary); }
 .invite img { width: 64px; height: 84px; object-fit: cover; border-radius: var(--r12); background: #000; }
@@ -203,10 +203,10 @@ dialog.modal { width: min(322px, calc(100vw - 80px)); padding: 24px 20px 20px; b
 dialog.modal::backdrop { background: rgba(0, 0, 0, .5); }
 @keyframes pop { from { opacity: 0; transform: scale(.96); } }
 .modal h2 { font-size: 18px; font-weight: 600; line-height: 1.4; letter-spacing: -0.03em; }
-.modal p { margin-top: 8px; font-size: 14px; font-weight: 500; line-height: 1.5; color: var(--text-secondary); white-space: pre-line; }
+.modal p { margin-top: 8px; font-size: 14px; font-weight: 500; line-height: 1.4; color: var(--text-secondary); white-space: pre-line; }
 .modal .warn { margin-top: 16px; padding: 12px 14px; border-radius: var(--r12); background: var(--bg-secondary); }
 .modal .warn b { display: block; font-size: 12px; font-weight: 600; color: var(--notice); }
-.modal .warn span { display: block; margin-top: 2px; font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+.modal .warn span { display: block; margin-top: 2px; font-size: 12px; font-weight: 500; color: var(--text-secondary); }
 .modal .acts { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8px; margin-top: 20px; }
 .toast { position: fixed; left: 50%; bottom: calc(110px + env(safe-area-inset-bottom)); transform: translate(-50%, 16px); opacity: 0; pointer-events: none; z-index: 95; padding: 12px 18px; border-radius: 9999px; background: var(--text-primary); color: #fff; font-size: 14px; font-weight: 500; white-space: nowrap; transition: opacity .25s, transform .35s var(--ease); }
 .toast.on { opacity: 1; transform: translate(-50%, 0); }

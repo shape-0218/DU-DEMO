@@ -74,8 +74,8 @@ mediaCss.textContent = `
 .trange { display: grid; gap: 8px; margin-top: 16px; font-size: 12px; font-weight: 600; }
 .trange input { width: 100%; accent-color: #18181b; height: 28px; }
 .trow { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
-.vbadge { position: absolute; left: 6px; top: 6px; display: inline-flex; align-items: center; gap: 3px; height: 20px; padding: 0 6px 0 4px; border-radius: 4px; background: rgba(0,0,0,.72); color: #fff; font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.vbadge { position: absolute; left: 6px; top: 6px; display: inline-flex; align-items: center; gap: 3px; height: 20px; padding: 0 6px 0 4px; border-radius: 4px; background: rgba(0,0,0,.72); color: #fff; font-size: 10px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .vbadge .i { width: 10px; height: 10px; fill: currentColor; stroke: none; }
-.th .chg { position: absolute; right: 6px; bottom: 6px; height: 22px; padding: 0 8px; border-radius: 6px; background: rgba(255,255,255,.92); font-size: 11px; font-weight: 600; }
+.th .chg { position: absolute; right: 6px; bottom: 6px; height: 22px; padding: 0 8px; border-radius: 6px; background: rgba(255,255,255,.92); font-size: 10px; font-weight: 600; }
 `;
 document.head.appendChild(mediaCss);

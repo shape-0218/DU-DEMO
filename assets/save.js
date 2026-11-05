@@ -13,9 +13,9 @@ const SaveBtn = (() => {
 .save.is-saved:hover { background: #e4e4e7 !important; }
 .save .i { transition: transform .3s cubic-bezier(.16,1,.3,1); }
 .save[aria-pressed="true"] .i { fill: currentColor; }
-.save-toast { position: fixed; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom)); transform: translate(-50%, 12px); display: flex; align-items: center; gap: 14px; width: max-content; max-width: min(440px, calc(100vw - 40px)); padding: 14px 18px; border-radius: 8px; background: #000; color: #fff; font-size: 13px; font-weight: 500; line-height: 1.4; opacity: 0; pointer-events: none; z-index: 120; transition: opacity .25s, transform .35s cubic-bezier(.16,1,.3,1); }
+.save-toast { position: fixed; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom)); transform: translate(-50%, 12px); display: flex; align-items: center; gap: 14px; width: max-content; max-width: min(440px, calc(100vw - 40px)); padding: 14px 18px; border-radius: 8px; background: #000; color: #fff; font-size: 14px; font-weight: 500; line-height: 1.4; opacity: 0; pointer-events: none; z-index: 120; transition: opacity .25s, transform .35s cubic-bezier(.16,1,.3,1); }
 .save-toast.on { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
-.save-toast a { flex: none; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.save-toast a { flex: none; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
 @media (min-width: 900px) { .save-toast { bottom: 32px; } }`;
   document.head.appendChild(css);
   function toast(msg, href) {
