@@ -411,7 +411,7 @@ track.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') { e.preve
 addEventListener('resize', () => track.scrollTo({ left: cur * track.clientWidth, behavior: 'auto' }));
 show(0); if (mode === 'stack') setMode('stack', false);
 /* 뒤로가기·스위치·N/5 칩이 작품을 가리지 않게: 가만히 있으면 서서히 사라지고, 건드리면 나타남 */
-fade = ChromeFade.init({ stage: document.querySelector('.stage'), root: document.querySelector('.ovl'), controls: [document.getElementById('back'), vmode], chip: pager, stackActive: () => mode === 'stack' });
+fade = ChromeFade.init({ stage: document.querySelector('.stage'), root: document.querySelector('.ovl'), controls: [vmode], chip: pager, stackActive: () => mode === 'stack' });
 
 /* ---------- 탭 (주소 ?tab=guest 연동) ---------- */
 const tabs = [...document.querySelectorAll('.tab')];

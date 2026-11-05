@@ -669,7 +669,7 @@ if (PV && PV.intro && PV.intro.length < 90 && !/\n/.test(PV.intro)) document.get
   /* 영상 칸이 보이면 재생, 넘기면 멈춤(움직임 줄이기 설정이면 썸네일 + 재생 버튼) */
   if (vid) { new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting && e.intersectionRatio > .6) { if (!reduce) play(); } else vid.pause(); }), { root: pr, threshold: [0, .6, 1] }).observe(vslide);
   document.addEventListener('visibilitychange', () => { if (document.hidden) vid.pause(); }); }
-  fadeX = ChromeFade.init({ stage: document.querySelector('.poster'), root: document.querySelector('.poster-col'), controls: [document.querySelector('.poster-col .back')], chip: pg, scrim: false });
+  fadeX = ChromeFade.init({ stage: document.querySelector('.poster'), root: document.querySelector('.poster-col'), controls: [], chip: pg, scrim: false });
   let tk = false;
   pr.addEventListener('scroll', () => { if (tk) return; tk = true; requestAnimationFrame(() => { tk = false; setDot(Math.round(pr.scrollLeft / pr.clientWidth)); }); }, { passive: true });
   db.forEach((d, i) => d.addEventListener('click', () => pr.scrollTo({ left: i * pr.clientWidth, behavior: reduce ? 'auto' : 'smooth' })));

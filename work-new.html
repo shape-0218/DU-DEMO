@@ -41,11 +41,30 @@
 .tile { position: relative; overflow: hidden; background: #000; animation: rise .35s var(--ease) backwards; }
 .tile img { width: 100%; height: 100%; object-fit: contain; background: #000; }
 .tile .crop { position: absolute; display: none; border: 1.5px solid #fff; border-radius: 2px; box-shadow: 0 0 0 999px rgba(0, 0, 0, .5); pointer-events: none; }   /* 카드에서 보이는 3:4 범위 (가운데 기준) */
+/* 카드에서 보이는 모습 미리보기 + 사진별 위치 조정 */
+.cprev { display: flex; align-items: center; gap: 14px; margin-top: 14px; padding: 14px; border-radius: var(--r12); background: var(--bg-secondary); }
+.cprev[hidden] { display: none; }
+.cp-im { flex: none; width: 72px; aspect-ratio: 3 / 4; border-radius: 8px; overflow: hidden; background: #000; }
+.cp-im img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cp-tx { display: grid; gap: 2px; min-width: 0; font-size: 12px; font-weight: 500; line-height: 1.45; color: var(--text-secondary); }
+.cp-tx b { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.cp-btn { justify-self: start; margin-top: 8px; min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid var(--border-primary); background: #fff; font-size: 12px; font-weight: 600; transition: transform .2s var(--ease); }
+.cp-btn:active { transform: scale(.96); }
+.adjrow { display: flex; justify-content: center; align-items: flex-end; gap: 16px; margin-top: 12px; }
+.adjf { margin: 0; display: grid; gap: 8px; justify-items: center; }
+.adjf figcaption { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+.adjc { width: 180px; height: 240px; border-radius: var(--r12); overflow: hidden; background: #000; touch-action: none; cursor: grab; box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 4px 12px rgba(0,0,0,.1); }
+.adjc.drag { cursor: grabbing; } .adjc.lock { cursor: default; }
+.adjc img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; user-select: none; }
+.adjd { width: 60px; height: 80px; border-radius: 8px; overflow: hidden; background: #000; }
+.adjd img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.adjn { margin-top: 12px; text-align: center; font-size: 12px; font-weight: 500; color: var(--text-secondary); }
 .tile .x { position: absolute; top: 4px; right: 4px; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 12px; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.18); }
 .tile .x .i { width: 14px; height: 14px; stroke-width: 2.2; }
 .tile .rep { position: absolute; left: 4px; bottom: 4px; padding: 2px 6px; border-radius: 4px; background: #000; color: #fff; font-size: 10px; font-weight: 600; box-shadow: 0 0 0 1px rgba(255,255,255,.25); }
 .tile .vbadge { top: 4px; left: 4px; }
-.tile .chg { right: 4px; bottom: 4px; }
+.tile .chg { position: absolute; right: 4px; bottom: 4px; height: 22px; padding: 0 8px; border-radius: 6px; background: rgba(255, 255, 255, .92); color: var(--text-primary); font-size: 11px; font-weight: 600; }
+.tile .chg::after { content: ""; position: absolute; inset: -11px -4px; }
 .tile.v .rep { left: 4px; }
 .errbox { display: flex; align-items: center; gap: 12px; margin-top: 12px; padding: 14px 16px; border-radius: var(--r12); background: #ffe4e4; }
 .errbox .bang { flex: none; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 9999px; background: var(--notice); color: #fff; font-size: 14px; font-weight: 700; }
@@ -100,8 +119,11 @@
           <p class="mhelp">첫 번째 사진이 대표 이미지예요<br>JPG, PNG, WEBP, HEIC · 장당 최대 20MB<br>영상은 1개까지 · MP4, MOV, WEBM · 3분 이내 · 500MB 이하</p>
           <div id="m-err"></div>
           <div class="row" id="m-row" role="list" aria-labelledby="m-l"></div>
-          <p class="mhelp" id="m-crop" style="margin-top:8px" hidden></p>
-          <p class="mhelp" id="m-hint" style="margin-top:8px">가로로 밀어서 더 볼 수 있어요<br>카드에서는 3:4 가운데 기준으로 보이고, 작품 상세에서는 비율이 달라도 전체가 보여요 (남는 곳은 검정)<br>영상은 목록·카드에서 썸네일로 보이고, 작품 상세에서 재생돼요</p>
+          <div class="cprev" id="cprev" hidden>
+            <div class="cp-im"><img id="cp-img" alt=""></div>
+            <div class="cp-tx"><b>카드에서는 이렇게 보여요</b><span id="cp-note">작품 상세에서는 사진 전체가 보여요</span><button type="button" class="cp-btn" id="cp-adj">보이는 부분 조정</button></div>
+          </div>
+          <p class="mhelp" id="m-hint" style="margin-top:8px">가로로 밀어서 더 볼 수 있어요<br>카드에서는 3:4로 보이고(올린 뒤 '조정'에서 보이는 부분을 고를 수 있어요), 작품 상세에서는 비율이 달라도 전체가 보여요 (남는 곳은 검정)<br>영상은 목록·카드에서 썸네일로 보이고, 작품 상세에서 재생돼요</p>
         </div>
 
         <div class="field" style="margin-top:24px">
@@ -234,24 +256,60 @@ function coSheet() {
 
 /* ---------- 사진·영상 올리기 ---------- */
 function tileHtml(m, i, allowVideo) {
-  return `<div class="tile ${m.video ? 'v' : ''}" role="listitem"><img src="${m.video ? m.thumb : m.url}" alt="${m.video ? '영상 썸네일' : '사진'} ${i + 1}">${i === 0 && allowVideo && !m.video ? '<span class="crop" aria-hidden="true"></span>' : ''}${m.video ? `<span class="vbadge"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg>${mmss(m.duration)}</span><button type="button" class="chg" data-a="chg" data-i="${i}" aria-label="영상 썸네일 변경">썸네일</button>` : ''}${i === 0 && allowVideo ? '<span class="rep">대표 사진</span>' : ''}${i === 0 && !allowVideo ? '<span class="rep">대표 사진</span>' : ''}<button type="button" class="x" data-a="rm" data-i="${i}" aria-label="${i + 1}번째 삭제"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button></div>`;
+  return `<div class="tile ${m.video ? 'v' : ''}" role="listitem"><img src="${m.video ? m.thumb : m.url}" alt="${m.video ? '영상 썸네일' : '사진'} ${i + 1}">${i === 0 && allowVideo && !m.video ? '<span class="crop" aria-hidden="true"></span>' : ''}${!m.video && m.url ? `<button type="button" class="chg" data-a="adj" data-i="${i}" aria-label="${i + 1}번째 사진 카드에서 보이는 부분 조정">조정</button>` : ''}${m.video ? `<span class="vbadge"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg>${mmss(m.duration)}</span><button type="button" class="chg" data-a="chg" data-i="${i}" aria-label="영상 썸네일 변경">썸네일</button>` : ''}${i === 0 && allowVideo ? '<span class="rep">대표 사진</span>' : ''}${i === 0 && !allowVideo ? '<span class="rep">대표 사진</span>' : ''}<button type="button" class="x" data-a="rm" data-i="${i}" aria-label="${i + 1}번째 삭제"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button></div>`;
 }
-/* 대표 사진이 카드에서 어떻게 잘리는지: 3:4 가운데 범위를 밝은 테두리로 표시하고 한 줄로 안내 */
+/* 대표 사진이 카드에서 어떻게 보이는지: 칸 위에 3:4 범위 표시 + 카드 모습 미리보기(조정한 위치 반영) */
 function fitCrop(row) {
-  const note = $('m-crop'), c = row.querySelector('.tile .crop');
-  if (!c) { note.hidden = true; return; }
-  const img = c.previousElementSibling;
+  const box = $('cprev'), c = row.querySelector('.tile .crop'), first = st.media[0];
+  if (!c || !first || first.video) { box.hidden = true; return; }
+  const img = c.previousElementSibling, fx = first.fx ?? 50, fy = first.fy ?? 50;
   const run = () => {
     const nw = img.naturalWidth, nh = img.naturalHeight; if (!nw || !nh) return;
     const W = 96, H = 120, k = Math.min(W / nw, H / nh), dw = nw * k, dh = nh * k, x0 = (W - dw) / 2, y0 = (H - dh) / 2, r = nw / nh;
     const cw = r > 0.75 ? 0.75 * dh : dw, ch = r > 0.75 ? dh : dw / 0.75, same = Math.abs(r - 0.75) < 0.04;
     c.style.display = same ? 'none' : 'block';
-    Object.assign(c.style, { left: (x0 + (dw - cw) / 2) + 'px', top: (y0 + (dh - ch) / 2) + 'px', width: cw + 'px', height: ch + 'px' });
-    note.hidden = false;
-    note.textContent = same ? '카드와 작품 상세 모두 이 모습 그대로 보여요' : '카드에서는 3:4 가운데 기준으로 보여요 (대표 사진의 밝은 테두리 안쪽) · 작품 상세에서는 전체가 보여요';   // ❓ 임시 문구
+    Object.assign(c.style, { left: (x0 + (r > 0.75 ? (dw - cw) * fx / 100 : 0)) + 'px', top: (y0 + (r > 0.75 ? 0 : (dh - ch) * fy / 100)) + 'px', width: cw + 'px', height: ch + 'px' });
+    const ci = $('cp-img'); if (ci.getAttribute('src') !== first.url) ci.src = first.url; ci.style.objectPosition = `${fx}% ${fy}%`;
+    $('cp-note').textContent = same ? '카드와 작품 상세 모두 이 모습 그대로 보여요' : '작품 상세에서는 사진 전체가 보여요';   // ❓ 임시 문구
+    $('cp-adj').hidden = same; box.hidden = false;
   };
   if (img.complete) run(); else img.addEventListener('load', run, { once: true });
 }
+/* 사진별 "카드에서 보이는 부분" 조정: 끌거나 방향키로 위치를 고르고, 옆에서 작품 상세에선 전체가 보이는 모습을 같이 보여줌 */
+function openAdjust(i) {
+  const m = st.media[i]; if (!m || m.video || !m.url) return;
+  let fx = m.fx ?? 50, fy = m.fy ?? 50;
+  showSheet(`<h2>카드에서 보이는 부분</h2><p class="sub">${i === 0 ? '사진을 끌어서 카드에 보일 부분을 골라요' : '이 사진이 대표가 되면 카드에서 이렇게 보여요'}</p>
+    <div class="adjrow">
+      <figure class="adjf"><div class="adjc" id="adj-c" tabindex="0" role="group" aria-label="카드에서 보이는 부분 (끌거나 방향키로 조정)"><img id="adj-i" src="${m.url}" alt="" draggable="false"></div><figcaption>카드</figcaption></figure>
+      <figure class="adjf"><div class="adjd"><img src="${m.url}" alt=""></div><figcaption>작품 상세</figcaption></figure>
+    </div>
+    <p class="adjn" id="adj-n" aria-live="polite"></p>
+    <div class="trow"><button type="button" class="btn btn-soft" id="adj-r">가운데로</button><button type="button" class="btn btn-dark" id="adj-ok">완료</button></div>`, '카드에서 보이는 부분 조정', (sh) => {
+    const c = sh.querySelector('#adj-c'), im = sh.querySelector('#adj-i'), n = sh.querySelector('#adj-n'), reset = sh.querySelector('#adj-r');
+    let r = 0.75, same = true, d = null;
+    const clamp = (v) => Math.min(100, Math.max(0, v));
+    const paint = () => { im.style.objectPosition = `${fx}% ${fy}%`; };
+    const ready = () => { r = im.naturalWidth / im.naturalHeight; same = Math.abs(r - 0.75) < 0.04; n.textContent = same ? '이 사진은 3:4에 가까워서 카드에 그대로 보여요' : '카드에서는 이만큼만 보여요. 끌어서 바꿔요'; reset.disabled = same; c.classList.toggle('lock', same); paint(); };
+    if (im.complete && im.naturalWidth) ready(); else im.addEventListener('load', ready, { once: true });
+    c.addEventListener('pointerdown', (e) => { if (same) return; const b = c.getBoundingClientRect(); d = { x: e.clientX, y: e.clientY, fx, fy, w: b.width, h: b.height }; c.setPointerCapture(e.pointerId); c.classList.add('drag'); });
+    c.addEventListener('pointermove', (e) => {
+      if (!d) return;
+      if (r > 0.75) { const ov = d.h * r - d.w; if (ov > 0) fx = clamp(d.fx - (e.clientX - d.x) / ov * 100); }
+      else { const ov = d.w / r - d.h; if (ov > 0) fy = clamp(d.fy - (e.clientY - d.y) / ov * 100); }
+      paint();
+    });
+    const end = () => { d = null; c.classList.remove('drag'); };
+    c.addEventListener('pointerup', end); c.addEventListener('pointercancel', end);
+    c.addEventListener('keydown', (e) => {
+      if (same) return; const k = { ArrowLeft: -5, ArrowUp: -5, ArrowRight: 5, ArrowDown: 5 }[e.key]; if (k === undefined) return; e.preventDefault();
+      if (r > 0.75) fx = clamp(fx + k); else fy = clamp(fy + k); paint();
+    });
+    reset.addEventListener('click', () => { fx = 50; fy = 50; paint(); });
+    sh.querySelector('#adj-ok').addEventListener('click', () => { m.fx = fx; m.fy = fy; closeSheet(); renderRow('media'); });
+  });
+}
+$('cp-adj').addEventListener('click', () => openAdjust(0));
 function renderRow(key) {
   const isM = key === 'media', list = st[key], max = isM ? MAXM : MAXP, row = $(isM ? 'm-row' : 'p-row');
   $(isM ? 'm-ct' : 'p-ct').textContent = `${list.length}/${max}`;
@@ -286,6 +344,7 @@ picker.addEventListener('change', async () => {
   if (b.dataset.a === 'add') pickFiles(key);
   else if (b.dataset.a === 'rm') { const m = st[key][+b.dataset.i]; if (m.url) URL.revokeObjectURL(m.url); st[key].splice(+b.dataset.i, 1); renderRow(key); }
   else if (b.dataset.a === 'chg') { const m = st[key][+b.dataset.i]; thumbSheet(m, (t) => { m.thumb = t; renderRow(key); }); }
+  else if (b.dataset.a === 'adj') openAdjust(+b.dataset.i);
 }));
 
 /* ---------- 입력칸 ---------- */
@@ -307,13 +366,13 @@ $('form').addEventListener('submit', async (ev) => {
   ev.preventDefault(); if ($('go').disabled) return; $('go').disabled = true;
   const first = st.media[0];
   const img = first.video ? first.thumb : (first.existing ? first.url : ((first.file ? await imageThumb(first.file) : null) || first.url));
-  const work = { id: 'w' + Date.now().toString(36), exId: ex.id, title: $('title').value.trim(), fields: [...st.fields], year: $('year').value, medium: $('medium').value.trim(), size: $('size').value.trim(), desc: $('desc').value.trim(), point: $('point').value.trim(), authors: [author, ...st.co.map((c) => c.n)], media: st.media.length, video: st.media.some((m) => m.video), proc: st.proc.length, thumb: img };
+  const work = { id: 'w' + Date.now().toString(36), exId: ex.id, title: $('title').value.trim(), fields: [...st.fields], year: $('year').value, medium: $('medium').value.trim(), size: $('size').value.trim(), desc: $('desc').value.trim(), point: $('point').value.trim(), authors: [author, ...st.co.map((c) => c.n)], media: st.media.length, video: st.media.some((m) => m.video), proc: st.proc.length, thumb: img, fx: first.fx ?? 50, fy: first.fy ?? 50 };
   if (editing) {
-    ExData.updateWork(ex.id, editing.id, { title: work.title, fields: work.fields, year: work.year, medium: work.medium, img });
+    ExData.updateWork(ex.id, editing.id, { title: work.title, fields: work.fields, year: work.year, medium: work.medium, img, fx: work.fx, fy: work.fy });
     st.left = true; sessionStorage.setItem('du.toast', '작품을 수정했어요'); location.href = WORKS; return;
   }
   const w = store.get('du.works', []); w.unshift(work); store.set('du.works', w);
-  ExData.addWork(ex.id, { title: work.title, author: work.authors.length > 1 ? work.authors[0] : work.authors[0], authors: work.authors, img, mine: !PROXY, fields: work.fields, year: work.year, medium: work.medium });
+  ExData.addWork(ex.id, { title: work.title, author: work.authors.length > 1 ? work.authors[0] : work.authors[0], authors: work.authors, img, mine: !PROXY, fields: work.fields, year: work.year, medium: work.medium, fx: work.fx, fy: work.fy });
   $('d-t').textContent = work.title; $('d-a').textContent = work.authors.length > 1 ? `${work.authors[0]} 외 ${work.authors.length - 1}명` : work.authors[0]; $('d-e').textContent = ex.title;
   st.left = true; $('form').hidden = true; $('bar').hidden = true; $('done').hidden = false; window.scrollTo(0, 0); $('done-h').focus({ preventScroll: true });
 });
@@ -333,7 +392,7 @@ if (editing) {
   st.fields = new Set(editing.fields || []);
   [...$('chips').children].forEach((c) => { const on = st.fields.has(c.dataset.f); c.setAttribute('aria-pressed', on); c.innerHTML = (on ? '<svg class="i" aria-hidden="true"><use href="#i-check"/></svg>' : '') + c.dataset.f; });
   $('fcnt').textContent = `${st.fields.size}/${MAXF}`;
-  st.media = [{ url: editing.img, name: '등록된 이미지', existing: true }];
+  st.media = [{ url: editing.img, name: '등록된 이미지', existing: true, fx: editing.fx, fy: editing.fy }];
 }
 renderAuthors(); renderRow('media'); renderRow('proc'); validate();
 </script>
