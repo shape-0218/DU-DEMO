@@ -40,6 +40,7 @@
 .add .i { width: 24px; height: 24px; stroke-width: 1.6; color: var(--text-primary); }
 .tile { position: relative; overflow: hidden; background: #000; animation: rise .35s var(--ease) backwards; }
 .tile img { width: 100%; height: 100%; object-fit: contain; background: #000; }
+.tile .crop { position: absolute; display: none; border: 1.5px solid #fff; border-radius: 2px; box-shadow: 0 0 0 999px rgba(0, 0, 0, .5); pointer-events: none; }   /* 카드에서 보이는 3:4 범위 (가운데 기준) */
 .tile .x { position: absolute; top: 4px; right: 4px; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 12px; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.18); }
 .tile .x .i { width: 14px; height: 14px; stroke-width: 2.2; }
 .tile .rep { position: absolute; left: 4px; bottom: 4px; padding: 2px 6px; border-radius: 4px; background: #000; color: #fff; font-size: 10px; font-weight: 600; box-shadow: 0 0 0 1px rgba(255,255,255,.25); }
@@ -99,7 +100,8 @@
           <p class="mhelp">첫 번째 사진이 대표 이미지예요<br>JPG, PNG, WEBP, HEIC · 장당 최대 20MB<br>영상은 1개까지 · MP4, MOV, WEBM · 3분 이내 · 500MB 이하</p>
           <div id="m-err"></div>
           <div class="row" id="m-row" role="list" aria-labelledby="m-l"></div>
-          <p class="mhelp" id="m-hint" style="margin-top:8px">가로로 밀어서 더 볼 수 있어요<br>비율이 다른 사진은 검정 배경으로 채워서 전체가 보여요<br>영상은 목록·카드에서 썸네일로 보이고, 작품 상세에서 재생돼요</p>
+          <p class="mhelp" id="m-crop" style="margin-top:8px" hidden></p>
+          <p class="mhelp" id="m-hint" style="margin-top:8px">가로로 밀어서 더 볼 수 있어요<br>카드에서는 3:4 가운데 기준으로 보이고, 작품 상세에서는 비율이 달라도 전체가 보여요 (남는 곳은 검정)<br>영상은 목록·카드에서 썸네일로 보이고, 작품 상세에서 재생돼요</p>
         </div>
 
         <div class="field" style="margin-top:24px">
@@ -232,7 +234,23 @@ function coSheet() {
 
 /* ---------- 사진·영상 올리기 ---------- */
 function tileHtml(m, i, allowVideo) {
-  return `<div class="tile ${m.video ? 'v' : ''}" role="listitem"><img src="${m.video ? m.thumb : m.url}" alt="${m.video ? '영상 썸네일' : '사진'} ${i + 1}">${m.video ? `<span class="vbadge"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg>${mmss(m.duration)}</span><button type="button" class="chg" data-a="chg" data-i="${i}" aria-label="영상 썸네일 변경">썸네일</button>` : ''}${i === 0 && allowVideo ? '<span class="rep">대표 사진</span>' : ''}${i === 0 && !allowVideo ? '<span class="rep">대표 사진</span>' : ''}<button type="button" class="x" data-a="rm" data-i="${i}" aria-label="${i + 1}번째 삭제"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button></div>`;
+  return `<div class="tile ${m.video ? 'v' : ''}" role="listitem"><img src="${m.video ? m.thumb : m.url}" alt="${m.video ? '영상 썸네일' : '사진'} ${i + 1}">${i === 0 && allowVideo && !m.video ? '<span class="crop" aria-hidden="true"></span>' : ''}${m.video ? `<span class="vbadge"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg>${mmss(m.duration)}</span><button type="button" class="chg" data-a="chg" data-i="${i}" aria-label="영상 썸네일 변경">썸네일</button>` : ''}${i === 0 && allowVideo ? '<span class="rep">대표 사진</span>' : ''}${i === 0 && !allowVideo ? '<span class="rep">대표 사진</span>' : ''}<button type="button" class="x" data-a="rm" data-i="${i}" aria-label="${i + 1}번째 삭제"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button></div>`;
+}
+/* 대표 사진이 카드에서 어떻게 잘리는지: 3:4 가운데 범위를 밝은 테두리로 표시하고 한 줄로 안내 */
+function fitCrop(row) {
+  const note = $('m-crop'), c = row.querySelector('.tile .crop');
+  if (!c) { note.hidden = true; return; }
+  const img = c.previousElementSibling;
+  const run = () => {
+    const nw = img.naturalWidth, nh = img.naturalHeight; if (!nw || !nh) return;
+    const W = 96, H = 120, k = Math.min(W / nw, H / nh), dw = nw * k, dh = nh * k, x0 = (W - dw) / 2, y0 = (H - dh) / 2, r = nw / nh;
+    const cw = r > 0.75 ? 0.75 * dh : dw, ch = r > 0.75 ? dh : dw / 0.75, same = Math.abs(r - 0.75) < 0.04;
+    c.style.display = same ? 'none' : 'block';
+    Object.assign(c.style, { left: (x0 + (dw - cw) / 2) + 'px', top: (y0 + (dh - ch) / 2) + 'px', width: cw + 'px', height: ch + 'px' });
+    note.hidden = false;
+    note.textContent = same ? '카드와 작품 상세 모두 이 모습 그대로 보여요' : '카드에서는 3:4 가운데 기준으로 보여요 (대표 사진의 밝은 테두리 안쪽) · 작품 상세에서는 전체가 보여요';   // ❓ 임시 문구
+  };
+  if (img.complete) run(); else img.addEventListener('load', run, { once: true });
 }
 function renderRow(key) {
   const isM = key === 'media', list = st[key], max = isM ? MAXM : MAXP, row = $(isM ? 'm-row' : 'p-row');
@@ -242,6 +260,7 @@ function renderRow(key) {
     $('m-err').innerHTML = st.errMedia ? '<div class="errbox" role="alert"><span class="bang" aria-hidden="true">!</span><div><b>업로드하지 못했어요</b><span>네트워크 상태를 확인하고 다시 시도해주세요</span></div><button type="button" id="m-retry">다시 시도</button></div>' : '';
     const r = $('m-retry'); if (r) r.addEventListener('click', () => { st.errMedia = false; renderRow('media'); pickFiles('media'); });
     $('m-hint').hidden = list.length > 0;
+    fitCrop(row);
   }
   validate();
 }

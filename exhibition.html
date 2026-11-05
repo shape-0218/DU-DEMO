@@ -135,6 +135,15 @@ img { display: block; }
 .info .i { width: 16px; height: 16px; color: var(--text-teritary); }
 .info dt { color: var(--text-teritary); }
 .info dd { color: var(--text-primary); }
+/* 전시 링크: 카드·버튼이 아니라 아이콘 + 글자 링크 한 줄 */
+.ext { display: flex; flex-wrap: wrap; gap: 4px 20px; margin-top: 6px; }
+.ext a { position: relative; display: inline-flex; align-items: center; gap: 6px; min-height: 28px; max-width: 100%; font-size: 14px; font-weight: 500; color: var(--text-primary); }
+.ext a::before { content: ""; position: absolute; inset: -8px -4px; }   /* 터치 영역 44 */
+.ext a span { min-width: 0; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ext .i { width: 16px; height: 16px; color: var(--text-teritary); }
+.ext .o { width: 12px; height: 12px; transition: transform .25s var(--ease), color .2s; }
+.ext a:hover span { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.ext a:hover .o { transform: translate(1px, -1px); color: var(--text-primary); }
 .actions { display: none; gap: 8px; }
 @media (min-width: 900px) { .actions { display: flex; } }
 .btn { height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 0 20px; border-radius: var(--r12); font-weight: 600; transition: background .2s, transform .2s var(--ease); white-space: nowrap; }
@@ -293,6 +302,9 @@ dialog.player .miss[hidden] { display: none; }
     <symbol id="i-cal" viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="14.5" rx="2.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/></symbol>
     <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.5V12l3 2"/></symbol>
     <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s6.2-5.4 6.2-10.2a6.2 6.2 0 1 0-12.4 0C5.8 15.6 12 21 12 21z"/><circle cx="12" cy="10.8" r="2.2"/></symbol>
+    <symbol id="i-insta" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.2 6.8v.01" stroke-width="2.2"/></symbol>
+    <symbol id="i-web" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.3 3.6 5.2 3.6 8.5s-1.2 6.2-3.6 8.5c-2.4-2.3-3.6-5.2-3.6-8.5S9.6 5.8 12 3.5z"/></symbol>
+    <symbol id="i-out" viewBox="0 0 24 24"><path d="m7.5 16.5 9-9M9 7.5h7.5V15"/></symbol>
     <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M12 11v5.2M12 7.8v.2"/></symbol>
     <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
     <symbol id="i-dots" viewBox="0 0 24 24"><circle cx="5.5" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="18.5" cy="12" r="1.7" fill="currentColor" stroke="none"/></symbol>
@@ -346,6 +358,7 @@ dialog.player .miss[hidden] { display: none; }
           <div><svg class="i" aria-hidden="true"><use href="#i-clock"/></svg><dt>운영</dt><dd id="x-time">14:00 - 18:00</dd></div>
           <div><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg><dt>장소</dt><dd id="x-place">진달래홀</dd></div>
         </dl>
+        <div class="ext" id="x-links" aria-label="전시 링크"></div>
         <div class="actions">
           <button class="btn btn-primary save" aria-pressed="false"><svg class="i" aria-hidden="true"><use href="#i-bookmark"/></svg>전시 저장</button>
           <button class="btn btn-icon share" aria-label="공유"><svg class="i" aria-hidden="true"><use href="#i-share"/></svg></button>
@@ -439,6 +452,7 @@ dialog.player .miss[hidden] { display: none; }
 
 <script src="assets/blobdb.js"></script>
 <script src="assets/save.js"></script>
+<script src="assets/fade.js"></script>
 <script>
 /* ---------- 탭 (주소 ?tab= 과 연동) ---------- */
 const tabs = [...document.querySelectorAll('.tab')], panels = { intro: p('p-intro'), works: p('p-works'), reviews: p('p-reviews') };
@@ -562,6 +576,23 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenus
 
 /* ---------- 미리보기: ?id= 로 열면 등록해 둔 전시 값으로 채움(허브의 "전시 미리보기") ----------
    저장 위치: localStorage `du.exh`(글·썸네일), IndexedDB `du.media`(포스터 원본·영상). 없으면 아래 샘플(여넥스)이 그대로 보임 */
+/* 전시 링크: 입력한 것만 보임. 데모 기본 전시는 가상 계정이라 눌러도 이동하지 않고 안내만 */
+const escT = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function renderLinks(ig, web, webShow, demo) {
+  const box = document.getElementById('x-links'), items = [];
+  if (ig) items.push(['i-insta', '@' + ig, 'https://www.instagram.com/' + encodeURIComponent(ig) + '/', '인스타그램']);
+  if (web) items.push(['i-web', webShow || web, web, '웹사이트']);
+  box.innerHTML = items.map(([ic, t, h, l]) => `<a href="${escT(h)}" target="_blank" rel="noopener noreferrer"${demo ? ' data-demo' : ''} aria-label="${l} ${escT(t)} (새 탭에서 열려요)"><svg class="i" aria-hidden="true"><use href="#${ic}"/></svg><span>${escT(t)}</span><svg class="i o" aria-hidden="true"><use href="#i-out"/></svg></a>`).join('');
+  box.hidden = !items.length;
+}
+let lkT = 0;
+document.getElementById('x-links').addEventListener('click', (ev) => {
+  if (!ev.target.closest('a[data-demo]')) return;
+  ev.preventDefault();
+  let el = document.getElementById('lk-toast');
+  if (!el) { el = document.createElement('div'); el.id = 'lk-toast'; el.className = 'save-toast'; el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite'); document.body.appendChild(el); }
+  el.textContent = '데모라서 실제 링크로 이동하지 않아요'; el.classList.add('on'); clearTimeout(lkT); lkT = setTimeout(() => el.classList.remove('on'), 2600);
+});
 const PVID = new URLSearchParams(location.search).get('id');
 let PV = null;
 if (PVID) { try { PV = (JSON.parse(localStorage.getItem('du.exh')) || []).find((x) => x.id === PVID) || null; } catch (e) {} }
@@ -572,7 +603,9 @@ function pvSlides() { /* 포스터 목록 → 캐러셀 칸 정보 */
   if (PV.posterList && PV.posterList.length) return PV.posterList.map((p) => ({ video: p.video, thumb: p.thumb || PV.poster, key: p.key }));
   return [{ video: !!PV.posterVideo, thumb: PV.poster, key: null, src: PV.posterVideo ? 'assets/poster-shore.mp4' : null }];
 }
+if (!PVID || !PV) renderLinks('yeonex_2026', 'https://yeonex.kr/', 'yeonex.kr', true);
 if (PV) {
+  renderLinks(PV.ig, PV.web, PV.webShow, false);
   document.body.classList.add('is-pv'); document.getElementById('pvb').hidden = false;
   document.title = `${PV.title} · 미리보기 · Display U.`;
   pvText('x-title', PV.title); pvText('x-org', PV.org || '');
@@ -626,7 +659,8 @@ if (PV && PV.intro && PV.intro.length < 90 && !/\n/.test(PV.intro)) document.get
   const db = [...dots.children];
   const pg = document.getElementById('ppager'), many = slides.length > 1;
   dots.hidden = !many; pg.hidden = !many; pg.textContent = `1 / ${slides.length}`;
-  const setDot = (n) => { pg.textContent = `${n + 1} / ${slides.length}`; db.forEach((d, i) => { if (i === n) d.setAttribute('aria-current', 'true'); else d.removeAttribute('aria-current'); }); };
+  let fadeX = null, shownX = 0;
+  const setDot = (n) => { if (fadeX && n !== shownX) fadeX.peekChip(); shownX = n; pg.textContent = `${n + 1} / ${slides.length}`; db.forEach((d, i) => { if (i === n) d.setAttribute('aria-current', 'true'); else d.removeAttribute('aria-current'); }); };
   const mark = () => { if (!vid) return; pp.setAttribute('aria-pressed', String(!vid.paused)); pp.setAttribute('aria-label', vid.paused ? '영상 재생' : '영상 일시정지'); };
   const play = () => { vid.play().then(mark).catch(mark); };
   if (vid) { vid.addEventListener('play', mark); vid.addEventListener('pause', mark);
@@ -635,6 +669,7 @@ if (PV && PV.intro && PV.intro.length < 90 && !/\n/.test(PV.intro)) document.get
   /* 영상 칸이 보이면 재생, 넘기면 멈춤(움직임 줄이기 설정이면 썸네일 + 재생 버튼) */
   if (vid) { new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting && e.intersectionRatio > .6) { if (!reduce) play(); } else vid.pause(); }), { root: pr, threshold: [0, .6, 1] }).observe(vslide);
   document.addEventListener('visibilitychange', () => { if (document.hidden) vid.pause(); }); }
+  fadeX = ChromeFade.init({ stage: document.querySelector('.poster'), root: document.querySelector('.poster-col'), controls: [document.querySelector('.poster-col .back')], chip: pg, scrim: false });
   let tk = false;
   pr.addEventListener('scroll', () => { if (tk) return; tk = true; requestAnimationFrame(() => { tk = false; setDot(Math.round(pr.scrollLeft / pr.clientWidth)); }); }, { passive: true });
   db.forEach((d, i) => d.addEventListener('click', () => pr.scrollTo({ left: i * pr.clientWidth, behavior: reduce ? 'auto' : 'smooth' })));

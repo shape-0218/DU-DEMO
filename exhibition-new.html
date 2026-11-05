@@ -97,6 +97,10 @@
 .empty { margin-top: 32px; font-size: 14px; }
 .empty b { display: block; font-size: 16px; font-weight: 600; }
 .empty p { margin-top: 4px; color: var(--text-teritary); }
+/* 전시 링크(인스타그램·웹사이트) 입력 */
+.field > label .opt { margin-left: 6px; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
+.ul.bad { border-bottom-color: var(--notice); }
+.ul.bad:focus-within { border-bottom-color: var(--notice); }
 </style>
 </head>
 <body>
@@ -188,6 +192,17 @@
         <p class="help">예: @displayu_oo / example@email.com</p>
       </div>
       <div class="field">
+        <label for="ig"><span>인스타그램<span class="opt">· 선택</span></span></label>
+        <div class="ul"><input id="ig" type="text" maxlength="60" placeholder="아이디 (예: yeonex_2026)" autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="ig-h"></div>
+        <p class="help" id="ig-h">관람객이 이어서 볼 수 있어요. @ 없이 아이디만 적어주세요</p>
+      </div>
+      <div class="field">
+        <label for="web"><span>웹사이트<span class="opt">· 선택</span></span></label>
+        <div class="ul"><input id="web" type="text" inputmode="url" maxlength="120" placeholder="ex) yeonex.kr" autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="web-h"></div>
+        <p class="help" id="web-h">전시 사이트나 포트폴리오 주소를 적어주세요</p>
+      </div>
+      <p class="help" style="margin-top:10px">둘 다 선택이에요. 적어주신 링크는 전시 상세에 보여요</p>
+      <div class="field">
         <label for="notice"><span>유의사항</span></label>
         <textarea class="ta" id="notice" maxlength="500" placeholder="입력해 주세요"></textarea>
         <p class="cnt-r" id="notice-n">0 / 500</p>
@@ -257,7 +272,7 @@ const st = { step: 1, posters: [], err: false, type: '', fields: new Set(), star
 const today = new Date(); today.setHours(0, 0, 0, 0);
 const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 const dot = (s) => s ? s.replace(/-/g, '.') : '';
-const dirty = () => !!(st.posters.length || $('title-in').value || $('intro').value || st.type || st.fields.size || $('dept').value || st.start || st.end || $('place').value || st.addr || $('contact').value || $('notice').value);
+const dirty = () => !!(st.posters.length || $('title-in').value || $('intro').value || st.type || st.fields.size || $('dept').value || st.start || st.end || $('place').value || st.addr || $('contact').value || $('notice').value || $('ig').value || $('web').value);
 
 /* ---------- 화면 전환 ---------- */
 const TITLES = { 1: '전시 기본 정보', 2: '전시 기본 정보', addr: '주소 검색', 3: '전시 작가명 설정' };
@@ -339,15 +354,52 @@ menu.addEventListener('click', (e) => {
 document.addEventListener('click', (e) => { if (!e.target.closest('#f-type')) toggleMenu(false); });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') toggleMenu(false); });
 
+/* ---------- 전시 링크 ---------- */
+const IG_RE = /^[A-Za-z0-9._]{1,30}$/;
+function parseIg(raw) {
+  let v = (raw || '').trim(); if (!v) return { empty: true };
+  const m = v.match(/instagram\.com\/([^/?#\s]+)/i); if (m) v = m[1];
+  v = v.replace(/^@+/, '').replace(/\/+$/, '');
+  return IG_RE.test(v) && !/\.$/.test(v) ? { ok: true, id: v } : { ok: false };
+}
+function parseWeb(raw) {
+  let v = (raw || '').trim(); if (!v) return { empty: true };
+  if (/\s/.test(v)) return { ok: false };
+  if (!/^https?:\/\//i.test(v)) v = 'https://' + v;
+  try {
+    const u = new URL(v);
+    if (!/^[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}$/i.test(u.hostname)) return { ok: false };
+    const path = u.pathname !== '/' ? u.pathname.replace(/\/$/, '') : '';
+    return { ok: true, href: u.href, show: u.hostname.replace(/^www\./, '') + path, field: u.host + path + u.search };
+  } catch (e) { return { ok: false }; }
+}
+function setLinkHelp(k, r, okMsg, badMsg, idle) {
+  const h = $(k + '-h'), ul = $(k).parentElement;
+  ul.classList.toggle('bad', r.ok === false); h.classList.toggle('e', r.ok === false);
+  h.textContent = r.empty ? idle : (r.ok ? okMsg : badMsg);
+}
+function linkUi() {
+  const g = parseIg($('ig').value), w = parseWeb($('web').value);
+  setLinkHelp('ig', g, g.ok ? `instagram.com/${g.id} 로 연결돼요` : '', '아이디 형식을 확인해 주세요 (영문·숫자·밑줄·마침표)', '관람객이 이어서 볼 수 있어요. @ 없이 아이디만 적어주세요');
+  setLinkHelp('web', w, w.ok ? `${w.href} 로 연결돼요` : '', '주소 형식을 확인해 주세요 (예: yeonex.kr)', '전시 사이트나 포트폴리오 주소를 적어주세요');
+  validate();
+}
+const igVal = () => { const g = parseIg($('ig').value); return g.ok ? g.id : ''; };
+const webVal = () => { const w = parseWeb($('web').value); return w.ok ? w.href : ''; };
+const webShow = () => { const w = parseWeb($('web').value); return w.ok ? w.show : ''; };
+
 function validate() {
   $('next1').disabled = !(st.posters.length && $('title-in').value.trim() && st.type && st.fields.size && $('dept').value.trim());
-  $('next2').disabled = !(st.start && st.end && st.ts && st.te && $('place').value.trim() && st.addr);
+  $('next2').disabled = !(st.start && st.end && st.ts && st.te && $('place').value.trim() && st.addr && parseIg($('ig').value).ok !== false && parseWeb($('web').value).ok !== false);
   $('make').disabled = !$('myname').value.trim();
 }
 $('next1').addEventListener('click', () => { if (!$('next1').disabled) go(2); });
 
 /* ---------- 2. 일정 · 장소 ---------- */
 $('place').addEventListener('input', validate);
+$('ig').addEventListener('input', linkUi); $('web').addEventListener('input', linkUi);
+$('ig').addEventListener('blur', () => { const g = parseIg($('ig').value); if (g.ok) { $('ig').value = g.id; linkUi(); } });      // @나 주소를 붙여 넣어도 아이디만 남김
+$('web').addEventListener('blur', () => { const w = parseWeb($('web').value); if (w.ok) { $('web').value = w.field; linkUi(); } });
 $('myname').addEventListener('input', validate);
 $('notice').addEventListener('input', () => { $('notice-n').textContent = `${$('notice').value.length} / 500`; });
 const setPick = (id, v) => { const el = $(id).querySelector('span'); el.textContent = v; el.classList.remove('ph'); };
@@ -451,7 +503,7 @@ async function saveEdit() {
     const kept = p.file ? await blobDB.put(key, p.file) : false;
     list.push({ video: !!p.video, thumb: thumb || null, key: kept ? key : null });
   }
-  const upd = { title: $('title-in').value.trim(), intro: $('intro').value.trim(), type: st.type, fields: [...st.fields], org: st.type === '기타 단체 전시' ? dept : `${SCHOOL} ${dept}`, start: st.start, end: st.end, ts: st.ts, te: st.te, place: $('place').value.trim(), addr: st.addr, contact: $('contact').value.trim(), notice: $('notice').value.trim(), poster, posterVideo: !!(first && first.video), hasVideo: st.posters.some((p) => p.video), posters: st.posters.length, posterList: list };
+  const upd = { title: $('title-in').value.trim(), intro: $('intro').value.trim(), type: st.type, fields: [...st.fields], org: st.type === '기타 단체 전시' ? dept : `${SCHOOL} ${dept}`, start: st.start, end: st.end, ts: st.ts, te: st.te, place: $('place').value.trim(), addr: st.addr, contact: $('contact').value.trim(), notice: $('notice').value.trim(), ig: igVal(), web: webVal(), webShow: webShow(), poster, posterVideo: !!(first && first.video), hasVideo: st.posters.some((p) => p.video), posters: st.posters.length, posterList: list };
   saveExhibitions(exhibitions().map((x) => x.id === e.id ? { ...x, ...upd } : x));
   leaving = true; sessionStorage.setItem('du.toast', '전시 정보를 수정했어요'); location.href = 'hub.html?id=' + e.id;
 }
@@ -465,7 +517,7 @@ $('make').addEventListener('click', async () => {
     id: 'n' + Date.now().toString(36), status: 'prep', role: 'owner', myName: $('myname').value.trim(),
     title: $('title-in').value.trim(), intro: $('intro').value.trim(), type: st.type, fields: [...st.fields],
     org: st.type === '기타 단체 전시' ? dept : `${SCHOOL} ${dept}`, start: st.start, end: st.end, ts: st.ts, te: st.te,
-    place: $('place').value.trim(), addr: st.addr, contact: $('contact').value.trim(), notice: $('notice').value.trim(),
+    place: $('place').value.trim(), addr: st.addr, contact: $('contact').value.trim(), notice: $('notice').value.trim(), ig: igVal(), web: webVal(), webShow: webShow(),
     poster, posterVideo: !!(first && first.video), hasVideo: st.posters.some((p) => p.video), posters: st.posters.length, works: 0, sections: 0, members: 1, pending: 0, pubWork: 'start', pubCont: 'approve'
   };
   /* 미리보기용: 포스터마다 작은 그림(썸네일)은 목록에 저장하고, 원본(영상 포함)은 IndexedDB에 보관 */
@@ -508,6 +560,7 @@ if (editEx) (async () => {
   if (st.start) setPick('d-s', dot(st.start)); if (st.end) setPick('d-e', dot(st.end)); setPick('t-s', st.ts); setPick('t-e', st.te);
   if (st.start) view = new Date(+st.start.slice(0, 4), +st.start.slice(5, 7) - 1, 1);
   $('place').value = e.place || ''; st.addr = e.addr || ADDR[0].r; setPick('addr', st.addr);
+  $('ig').value = e.ig || ''; $('web').value = (e.web || '').replace(/^https?:\/\//i, '').replace(/\/$/, '') || e.webShow || ''; linkUi();
   $('contact').value = e.contact || ''; $('notice').value = e.notice || ''; $('notice-n').textContent = `${$('notice').value.length} / 500`;
   $('next2').textContent = '수정 완료';
   /* 포스터: 저장해 둔 원본(영상 포함)을 불러오고, 없으면 작은 그림으로 */

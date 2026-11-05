@@ -56,14 +56,13 @@ img { display: block; }
   .layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(380px, .9fr); column-gap: 72px; padding: 32px var(--pad) 96px; align-items: start; }
   .viewer { position: sticky; top: 96px; }
 }
-.stage { position: relative; background: #0c0f1d; aspect-ratio: 402 / 554; overflow: hidden; }
+.stage { position: relative; background: #000; aspect-ratio: 402 / 554; overflow: hidden; }
 @media (min-width: 600px) and (max-width: 899px) { .stage { aspect-ratio: auto; height: 78vh; } }
 @media (min-width: 900px) { .stage { aspect-ratio: auto; height: min(78vh, 820px); border-radius: var(--r12); } }
 .track { display: flex; height: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
 .track::-webkit-scrollbar { display: none; }
-.slide { flex: 0 0 100%; height: 100%; scroll-snap-align: center; background: #0c0f1d; }
-.slide img { width: 100%; height: 100%; object-fit: cover; }
-@media (min-width: 600px) { .slide img { object-fit: contain; } }
+.slide { flex: 0 0 100%; height: 100%; scroll-snap-align: center; background: #000; }
+.slide img { width: 100%; height: 100%; object-fit: contain; }   /* 어떤 비율이든 전체가 보이고, 남는 곳은 검정 (정책) */
 /* 감상 방식: 한 장씩(기본) / 이어보기(이미지가 여백 없이 세로로 이어 붙음) */
 .ovl { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
 .ovl > * { pointer-events: auto; }
@@ -366,6 +365,7 @@ img { display: block; }
 </div>
 
 <script src="assets/save.js"></script>
+<script src="assets/fade.js"></script>
 <script>
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const O = 'assets/img/work/opt/';
@@ -379,7 +379,8 @@ track.innerHTML = imgs.map(([f], i) => `<div class="slide"><img src="${O}${f}.jp
 thumbs.innerHTML = imgs.map(([, t], i) => `<button class="thumb" role="listitem" data-i="${i}" aria-label="${i + 1}번째 이미지 보기"><img src="${O}${t}.jpg" alt="" width="40" height="60"></button>`).join('');
 let cur = 0, settle;
 thumbs.hidden = photos < 2; pager.hidden = photos < 2;
-function show(i) { cur = i; pager.textContent = `${i + 1} / ${photos}`; [...thumbs.children].forEach((t, n) => t.setAttribute('aria-current', n === i)); prev.disabled = i === 0; next.disabled = i === photos - 1; }
+let fade = null, shown = -1;
+function show(i) { cur = i; if (fade && i !== shown) fade.peekChip(); shown = i; pager.textContent = `${i + 1} / ${photos}`; [...thumbs.children].forEach((t, n) => t.setAttribute('aria-current', n === i)); prev.disabled = i === 0; next.disabled = i === photos - 1; }
 function go(i) {
   i = Math.max(0, Math.min(photos - 1, i)); const left = i * track.clientWidth;
   track.scrollTo({ left, behavior: reduce ? 'auto' : 'smooth' }); show(i);
@@ -409,6 +410,8 @@ prev.addEventListener('click', () => go(cur - 1)); next.addEventListener('click'
 track.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') { e.preventDefault(); go(cur + 1); } if (e.key === 'ArrowLeft') { e.preventDefault(); go(cur - 1); } });
 addEventListener('resize', () => track.scrollTo({ left: cur * track.clientWidth, behavior: 'auto' }));
 show(0); if (mode === 'stack') setMode('stack', false);
+/* 뒤로가기·스위치·N/5 칩이 작품을 가리지 않게: 가만히 있으면 서서히 사라지고, 건드리면 나타남 */
+fade = ChromeFade.init({ stage: document.querySelector('.stage'), root: document.querySelector('.ovl'), controls: [document.getElementById('back'), vmode], chip: pager, stackActive: () => mode === 'stack' });
 
 /* ---------- 탭 (주소 ?tab=guest 연동) ---------- */
 const tabs = [...document.querySelectorAll('.tab')];
