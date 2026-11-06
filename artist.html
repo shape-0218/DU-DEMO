@@ -224,7 +224,7 @@ document.getElementById('linkbox').hidden = nLinks === 0;
 const exhibitions = [DEMO.EXH[7], DEMO.EXH[0]].map((e) => ({ img: e.img, pub: String(100 - e.i), state: e.st, end: e.st === '종료', title: e.t, school: e.s, date: e.d, place: e.p }))
 .sort((a, b) => (a.pub < b.pub ? 1 : a.pub > b.pub ? -1 : 0));
 const works = [
-  { img: 'w1.jpg', title: '머문 자리의 온기', by: 'usun', href: 'work.html' },
+  { img: 'w1.jpg', title: '접으면 달라지는 지도', by: 'usun', href: 'work.html' },
   { img: 'w2.jpg', title: '작품명', by: 'usun', href: 'work.html' }
 ];
 /* ?exh=N&works=N 으로 많을 때 모습 확인 */

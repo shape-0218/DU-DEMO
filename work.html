@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
-<title>머문 자리의 온기 · 이정우 · Display U.</title>
+<title>접으면 달라지는 지도 · 이정우 · Display U.</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
@@ -302,18 +302,18 @@ img { display: block; }
     <div class="info">
       <div class="wrap label">
         <div class="head">
-          <h1>머문 자리의 온기</h1>
+          <h1>접으면 달라지는 지도</h1>
           <button class="like" id="like" aria-pressed="false" aria-label="좋아요"><svg class="i" aria-hidden="true"><use href="#i-heart"/></svg><span id="like-n">204</span></button>
         </div>
         <div class="artists" id="artists"></div>
-        <p class="spec">회화 · 2026 · 90 x 120cm · 아크릴, 캔버스</p>
+        <p class="spec">그래픽 · 2026 · 접지 지도·편집디자인</p>
 
-        <a class="exh" href="exhibition.html" aria-label="소속 전시 보기: 여넥스">
-          <img src="assets/poster-shore-thumb.jpg" alt="" width="40" height="50">
+        <a class="exh" href="exhibition.html" aria-label="소속 전시 보기: 펼쳐지는 장면">
+          <img src="assets/img/explore/opt/p01.jpg" alt="" width="40" height="50">
           <span>
             <span class="state"><i class="dot"></i>전시 중</span>
-            <strong>여넥스</strong>
-            <span class="sub">한결대학교 시각디자인학과</span>
+            <strong>펼쳐지는 장면</strong>
+            <span class="sub">모아디자인대학교</span>
           </span>
           <svg class="i" aria-hidden="true"><use href="#i-chev"/></svg>
         </a>
@@ -331,9 +331,9 @@ img { display: block; }
       <!-- 소개: 제목 없이 -->
       <div class="panel" id="p-intro" role="tabpanel" aria-labelledby="t-intro">
         <div class="wrap about">
-          <p class="desc" id="desc">도시의 오후, 사람들이 잠시 머물다 간 자리에 남은 온기를 일러스트로 기록했습니다. 한결대학교 시각디자인학과 졸업 전시 「여넥스 — 선명하되, 투명한 연결」을 위해 제작한 작품으로, 겹겹이 쌓인 색의 층으로 시간의 흐름을 표현했습니다.</p>
+          <p class="desc" id="desc">지도는 펼쳐 놓고 볼 때만 길이 이어지고, 접는 순간 길도 끊깁니다. 이 작업은 그 접히는 부분에서 출발했습니다. 같은 산책길을 01·02·03 세 지점으로 나눠 한 장짜리 접지 지도, 한 손에 들어오는 소책자, 실로 엮은 작은 노트에 각각 다르게 옮겼습니다. 접는 횟수와 순서에 따라 같은 길이 다른 장면으로 읽힙니다. 모아디자인대학교 졸업 전시 「펼쳐지는 장면」에서 처음 공개합니다.</p>
           <p class="more" id="more"><button id="more-btn" aria-expanded="false" aria-controls="desc">더보기</button></p>
-          <p class="note">이 작품은 사물의 형태보다 사물들이 놓인 관계와 분위기에 집중해 감상하면 좋습니다. 붉은 배경은 따뜻함과 생동감을, 회색 벽면은 고요함과 여백을 만들어냅니다.</p>
+          <p class="note">01에서 03까지 눈으로 먼저 걸어 보시고, 소책자와 노트에서는 같은 길이 어떻게 달라지는지 비교해 보세요.</p>
         </div>
         <section class="process" aria-labelledby="h-proc">
           <h2 id="h-proc">작업과정<span class="cnt" id="proc-n"></span></h2>
@@ -376,7 +376,7 @@ const imgs = [['main', 'th1'], ['s2', 'th2'], ['s3', 'th3'], ['s4', 'th4'], ['s5
 const photos = imgs.length;
 const track = document.getElementById('track'), thumbs = document.getElementById('thumbs'), pager = document.getElementById('pager');
 const prev = document.getElementById('prev'), next = document.getElementById('next');
-track.innerHTML = imgs.map(([f], i) => `<div class="slide"><img src="${O}${f}.jpg" alt="머문 자리의 온기 ${i + 1}/${photos}" ${i ? 'loading="lazy"' : 'fetchpriority="high"'}></div>`).join('');
+track.innerHTML = imgs.map(([f], i) => `<div class="slide"><img src="${O}${f}.jpg" alt="접으면 달라지는 지도 ${i + 1}/${photos}" ${i ? 'loading="lazy"' : 'fetchpriority="high"'}></div>`).join('');
 thumbs.innerHTML = imgs.map(([, t], i) => `<button class="thumb" role="listitem" data-i="${i}" aria-label="${i + 1}번째 이미지 보기"><img src="${O}${t}.jpg" alt="" width="40" height="60"></button>`).join('');
 let cur = 0, settle;
 thumbs.hidden = photos < 2; pager.hidden = photos < 2;
@@ -392,7 +392,7 @@ thumbs.addEventListener('click', (e) => { const b = e.target.closest('.thumb'); 
 
 /* ---------- 감상 방식 전환: 한 장씩 ↔ 이어보기 (고른 방식은 이 기기에 기억) ---------- */
 const viewer = document.querySelector('.viewer'), vmode = document.getElementById('vmode'), stackv = document.getElementById('stackv');
-stackv.innerHTML = imgs.map(([f], i) => `<img src="${O}${f}.jpg" alt="머문 자리의 온기 ${i + 1}/${photos}" loading="lazy" style="aspect-ratio:4/5" onload="this.style.aspectRatio=''">`).join('');
+stackv.innerHTML = imgs.map(([f], i) => `<img src="${O}${f}.jpg" alt="접으면 달라지는 지도 ${i + 1}/${photos}" loading="lazy" style="aspect-ratio:4/5" onload="this.style.aspectRatio=''">`).join('');
 vmode.hidden = photos < 2;
 let mode = 'one'; try { if (photos > 1 && localStorage.getItem('du.view') === 'stack') mode = 'stack'; } catch (e) {}
 const headH = () => (matchMedia('(min-width:768px)').matches ? 64 : 0);
@@ -449,7 +449,7 @@ function renderAuthors(expanded) {
   const collapsed = names.length >= 5 && !expanded, shown = collapsed ? names.slice(0, 3) : names;
   box.innerHTML = shown.map((n) => `<a class="artist" href="artist.html" aria-label="작가 ${n} 프로필 보기">${n}${chev}</a>`).join('') +
     (collapsed ? `<button class="artist more-a" aria-expanded="false" aria-label="나머지 작가 ${names.length - 3}명 모두 보기">외 ${names.length - 3}명${chev}</button>` : '');
-  document.title = `머문 자리의 온기 · ${names.length > 1 ? `${names[0]} 외 ${names.length - 1}명` : names[0]} · Display U.`;
+  document.title = `접으면 달라지는 지도 · ${names.length > 1 ? `${names[0]} 외 ${names.length - 1}명` : names[0]} · Display U.`;
 }
 box.addEventListener('click', (e) => { if (e.target.closest('.more-a')) { renderAuthors(true); const f = box.querySelectorAll('.artist')[3]; if (f) f.focus(); } });
 renderAuthors(false);

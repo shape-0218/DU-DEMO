@@ -97,7 +97,7 @@ function drawFound() {
   const joined = T.members.some((m) => m.nick === n), waiting = T.pending.some((p) => p.nick === n);
   const exists = joined || waiting || USERS.some((u) => u.toLowerCase() === n.toLowerCase());
   if (!exists) { $('found').innerHTML = `<div class="none" role="status"><b>일치하는 닉네임이 없어요</b><span>닉네임을 끝까지 정확히 입력했는지 확인해 주세요</span></div>`; return; }
-  const btn = joined ? '<button type="button" class="btn btn-soft" disabled>참여 중</button>' : waiting ? '<button type="button" class="btn btn-soft" disabled>초대 대기</button>' : '<button type="button" class="btn btn-dark" id="inv">초대하기</button>';
+  const btn = joined ? '<button type="button" class="btn btn-soft" disabled>참여 중</button>' : waiting ? '<button type="button" class="btn btn-soft" disabled>초대 대기</button>' : '<button type="button" class="btn btn-dark" id="inv">초대</button>';
   $('found').innerHTML = `<div class="found">${AV('pend')}<span class="nm">${esc(n)}</span>${btn}</div>${joined ? '' : '<p class="tnote">초대 후 작가 인증과 수락이 완료되어야 참여할 수 있어요</p>'}`;
   const inv = $('inv'); if (inv) inv.addEventListener('click', () => { T.pending.unshift({ id: 'p' + Date.now().toString(36), nick: n }); persist(); drawFound(); drawList(); toast('초대를 보냈어요'); });
 }
