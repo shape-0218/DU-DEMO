@@ -58,17 +58,17 @@ img { display: block; }
 /* 상단: 프로필 + 알림함·설정 */
 .head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .me { display: flex; align-items: center; gap: 14px; min-width: 0; padding: 4px 4px 4px 0; border-radius: var(--r12); }
-.avatar { width: 52px; height: 52px; border-radius: 9999px; background: var(--avatar); display: grid; place-items: end center; overflow: hidden; color: #fff; flex: none; }
-.avatar svg { width: 46px; height: 46px; }
+.avatar { width: 56px; height: 56px; border-radius: 9999px; background: var(--avatar); display: grid; place-items: end center; overflow: hidden; color: #fff; flex: none; }
+.avatar svg { width: 48px; height: 48px; }
 .me b { display: block; font-size: 20px; font-weight: 700; line-height: 1.4; letter-spacing: -0.03em; }
 .me small { display: block; color: var(--text-teritary); font-size: 12px; font-weight: 500; }
 .me .i { width: 20px; height: 20px; color: var(--text-teritary); transition: transform .3s var(--ease); }
 .me:hover .i { transform: translateX(3px); }
-.tools { display: flex; padding: 2px; background: var(--bg-secondary); border-radius: 9999px; flex: none; }
+.tools { display: flex; gap: 0; margin-right: -10px; flex: none; }   /* 알약 배경 없이 아이콘만 */
 .tool { position: relative; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 9999px; transition: background .2s; }
-.tool:hover { background: #e4e4e7; }
+.tool:hover { background: var(--bg-secondary); }
 .tool .i { width: 24px; height: 24px; }
-.tool .dot { position: absolute; top: 9px; right: 9px; width: 8px; height: 8px; border-radius: 9999px; background: var(--notice); border: 2px solid var(--bg-secondary); box-sizing: content-box; }
+.tool .dot { position: absolute; top: 9px; right: 9px; width: 8px; height: 8px; border-radius: 9999px; background: var(--notice); border: 2px solid #fff; box-sizing: content-box; }
 
 /* 작가 인증 / 작가 프로필 카드 (검정) */
 .dark { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 20px; padding: 20px; background: #000; color: #fff; border-radius: var(--r20); transition: transform .3s var(--ease); }
@@ -81,12 +81,13 @@ img { display: block; }
 .go .i { width: 22px; height: 22px; }
 .pro { display: block; }
 .pro .row { display: flex; align-items: center; gap: 14px; }
-.pro .thumb { width: 44px; height: 44px; border-radius: 9999px; overflow: hidden; background: #27272a; flex: none; }
-.pro .thumb img { width: 100%; height: 100%; object-fit: cover; }
+.pro .thumb { width: 48px; height: 48px; border-radius: 9999px; overflow: hidden; background: #27272a; flex: none; display: grid; place-items: end center; color: #52525b; }   /* 작가 프로필 화면과 같은 기본 아바타 */
+.pro .thumb svg { width: 42px; height: 42px; }
 .pro .lbl { color: #a1a1aa; font-size: 12px; font-weight: 500; }
-.pro .nm { font-size: 18px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.4; }
-.pro .meta { display: flex; align-items: center; gap: 6px; margin-top: 14px; flex-wrap: wrap; }
-.pro .chip { height: 26px; padding: 0 10px; display: inline-flex; align-items: center; border-radius: 9999px; background: #3f3f46; font-size: 12px; font-weight: 500; }
+.pro .nm { font-size: 20px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.4; }
+.pro .meta { display: flex; align-items: center; gap: 0 8px; margin-top: 16px; flex-wrap: wrap; padding-top: 14px; border-top: 1px solid #27272a; }
+.pro .fl { color: #e4e4e7; font-size: 12px; font-weight: 500; }   /* 분야는 칩 대신 점으로 이은 글자 */
+.pro .meta i { width: 1px; height: 10px; background: #3f3f46; }
 .pro .cnt { color: #a1a1aa; font-size: 12px; font-weight: 500; }
 .pro .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 
@@ -262,15 +263,15 @@ dialog.modal::backdrop { background: rgba(0, 0, 0, .5); }
       <span class="go"><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span>
     </a>
     <!-- 작가 인증 후 -->
-    <a class="dark pro" href="artist.html" id="pro-card" aria-label="내 작가 프로필 보기">
+    <a class="dark pro" href="artist.html?me=1" id="pro-card" aria-label="내 작가 프로필 보기">
       <span class="top">
         <span class="row">
-          <span class="thumb"><img src="assets/img/work/opt/th1.jpg" alt="" width="44" height="44"></span>
+          <span class="thumb"><svg aria-hidden="true"><use href="#i-avatar"/></svg></span>
           <span><span class="lbl">작가 프로필</span><br><span class="nm">고상준</span></span>
         </span>
         <span class="go"><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span>
       </span>
-      <span class="meta"><span class="chip">그래픽</span><span class="chip">브랜딩</span><span class="cnt">작품 6 · 전시 2</span></span>
+      <span class="meta"><span class="fl">그래픽 · 브랜딩</span><i aria-hidden="true"></i><span class="cnt">작품 6 · 전시 2</span></span>
     </a>
 
     <ul class="rows" id="rows" aria-label="작가 활동">
