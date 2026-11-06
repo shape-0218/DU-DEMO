@@ -189,27 +189,21 @@ img { display: block; }
 .cc:hover .cv img { transform: scale(1.04); }
 .cc strong { display: block; margin-top: 8px; font-weight: 600; font-size: 14px; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 @media (min-width: 900px) { .cc { flex: none; } }
-/* 콘텐츠 보기(카드를 누르면): 검정 바탕에 사진 3:4 그대로, 사진이 여러 장이면 옆으로 넘김 + 장수 칩, 제목은 아래 */
-.cv { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: #000; color: #fff; overflow: hidden; }
-.cv::backdrop { background: #000; }
+/* 콘텐츠 보기(카드를 누르면, 11-06 변경): 흰 화면에서 사진들이 위에서 아래로 쭉 이어짐(참고: design-seoul.com 모바일 photography). 위쪽에 뒤로가기·제목이 붙어 있고, 사진은 폭 가득(좌우 20), 사이 12 */
+.cv { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: #fff; color: var(--text-primary); overflow: hidden; }
+.cv::backdrop { background: #fff; }
 .cv[open] { display: flex; flex-direction: column; }
-.cv .tp { position: absolute; left: 0; right: 0; top: 0; z-index: 3; display: flex; align-items: center; justify-content: space-between; padding: max(16px, env(safe-area-inset-top)) var(--pad) 0; pointer-events: none; }
-.cv .tp > * { pointer-events: auto; }
-.cv .xb { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 9999px; background: rgba(255, 255, 255, .78); color: var(--text-primary); backdrop-filter: blur(10px); transition: transform .2s var(--ease); }
+.cv .tp { flex: none; display: flex; align-items: center; gap: 4px; min-height: 56px; padding: max(6px, env(safe-area-inset-top)) var(--pad) 6px 8px; background: #fff; border-bottom: 1px solid var(--bg-teritary); }
+.cv .xb { flex: none; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 9999px; transition: background .2s, transform .2s var(--ease); }
+.cv .xb:hover { background: var(--bg-secondary); }
 .cv .xb:active { transform: scale(.94); }
-.cv .xb .i { width: 20px; height: 20px; }
-.cv .cnt { padding: 3px 8px; border-radius: 9999px; background: rgba(0, 0, 0, .6); color: #fff; font-size: 10px; font-weight: 500; font-variant-numeric: tabular-nums; }
-.cv .tk { flex: 1; min-height: 0; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
-.cv .tk::-webkit-scrollbar { display: none; }
-.cv .sl { flex: 0 0 100%; height: 100%; display: grid; place-items: center; scroll-snap-align: center; }
-.cv .sl img { max-width: 100%; max-height: 100%; width: auto; height: auto; aspect-ratio: 3 / 4; object-fit: contain; -webkit-user-drag: none; user-select: none; }
-.cv .cap { flex: none; padding: 16px var(--pad) max(24px, env(safe-area-inset-bottom)); }
-.cv .cap b { display: block; font-size: 16px; font-weight: 600; line-height: 1.4; letter-spacing: -0.03em; }
-.cv .cap span { display: block; margin-top: 2px; font-size: 12px; font-weight: 500; color: var(--text-disable); }
-.cv .cdots { display: flex; justify-content: center; gap: 6px; padding-top: 12px; }
-.cv .cdots[hidden], .cv .cnt[hidden] { display: none; }
-.cv .cdots i { width: 6px; height: 6px; border-radius: 9999px; background: rgba(255, 255, 255, .35); }
-.cv .cdots i.on { background: #fff; }
+.cv .xb .i { width: 24px; height: 24px; }
+.cv .tt { min-width: 0; display: grid; }
+.cv .tt b { font-size: 16px; font-weight: 600; line-height: 1.4; letter-spacing: -0.03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cv .tt span { font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-teritary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cv .st { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 20px var(--pad) max(40px, env(safe-area-inset-bottom)); display: grid; align-content: start; gap: 12px; }
+.cv .st img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; border-radius: var(--r12); background: var(--bg-teritary); -webkit-user-drag: none; user-select: none; }
+@media (min-width: 768px) { .cv .st { padding-inline: calc((100% - 560px) / 2); } .cv .tp { padding-inline: max(8px, calc((100% - 560px) / 2 - 12px)); } }
 
 /* 위치 안내: 가짜 지도 대신 한 줄 */
 .place { margin-top: 16px; display: flex; align-items: center; gap: 12px; padding: 16px; background: var(--bg-soft); border-radius: var(--r12); }
@@ -455,9 +449,8 @@ dialog.player .miss[hidden] { display: none; }
 </main>
 
 <dialog class="cv" id="cv" aria-label="전시 콘텐츠 보기">
-  <div class="tp"><button type="button" class="xb" id="cv-x" aria-label="닫기"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button><span class="cnt" id="cv-n" hidden></span></div>
-  <div class="tk" id="cv-t" tabindex="0" role="group" aria-roledescription="캐러셀" aria-label="콘텐츠 사진"></div>
-  <div class="cap"><div class="cdots" id="cv-d" hidden></div><b id="cv-h"></b><span id="cv-s"></span></div>
+  <div class="tp"><button type="button" class="xb" id="cv-x" aria-label="뒤로가기"><svg class="i" aria-hidden="true"><use href="#i-back"/></svg></button><div class="tt"><b id="cv-h"></b><span id="cv-s"></span></div></div>
+  <div class="st" id="cv-t" tabindex="0" aria-label="콘텐츠 사진"></div>
 </dialog>
 
 <dialog class="player" id="player" aria-label="작품 영상">
@@ -695,23 +688,19 @@ if (DX) {
   document.getElementById('pr').innerHTML = `<div class="ps" aria-label="포스터 1 / 1"><img src="${DEMO.src(DX.img)}" alt="${DX.t} 포스터" fetchpriority="high"></div>`;
   /* 전시 콘텐츠: 인스타 게시물 첫 표지(3:4) 3장 */
   document.getElementById('x-cards').innerHTML = DX.cts.map((t, k) => `<a class="cc" href="#" aria-label="${t}"><div class="cv"><img src="${DEMO.cover(DX, k)}" alt="" width="600" height="800" loading="lazy"></div><strong>${t}</strong></a>`).join('');
-  /* 콘텐츠 보기: 카드를 누르면 사진을 크게 봄(사진이 여러 장이면 넘김) */
-  const cv = document.getElementById('cv'), ctk = document.getElementById('cv-t'), cn = document.getElementById('cv-n'), cd = document.getElementById('cv-d');
+  /* 콘텐츠 보기: 카드를 누르면 흰 화면에서 사진들이 쭉 이어짐 */
+  const cv = document.getElementById('cv'), cst = document.getElementById('cv-t');
   let cvFrom = null;
   const photosOf = (k) => (DX.cph && DX.cph[k]) || [DEMO.cover(DX, k)];
-  const showN = () => { const n = ctk.children.length, i = Math.round(ctk.scrollLeft / ctk.clientWidth); cn.textContent = `${i + 1} / ${n}`; [...cd.children].forEach((d, k) => d.classList.toggle('on', k === i)); };
   document.getElementById('x-cards').addEventListener('click', (e) => {
     const a = e.target.closest('.cc'); if (!a) return; e.preventDefault(); cvFrom = a;
     const k = [...a.parentElement.children].indexOf(a), ph = photosOf(k);
-    document.getElementById('cv-h').textContent = DX.cts[k]; document.getElementById('cv-s').textContent = DX.t;
-    ctk.innerHTML = ph.map((u, i) => `<div class="sl"><img src="${u}" alt="${DX.cts[k]} ${i + 1}/${ph.length}" ${i ? 'loading="lazy"' : ''}></div>`).join('');
-    cd.innerHTML = ph.map(() => '<i></i>').join(''); const many = ph.length > 1; cn.hidden = !many; cd.hidden = !many;
-    cv.showModal(); document.getElementById('cv-x').focus(); if (many) showN();
+    document.getElementById('cv-h').textContent = DX.cts[k]; document.getElementById('cv-s').textContent = ph.length > 1 ? `${DX.t} · 사진 ${ph.length}장` : DX.t;
+    cst.innerHTML = ph.map((u, i) => `<img src="${u}" alt="${DX.cts[k]} ${i + 1}/${ph.length}" width="600" height="800" ${i > 1 ? 'loading="lazy"' : ''}>`).join('');
+    cst.scrollTop = 0; cv.showModal(); document.getElementById('cv-x').focus();
   });
-  ctk.addEventListener('scroll', () => { if (ctk.children.length > 1) showN(); }, { passive: true });
   document.getElementById('cv-x').addEventListener('click', () => cv.close());
   cv.addEventListener('close', () => { if (cvFrom) cvFrom.focus(); });
-  ctk.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') ctk.scrollBy({ left: ctk.clientWidth, behavior: 'smooth' }); if (e.key === 'ArrowLeft') ctk.scrollBy({ left: -ctk.clientWidth, behavior: 'smooth' }); });
   /* 작품: 이 전시에 올라온 작품 */
   const mine = DEMO.WORKS.filter((w) => w.e === DX.i);
   document.getElementById('works').innerHTML = mine.length ? mine.map((w, i) => `<a class="w" href="work.html?w=${w.i}" style="--n:${i}"><div class="im"><div><img src="assets/img/explore/opt/${w.img}.jpg" alt="${w.t}" loading="lazy"><span class="bd"><svg class="i" aria-hidden="true"><use href="#i-heart"/></svg>${w.l}</span></div></div><div class="tx"><b>${w.t}</b><span>${Byline.html(w.a)}</span></div></a>`).join('') : '<p class="pv-empty">아직 올라온 작품이 없어요</p>';
