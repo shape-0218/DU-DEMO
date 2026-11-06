@@ -25,8 +25,10 @@
 
   <main id="main" class="body">
     <div id="main-in">
+      <div class="team-h"><h2>팀원 초대</h2><span>함께 전시를 준비할 팀원을 초대해보세요</span></div>
+      <section class="tcard" id="lk" aria-label="링크로 초대"></section>
       <section class="tcard" aria-label="닉네임으로 초대">
-        <div class="row1"><h3>닉네임으로 초대</h3></div>
+        <div class="row1"><h3>닉네임으로 초대</h3><span class="sub">초대할 회원의 디유 닉네임을 검색해주세요</span></div>
         <form class="nick" id="nf" role="search" autocomplete="off">
           <label class="sr" for="nk">초대할 회원의 닉네임</label>
           <input id="nk" type="text" placeholder="닉네임 입력" maxlength="30" autocapitalize="off" spellcheck="false" enterkeyhint="search">
@@ -35,7 +37,6 @@
         <div id="found"></div>
       </section>
 
-      <section class="tcard" id="lk" aria-label="링크로 초대"></section>
       <div class="mtabs" role="tablist" aria-label="팀원">
         <button type="button" role="tab" id="t-in" aria-selected="true" aria-controls="p-in">참여 중 <span id="n-in"></span></button>
         <button type="button" role="tab" id="t-pd" aria-selected="false" aria-controls="p-pd" tabindex="-1">초대 대기 <span id="n-pd"></span></button>
@@ -77,33 +78,39 @@ const persist = () => ExData.save(e, d);
 function drawLink() {
   const on = T.link, url = `https://displayu.kr/invite/exhibition/${slug}`;
   $('lk').className = 'tcard' + (on ? '' : ' off');
-  $('lk').innerHTML = `<div class="row1"><div class="lt"><h3>초대 링크</h3><p class="hint">${on ? '링크를 받은 사람이 이 전시에 참여할 수 있어요' : '켜면 링크로 팀원을 초대할 수 있어요'}</p></div><button type="button" class="sw" id="sw" role="switch" aria-checked="${on}" aria-label="초대 링크"></button></div>
+  $('lk').innerHTML = `<div class="row1"><h3>링크로 초대</h3><span class="tag">${on ? '링크 활성화' : '초대 링크 꺼짐'}</span><button type="button" class="sw" id="sw" role="switch" aria-checked="${on}" aria-label="초대 링크"></button></div>
+    <p class="hint">${on ? '링크를 공유하면 초대받은 사람이 이 전시에 참여할 수 있어요' : '초대 링크를 켜고 팀원을 초대해보세요'}</p>
     <div class="link"><input type="text" readonly value="${on ? url : ''}" placeholder="초대 링크 꺼짐" aria-label="초대 링크"${on ? '' : ' disabled'}><button type="button" class="copy" id="cp"${on ? '' : ' disabled'}><svg class="i" aria-hidden="true"><use href="#i-copy"/></svg>링크 복사</button></div>
-    ${on ? '' : '<p class="offn">꺼져 있는 동안 새 팀원은 참여할 수 없고, 기존 팀원은 그대로예요</p>'}`;
+    ${on ? '' : '<p class="offn">이 링크로 새로운 팀원이 참여할 수 없어요\n기존 팀원의 참여 상태는 유지돼요</p>'}`;
+  if (!on) $('lk').querySelector('.offn').style.whiteSpace = 'pre-line';
   $('sw').addEventListener('click', () => { T.link = !T.link; persist(); drawLink(); });
   const cp = $('cp'); if (cp) cp.addEventListener('click', async () => { try { await navigator.clipboard.writeText(url); } catch (x) {} toast('링크를 복사했어요'); });
 }
 
 /* ---------- 닉네임으로 초대 ---------- */
-let word = '';
+/* 데모에 있는 회원 닉네임 (실제로는 서버에서 검색). 다 입력하고 돋보기·엔터를 눌렀을 때 정확히 같은 닉네임이 있으면 결과를 보여줌 */
+const USERS = ['new_artist', 'quietroom', 'blue.note', 'seojun', 'junho', 'minjae_c', 'yoonsl'];
+let word = '', searched = false;
 function drawFound() {
   const n = word.trim().replace(/^@/, '');
-  if (!n) { $('found').innerHTML = ''; return; }
+  if (!searched || !n) { $('found').innerHTML = ''; return; }
   const joined = T.members.some((m) => m.nick === n), waiting = T.pending.some((p) => p.nick === n);
-  const btn = joined ? '<button type="button" class="btn btn-soft" disabled>참여 중</button>' : waiting ? '<button type="button" class="btn btn-soft" disabled>초대 대기</button>' : '<button type="button" class="btn btn-dark" id="inv">초대</button>';
-  $('found').innerHTML = `<div class="found">${AV('pend')}<span class="nm">${esc(n)}</span>${btn}</div>${joined || waiting ? '' : '<p class="tnote">초대 후 작가 인증과 수락이 완료되어야 참여할 수 있어요</p>'}`;
-  const inv = $('inv'); if (inv) inv.addEventListener('click', () => { T.pending.unshift({ id: 'p' + Date.now().toString(36), nick: n }); persist(); drawFound(); drawList(); });
+  const exists = joined || waiting || USERS.some((u) => u.toLowerCase() === n.toLowerCase());
+  if (!exists) { $('found').innerHTML = `<div class="none" role="status"><b>일치하는 닉네임이 없어요</b><span>닉네임을 끝까지 정확히 입력했는지 확인해 주세요</span></div>`; return; }
+  const btn = joined ? '<button type="button" class="btn btn-soft" disabled>참여 중</button>' : waiting ? '<button type="button" class="btn btn-soft" disabled>초대 대기</button>' : '<button type="button" class="btn btn-dark" id="inv">초대하기</button>';
+  $('found').innerHTML = `<div class="found">${AV('pend')}<span class="nm">${esc(n)}</span>${btn}</div>${joined ? '' : '<p class="tnote">초대 후 작가 인증과 수락이 완료되어야 참여할 수 있어요</p>'}`;
+  const inv = $('inv'); if (inv) inv.addEventListener('click', () => { T.pending.unshift({ id: 'p' + Date.now().toString(36), nick: n }); persist(); drawFound(); drawList(); toast('초대를 보냈어요'); });
 }
-$('nk').addEventListener('input', () => { word = $('nk').value; drawFound(); });
-$('nf').addEventListener('submit', (ev) => { ev.preventDefault(); word = $('nk').value; drawFound(); });
+$('nk').addEventListener('input', () => { word = $('nk').value; searched = false; drawFound(); });   // 고치면 이전 결과는 지움
+$('nf').addEventListener('submit', (ev) => { ev.preventDefault(); word = $('nk').value; searched = true; drawFound(); });
 
 /* ---------- 목록 ---------- */
 function drawList() {
   $('n-in').textContent = T.members.length; $('n-pd').textContent = T.pending.length;
-  const order = ['owner', 'manager', 'member'], list = [...T.members].sort((a, b) => order.indexOf(a.role) - order.indexOf(b.role));
-  $('p-in').innerHTML = list.map((m) => `<div class="mrow" data-id="${m.id}">${AV('member')}<div class="nm"><b>${esc(m.name)}${m.role === 'member' ? '' : `<span class="role">${RN[m.role]}</span>`}</b><small>${esc(m.nick)}</small></div>${m.me || m.role === 'owner' ? '' : `<button type="button" class="dots" data-a="more" data-id="${m.id}" aria-label="${esc(m.name)} 메뉴" aria-haspopup="dialog"><svg class="i" aria-hidden="true"><use href="#i-more"/></svg></button>`}</div>`).join('');
+  const groups = ['owner', 'manager', 'member'].map((r) => [r, T.members.filter((m) => m.role === r)]).filter(([, l]) => l.length);
+  $('p-in').innerHTML = groups.map(([r, l]) => `<section class="grp" aria-label="${RN[r]}"><h4>${RN[r]}</h4>${l.map((m) => `<div class="mrow" data-id="${m.id}">${AV(r)}<div class="nm"><b>${esc(m.name)}<span class="badge" data-r="${r}">${RN[r]}</span></b><small>${esc(m.nick)}</small></div>${m.me || r === 'owner' ? '' : `<button type="button" class="dots" data-a="more" data-id="${m.id}" aria-label="${esc(m.name)} 메뉴" aria-haspopup="dialog"><svg class="i" aria-hidden="true"><use href="#i-more"/></svg></button>`}</div>`).join('')}</section>`).join('');
   $('p-pd').innerHTML = T.pending.length
-    ? `<div class="pend-list">${T.pending.map((p, i) => `<div class="mrow">${AV('member')}<div class="nm"><b>${esc(p.nick)}</b></div><button type="button" class="cancel" data-a="cancel" data-id="${p.id}" aria-label="${esc(p.nick)} 초대 취소">초대 취소</button></div>`).join('')}</div>`
+    ? `<div class="pend-list">${T.pending.map((p, i) => `<div class="mrow">${AV('pend', i % 2 ? '' : 'p2')}<div class="nm"><b>${esc(p.nick)}</b></div><button type="button" class="cancel" data-a="cancel" data-id="${p.id}" aria-label="${esc(p.nick)} 초대 취소">초대 취소</button></div>`).join('')}</div><div class="pnote"><svg class="i" aria-hidden="true"><use href="#i-info"/></svg><p>팀원 초대 수락을 기다리고 있어요\n대표자 위임과는 별개예요</p></div>`
     : '<p class="mnone">초대 대기 중인 팀원이 없어요</p>';
 }
 function pick(k, focus) {
