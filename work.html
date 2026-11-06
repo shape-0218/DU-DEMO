@@ -186,6 +186,23 @@ img { display: block; }
   .proc-row { padding-inline: 0; flex-wrap: wrap; overflow: visible; }
   .pc { flex: 0 0 calc((100% - 16px) / 3); }
 }
+/* 작품별 작업과정(11-06): 사진 1장 + 단계명·설명, 아래에 3단계 */
+.pflow { margin-top: 16px; padding-inline: var(--pad); display: grid; gap: 8px; }
+.pfig { display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: 16px; align-items: center; }
+.pfig .pc { flex: none; }
+.pcap b { display: block; color: #fff; font-size: 14px; font-weight: 600; line-height: 1.4; letter-spacing: -0.03em; }
+.pcap span { display: block; margin-top: 4px; color: #a1a1aa; font-size: 12px; font-weight: 500; line-height: 1.4; text-wrap: pretty; }
+.steps { list-style: none; margin: 12px 0 0; padding: 0; }
+.steps li { display: grid; grid-template-columns: 20px minmax(0, 1fr); column-gap: 12px; padding: 16px 0; border-top: 1px solid rgba(255, 255, 255, .12); }
+.steps .sn { color: #a1a1aa; font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.4; padding-top: 2px; }
+.steps b { display: block; color: #fff; font-size: 14px; font-weight: 600; line-height: 1.4; letter-spacing: -0.03em; }
+.steps span.sd { display: block; margin-top: 2px; color: #d4d4d8; font-size: 12px; font-weight: 500; line-height: 1.4; text-wrap: pretty; }
+/* 사진 설명(한 장씩 볼 때 사진 바로 아래) */
+.gcap { padding: 16px var(--pad) 0; }
+.gcap[hidden] { display: none; }
+.gcap b { display: block; font-size: 14px; font-weight: 600; line-height: 1.4; letter-spacing: -0.03em; }
+.gcap span { display: block; margin-top: 2px; font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-secondary); text-wrap: pretty; }
+@media (min-width: 900px) { .pflow { padding-inline: 0; } .gcap { padding-inline: 0; } }
 .end { height: 24px; }
 
 /* 방명록 */
@@ -300,6 +317,7 @@ img { display: block; }
     </section>
 
     <div class="info">
+      <div class="gcap" id="gcap" aria-live="polite" hidden><b></b><span></span></div>
       <div class="wrap label">
         <div class="head">
           <h1>접으면 달라지는 지도</h1>
@@ -336,8 +354,8 @@ img { display: block; }
           <p class="note">01에서 03까지 눈으로 먼저 걸어 보시고, 소책자와 노트에서는 같은 길이 어떻게 달라지는지 비교해 보세요.</p>
         </div>
         <section class="process" aria-labelledby="h-proc">
-          <h2 id="h-proc">작업과정<span class="cnt" id="proc-n"></span></h2>
-          <div class="proc-row" id="proc"></div>
+          <h2 id="h-proc">작업과정</h2>
+          <div class="pflow" id="proc"></div>
         </section>
         <div class="wrap"><div class="end"></div></div>
       </div>
@@ -368,12 +386,13 @@ img { display: block; }
 <script src="assets/save.js"></script>
 <script src="assets/fade.js"></script>
 <script src="assets/demo-data.js"></script>
+<script src="assets/work-extra.js"></script>
 <script>
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const O = 'assets/img/work/opt/';
 /* ---------- 작품 고르기: ?w=번호(데모 작품 22점), 없으면 0번(사진 5장·소개·작업과정이 다 있는 작품) ---------- */
 const WQ = new URLSearchParams(location.search), WI = (() => { const n = +WQ.get('w'); return Number.isInteger(n) && WQ.has('w') && DEMO.WORKS[n] ? n : 0; })();
-const W = DEMO.WORKS[WI], WE = DEMO.EXH[W.e], FULL = WI === 0;
+const W = DEMO.WORKS[WI], WE = DEMO.EXH[W.e], X = (typeof WORK_EXTRA !== 'undefined' && WORK_EXTRA[WI]) || null;   // X: 작품별 소개·감상 팁·세부 사진·작업과정(없으면 간결형)
 const TT = W.t;
 document.querySelector('h1').textContent = TT;
 document.querySelector('.spec').textContent = `${W.f} · 2026 · ${W.m}`;
@@ -382,16 +401,19 @@ document.getElementById('like-n').textContent = W.l;
 document.getElementById('back').href = 'exhibition.html?e=' + WE.i + '&tab=works';
 
 /* ---------- 이미지 슬라이더 (사진 5장) ---------- */
-const imgs = FULL ? [['main', 'th1'], ['s2', 'th2'], ['s3', 'th3'], ['s4', 'th4'], ['s5', 'th5']].map(([f, t]) => [O + f + '.jpg', O + t + '.jpg']) : [[`assets/img/explore/opt/${W.img}.jpg`, `assets/img/explore/opt/${W.img}.jpg`]];
+const base = WI === 0 ? [['main', 'th1', '', ''], ['s2', 'th2', '', ''], ['s3', 'th3', '', ''], ['s4', 'th4', '', ''], ['s5', 'th5', '', '']].map(([f, t, a, b]) => [O + f + '.jpg', O + t + '.jpg', a, b]) : [[`assets/img/explore/opt/${W.img}.jpg`, `assets/img/explore/opt/${W.img}.jpg`, '', '']];
+const imgs = X ? [...base, [X.g.img, X.g.img, X.g.t, X.g.c]] : base;   // 기존 사진은 그대로 두고 세부 사진을 뒤에 추가
 const photos = imgs.length;
 const track = document.getElementById('track'), thumbs = document.getElementById('thumbs'), pager = document.getElementById('pager');
 const prev = document.getElementById('prev'), next = document.getElementById('next');
 track.innerHTML = imgs.map(([f], i) => `<div class="slide"><img src="${f}" alt="${TT} ${i + 1}/${photos}" ${i ? 'loading="lazy"' : 'fetchpriority="high"'}></div>`).join('');
 thumbs.innerHTML = imgs.map(([, t], i) => `<button class="thumb" role="listitem" data-i="${i}" aria-label="${i + 1}번째 이미지 보기"><img src="${t}" alt="" width="40" height="60"></button>`).join('');
 let cur = 0, settle;
+const gcap = document.getElementById('gcap');
+function capUpdate(i) { const [, , t, c] = imgs[i] || []; const stack = document.querySelector('.viewer').classList.contains('stack'); gcap.hidden = stack || !(t || c); gcap.querySelector('b').textContent = t || ''; gcap.querySelector('span').textContent = c || ''; }
 thumbs.hidden = photos < 2; pager.hidden = photos < 2;
 let fade = null, shown = -1;
-function show(i) { cur = i; if (fade && i !== shown) fade.peekChip(); shown = i; pager.textContent = `${i + 1} / ${photos}`; [...thumbs.children].forEach((t, n) => t.setAttribute('aria-current', n === i)); prev.disabled = i === 0; next.disabled = i === photos - 1; }
+function show(i) { cur = i; capUpdate(i); if (fade && i !== shown) fade.peekChip(); shown = i; pager.textContent = `${i + 1} / ${photos}`; [...thumbs.children].forEach((t, n) => t.setAttribute('aria-current', n === i)); prev.disabled = i === 0; next.disabled = i === photos - 1; }
 function go(i) {
   i = Math.max(0, Math.min(photos - 1, i)); const left = i * track.clientWidth;
   track.scrollTo({ left, behavior: reduce ? 'auto' : 'smooth' }); show(i);
@@ -465,14 +487,14 @@ box.addEventListener('click', (e) => { if (e.target.closest('.more-a')) { render
 renderAuthors(false);
 
 /* ---------- 작업과정 ---------- */
-document.getElementById('proc').innerHTML = [1, 2, 3, 4, 5].map((n) => `<a class="pc" href="#"><img src="${O}p${n}.jpg" alt="작업과정 ${n}" loading="lazy"></a>`).join('');
-document.getElementById('proc-n').textContent = document.getElementById('proc').children.length;
+if (X) document.getElementById('proc').innerHTML = `<div class="pfig"><div class="pc"><img src="${X.p.img}" alt="${X.p.a}" loading="lazy"></div><div class="pcap"><b>${X.p.t}</b><span>${X.p.c}</span></div></div><ol class="steps">${X.s.map(([t, d], i) => `<li><span class="sn">${i + 1}</span><div><b>${t}</b><span class="sd">${d}</span></div></li>`).join('')}</ol>`;
 
 /* ---------- 소개 더보기 ---------- */
 const desc = document.getElementById('desc'), moreBtn = document.getElementById('more-btn');
 requestAnimationFrame(() => { if (desc.scrollHeight <= desc.clientHeight + 1) document.getElementById('more').hidden = true; });
 /* 소개·작업과정이 없는 작품: 그 칸들을 빼고 방명록만 남겨 간결하게 */
-if (!FULL) {
+if (X) { desc.textContent = X.d; document.querySelector('.note').textContent = X.h; }
+if (!X) {
   desc.hidden = true; document.getElementById('more').hidden = true; document.querySelector('.note').hidden = true; document.querySelector('.process').hidden = true;
   document.getElementById('t-intro').hidden = true; pick(document.getElementById('t-guest'), false, true);
 }
