@@ -252,7 +252,8 @@ body.folded { --pw: 0px; }
 
   const dist = (e) => Math.round(Math.hypot(e.x - ME.x, e.y - ME.y) * M_PER_UNIT);
   const fmtDist = (m) => m < 1000 ? Math.max(10, Math.round(m / 10) * 10) + 'm' : (m / 1000).toFixed(1) + 'km';
-  const stText = (e) => e.st === '전시 예정' ? '예정' : e.daysLeft <= 7 ? (e.daysLeft === 0 ? 'D-DAY' : 'D-' + e.daysLeft) : '전시 중';   // ❓ 임시 문구
+  const toOpen = (e) => Math.round((new Date(e.start + 'T00:00:00') - DEMO.today) / 86400000);   // 열리기까지 남은 날
+  const stText = (e) => e.st === '전시 예정' ? '전시 예정 · D-' + Math.max(0, toOpen(e)) : '전시 중';   // 예정에만 D-n(열리기까지), 전시 중은 그냥 "전시 중"  ❓ 임시 문구
   const qOk = (e) => !query || (e.t + e.s + e.p).replace(/\s/g, '').toLowerCase().includes(query);
   const matches = (e) => (!fl.size || fl.has(e.st === '전시 예정' ? 'soon' : 'live')) && qOk(e);
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
