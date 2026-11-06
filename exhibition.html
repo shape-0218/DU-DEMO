@@ -67,7 +67,8 @@ img { display: block; }
 .poster { position: relative; background: #d1d1d1; aspect-ratio: 402 / 568; overflow: hidden; }
 .poster img, .poster video { width: 100%; height: 100%; object-fit: cover; }
 /* 포스터 캐러셀: 첫 칸이 영상이면 소리 없이 반복 재생, 옆으로 넘기면 일반 포스터 */
-.pr { display: flex; height: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
+.pr { display: flex; height: 100%; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; touch-action: pan-x pan-y pinch-zoom; }
+.poster img, .poster video, .thumb img { -webkit-user-drag: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
 .pr::-webkit-scrollbar { display: none; }
 .ps { position: relative; flex: none; width: 100%; height: 100%; scroll-snap-align: center; }
 .ps video { background: #000; }
@@ -289,6 +290,7 @@ dialog.player .miss[hidden] { display: none; }
 .cards, .place { margin-top: 12px; }
 .sec[aria-labelledby="h-intro"] { padding-top: 28px; }
 </style>
+<script src="assets/byline.js"></script>
 </head>
 <body>
 <a class="skip" href="#main">본문으로 건너뛰기</a>
@@ -478,6 +480,7 @@ tabs.forEach((t, i) => {
   });
 });
 pick(tabs.find((t) => t.dataset.k === new URLSearchParams(location.search).get('tab')) || tabs[0], false, true);
+document.querySelector('.poster-col').addEventListener('dragstart', (e) => e.preventDefault());   // 포스터를 끌어 당기는 동작 방지
 
 /* ---------- 좋아요 · 전시 저장 ---------- */
 const like = document.getElementById('like'), likeN = document.getElementById('like-n');
@@ -488,7 +491,7 @@ SaveBtn.init(document.querySelectorAll('.save'), { kind: '전시', id: 'ex1' });
 /* 영상 작품은 사진 작품과 같은 목록·같은 카드. 영상은 목록에서 썸네일로 보이고 누르면 플레이어 창에서 재생(데모용 샘플 assets/sample-video.webm) */
 /* 카드 작가 표기(11-02 확정): 한 명은 이름, 2명부터 "첫 작가 외 N명". n=작가 수(예시 데이터) */
 const NAMES = ['김서윤', '박도현', '이정우', '최하늘', '한유진', '정다온', '오지안', '윤채원'];
-const byline = (n, i = 0) => (n === 1 ? NAMES[i % NAMES.length] : `${NAMES[i % NAMES.length]} 외 ${n - 1}명`);
+const byline = (n, i = 0) => Byline.html(Array.from({ length: n }, (_, k) => NAMES[(i + k) % NAMES.length]));   // 11-06: 다 보여주고 카드 폭을 넘칠 때만 "외 N명"
 const works = [
   { f: 'art-scream', n: 1 }, { f: 'art-flower', n: 1 },
   { f: 'gallery', video: 'assets/sample-video.webm', thumb: 'assets/sample-video-thumb.jpg', n: 1 },

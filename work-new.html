@@ -92,6 +92,7 @@
 .sum2 { margin-top: 32px; }
 .done .cta { margin-top: auto; }
 </style>
+<script src="assets/byline.js"></script>
 </head>
 <body>
 <a class="skip" href="#main">본문으로 건너뛰기</a>
@@ -387,7 +388,7 @@ $('form').addEventListener('submit', async (ev) => {
   }
   const w = store.get('du.works', []); w.unshift(work); store.set('du.works', w);
   ExData.addWork(ex.id, { title: work.title, author: work.authors.length > 1 ? work.authors[0] : work.authors[0], authors: work.authors, img, mine: !PROXY, fields: work.fields, year: work.year, medium: work.medium, z: work.z, tx: work.tx, ty: work.ty });
-  $('d-t').textContent = work.title; $('d-a').textContent = work.authors.length > 1 ? `${work.authors[0]} 외 ${work.authors.length - 1}명` : work.authors[0]; $('d-e').textContent = ex.title;
+  $('d-t').textContent = work.title; $('d-a').innerHTML = Byline.html(work.authors); $('d-e').textContent = ex.title;
   st.left = true; $('form').hidden = true; $('bar').hidden = true; $('done').hidden = false; window.scrollTo(0, 0); $('done-h').focus({ preventScroll: true });
 });
 

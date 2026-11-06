@@ -133,6 +133,7 @@ img { display: block; }
 .nav a:focus-visible { outline-color: #fafafa; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; } }
 </style>
+<script src="assets/byline.js"></script>
 </head>
 <body>
 <a class="skip" href="#list">목록으로 건너뛰기</a>
@@ -217,7 +218,7 @@ const $ = (id) => document.getElementById(id);
 const ic = (id) => `<svg class="i" aria-hidden="true"><use href="#${id}"/></svg>`;
 const norm = (s) => s.toLowerCase().replace(/\s+/g, ' ').trim();
 /* 카드 작가 표기(11-02 확정): 한 명은 이름, 2명부터 "첫 작가 외 N명" — 검색 결과도 같은 표기 */
-const byline = (names) => (names.length === 1 ? names[0] : `${names[0]} 외 ${names.length - 1}명`);
+const byline = (names) => Byline.html(names);   // 11-06: 이름을 다 보여주고 카드 폭을 넘칠 때만 "외 N명"
 function filtered() {
   const q = norm(state.q);
   const ex = EXH.map((e, i) => ({ ...e, i }));

@@ -59,7 +59,8 @@ img { display: block; }
 .stage { position: relative; background: #000; aspect-ratio: 402 / 554; overflow: hidden; }
 @media (min-width: 600px) and (max-width: 899px) { .stage { aspect-ratio: auto; height: 78vh; } }
 @media (min-width: 900px) { .stage { aspect-ratio: auto; height: min(78vh, 820px); border-radius: var(--r12); } }
-.track { display: flex; height: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
+.track { display: flex; height: 100%; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; touch-action: pan-x pan-y pinch-zoom; }   /* 위아래로 쓸면 페이지가 스크롤되도록 방향을 명시 */
+.viewer img, .viewer video { -webkit-user-drag: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }   /* 이미지가 끌려 나오거나(드래그 고스트) 길게 눌러 메뉴가 뜨지 않게 */
 .track::-webkit-scrollbar { display: none; }
 .slide { flex: 0 0 100%; height: 100%; scroll-snap-align: center; background: #000; }
 .slide img { width: 100%; height: 100%; object-fit: contain; }   /* 어떤 비율이든 전체가 보이고, 남는 곳은 검정 (정책) */
@@ -410,6 +411,7 @@ prev.addEventListener('click', () => go(cur - 1)); next.addEventListener('click'
 track.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') { e.preventDefault(); go(cur + 1); } if (e.key === 'ArrowLeft') { e.preventDefault(); go(cur - 1); } });
 addEventListener('resize', () => track.scrollTo({ left: cur * track.clientWidth, behavior: 'auto' }));
 show(0); if (mode === 'stack') setMode('stack', false);
+viewer.addEventListener('dragstart', (e) => e.preventDefault());   // 이미지 끌기 방지(스크롤·넘기기만 동작)
 /* 뒤로가기·스위치·N/5 칩이 작품을 가리지 않게: 가만히 있으면 서서히 사라지고, 건드리면 나타남 */
 fade = ChromeFade.init({ stage: document.querySelector('.stage'), root: document.querySelector('.ovl'), controls: [vmode], chip: pager, stackActive: () => mode === 'stack' });
 
