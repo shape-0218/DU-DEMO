@@ -74,7 +74,7 @@ img { display: block; }
 .who h1 { font-size: 28px; line-height: 1.4; font-weight: 700; letter-spacing: -0.03em; }
 @media (min-width: 900px) { .who h1 { font-size: 36px; } }
 .school { margin-top: 4px; color: var(--text-secondary); font-size: 14px; font-weight: 500; }   /* 학교 · 분야를 한 줄로 */
-.bio { margin-top: 16px; color: var(--text-primary); text-wrap: pretty; }
+.bio { margin-top: 20px; color: var(--text-primary); text-wrap: pretty; }
 .linkbox { margin-top: 28px; }
 .linkbox h2, .sec h2 { font-size: 18px; font-weight: 600; line-height: 1.4; letter-spacing: -0.03em; }
 .sec h2 small { margin-left: 6px; font-size: 18px; font-weight: 500; color: var(--text-teritary); font-variant-numeric: tabular-nums; }
@@ -86,19 +86,23 @@ img { display: block; }
 .links .lt span { font-size: 12px; font-weight: 500; color: var(--text-teritary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .links .out { width: 20px; height: 20px; color: var(--text-teritary); flex: none; transition: transform .25s var(--ease); }
 @media (hover: hover) { .links a:hover .out { transform: translate(2px, -2px); color: var(--text-primary); } }
-.actions { margin-top: 24px; display: flex; align-items: center; gap: 8px; }   /* 행동은 하나: 알약 하나 (공유는 모바일에서 위 오른쪽 아이콘) */
-.btn { height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 0 20px; border-radius: 9999px; font-weight: 600; font-size: 14px; transition: background .2s, transform .2s var(--ease); white-space: nowrap; }
-.btn:active { transform: scale(.98); }
-.btn-soft { background: var(--bg-teritary); }
-.btn-soft:hover { background: #e4e4e7; }
-.btn-soft[aria-pressed="true"] .i { fill: currentColor; }
-.btn.sq { width: 44px; padding: 0; }
-.btn-line { border: 1px solid var(--border-primary); } .btn-line:hover { background: var(--bg-secondary); }
-.btn-dark { background: var(--text-primary); color: #fff; }
-.btn-dark:hover { background: #2f2f35; }
-.btn-dark[aria-pressed="true"] { background: var(--bg-teritary); color: var(--text-primary); }
-.btn-dark[aria-pressed="true"] .i { fill: currentColor; }
-.btn .i { width: 18px; height: 18px; }
+/* 작가 프로필 배지(11-06 확정, 후보 A + 다듬기 2차): 저장/수정 버튼을 없애고 아바타 오른쪽 아래에 둥근 배지 하나.
+   방문자 = 북마크(작가 저장, 저장하면 검게 채움) / 본인 = 연필(프로필 수정). 보이는 원 32(데스크톱 36), 누르는 영역 44.
+   테두리는 하나만(흰 링 + 안쪽 선이 겹쳐 보이던 것 정리), 원은 아바타 가장자리에 걸치게 바깥으로 빼서 아바타 가운데를 덜 가림.
+   (아바타 + 배지)를 한 묶음(72x64)으로 오른쪽 마진 20 선에 맞춰서 아바타는 8px 왼쪽으로 들어감. 원 위치는 디자이너가 Figma에서 잡은 값(묶음 안 36,36 = 오른쪽 끝에서 4px 안쪽, 아바타 아래로 4px)에 맞춤 */
+.avw { position: relative; flex: none; width: 72px; height: 64px; }
+.bdg { position: absolute; right: -2px; bottom: -10px; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 9999px; }
+.bdg .dot { position: relative; width: 32px; height: 32px; border-radius: 9999px; background: #fff; color: var(--text-primary); display: grid; place-items: center;
+  box-shadow: 0 1px 3px rgba(24, 24, 27, .14), inset 0 0 0 1px rgba(24, 24, 27, .14);
+  transition: transform .2s var(--ease), background .25s, color .25s, box-shadow .25s; }
+.bdg .i { grid-area: 1 / 1; width: 16px; height: 16px; stroke-width: 1.8; transition: opacity .25s cubic-bezier(.2, 0, 0, 1), transform .25s cubic-bezier(.2, 0, 0, 1), filter .25s cubic-bezier(.2, 0, 0, 1); }
+.bdg .i.on { fill: currentColor; opacity: 0; transform: scale(.25); filter: blur(4px); }
+.bdg:active .dot { transform: scale(.92); }
+@media (hover: hover) { .bdg:hover .dot { box-shadow: 0 2px 6px rgba(24, 24, 27, .18), inset 0 0 0 1px rgba(24, 24, 27, .22); } }
+.bdg.is-saved .dot { background: var(--text-primary); color: #fff; box-shadow: 0 1px 3px rgba(24, 24, 27, .2); }
+.bdg.is-saved .i.on { opacity: 1; transform: none; filter: none; }
+.bdg.is-saved .i.off { opacity: 0; transform: scale(.25); filter: blur(4px); }
+@media (min-width: 900px) { .avw { width: 120px; height: 112px; } .bdg { right: 0; bottom: -8px; } .bdg .dot { width: 36px; height: 36px; } .bdg .i { width: 18px; height: 18px; } }
 
 /* 전시 · 작품 섹션 (탭 없이 쌓음. 많아지면 "모두 보기") */
 .content { min-width: 0; }
@@ -157,6 +161,7 @@ img { display: block; }
   <defs>
     <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
     <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+    <symbol id="i-pencil" viewBox="0 0 24 24"><path d="m4 20 1-4L16.5 4.5a2 2 0 0 1 3 3L8 19z"/><path d="m14.5 6.5 3 3"/></symbol>
     <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M7 4h10a1 1 0 0 1 1 1v15l-6-3.8L6 20V5a1 1 0 0 1 1-1z"/></symbol>
     <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 15V4.5M8 8l4-4 4 4"/><path d="M5 13v5.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V13"/></symbol>
     <symbol id="i-out" viewBox="0 0 24 24"><path d="M14 5h5v5M19 5l-8 8"/><path d="M17 14v4a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h4"/></symbol>
@@ -184,13 +189,13 @@ img { display: block; }
           <h1>고상준</h1>
           <p class="school">한결대학교 · 그래픽 · 브랜딩</p>
         </div>
-        <div class="avatar"><svg aria-hidden="true"><use href="#i-avatar"/></svg></div>
+        <div class="avw">
+          <div class="avatar" id="avatar"><svg aria-hidden="true"><use href="#i-avatar"/></svg></div>
+          <button type="button" class="bdg" id="save" aria-label="작가 저장" aria-pressed="false"><span class="dot"><svg class="i off" aria-hidden="true"><use href="#i-bookmark"/></svg><svg class="i on" aria-hidden="true"><use href="#i-bookmark"/></svg></span></button>
+        </div>
       </div>
       <p class="bio" id="bio">빛과 색의 경계를 탐구하며, 일상에서 발견한 순간들을 작품으로 표현합니다.</p>
       <section class="linkbox" id="linkbox" aria-label="작가 링크"><ul class="links" id="links"></ul></section>
-      <div class="actions">
-        <button class="btn btn-dark save" id="save" aria-pressed="false"><svg class="i" aria-hidden="true"><use href="#i-bookmark"/></svg>작가 저장</button>
-      </div>
     </section>
 
     <div class="content">
@@ -211,7 +216,7 @@ const O = 'assets/img/work/opt/';
 /* ---------- 외부 링크 (작업 계정 — 방문자가 가장 많이 찾는 곳이라 소개 바로 아래) — ?links=0~3 로 개수 확인 ---------- */
 const allLinks = [
   { name: 'Instagram', sub: '@sangjun.works', href: 'https://www.instagram.com/sangjun.works' },
-  { name: '포트폴리오', sub: 'sangjun-works.com', href: 'https://sangjun-works.com' },
+  { name: 'Portfolio', sub: 'sangjun-works.com', href: 'https://sangjun-works.com' },
   { name: '노션', sub: 'sangjun-works.notion.site', href: 'https://sangjun-works.notion.site' }
 ];
 const nLinks = Math.max(0, Math.min(3, q.has('links') ? +q.get('links') : 2));
@@ -257,10 +262,11 @@ secsEl.addEventListener('click', (e) => { const b = e.target.closest('.more'); i
 drawSecs();
 
 /* ---------- 작가 저장 · 프로필 공유하기 ---------- */
-/* 본인 보기(?me=1, 마이 > 작가 프로필 카드): 작가 저장 대신 "프로필 수정", 하단 바 표시. 다른 작가를 볼 때는 작가 저장 */
+/* 본인 보기(?me=1, 마이 > 작가 프로필 카드): 작가 저장 배지 대신 프로필 수정 배지(연필), 하단 바 표시. 다른 작가를 볼 때는 작가 저장 배지 */
 const mine = q.get('me') === '1';
 if (mine) {
-  const sv = document.getElementById('save'); sv.removeAttribute('aria-pressed'); sv.classList.remove('save'); sv.id = 'edit'; sv.innerHTML = '프로필 수정'; sv.classList.remove('btn-dark'); sv.classList.add('btn-line');
+  const sv = document.getElementById('save'); sv.removeAttribute('aria-pressed'); sv.id = 'edit'; sv.setAttribute('aria-label', '프로필 수정');   // 본인: 저장 대신 프로필 수정(연필)
+  sv.querySelector('.on').remove(); sv.querySelector('.off use').setAttribute('href', '#i-pencil');
   document.getElementById('back').setAttribute('href', 'my.html');
   document.body.insertAdjacentHTML('beforeend', '<nav class="nav" aria-label="하단 메뉴"><div class="pill"><a href="home.html" aria-label="홈"><img class="ic" src="assets/img/nav-home.svg" alt="" width="40" height="40" style="opacity:.55"></a><a href="explore.html" aria-label="검색"><img class="ic" src="assets/img/nav-search.svg" alt="" width="40" height="40"></a><a href="my.html" aria-current="page" aria-label="마이"><img class="bar-i" src="assets/img/tab-bar.svg" alt="" width="56" height="47"><img class="ic" src="assets/img/nav-user.svg" alt="" width="40" height="40" style="position:relative;filter:brightness(2)"></a></div></nav>');
   document.body.style.paddingBottom = '132px';
@@ -269,7 +275,7 @@ const save = document.getElementById('save');
 if (save) SaveBtn.init([save], { kind: '작가', id: 'a1' });
 const toastEl = document.getElementById('toast'); let tt;
 function toast(msg) { toastEl.textContent = msg; toastEl.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => toastEl.classList.remove('on'), 2200); }
-document.addEventListener('click', (e) => { if (e.target.closest('#edit')) toast('프로필 수정 화면은 아직 없어요 (임시 안내)'); });
+document.addEventListener('click', (e) => { if (e.target.closest('#edit') || (mine && e.target.closest('#avatar'))) toast('프로필 수정 화면은 아직 없어요 (임시 안내)'); });   // 본인은 아바타를 눌러도 프로필 수정
 
 
 /* ---------- 뒤로가기: 온 곳으로 ---------- */

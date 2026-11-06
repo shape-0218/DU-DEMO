@@ -170,39 +170,44 @@ img { display: block; }
 .more button { height: 28px; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
 .more button:hover { color: var(--text-primary); }
 .note { margin-top: 20px; padding: 16px; background: var(--bg-secondary); border-radius: var(--r12); color: var(--text-secondary); text-wrap: pretty; }
-/* 작업과정: 어두운 띠 + "작업과정 5"(개수) + 4:5 카드(반경 16, 간격 8) — 사용자 규격(11-03) */
-.process { margin-top: 28px; background: #18181b; padding: 28px 0; }
-.process h2 { display: flex; align-items: baseline; gap: 8px; padding-inline: var(--pad); color: #fff; font-size: 18px; font-weight: 600; letter-spacing: -0.03em; }
-.process h2 .cnt { color: #a1a1aa; font-weight: 500; font-variant-numeric: tabular-nums; }
-.proc-row { margin-top: 12px; display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x proximity; scroll-padding-inline: var(--pad); scrollbar-width: none; padding-inline: var(--pad); }
-.proc-row::-webkit-scrollbar { display: none; }
-.pc { position: relative; flex: 0 0 160px; aspect-ratio: 4 / 5; border-radius: 16px; overflow: hidden; background: #27272a; scroll-snap-align: start; transition: transform .3s var(--ease); }
-.pc:active { transform: scale(.98); }
-.pc img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
-.pc:hover img { transform: scale(1.04); }
-@media (min-width: 900px) {
-  .process { margin-top: 40px; padding: 28px 24px 28px; border-radius: 20px; }
-  .process h2 { padding-inline: 0; }
-  .proc-row { padding-inline: 0; flex-wrap: wrap; overflow: visible; }
-  .pc { flex: 0 0 calc((100% - 16px) / 3); }
-}
-/* 작품별 작업과정(11-06): 사진 1장 + 단계명·설명, 아래에 3단계 */
-.pflow { margin-top: 16px; padding-inline: var(--pad); display: grid; gap: 8px; }
-.pfig { display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: 16px; align-items: center; }
-.pfig .pc { flex: none; }
-.pcap b { display: block; color: #fff; font-size: 14px; font-weight: 600; line-height: 1.4; letter-spacing: -0.03em; }
-.pcap span { display: block; margin-top: 4px; color: #a1a1aa; font-size: 12px; font-weight: 500; line-height: 1.4; text-wrap: pretty; }
-.steps { list-style: none; margin: 12px 0 0; padding: 0; }
-.steps li { display: grid; grid-template-columns: 20px minmax(0, 1fr); column-gap: 12px; padding: 16px 0; border-top: 1px solid rgba(255, 255, 255, .12); }
-.steps .sn { color: #a1a1aa; font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.4; padding-top: 2px; }
-.steps b { display: block; color: #fff; font-size: 14px; font-weight: 600; line-height: 1.4; letter-spacing: -0.03em; }
-.steps span.sd { display: block; margin-top: 2px; color: #d4d4d8; font-size: 12px; font-weight: 500; line-height: 1.4; text-wrap: pretty; }
+/* 작업과정(11-06 확정, 후보 H): 어두운 띠에는 "작업과정" 줄과 작은 사진 조각만 보임. 줄을 누르면 조각이 그대로 자라 검은 전체 화면이 열림. 글(제목·설명·단계)은 넣지 않음 */
+.process { margin-top: 28px; background: #18181b; padding: 12px 0; }
+.process h2 { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -0.03em; }
+.pr-row { display: flex; align-items: center; width: 100%; min-height: 56px; padding: 4px var(--pad); color: #fff; text-align: left; transition: transform .2s var(--ease); }
+.pr-row:active { transform: scale(.99); }
+.pr-row .ths { display: flex; margin-left: auto; margin-right: 12px; }
+.pr-row .t { position: relative; flex: none; width: 36px; height: 44px; margin-left: -14px; border-radius: 8px; overflow: hidden; border: 2px solid #18181b; box-sizing: content-box; background: #27272a; }
+.pr-row .t:first-child { margin-left: 0; }
+.pr-row .t img { width: 100%; height: 100%; object-fit: cover; -webkit-user-drag: none; }
+.pr-row .go { flex: none; width: 32px; height: 32px; border-radius: 50%; background: rgba(255, 255, 255, .12); display: grid; place-items: center; }
+.pr-row .go .i { width: 16px; height: 16px; transition: transform .3s var(--ease); }
+.pr-row:hover .go .i { transform: translateX(2px); }
+@media (min-width: 900px) { .process { margin-top: 40px; padding: 12px 24px; border-radius: 20px; } .pr-row { padding-inline: 0; } }
+/* 작업과정 전체 화면(검정): 사진이 세로로 이어짐 */
+.pv { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: transparent; color: #fff; overflow: hidden; }
+.pv::backdrop { background: transparent; }
+.pv[open] { display: flex; flex-direction: column; }
+.pv .bgd { position: absolute; inset: 0; background: #000; opacity: 0; transition: opacity .32s var(--ease); }
+.pv.show .bgd { opacity: 1; }
+.pv .vh { position: relative; z-index: 1; flex: none; display: flex; align-items: center; min-height: 56px; padding: max(6px, env(safe-area-inset-top)) var(--pad) 6px 8px; opacity: 0; transition: opacity .26s var(--ease) .12s; }
+.pv.show .vh { opacity: 1; }
+.pv .xb { flex: none; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 9999px; transition: background .2s, transform .2s var(--ease); }
+.pv .xb:hover { background: rgba(255, 255, 255, .12); }
+.pv .xb:active { transform: scale(.94); }
+.pv .xb .i { width: 24px; height: 24px; }
+.pv .cn { margin-left: 4px; font-size: 14px; font-weight: 500; font-variant-numeric: tabular-nums; color: rgba(255, 255, 255, .72); }
+.pv .st { position: relative; z-index: 1; flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; display: grid; align-content: start; gap: 8px; padding-bottom: max(40px, env(safe-area-inset-bottom)); scrollbar-width: none; }
+.pv .st::-webkit-scrollbar { display: none; }
+.pv .st img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; background: #27272a; -webkit-user-drag: none; user-select: none; }
+.pv .clone { position: fixed; z-index: 3; overflow: hidden; pointer-events: none; will-change: transform, clip-path; }
+.pv .clone img { width: 100%; height: 100%; object-fit: cover; display: block; }
+@media (min-width: 768px) { .pv .st { padding-inline: calc((100% - 560px) / 2); } .pv .st img { border-radius: 12px; } }
 /* 사진 설명(한 장씩 볼 때 사진 바로 아래) */
 .gcap { padding: 16px var(--pad) 0; }
 .gcap[hidden] { display: none; }
 .gcap b { display: block; font-size: 14px; font-weight: 600; line-height: 1.4; letter-spacing: -0.03em; }
 .gcap span { display: block; margin-top: 2px; font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-secondary); text-wrap: pretty; }
-@media (min-width: 900px) { .pflow { padding-inline: 0; } .gcap { padding-inline: 0; } }
+@media (min-width: 900px) { .gcap { padding-inline: 0; } }
 .end { height: 24px; }
 
 /* 방명록 */
@@ -331,7 +336,7 @@ img { display: block; }
           <span>
             <span class="state"><i class="dot"></i>전시 중</span>
             <strong>펼쳐지는 장면</strong>
-            <span class="sub">모아디자인대학교</span>
+            <span class="sub">모아디자인대학교 시각디자인학과</span>
           </span>
           <svg class="i" aria-hidden="true"><use href="#i-chev"/></svg>
         </a>
@@ -354,8 +359,7 @@ img { display: block; }
           <p class="note">01에서 03까지 눈으로 먼저 걸어 보시고, 소책자와 노트에서는 같은 길이 어떻게 달라지는지 비교해 보세요.</p>
         </div>
         <section class="process" aria-labelledby="h-proc">
-          <h2 id="h-proc">작업과정</h2>
-          <div class="pflow" id="proc"></div>
+          <h2 id="h-proc"><button type="button" class="pr-row" id="proc-open" aria-haspopup="dialog">작업과정<span class="ths" id="ths" aria-hidden="true"></span><span class="go" aria-hidden="true"><svg class="i"><use href="#i-chev"/></svg></span></button></h2>
         </section>
         <div class="wrap"><div class="end"></div></div>
       </div>
@@ -387,6 +391,12 @@ img { display: block; }
 <script src="assets/fade.js"></script>
 <script src="assets/demo-data.js"></script>
 <script src="assets/work-extra.js"></script>
+<dialog class="pv" id="pv" aria-label="작업과정 사진">
+  <div class="bgd"></div>
+  <div class="vh"><button type="button" class="xb" id="pv-x" aria-label="닫기"><svg class="i" aria-hidden="true"><use href="#i-back"/></svg></button><span class="cn" id="pv-c"></span></div>
+  <div class="st" id="pv-s" tabindex="0" aria-label="작업과정 사진"></div>
+</dialog>
+
 <script>
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const O = 'assets/img/work/opt/';
@@ -487,7 +497,50 @@ box.addEventListener('click', (e) => { if (e.target.closest('.more-a')) { render
 renderAuthors(false);
 
 /* ---------- 작업과정 ---------- */
-if (X) document.getElementById('proc').innerHTML = `<div class="pfig"><div class="pc"><img src="${X.p.img}" alt="${X.p.a}" loading="lazy"></div><div class="pcap"><b>${X.p.t}</b><span>${X.p.c}</span></div></div><ol class="steps">${X.s.map(([t, d], i) => `<li><span class="sn">${i + 1}</span><div><b>${t}</b><span class="sd">${d}</span></div></li>`).join('')}</ol>`;
+/* 후보 H(11-06 확정): 줄의 사진 조각을 누르면 그 조각이 그대로 자라 검은 전체 화면이 열림(공유 요소 전환). 닫으면 조각으로 되돌아감 */
+if (X) {
+  const PP = X.ps || [X.p], DR = 'cubic-bezier(.32,.72,0,1)';
+  document.getElementById('ths').innerHTML = PP.slice(0, 3).map((p, i) => `<span class="t" style="z-index:${3 - i}"><img src="${p.img}" alt="" draggable="false"></span>`).join('');
+  const pv = document.getElementById('pv'), pst = document.getElementById('pv-s'), pcn = document.getElementById('pv-c'), row = document.getElementById('proc-open'), thumb = document.querySelector('#ths .t');
+  let live = null;
+  const kfs = (F) => {                       // 조각 ↔ 전체 화면 사진 키프레임(조각과 같은 가운데 자름을 맞춰 튀지 않게)
+    const r = thumb.getBoundingClientRect(), sc = r.width / F.width, dx = r.left + r.width / 2 - (F.left + F.width / 2), dy = r.top + r.height / 2 - (F.top + F.height / 2);
+    const ix = Math.max(0, (F.width - r.width / sc) / 2), iy = Math.max(0, (F.height - r.height / sc) / 2);
+    return [{ transform: `translate(${dx}px,${dy}px) scale(${sc})`, clipPath: `inset(${iy}px ${ix}px round ${8 / sc}px)` }, { transform: 'translate(0,0) scale(1)', clipPath: `inset(0px round ${innerWidth >= 768 ? 12 : 0}px)` }];
+  };
+  const finish = () => { pv.classList.remove('show'); pv.close(); pst.innerHTML = ''; thumb.style.visibility = ''; live = null; row.focus({ preventScroll: true }); };
+  function openPV() {
+    if (live) return;
+    pst.innerHTML = PP.map(p => `<img src="${p.img}" alt="${p.a}" draggable="false">`).join('');
+    pcn.textContent = PP.length > 1 ? `1 / ${PP.length}` : '';
+    pst.scrollTop = 0; pv.showModal(); pv.querySelector('.clone')?.remove();
+    const first = pst.firstElementChild, F = first.getBoundingClientRect();
+    const clone = document.createElement('div'); clone.className = 'clone'; clone.style.cssText = `left:${F.left}px;top:${F.top}px;width:${F.width}px;height:${F.height}px`; clone.innerHTML = `<img src="${PP[0].img}" alt="">`; pv.appendChild(clone);
+    first.style.visibility = 'hidden'; thumb.style.visibility = 'hidden';
+    const a = clone.animate(kfs(F), { duration: reduce ? 1 : 520, easing: DR, fill: 'both' });
+    a.onfinish = () => { first.style.visibility = ''; clone.style.display = 'none'; };
+    requestAnimationFrame(() => pv.classList.add('show'));
+    live = { clone, first };
+    document.getElementById('pv-x').focus({ preventScroll: true });
+  }
+  function closePV() {
+    if (!live) return; const { clone, first } = live;
+    pv.classList.remove('show');
+    if (pst.scrollTop > 20) { setTimeout(finish, 330); return; }          // 많이 내려간 뒤에는 조각으로 돌아가지 않고 조용히 닫음
+    const F = first.getBoundingClientRect();
+    clone.style.cssText = `left:${F.left}px;top:${F.top}px;width:${F.width}px;height:${F.height}px`; clone.style.display = ''; first.style.visibility = 'hidden';
+    clone.animate(kfs(F).reverse(), { duration: reduce ? 1 : 460, easing: DR, fill: 'both' }).onfinish = finish;
+  }
+  row.addEventListener('click', openPV);
+  document.getElementById('pv-x').addEventListener('click', closePV);
+  pv.addEventListener('cancel', (e) => { e.preventDefault(); closePV(); });
+  if (PP.length > 1) pst.addEventListener('scroll', () => { const step = pst.firstElementChild.offsetHeight + 8; pcn.textContent = `${Math.min(PP.length, Math.max(1, Math.round(pst.scrollTop / step) + 1))} / ${PP.length}`; }, { passive: true });
+  let sy = null, dyy = 0;                    // 맨 위에서 아래로 끌면 닫힘
+  pst.addEventListener('pointerdown', (e) => { if (pst.scrollTop <= 0) sy = e.clientY; });
+  pst.addEventListener('pointermove', (e) => { if (sy == null) return; dyy = Math.max(0, e.clientY - sy); if (dyy > 8) pv.style.transform = `translateY(${dyy * .6}px)`; });
+  const rel = () => { if (sy == null) return; const d = dyy; sy = null; dyy = 0; pv.style.transition = 'transform .3s var(--ease)'; pv.style.transform = ''; setTimeout(() => pv.style.transition = '', 320); if (d > 110) closePV(); };
+  pst.addEventListener('pointerup', rel); pst.addEventListener('pointercancel', rel);
+}
 
 /* ---------- 소개 더보기 ---------- */
 const desc = document.getElementById('desc'), moreBtn = document.getElementById('more-btn');
