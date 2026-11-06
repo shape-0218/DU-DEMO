@@ -107,14 +107,14 @@ form { flex: 1; display: flex; flex-direction: column; }
 .demo b { color: var(--text-secondary); font-weight: 600; }
 
 /* 스낵바 · 모달 */
-.snack { position: fixed; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom)); transform: translate(-50%, 12px); width: min(440px, calc(100vw - 40px)); padding: 16px 18px; border-radius: 8px; background: #000; color: #fff; font-size: 12px; font-weight: 500; opacity: 0; pointer-events: none; z-index: 95; transition: opacity .25s, transform .35s var(--ease); }
+.snack { position: fixed; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom)); transform: translate(-50%, 12px); width: min(440px, calc(100vw - 40px)); padding: 14px 18px; border-radius: 8px; background: #000; color: #fff; font-size: 14px; font-weight: 500; line-height: 1.4; /* 11-07 Figma 대조(확인 후 적용) */ 스낵바도 토스트와 같은 14/18 opacity: 0; pointer-events: none; z-index: 95; transition: opacity .25s, transform .35s var(--ease); }
 .snack.on { opacity: 1; transform: translate(-50%, 0); }
 dialog.modal { width: min(322px, calc(100vw - 80px)); padding: 24px 20px 20px; border: 0; border-radius: var(--r20); background: #fff; color: var(--text-primary); animation: popm .25s var(--ease); }
-dialog.modal::backdrop { background: rgba(0, 0, 0, .5); }
+dialog.modal::backdrop { background: rgba(0, 0, 0, .42); }
 @keyframes popm { from { opacity: 0; transform: scale(.96); } }
-.modal h2 { font-size: 18px; font-weight: 600; line-height: 1.4; }
-.modal p { margin-top: 6px; font-size: 14px; font-weight: 500; color: var(--text-teritary); }
-.modal .acts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 20px; }
+.modal h2 { font-size: 20px; font-weight: 700; line-height: 1.4; } /* 11-07 Figma 대조(확인 후 적용) */
+.modal p { margin-top: 8px; font-size: 14px; font-weight: 400; line-height: 1.4; color: var(--text-teritary); }
+.modal .acts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
 .btn { height: 44px; border-radius: var(--r12); font-size: 14px; font-weight: 600; transition: background .2s, transform .2s var(--ease); }
 .btn:active { transform: scale(.98); }
 .btn-soft { background: var(--bg-teritary); } .btn-soft:hover { background: #e4e4e7; }

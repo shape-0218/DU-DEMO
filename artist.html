@@ -149,7 +149,7 @@ img { display: block; }
 .nav a { position: relative; width: 56px; height: 47px; display: grid; place-items: center; padding-top: 7px; }
 .nav a img.ic { width: 40px; height: 40px; }
 .nav a[aria-current="page"] .bar-i { position: absolute; inset: 0; width: 56px; height: 47px; }
-.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom)); transform: translate(-50%, 16px); opacity: 0; pointer-events: none; z-index: 70; padding: 12px 18px; border-radius: 9999px; background: var(--text-primary); color: #fff; font-size: 14px; font-weight: 500; transition: opacity .25s, transform .35s var(--ease); }
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom)); transform: translate(-50%, 16px); opacity: 0; pointer-events: none; z-index: 70; padding: 14px 18px; border-radius: 8px; background: #000; color: #fff; font-size: 14px; font-weight: 500; line-height: 1.4; transition: opacity .25s, transform .35s var(--ease); }
 .toast.on { opacity: 1; transform: translate(-50%, 0); }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; } }
 </style>

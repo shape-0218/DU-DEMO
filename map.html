@@ -136,6 +136,7 @@ body.labels .pin:not(.on):not(.off) .lb { opacity: 1; }
 .cta:active { transform: scale(.98); }
 .more { justify-self: center; font-size: 12px; color: var(--text-teritary); text-decoration: underline; text-underline-offset: 2px; padding: 2px 8px; }
 .empty { padding: 28px 0; text-align: center; font-size: 14px; font-weight: 600; color: var(--text-teritary); }
+.empty small { display: block; margin-top: 4px; font-size: 12px; font-weight: 500; }
 
 .lcard { position: relative; display: grid; grid-template-columns: 86px minmax(0, 1fr); height: 124px; background: #18181b; border: 1px solid #27272a; border-radius: var(--r12); overflow: hidden; color: var(--text-quaternary); transition: border-color .2s, transform .3s var(--ease); text-align: left; width: 100%; }
 .lcard:hover { border-color: #3f3f46; }
@@ -152,7 +153,7 @@ body.labels .pin:not(.on):not(.off) .lb { opacity: 1; }
 .lcard .lt .mt img { width: 14px; height: 14px; flex: none; }
 .lcard .lk { position: absolute; right: 12px; top: 12px; display: inline-flex; align-items: center; height: 25px; padding: 0 9px; border-radius: 9999px; background: rgba(255, 255, 255, .12); color: #d4d4d8; font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; }
 
-.toast { position: fixed; z-index: 100; left: 50%; bottom: calc(var(--vis, 300px) + 80px); transform: translate(-50%, 8px); max-width: calc(100vw - 40px); padding: 12px 16px; border-radius: var(--r12); background: rgba(24, 24, 27, .94); color: #fff; font-size: 14px; font-weight: 500; opacity: 0; pointer-events: none; transition: opacity .25s, transform .3s var(--ease); }
+.toast { position: fixed; z-index: 100; left: 50%; bottom: calc(var(--vis, 300px) + 80px); transform: translate(-50%, 8px); max-width: calc(100vw - 40px); padding: 14px 18px; border-radius: 8px; background: #000; color: #fff; font-size: 14px; font-weight: 500; line-height: 1.4; opacity: 0; pointer-events: none; transition: opacity .25s, transform .3s var(--ease); }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
 body.folded { --pw: 0px; }
@@ -364,7 +365,7 @@ body.folded { --pw: 0px; }
       const s2 = 'list' + l.map((e) => e.i).join(',') + '|' + (sel ? sel.id : '');
       if (!force && s2 === sig) return; sig = s2;
       ttl.textContent = `이 지역 전시 ${l.length}개`;
-      html = l.length ? l.map((e) => card(e, !!(sel && sel.id === e.i))).join('') : '<p class="empty">이 지역에 보여줄 전시가 없어요</p>';
+      html = l.length ? l.map((e) => card(e, !!(sel && sel.id === e.i))).join('') : '<p class="empty">이 지역에 보여줄 전시가 없어요<small>지도를 옮기거나 필터를 바꿔 보세요</small></p>';
       if (sheetState === 'one') setSheet('mid');
     }
     bodyEl.innerHTML = html;

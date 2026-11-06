@@ -100,25 +100,25 @@ img { display: block; }
 .chip .i { width: 16px; height: 16px; stroke-width: 2.2; }
 
 /* 시트 · 모달 · 스낵바 · 토스트 */
-.scrim { position: fixed; inset: 0; z-index: 70; background: rgba(0, 0, 0, .5); animation: fade .25s ease; }
+.scrim { position: fixed; inset: 0; z-index: 70; background: rgba(0, 0, 0, .42); animation: fade .25s ease; } /* 11-07 Figma 대조(확인 후 적용) */ 딤 .5→.42
 @keyframes fade { from { opacity: 0; } }
-.sheet { position: fixed; z-index: 71; left: 50%; bottom: 0; width: min(480px, 100%); max-height: 92dvh; overflow-y: auto; transform: translateX(-50%); padding: 12px 20px max(16px, env(safe-area-inset-bottom)); background: #fff; border-radius: 24px 24px 0 0; animation: slideUp .4s var(--ease); }
+.sheet { position: fixed; z-index: 71; left: 50%; bottom: 0; width: min(480px, 100%); max-height: 92dvh; overflow-y: auto; transform: translateX(-50%); padding: 12px 20px max(16px, env(safe-area-inset-bottom)); background: #fff; border-radius: 20px 20px 0 0; animation: slideUp .4s var(--ease); }
 @keyframes slideUp { from { transform: translate(-50%, 40px); opacity: 0; } }
-.sheet .grab { width: 40px; height: 4px; margin: 0 auto 20px; border-radius: 9999px; background: #e4e4e7; }
-.sheet h2 { font-size: 20px; font-weight: 600; letter-spacing: -0.03em; }
+.sheet .grab { width: 40px; height: 4px; margin: 2px auto 14px; border-radius: 4px; background: #d4d4d8; } /* 11-07 Figma 대조(확인 후 적용) */ 손잡이 Figma: 40×4, 반경 4, #d4d4d8, 위아래 14
+.sheet h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.03em; } /* 11-07 Figma 대조(확인 후 적용) */ 시트 제목 20 Bold
 .sheet .sub { margin-top: 2px; font-size: 12px; font-weight: 500; color: var(--text-secondary); }
-@media (min-width: 768px) { .sheet { bottom: 6vh; border-radius: 24px; } }
+@media (min-width: 768px) { .sheet { bottom: 6vh; border-radius: 20px; } }
 
 dialog.modal { width: min(322px, calc(100vw - 80px)); padding: 24px 20px 20px; border: 0; border-radius: var(--r20); background: #fff; color: var(--text-primary); animation: popm .25s var(--ease); }
-dialog.modal::backdrop { background: rgba(0, 0, 0, .5); }
+dialog.modal::backdrop { background: rgba(0, 0, 0, .42); }
 @keyframes popm { from { opacity: 0; transform: scale(.96); } }
-.modal h2 { font-size: 18px; font-weight: 600; line-height: 1.4; }
-.modal p { margin-top: 6px; font-size: 14px; font-weight: 500; line-height: 1.4; color: var(--text-teritary); white-space: pre-line; }
+.modal h2 { font-size: 20px; font-weight: 700; line-height: 1.4; } /* 11-07 Figma 대조(확인 후 적용) */ 모달 제목 20 Bold
+.modal p { margin-top: 8px; font-size: 14px; font-weight: 400; line-height: 1.4; color: var(--text-teritary); white-space: pre-line; } /* 11-07 Figma 대조(확인 후 적용) */ 본문 Regular, 제목과 8
 .modal ul { margin-top: 8px; display: grid; gap: 2px; font-size: 14px; font-weight: 500; line-height: 1.4; color: var(--text-teritary); }
 .modal .warn { margin-top: 16px; padding: 12px 14px; border-radius: var(--r12); background: #ffe4e4; }
 .modal .warn b { display: block; font-size: 12px; font-weight: 600; color: var(--notice); }
 .modal .warn span { display: block; margin-top: 2px; font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-secondary); white-space: pre-line; }
-.modal .acts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 20px; }
+.modal .acts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; } /* 11-07 Figma 대조(확인 후 적용) */ 글과 버튼 16
 .toast { position: fixed; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom)); transform: translate(-50%, 12px); width: max-content; max-width: min(440px, calc(100vw - 40px)); padding: 14px 18px; border-radius: 8px; background: #000; color: #fff; font-size: 14px; font-weight: 500; line-height: 1.4; opacity: 0; pointer-events: none; z-index: 110; transition: opacity .25s, transform .35s var(--ease); }
 .toast.on { opacity: 1; transform: translate(-50%, 0); }
 .demo { margin: 0 0 12px; padding: 10px 12px; border-radius: 8px; background: var(--bg-secondary); font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-teritary); }

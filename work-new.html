@@ -85,9 +85,13 @@
 .members { margin-top: 8px; }
 .members li { border-bottom: 1px solid var(--bg-teritary); }
 .members button { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 0; text-align: left; }
-.members .ck { margin-left: auto; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 9999px; border: 1px solid var(--border-primary); color: #fff; }
-.members button[aria-pressed="true"] .ck { background: var(--text-primary); border-color: var(--text-primary); }
-.members .ck .i { width: 14px; height: 14px; stroke-width: 2.6; }
+.members .pill-add { margin-left: auto; flex: none; display: inline-flex; align-items: center; justify-content: center; height: 36px; padding: 0 16px; border-radius: 20px; border: 1px solid var(--border-primary); font-size: 12px; font-weight: 600; color: var(--text-primary); transition: background .2s, color .2s, border-color .2s; }   /* 11-07 Figma 알약: 추가 / 추가됨 */
+.members .pill-add .t-on { display: none; align-items: center; gap: 4px; }
+.members button[aria-pressed="true"] .pill-add { background: var(--text-primary); border-color: var(--text-primary); color: #fff; }
+.members button[aria-pressed="true"] .pill-add .t-off { display: none; }
+.members button[aria-pressed="true"] .pill-add .t-on { display: inline-flex; }
+.members .pill-add .i { width: 16px; height: 16px; stroke-width: 2; }
+.members button:disabled .pill-add { display: none; }
 .members button:disabled { opacity: .45; cursor: default; }
 .sum2 { margin-top: 32px; }
 .done .cta { margin-top: auto; }
@@ -232,17 +236,18 @@ function renderAuthors() {
 }
 function coSheet() {
   let tab = 'team', pick = new Set(st.co.filter((c) => c.team).map((c) => c.n));
-  showSheet(`<h2>공동 작가 추가</h2><p class="sub">함께 만든 작가를 추가해요</p>
-    <div class="tabs" role="tablist"><button type="button" role="tab" id="tb-t" aria-selected="true">전시 팀원</button><button type="button" role="tab" id="tb-n" aria-selected="false">직접 입력</button></div>
-    <div id="co-body"></div><button type="button" class="big" id="co-ok" style="margin-top:20px">추가 완료</button>`, '공동 작가 추가', (sh) => {
+  showSheet(`<h2>공동 작가 추가</h2>
+    <div class="tabs" role="tablist"><button type="button" role="tab" id="tb-t" aria-selected="true">전시 팀원</button><button type="button" role="tab" id="tb-n" aria-selected="false">이름 직접 입력</button></div>
+    <div id="co-body"></div><button type="button" class="big" id="co-ok" style="margin-top:20px">완료</button>`, '공동 작가 추가', (sh) => {
     const body = sh.querySelector('#co-body'), ok = sh.querySelector('#co-ok'); let typed = st.co.filter((c) => !c.team).map((c) => c.n);
     const draw = () => {
       sh.querySelector('#tb-t').setAttribute('aria-selected', tab === 'team'); sh.querySelector('#tb-n').setAttribute('aria-selected', tab === 'name');
+      ok.textContent = tab === 'team' ? '완료' : '추가하기';   /* 11-07 Figma 문구 */
       if (tab === 'team') {
-        body.innerHTML = `<ul class="members">${TEAM.map((m, i) => `<li><button type="button" data-i="${i}" aria-pressed="${pick.has(m.n)}" ${m.ok ? '' : 'disabled'}>${AV}<span class="nm"><b style="display:block;font-size:14px">${esc(m.n)}</b><small style="font-size:12px;color:var(--text-secondary)">${esc(m.h)}</small></span><span class="ck"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg></span></button></li>`).join('')}</ul>`;
+        body.innerHTML = `<p style="margin-top:16px;font-size:14px;font-weight:400;line-height:1.4;color:var(--text-teritary)">계정으로 추가한 팀원은 이 작품을 함께 수정·삭제할 수 있고, 작가 프로필에 작품이 연결돼요</p><ul class="members">${TEAM.map((m, i) => `<li><button type="button" data-i="${i}" aria-pressed="${pick.has(m.n)}" ${m.ok ? '' : 'disabled'}>${AV}<span class="nm"><b style="display:block;font-size:14px">${esc(m.n)}</b><small style="font-size:12px;color:var(--text-secondary)">${esc(m.h)}</small></span><span class="pill-add"><span class="t-off">추가</span><span class="t-on"><svg class="i" aria-hidden="true"><use href="#i-check"/></svg>추가됨</span></span></button></li>`).join('')}</ul>`;
         body.querySelectorAll('[data-i]').forEach((b) => b.addEventListener('click', () => { const m = TEAM[+b.dataset.i]; pick.has(m.n) ? pick.delete(m.n) : pick.add(m.n); b.setAttribute('aria-pressed', pick.has(m.n)); }));
       } else {
-        body.innerHTML = `<div class="field" style="margin-top:20px"><label for="co-n"><span>작가명<span class="req" aria-hidden="true">*</span></span></label><div class="ul"><input id="co-n" type="text" maxlength="20" placeholder="이름 또는 활동명을 입력해주세요"></div><p class="help">이름만 표시되고 작가 프로필은 연결되지 않아요</p></div><ul class="members" id="typed"></ul>`;
+        body.innerHTML = `<div class="field" style="margin-top:20px"><label for="co-n"><span>공동 작가 이름<span class="req" aria-hidden="true">*</span></span></label><div class="ul"><input id="co-n" type="text" maxlength="20" placeholder="이름을 입력해주세요"></div><p class="help">이름만 표시돼요<br>프로필 연결과 편집 권한은 없어요</p></div><ul class="members" id="typed"></ul>`;
         const inp = body.querySelector('#co-n'), list = body.querySelector('#typed');
         const dl = () => { list.innerHTML = typed.map((n, i) => `<li><button type="button" data-i="${i}" aria-label="${esc(n)} 제외">${AV}<span class="nm"><b style="display:block;font-size:14px">${esc(n)}</b><small style="font-size:12px;color:var(--text-secondary)">직접 입력</small></span><svg class="i" style="width:18px;height:18px;margin-left:auto" aria-hidden="true"><use href="#i-close"/></svg></button></li>`).join(''); list.querySelectorAll('[data-i]').forEach((b) => b.addEventListener('click', () => { typed.splice(+b.dataset.i, 1); dl(); })); };
         inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); const v = inp.value.trim(); if (v && !typed.includes(v)) { typed.push(v); inp.value = ''; dl(); } } });
