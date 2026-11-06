@@ -161,7 +161,7 @@ function proxySheet() {
     s.querySelector('#px').innerHTML = `<h2>작가 정보를 어떻게 입력할까요?</h2><p class="sub">대신 등록할 작품의 작가 정보를 선택해주세요</p>
       <div class="tabs2" role="tablist"><button type="button" role="tab" data-t="team" aria-selected="${t === 'team'}">전시 팀원에서 선택</button><button type="button" role="tab" data-t="name" aria-selected="${t === 'name'}">직접 이름 입력</button></div>` +
       (t === 'team'
-        ? (cand.length ? `<p class="tsub">전시 팀원의 작가명과 프로필을 연결해요</p><div class="plist" role="radiogroup">${cand.map((m) => `<label><span class="av" data-r="${m.role}" aria-hidden="true" style="width:44px;height:44px"><svg viewBox="0 0 34 34" style="width:32px;height:32px"><use href="#i-avatar"/></svg></span><span class="nm"><b>${esc(m.name)}</b><small>@${esc(m.nick)}</small></span><input type="radio" name="pm" value="${m.id}" ${sel === m.id ? 'checked' : ''}></label>`).join('')}</div>`
+        ? (cand.length ? `<p class="tsub">전시 팀원의 작가명과 프로필을 연결해요</p><div class="plist" role="radiogroup">${cand.map((m) => `<label><span class="av" data-r="${m.role}" aria-hidden="true" style="width:44px;height:44px"><svg viewBox="0 0 34 34" style="width:32px;height:32px"><use href="#i-avatar"/></svg></span><span class="nm"><b>${esc(m.name)}</b><small>${esc(m.nick)}</small></span><input type="radio" name="pm" value="${m.id}" ${sel === m.id ? 'checked' : ''}></label>`).join('')}</div>`
           : '<div class="pnone"><b>선택할 수 있는 팀원이 없어요</b><span>팀원을 초대하면 여기에서 고를 수 있어요\n지금은 이름 직접 입력으로 등록할 수 있어요</span></div>')
         : `<div class="field" style="margin-top:20px"><label for="px-n"><span>작가명<span class="req" aria-hidden="true">*</span></span></label><div class="ul"><input id="px-n" type="text" maxlength="20" placeholder="작가명을 입력해주세요" value="${esc(nm)}" autocomplete="off"></div><p class="help">실명 또는 이 전시에서 사용할 작가명을 입력해주세요</p><p class="help">직접 입력한 경우 작가프로필과 연결되지 않아요</p></div>`) +
       `<button type="button" class="big" id="px-ok"${ok ? '' : ' disabled'}>선택 완료</button>`;
@@ -169,7 +169,7 @@ function proxySheet() {
     s.querySelectorAll('input[name="pm"]').forEach((r) => r.addEventListener('change', () => { sel = r.value; s.querySelector('#px-ok').disabled = false; }));
     const inp = s.querySelector('#px-n'); if (inp) inp.addEventListener('input', () => { nm = inp.value; s.querySelector('#px-ok').disabled = !nm.trim(); });
     s.querySelector('#px-ok').addEventListener('click', () => {
-      if (t === 'team') { const m = cand.find((x) => x.id === sel); if (m) location.href = `work-new.html?ex=${e.id}&as=member&n=${encodeURIComponent(m.name)}&h=${encodeURIComponent('@' + m.nick)}`; }
+      if (t === 'team') { const m = cand.find((x) => x.id === sel); if (m) location.href = `work-new.html?ex=${e.id}&as=member&n=${encodeURIComponent(m.name)}&h=${encodeURIComponent(m.nick)}`; }
       else if (nm.trim()) location.href = `work-new.html?ex=${e.id}&as=name&n=${encodeURIComponent(nm.trim())}`;
     });
   };

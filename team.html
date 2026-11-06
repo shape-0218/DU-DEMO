@@ -30,7 +30,6 @@
       <section class="tcard" aria-label="닉네임으로 초대">
         <div class="row1"><h3>닉네임으로 초대</h3><span class="sub">초대할 회원의 디유 닉네임을 검색해주세요</span></div>
         <form class="nick" id="nf" role="search" autocomplete="off">
-          <span class="at" aria-hidden="true">@</span>
           <label class="sr" for="nk">초대할 회원의 닉네임</label>
           <input id="nk" type="text" placeholder="닉네임 입력" maxlength="30" autocapitalize="off" spellcheck="false" enterkeyhint="search">
           <button type="submit" aria-label="검색"><svg class="i" aria-hidden="true"><use href="#i-search"/></svg></button>
@@ -95,7 +94,7 @@ function drawFound() {
   if (!n) { $('found').innerHTML = ''; return; }
   const joined = T.members.some((m) => m.nick === n), waiting = T.pending.some((p) => p.nick === n);
   const btn = joined ? '<button type="button" class="btn btn-soft" disabled>참여 중</button>' : waiting ? '<button type="button" class="btn btn-soft" disabled>초대 대기</button>' : '<button type="button" class="btn btn-dark" id="inv">초대</button>';
-  $('found').innerHTML = `<div class="found">${AV('pend')}<span class="nm">@${esc(n)}</span>${btn}</div>${joined || waiting ? '' : '<p class="tnote">초대 후 작가 인증과 수락이 완료되어야 참여할 수 있어요</p>'}`;
+  $('found').innerHTML = `<div class="found">${AV('pend')}<span class="nm">${esc(n)}</span>${btn}</div>${joined || waiting ? '' : '<p class="tnote">초대 후 작가 인증과 수락이 완료되어야 참여할 수 있어요</p>'}`;
   const inv = $('inv'); if (inv) inv.addEventListener('click', () => { T.pending.unshift({ id: 'p' + Date.now().toString(36), nick: n }); persist(); drawFound(); drawList(); });
 }
 $('nk').addEventListener('input', () => { word = $('nk').value; drawFound(); });
@@ -105,9 +104,9 @@ $('nf').addEventListener('submit', (ev) => { ev.preventDefault(); word = $('nk')
 function drawList() {
   $('n-in').textContent = T.members.length; $('n-pd').textContent = T.pending.length;
   const groups = ['owner', 'manager', 'member'].map((r) => [r, T.members.filter((m) => m.role === r)]).filter(([, l]) => l.length);
-  $('p-in').innerHTML = groups.map(([r, l]) => `<section class="grp" aria-label="${RN[r]}"><h4>${RN[r]}</h4>${l.map((m) => `<div class="mrow" data-id="${m.id}">${AV(r)}<div class="nm"><b>${esc(m.name)}<span class="badge" data-r="${r}">${RN[r]}</span></b><small>@${esc(m.nick)}</small></div>${m.me ? '<span class="me">나</span>' : r === 'owner' ? '' : `<button type="button" class="dots" data-a="more" data-id="${m.id}" aria-label="${esc(m.name)} 메뉴" aria-haspopup="dialog"><svg class="i" aria-hidden="true"><use href="#i-more"/></svg></button>`}</div>`).join('')}</section>`).join('');
+  $('p-in').innerHTML = groups.map(([r, l]) => `<section class="grp" aria-label="${RN[r]}"><h4>${RN[r]}</h4>${l.map((m) => `<div class="mrow" data-id="${m.id}">${AV(r)}<div class="nm"><b>${esc(m.name)}<span class="badge" data-r="${r}">${RN[r]}</span></b><small>${esc(m.nick)}</small></div>${m.me ? '<span class="me">나</span>' : r === 'owner' ? '' : `<button type="button" class="dots" data-a="more" data-id="${m.id}" aria-label="${esc(m.name)} 메뉴" aria-haspopup="dialog"><svg class="i" aria-hidden="true"><use href="#i-more"/></svg></button>`}</div>`).join('')}</section>`).join('');
   $('p-pd').innerHTML = T.pending.length
-    ? `<div class="pend-list">${T.pending.map((p, i) => `<div class="mrow">${AV('pend', i % 2 ? '' : 'p2')}<div class="nm"><b>@${esc(p.nick)}</b></div><button type="button" class="cancel" data-a="cancel" data-id="${p.id}" aria-label="@${esc(p.nick)} 초대 취소">초대 취소</button></div>`).join('')}</div><div class="pnote"><svg class="i" aria-hidden="true"><use href="#i-info"/></svg><p>팀원 초대 수락을 기다리고 있어요\n대표자 위임과는 별개예요</p></div>`
+    ? `<div class="pend-list">${T.pending.map((p, i) => `<div class="mrow">${AV('pend', i % 2 ? '' : 'p2')}<div class="nm"><b>${esc(p.nick)}</b></div><button type="button" class="cancel" data-a="cancel" data-id="${p.id}" aria-label="@${esc(p.nick)} 초대 취소">초대 취소</button></div>`).join('')}</div><div class="pnote"><svg class="i" aria-hidden="true"><use href="#i-info"/></svg><p>팀원 초대 수락을 기다리고 있어요\n대표자 위임과는 별개예요</p></div>`
     : '<p class="mnone">초대 대기 중인 팀원이 없어요</p>';
 }
 function pick(k, focus) {

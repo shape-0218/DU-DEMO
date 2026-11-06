@@ -213,7 +213,7 @@ const author = PROXY ? PROXY.n : myName;
 const exd = ExData.get(ex), EDIT = q.get('edit'), editing = EDIT ? exd.works.find((w) => w.id === EDIT) : null;
 const WORKS = 'works.html?id=' + ex.id;
 /* 데모용 전시 팀원(가상) — 실제로는 전시 팀원 목록 API */
-const TEAM = [{ n: '이정우', h: '@quietroom', ok: true }, { n: '김서윤', h: '@blue.note', ok: true }, { n: '박서준', h: '@seojun', ok: true }, { n: '최하늘', h: '작가 인증 필요', ok: false }];
+const TEAM = [{ n: '이정우', h: 'quietroom', ok: true }, { n: '김서윤', h: 'blue.note', ok: true }, { n: '박서준', h: 'seojun', ok: true }, { n: '최하늘', h: '작가 인증 필요', ok: false }];
 $('d-ok').href = WORKS;
 
 const st = { media: [], proc: [], fields: new Set(), co: [], errMedia: false, errProc: false, left: false };

@@ -511,7 +511,7 @@ async function saveEdit() {
 /* ---------- 3. 전시 작가명 → 생성 ---------- */
 $('make').addEventListener('click', async () => {
   if ($('make').disabled) return; $('make').disabled = true;
-  const first = st.posters[0]; const poster = (first && (first.video ? first.thumb : await thumbData(first.url))) || 'assets/img/explore/opt/ex5.jpg';
+  const first = st.posters[0]; const poster = (first && (first.video ? first.thumb : await thumbData(first.url))) || 'assets/img/explore/opt/p03.jpg';
   const dept = $('dept').value.trim();
   const e = {
     id: 'n' + Date.now().toString(36), status: 'prep', role: 'owner', myName: $('myname').value.trim(),

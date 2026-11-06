@@ -65,10 +65,10 @@ const store = {
 };
 /* 데모용 전시 4개: Figma `내 전시 관리` 1766:24897의 값 그대로 */
 const SEED = [
-  { id: 'e1', status: 'prep', role: 'owner', myName: '고상준', title: '빛의 결 | 조용한 흐름', org: '한결대학교 사진동아리', start: '2026-06-10', end: '2026-06-20', place: '디스플레이U 갤러리 1관', poster: 'assets/img/explore/opt/ex1.jpg', works: 2, sections: 3, members: 3, pending: 1, pubWork: 'start', pubCont: 'approve' },
-  { id: 'e2', status: 'live', role: 'member', myName: '고상준', title: '손끝의 지도', org: '한결대학교 시각디자인학과', start: '2026-05-23', end: '2026-05-30', place: '한결대학교 진달래홀', poster: 'assets/img/explore/opt/ex2.jpg', works: 6, sections: 3, members: 5, pending: 0, pubWork: 'start', pubCont: 'approve' },
-  { id: 'e3', status: 'review', role: 'manager', myName: '고상준', title: '여넥스', org: '한결대학교 시각디자인학과', start: '2026-05-28', end: '2026-06-05', place: '진달래홀', poster: 'assets/img/explore/opt/ex0.jpg', posterVideo: true, works: 2, sections: 3, members: 3, pending: 1, pubWork: 'start', pubCont: 'approve' },
-  { id: 'e4', status: 'reject', role: 'member', myName: '고상준', title: '움직임의 기록', org: '한결대학교 시각디자인학과', start: '2026-07-01', end: '2026-07-10', place: '디스플레이U 갤러리 2관', poster: 'assets/img/explore/opt/ex4.jpg', works: 2, sections: 3, members: 3, pending: 1, pubWork: 'start', pubCont: 'approve', rejectNote: '이미지 출처를 확인할 수 없어요 수정한 뒤 다시 요청해 주세요' }
+  { id: 'e1', status: 'prep', role: 'owner', myName: '고상준', title: '빛의 결 | 조용한 흐름', org: '한결대학교 사진동아리', start: '2026-06-10', end: '2026-06-20', place: '디스플레이U 갤러리 1관', poster: 'assets/img/explore/opt/p05.jpg', works: 2, sections: 3, members: 3, pending: 1, pubWork: 'start', pubCont: 'approve' },
+  { id: 'e2', status: 'live', role: 'member', myName: '고상준', title: '손끝의 지도', org: '한결대학교 시각디자인학과', start: '2026-05-23', end: '2026-05-30', place: '한결대학교 진달래홀', poster: 'assets/img/explore/opt/p06.jpg', works: 6, sections: 3, members: 5, pending: 0, pubWork: 'start', pubCont: 'approve' },
+  { id: 'e3', status: 'review', role: 'manager', myName: '고상준', title: '여넥스', org: '한결대학교 시각디자인학과', start: '2026-05-28', end: '2026-06-05', place: '진달래홀', poster: 'assets/img/explore/opt/p01.jpg', posterVideo: true, works: 2, sections: 3, members: 3, pending: 1, pubWork: 'start', pubCont: 'approve' },
+  { id: 'e4', status: 'reject', role: 'member', myName: '고상준', title: '움직임의 기록', org: '한결대학교 시각디자인학과', start: '2026-07-01', end: '2026-07-10', place: '디스플레이U 갤러리 2관', poster: 'assets/img/explore/opt/p09.jpg', works: 2, sections: 3, members: 3, pending: 1, pubWork: 'start', pubCont: 'approve', rejectNote: '이미지 출처를 확인할 수 없어요 수정한 뒤 다시 요청해 주세요' }
 ];
 if (q.get('reset')) store.del('du.exh');
 const exhibitions = () => { let l = store.get('du.exh', null); if (!Array.isArray(l)) { l = SEED; store.set('du.exh', l); } return l; };
