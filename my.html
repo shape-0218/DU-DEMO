@@ -69,32 +69,17 @@ img { display: block; }
 .tool .i { width: 24px; height: 24px; }
 .tool .dot { position: absolute; top: 9px; right: 9px; width: 8px; height: 8px; border-radius: 9999px; background: var(--notice); border: 2px solid #fff; box-sizing: content-box; }
 
-/* 작가 인증 / 작가 프로필 카드 (검정) */
+/* 작가 카드 (검정, 인증 후에만) — 11-07 D안 확정: 사진·구분선·원형 화살표 없이 이름 + 분야·수치 + "프로필 보기 ›" */
 .dark { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 20px; padding: 20px; background: #000; color: #fff; border-radius: var(--r20); transition: transform .3s var(--ease); }
 .dark:active { transform: scale(.99); }
-.dark .t { min-width: 0; }
-.dark h2 { font-size: 16px; font-weight: 600; line-height: 1.4; letter-spacing: -0.03em; }
-.dark p { margin-top: 4px; color: #a1a1aa; font-size: 12px; font-weight: 500; }
-.go { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 9999px; background: #3f3f46; color: #fff; flex: none; transition: background .2s, transform .3s var(--ease); }
-.dark:hover .go { background: #52525b; transform: translateX(2px); }
-.go .i { width: 22px; height: 22px; }
-.pro { display: block; }
-.pro .row { display: flex; align-items: center; gap: 14px; }
-.pro .thumb { width: 48px; height: 48px; border-radius: 9999px; overflow: hidden; background: #27272a; flex: none; display: grid; place-items: end center; color: #52525b; }   /* 작가 프로필 화면과 같은 기본 아바타 */
-.pro .thumb svg { width: 42px; height: 42px; }
-.pro .lbl { color: #a1a1aa; font-size: 12px; font-weight: 500; }
-.pro .nm { font-size: 20px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.4; }
-.pro .meta { display: flex; align-items: center; gap: 0 8px; margin-top: 16px; flex-wrap: wrap; padding-top: 14px; border-top: 1px solid #27272a; }
-.pro .fl { color: #e4e4e7; font-size: 12px; font-weight: 500; }   /* 분야는 칩 대신 점으로 이은 글자 */
-.pro .meta i { width: 1px; height: 10px; background: #3f3f46; }
-.pro .cnt { color: #a1a1aa; font-size: 12px; font-weight: 500; }
-.pro .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.pro .t { display: grid; gap: 2px; min-width: 0; }
+.pro .nm { font-size: 18px; font-weight: 600; line-height: 1.4; letter-spacing: -0.03em; }
+.pro .sub { color: #a1a1aa; font-size: 12px; font-weight: 500; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pro .see { display: inline-flex; align-items: center; gap: 2px; flex: none; font-size: 14px; font-weight: 600; line-height: 1.4; }
+.pro .see .i { width: 20px; height: 20px; transition: transform .3s var(--ease); }
+.pro:hover .see .i { transform: translateX(3px); }
 
 /* 받은 초대 · 내 전시 관리 */
-.inv-row { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding: 0 18px; height: 56px; width: 100%; border-radius: var(--r12); background: var(--bg-secondary); font-size: 16px; font-weight: 600; text-align: left; transition: background .2s; }
-.inv-row:hover { background: #ececee; }
-.inv-row em { font-style: normal; color: var(--notice); margin-left: 6px; font-variant-numeric: tabular-nums; }
-.inv-row .i { color: var(--text-teritary); width: 20px; height: 20px; }
 .rows { margin-top: 12px; }
 .rows li + li { border-top: 1px solid var(--bg-teritary); }
 .rows li:first-child { border-top: 1px solid var(--bg-teritary); }
@@ -287,29 +272,17 @@ dialog.modal::backdrop { background: rgba(0, 0, 0, .5); }
       </div>
     </div>
 
-    <!-- 작가 인증 전 -->
-    <a class="dark" href="verify.html" id="cert-card">
-      <span class="t"><h2>작가로 활동하고 있나요?</h2><p>인증하면 작가 프로필을 만들고 전시를 등록할 수 있어요</p></span>
-      <span class="go"><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span>
-    </a>
-    <!-- 작가 인증 후 -->
+    <!-- 작가 카드: 인증 후에만(인증 전에는 작가 관련 표시 없음 — 11-07 D안) -->
     <a class="dark pro" href="artist.html?me=1" id="pro-card" aria-label="내 작가 프로필 보기">
-      <span class="top">
-        <span class="row">
-          <span class="thumb"><svg aria-hidden="true"><use href="#i-avatar"/></svg></span>
-          <span><span class="lbl">작가 프로필</span><br><span class="nm">고상준</span></span>
-        </span>
-        <span class="go"><svg class="i" aria-hidden="true"><use href="#i-arrow"/></svg></span>
-      </span>
-      <span class="meta"><span class="fl">그래픽 · 브랜딩</span><i aria-hidden="true"></i><span class="cnt">작품 6 · 전시 2</span></span>
+      <span class="t"><span class="nm">고상준</span><span class="sub">그래픽 · 브랜딩 · 작품 6 · 전시 2</span></span>
+      <span class="see">프로필 보기<svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></span>
     </a>
 
-    <ul class="rows" id="rows" aria-label="작가 활동">
-      <li><a class="rw" id="rw-manage" href="manage.html"><span class="tt"><b>내 전시 관리</b><small>참여 중인 전시를 한곳에서 관리해요</small></span><span class="rt"><strong id="n-manage">3</strong><svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></span></a></li>
-      <li><button class="rw" id="rw-inv"><span class="tt"><b>받은 초대</b></span><span class="rt"><strong class="red" id="n-inv-rw">1</strong><svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></span></button></li>
+    <ul class="rows" id="rows" aria-label="전시 활동">
+      <li id="li-manage"><a class="rw" id="rw-manage" href="manage.html"><span class="tt"><b>내 전시 관리</b><small>참여 중인 전시를 한곳에서 관리해요</small></span><span class="rt"><strong id="n-manage">3</strong><svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></span></a></li>
+      <li id="li-inv"><button class="rw" id="rw-inv"><span class="tt"><b>받은 초대</b></span><span class="rt"><strong class="red" id="n-inv-rw">1</strong><svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></span></button></li>
       <li><a class="rw" href="exhibition-new.html" id="rw-new"><span class="tt"><b>새 전시 등록</b><small>전시를 만들고 팀원을 초대해요</small></span><span class="plus" aria-hidden="true"><svg class="i"><use href="#i-plus"/></svg></span></a></li>
     </ul>
-    <button class="inv-row" id="row-inv"><span>받은 초대<em id="n-inv-row">1</em></span><svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></button>
   </div>
 
   <section class="vault" aria-labelledby="v-title">
@@ -365,10 +338,10 @@ const $ = (id) => document.getElementById(id);
 const O = 'assets/img/explore/opt/';
 
 /* ============ 상태에 따라 화면 구성 ============ */
-$('cert-card').hidden = verified; $('pro-card').hidden = !verified;
-$('rows').hidden = !verified;
-$('row-inv').hidden = verified || nInv === 0;
-$('n-inv-rw').textContent = nInv; $('n-inv-row').textContent = nInv; $('n-manage').textContent = 3;
+/* 11-07 D안: 인증 전에는 작가 카드·내 전시 관리 없음. "새 전시 등록"은 모두에게 보이고 인증 전이면 인증 필요 모달. 받은 초대는 초대가 있을 때만 */
+$('pro-card').hidden = !verified;
+$('li-manage').hidden = !verified;
+$('n-inv-rw').textContent = nInv; $('n-manage').textContent = 3;
 $('noti-dot').hidden = nNoti === 0;
 $('n-inv-rw').classList.toggle('red', nInv > 0);
 
@@ -441,12 +414,18 @@ function openInvites() {
   s.addEventListener('click', (e) => {
     const b = e.target.closest('[data-a]'); if (!b) return; const i = +b.dataset.i, v = invites[i];
     if (b.dataset.a === 'no') modal({ title: '초대를 거절할까요?', body: `“${v.t}” 전시 초대를 거절해요`, acts: [{ label: '취소', cls: 'btn-soft' }, { label: '거절하기', cls: 'btn-dark', fn: () => { invites.splice(i, 1); syncInv(); s.innerHTML = render(); s.querySelectorAll('[data-close]').forEach((x) => x.addEventListener('click', closeSheet)); } }] });
-    else if (!verified) modal({ title: '작가 인증이 필요해요', body: '초대를 수락하려면 학교 이메일로 작가 인증을 먼저 해주세요', acts: [{ label: '취소', cls: 'btn-soft' }, { label: '작가 인증하기', cls: 'btn-dark', fn: () => { location.href = 'verify.html?next=' + encodeURIComponent('my.html?state=after'); } }] });
+    else if (!verified) modal({ title: '전시에 참여하려면<br>작가 인증이 필요해요', body: '학교 이메일로 인증한 뒤<br>초대를 수락할 수 있어요', acts: [{ label: '나중에', cls: 'btn-soft' }, { label: '작가 인증하기', cls: 'btn-dark', fn: () => { location.href = 'verify.html?next=' + encodeURIComponent('my.html?state=after'); } }] });
     else { closeSheet(); toast('전시 작가명 입력 화면은 아직 준비 중이에요'); }
   });
 }
-function syncInv() { $('n-inv-rw').textContent = invites.length; $('n-inv-row').textContent = invites.length; $('row-inv').hidden = verified || invites.length === 0; $('n-inv-rw').classList.toggle('red', invites.length > 0); }
-$('rw-inv').addEventListener('click', openInvites); $('row-inv').addEventListener('click', openInvites);
+function syncInv() { $('n-inv-rw').textContent = invites.length; $('li-inv').hidden = invites.length === 0; $('n-inv-rw').classList.toggle('red', invites.length > 0); }
+$('rw-inv').addEventListener('click', openInvites);
+/* 새 전시 등록: 인증 전이면 그 순간에 인증 안내 → 인증(1~3분) 후 전시 등록으로 돌아옴 */
+$('rw-new').addEventListener('click', (e) => {
+  if (verified) return;
+  e.preventDefault();
+  modal({ title: '전시를 등록하려면<br>작가 인증이 필요해요', body: '학교 이메일로 인증한 뒤<br>전시를 등록할 수 있어요', acts: [{ label: '나중에', cls: 'btn-soft' }, { label: '작가 인증하기', cls: 'btn-dark', fn: () => { location.href = 'verify.html?next=' + encodeURIComponent('exhibition-new.html'); } }] });
+});
 syncInv();
 
 /* ============ 설정 드로어 ============ */
