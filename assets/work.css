@@ -56,7 +56,7 @@
 .wc .more { position: absolute; right: 8px; top: 8px; z-index: 2; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 9999px; background: rgba(255,255,255,.4); color: #fff; backdrop-filter: blur(6px); transition: background .2s; }
 .wc .more:hover { background: rgba(255,255,255,.6); }
 .wc .more .i { width: 18px; height: 18px; }
-.wc .mine { position: absolute; left: 8px; bottom: 8px; height: 24px; padding: 0 10px; display: inline-flex; align-items: center; border-radius: 9999px; background: rgba(0,0,0,.5); color: #fff; font-size: 12px; font-weight: 500; backdrop-filter: blur(6px); }
+.wc .mine { position: absolute; left: 8px; bottom: 8px; height: 24px; padding: 0 10px; display: inline-flex; align-items: center; border-radius: 9999px; background: rgba(0,0,0,.5); color: #fff; font-size: 12px; font-weight: 600; backdrop-filter: blur(6px); }
 .wc .no { display: none; }
 .wgrid.edit .wc { cursor: grab; touch-action: none; user-select: none; }
 .wgrid.edit .wc:hover { transform: none; }
@@ -122,11 +122,11 @@
 /* 팀원 관리 */
 .team-h { margin-top: 12px; display: flex; align-items: baseline; gap: 8px; }
 .team-h h2 { font-size: 16px; font-weight: 600; letter-spacing: -0.03em; }
-.team-h span { font-size: 10px; font-weight: 500; color: var(--text-teritary); }
+.team-h span { font-size: 12px; font-weight: 500; color: var(--text-teritary); } /* 11-07 Figma 대조(확인 후 적용): Q3 안내 10→12(Figma도 12로 올림) */
 .tcard { margin-top: 12px; padding: 14px 16px 16px; border: 1px solid var(--border-primary); border-radius: var(--r12); background: #fff; }
 .tcard.off { background: var(--bg-secondary); }
 .tcard .row1 { display: flex; align-items: center; gap: 8px; }
-.tcard h3 { font-size: 16px; font-weight: 600; }
+.tcard h3 { font-size: 14px; font-weight: 600; } /* 11-07 Figma 대조(확인 후 적용): Q3 Figma 14 */
 .tcard .tag { font-size: 10px; font-weight: 600; color: var(--ok); }
 .tcard.off .tag { color: var(--text-teritary); }
 .tcard .sw { margin-left: auto; position: relative; width: 44px; height: 26px; border-radius: 9999px; background: var(--text-primary); transition: background .25s; }
@@ -163,7 +163,7 @@
 .mtabs button[aria-selected="true"]::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--text-primary); }
 .grp { padding: 14px 0 0; }
 .grp + .grp { margin-top: 8px; border-top: 1px solid var(--bg-teritary); }
-.grp > h4 { margin: 0 0 4px; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
+.grp > h4 { margin: 0 0 4px; font-size: 12px; font-weight: 600; color: var(--text-teritary); } /* 11-07 Figma 대조(확인 후 적용): Q3 역할 묶음 제목 12 SemiBold */
 .mrow { display: flex; align-items: center; gap: 12px; padding: 10px 0; }   /* Figma MemberRow: 아바타 48, 한 줄 높이 69 */
 .av { flex: none; width: 48px; height: 48px; border-radius: 9999px; display: grid; place-items: end center; overflow: hidden; }
 .av svg { width: 34px; height: 34px; fill: currentColor; opacity: .5; }

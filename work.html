@@ -154,7 +154,7 @@ img { display: block; }
 .exh:hover strong { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
 
 /* 탭 */
-.tabs { position: sticky; top: var(--top); z-index: 20; display: flex; gap: 8px; margin-top: 12px; padding: 0 calc(var(--pad) - 8px); background: #fff; border-bottom: 1px solid var(--bg-teritary); }
+.tabs { position: sticky; top: var(--top); z-index: 20; display: flex; gap: 8px; margin-top: 12px; padding: 0 calc(var(--pad) - 16px);   /* 11-07 점검: 첫 탭 글자를 본문 시작선(20)에 맞춤 */ background: #fff; border-bottom: 1px solid var(--bg-teritary); }
 @media (min-width: 900px) { .tabs { padding-inline: 0; margin-left: -8px; margin-right: 0; top: 64px; } }
 .tab { position: relative; height: 48px; padding: 0 16px; font-weight: 600; color: var(--text-teritary); transition: color .2s; }
 .tab:hover { color: var(--text-primary); }

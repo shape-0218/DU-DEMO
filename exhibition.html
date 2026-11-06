@@ -156,7 +156,7 @@ img { display: block; }
 .btn-icon:hover { background: var(--bg-soft); }
 
 /* 탭 */
-.tabs { position: sticky; top: var(--top); z-index: 20; display: flex; gap: 8px; padding: 0 calc(var(--pad) - 8px); background: var(--bg-white); border-bottom: 1px solid var(--bg-soft); }
+.tabs { position: sticky; top: var(--top); z-index: 20; display: flex; gap: 8px; padding: 0 calc(var(--pad) - 16px);   /* 11-07 점검: 첫 탭 글자를 본문 시작선(20)에 맞춤 */ background: var(--bg-white); border-bottom: 1px solid var(--bg-soft); }
 @media (min-width: 900px) { .tabs { padding-inline: 0; margin-left: -8px; top: 64px; } }
 .tab { position: relative; height: 48px; padding: 0 16px; font-weight: 600; color: var(--text-teritary); transition: color .2s; }
 .tab:hover { color: var(--text-primary); }

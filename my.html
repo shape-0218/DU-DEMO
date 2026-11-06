@@ -101,12 +101,12 @@ img { display: block; }
 .vault { margin-top: 32px; }
 @media (min-width: 900px) { .vault { margin-top: 0; } }
 .vhead { display: flex; align-items: baseline; justify-content: space-between; }
-.vhead h2 { font-size: 20px; font-weight: 600; letter-spacing: -0.03em; }
+.vhead h2 { font-size: 18px; font-weight: 600; letter-spacing: -0.03em; } /* 11-07 Figma 대조 */
 .vhead span { display: inline-flex; align-items: center; gap: 2px; font-size: 12px; font-weight: 500; color: var(--text-secondary); }
 .vhead .i { width: 18px; height: 18px; }
 .seg { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 14px; padding: 4px; border-radius: 9999px; background: var(--bg-secondary); }
-.seg button { height: 40px; border-radius: 9999px; font-size: 14px; font-weight: 600; color: var(--text-secondary); font-variant-numeric: tabular-nums; transition: background .25s var(--ease), color .2s; }
-.seg button[aria-selected="true"] { background: #000; color: #fff; }
+.seg button { height: 40px; border-radius: 9999px; font-size: 14px; font-weight: 500; color: var(--text-secondary); font-variant-numeric: tabular-nums; transition: background .25s var(--ease), color .2s; }
+.seg button[aria-selected="true"] { background: #000; color: #fff; font-weight: 600; }
 .grid { margin-top: 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 @media (min-width: 640px)  { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
 @media (min-width: 1280px) { .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
