@@ -165,17 +165,16 @@ img { display: block; }
 .empty a { color: var(--text-teritary); text-decoration: underline; text-underline-offset: 2px; }
 [hidden] { display: none !important; }
 
-.map { display: block; margin: 16px var(--pad) 0; max-width: calc(var(--wrap)); border: 1px solid #27272a; border-radius: var(--r12); background: #18181b; transition: background .2s, transform .25s var(--ease); }
-@media (min-width: 1100px) { .map { margin-inline: auto; width: calc(100% - var(--pad) * 2); } }
-.map:hover { background: #1f1f23; } .map:active { transform: scale(.99); }
-.map .inner { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; max-width: none; }
-.map .l { display: flex; align-items: center; gap: 12px; }
-.map .pin { width: 32px; height: 32px; display: grid; place-items: center; }
+.map { display: block; border-top: 1px solid #2d2d30; margin-top: 16px; }
+.map .inner { display: flex; align-items: center; justify-content: space-between; padding-block: 20px; }
+.map .l { display: flex; align-items: center; gap: 14px; }
+.map .pin { width: 34px; height: 34px; display: grid; place-items: center; }
 .map .pin img { width: 21.56px; height: 27.48px; }
-.map strong { display: block; font-size: 16px; font-weight: 600; color: var(--text-quaternary); }
+.map strong { display: block; font-size: 16px; font-weight: 600; color: var(--text-quaternary); letter-spacing: -0.03em; }
 .map span { display: block; padding-top: 2px; color: var(--text-teritary); }
-.map .go { width: 32px; height: 32px; transition: transform .3s var(--ease); }
+.map .go { width: 32px; height: 32px; }
 .map:hover .go { transform: translateX(2px); }
+.map .go { transition: transform .3s var(--ease); }
 
 /* 흰 영역 */
 .sheet { position: relative; margin-top: -20px; background: var(--bg-white); border-radius: var(--r20) var(--r20) 0 0; }
@@ -185,7 +184,7 @@ img { display: block; }
 .works .more { display: inline-flex; align-items: center; color: var(--text-teritary); }
 .works .more img { width: 16px; height: 16px; }
 .works .sub { margin-top: 2px; color: var(--text-teritary); }
-.art-row { margin-top: 12px; display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; padding-right: var(--pad); margin-right: calc(var(--pad) * -1); }
+.art-row { margin-top: 16px; display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; padding-right: var(--pad); margin-right: calc(var(--pad) * -1); }
 .art-row::-webkit-scrollbar { display: none; }
 .art { flex: 0 0 175px; scroll-snap-align: start; display: block; background: #000; border-radius: var(--r12); overflow: hidden; color: var(--text-quaternary); transition: transform .3s var(--ease); }
 .art:active { transform: scale(.98); }
@@ -197,17 +196,13 @@ img { display: block; }
 .art b { display: block; font-size: 14px; font-weight: 600; letter-spacing: -0.03em; }
 @media (min-width: 768px)  { .art-row { margin-right: 0; padding-right: 0; gap: 16px; } .art { flex: 0 0 200px; } }
 @media (min-width: 1100px) { .art-row { gap: 24px; } .art { flex: 0 0 220px; } }
-.reg .inner { padding-block: 20px 28px; }
-.bn { position: relative; overflow: hidden; display: grid; align-content: start; gap: 2px; min-height: 223px; padding: 24px; border-radius: var(--r12); color: var(--text-quaternary); background: linear-gradient(180deg, #3f3f46 0%, #18181b 55%, #09090b 100%); }
-.bn h2 { position: relative; z-index: 1; font-size: 18px; font-weight: 600; }
-.bn p { position: relative; z-index: 1; font-size: 12px; font-weight: 500; color: #d4d4d8; }
-.bn .btn { position: absolute; left: 24px; bottom: 24px; z-index: 1; display: inline-flex; align-items: center; justify-content: center; height: 37px; padding: 0 16px; border-radius: 9999px; background: #fff; color: var(--text-primary); font-size: 14px; font-weight: 600; transition: transform .25s var(--ease); }
-.bn .btn:hover { background: #f4f4f5; } .bn .btn:active { transform: scale(.96); }
-.bn .mark { position: absolute; left: 28px; top: 56px; font-style: normal; font-size: 36px; font-weight: 700; line-height: 1.4; transform: scale(1.8); transform-origin: 0 0; color: rgba(255, 255, 255, .06); white-space: nowrap; pointer-events: none; }
-.bn .sh { position: absolute; display: grid; place-items: center; width: 108px; height: 124px; border: 1px solid rgba(255, 255, 255, .25); border-radius: 4px; background: linear-gradient(160deg, rgba(255, 255, 255, .22), rgba(255, 255, 255, .05)); font-style: normal; font-size: 12px; font-weight: 500; color: rgba(255, 255, 255, .55); pointer-events: none; }
-.bn .s1 { right: 96px; bottom: -28px; transform: rotate(-8deg); }
-.bn .s2 { right: 18px; bottom: -40px; transform: rotate(8deg); }
-@media (max-width: 400px) { .bn .s1 { right: 76px; } .bn .s2 { right: 4px; } }
+.rule { height: 14px; background: var(--line-soft); }
+.reg { border-bottom: 1px solid var(--line-soft); }
+.reg .inner { display: flex; align-items: flex-end; justify-content: space-between; padding-block: 20px; gap: 16px; }
+.reg h2 { font-size: 18px; font-weight: 600; letter-spacing: -0.03em; }
+.reg p { color: var(--text-teritary); }
+.reg a { display: inline-flex; align-items: center; gap: 3px; font-weight: 600; color: var(--text-secondary); text-decoration: underline; text-underline-offset: 2px; white-space: nowrap; }
+.reg a img { width: 12px; height: 12px; }
 .foot .inner { padding-block: 20px; display: grid; gap: 8px; }
 .foot .logo img { width: 99px; height: 22.6px; }
 .foot .links { display: flex; align-items: center; gap: 12px; color: var(--text-teritary); }
@@ -274,7 +269,7 @@ img { display: block; }
     </div>
 
     <a class="map" href="map.html">
-      <span class="inner" style="padding-inline:16px">
+      <span class="inner">
         <span class="l">
           <span class="pin"><img src="assets/img/map-pin.svg" alt="" width="22" height="27"></span>
           <span><strong>가까운 전시 찾기</strong><span>지도에서 전시 위치를 확인해보세요</span></span>
@@ -287,20 +282,19 @@ img { display: block; }
   <div class="sheet">
     <section class="works inner" aria-labelledby="works-title">
       <div class="hd">
-        <h2 id="works-title">전시작 미리보기</h2>
+        <h2 id="works-title">ARTWORKS</h2>
         <a class="more" href="#">더보기<img src="assets/img/chevron-more.svg" alt="" width="16" height="16"></a>
       </div>
+      <p class="sub">전시 속 작품을 만나보세요</p>
       <div class="art-row" id="art-row"></div>
     </section>
 
+    <div class="rule" aria-hidden="true"></div>
+
     <section class="reg" aria-label="전시 등록 안내">
       <div class="inner">
-        <div class="bn">
-          <i class="mark" aria-hidden="true">Display U.</i>
-          <i class="sh s1" aria-hidden="true">DISPLAY</i><i class="sh s2" aria-hidden="true">EXHIBIT</i>
-          <h2>준비 중인 전시가 있나요?</h2><p>디유에 전시와 작품을 소개해보세요.</p>
-          <a class="btn" href="exhibition-new.html">전시 등록하기</a>
-        </div>
+        <div><h2>준비 중인 전시가 있나요?</h2><p>디유에 전시와 작품을 소개해보세요</p></div>
+        <a href="#">전시 등록하기<img src="assets/img/icon-go.svg" alt="" width="12" height="12"></a>
       </div>
     </section>
 

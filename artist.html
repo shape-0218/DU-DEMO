@@ -90,10 +90,6 @@ img { display: block; }
 .btn-soft:hover { background: #e4e4e7; }
 .btn-soft[aria-pressed="true"] .i { fill: currentColor; }
 .btn.sq { width: 44px; padding: 0; }
-.actions.mine { grid-template-columns: repeat(3, minmax(0, 1fr)) 44px; }   /* 본인 보기(Figma 작가 페이지 / 본인): 전시 등록 · 작품 등록 · 전시 관리 + 공유 */
-.actions.mine .btn { padding: 0 8px; }
-.actions.mine .sq { background: var(--text-primary); color: #fff; }
-.actions.mine .sq:hover { background: #2f2f35; }
 .btn-dark { background: var(--text-primary); color: #fff; }
 .btn-dark:hover { background: #2f2f35; }
 .btn-dark[aria-pressed="true"] { background: var(--bg-teritary); color: var(--text-primary); }
@@ -259,14 +255,6 @@ tabs.forEach((t, i) => {
 pick(tabs.find((t) => t.dataset.k === q.get('tab')) || tabs[0], false, true);
 
 /* ---------- 작가 저장 · 프로필 공유하기 ---------- */
-/* 본인 보기: ?me=1 (마이 > 작가 프로필 카드에서 들어옴) */
-const mine = q.get('me') === '1';
-if (mine) {
-  const act = document.querySelector('.actions'); act.classList.add('mine');
-  const sh = document.getElementById('share');
-  act.innerHTML = '<a class="btn btn-soft" href="exhibition-new.html">전시 등록</a><a class="btn btn-soft" href="work-new.html">작품 등록</a><a class="btn btn-soft" href="manage.html">전시 관리</a>'; act.appendChild(sh);
-  document.getElementById('back').setAttribute('href', 'my.html');
-}
 const save = document.getElementById('save');
 if (save) SaveBtn.init([save], { kind: '작가', id: 'a1' });
 const toastEl = document.getElementById('toast'); let tt;
