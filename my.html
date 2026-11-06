@@ -69,7 +69,7 @@ img { display: block; }
 .tool .i { width: 24px; height: 24px; }
 .tool .dot { position: absolute; top: 9px; right: 9px; width: 8px; height: 8px; border-radius: 9999px; background: var(--notice); border: 2px solid #fff; box-sizing: content-box; }
 
-/* 작가 카드 (검정, 인증 후에만) — 11-07 D안 확정: 사진·구분선·원형 화살표 없이 이름 + 분야·수치 + "프로필 보기 ›" */
+/* 작가 카드 (검정, 인증 후에만) — 11-07 D안 확정: 사진·구분선·원형 화살표 없이 이름 + 분야·수치 + "작가 프로필 ›" */
 .dark { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 20px; padding: 20px; background: #000; color: #fff; border-radius: var(--r20); transition: transform .3s var(--ease); }
 .dark:active { transform: scale(.99); }
 .pro .t { display: grid; gap: 2px; min-width: 0; }
@@ -275,7 +275,7 @@ dialog.modal::backdrop { background: rgba(0, 0, 0, .5); }
     <!-- 작가 카드: 인증 후에만(인증 전에는 작가 관련 표시 없음 — 11-07 D안) -->
     <a class="dark pro" href="artist.html?me=1" id="pro-card" aria-label="내 작가 프로필 보기">
       <span class="t"><span class="nm">고상준</span><span class="sub">그래픽 · 브랜딩 · 작품 6 · 전시 2</span></span>
-      <span class="see">프로필 보기<svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></span>
+      <span class="see">작가 프로필<svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></span>
     </a>
 
     <ul class="rows" id="rows" aria-label="전시 활동">
