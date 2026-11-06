@@ -451,6 +451,7 @@ dialog.player .miss[hidden] { display: none; }
 <script src="assets/save.js"></script>
 <script src="assets/fade.js"></script>
 <script src="assets/demo-data.js"></script>
+<script src="assets/cropbox.js"></script>
 <script>
 /* ---------- 전시 고르기: ?e=번호 (데모 전시 11개), ?id= 는 허브 미리보기, 둘 다 없으면 0번 ---------- */
 const DXI = (() => { const q = new URLSearchParams(location.search); if (q.get('id')) return null; const n = +q.get('e'); return Number.isInteger(n) && q.has('e') && DEMO.EXH[n] ? n : 0; })();
@@ -603,7 +604,7 @@ const pvHide = (id) => { const el = document.getElementById(id); if (el) el.hidd
 const pvText = (id, t) => { const el = document.getElementById(id); if (el) el.textContent = t; };
 const dot = (iso) => (iso ? iso.replace(/-/g, '.') : '');
 function pvSlides() { /* 포스터 목록 → 캐러셀 칸 정보 */
-  if (PV.posterList && PV.posterList.length) return PV.posterList.map((p) => ({ video: p.video, thumb: p.thumb || PV.poster, key: p.key }));
+  if (PV.posterList && PV.posterList.length) return PV.posterList.map((p) => ({ video: p.video, thumb: p.thumb || PV.poster, key: p.key, crop: p.crop }));
   return [{ video: !!PV.posterVideo, thumb: PV.poster, key: null, src: PV.posterVideo ? 'assets/poster-shore.mp4' : null }];
 }
 if (!PVID || !PV) renderLinks('yeonex_2026', 'https://yeonex.kr/', 'yeonex.kr', true);
@@ -644,7 +645,7 @@ if (PV) {
     const blob = await blobDB.get(x.key); if (!blob) return;
     const url = URL.createObjectURL(blob);
     const v = slide.querySelector('video'), im = slide.querySelector('img');
-    if (v) v.src = url; else if (im) im.src = url;
+    if (v) v.src = url; else if (im) { im.src = url; if (x.crop) im.style.cssText = CropBox.style(x.crop); }
   });
 }
 /* ---------- 데모 전시(?e=): 카드에서 들어온 전시의 값으로 채움 ---------- */
@@ -661,7 +662,8 @@ if (DX) {
   document.getElementById('x-notes').innerHTML = ['작품을 손으로 만지지 말아주세요.', '날짜별 운영 시간이 다를 수 있으니 방문 전 확인해주세요.'].map((t) => `<li><svg class="i" aria-hidden="true"><use href="#i-info"/></svg>${t}</li>`).join('');
   lines('x-org2', DX.ty === '졸업 전시' ? `${DX.s} 졸업준비위원회` : DX.s);
   document.getElementById('x-contact').closest('div').style.display = 'none';
-  document.getElementById('x-links').style.display = 'none';
+  const SLUG = ['unfold', 'growing_elsewhere', 'pixel_garden', 'in_the_making', 'worlds_in_progress', 'playback', 'after_use', 'passage_of_light', 'beyond_the_panel', 'ways_of_knotting', 'measuring_between'][DXI];
+  renderLinks(SLUG + '_2026', 'https://' + SLUG.replace(/_/g, '-') + '.kr/', SLUG.replace(/_/g, '-') + '.kr', true);   // 가상 계정·주소라서 눌러도 이동하지 않고 안내만
   /* 포스터: 한 장 */
   document.getElementById('pr').innerHTML = `<div class="ps" aria-label="포스터 1 / 1"><img src="${DEMO.src(DX.img)}" alt="${DX.t} 포스터" fetchpriority="high"></div>`;
   /* 전시 콘텐츠: 인스타 게시물 첫 표지(3:4) 3장 */

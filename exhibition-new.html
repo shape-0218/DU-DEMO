@@ -256,6 +256,7 @@
 </div>
 
 <script src="assets/flow.js"></script>
+<script src="assets/cropbox.js"></script>
 <script src="assets/blobdb.js"></script>
 <script src="assets/media.js"></script>
 <script>
@@ -293,15 +294,20 @@ function renderPosters() {
   if (!n) {
     pf.innerHTML = `<div class="pf-empty">${addBtn('포스터 업로드')}<div class="tx"><span class="lb" style="display:block;font-size:14px;font-weight:600">전시 포스터<span class="req" aria-hidden="true">*</span></span><p class="fhelp">${help}</p></div></div>${err}`;
   } else {
-    pf.innerHTML = `<div class="lb" style="display:flex;justify-content:space-between;font-size:14px;font-weight:600"><span>전시 포스터<span class="req" aria-hidden="true">*</span></span><span class="cnt">${n} / ${MAXP}</span></div><p class="fhelp">${help}</p>${err}<div class="thumbs">${addBtn('추가')}${st.posters.map((p, i) => `<div class="th"><img src="${p.video ? p.thumb : p.url}" alt="${p.video ? `포스터 ${i + 1} 영상 썸네일` : `포스터 ${i + 1}`}">${p.video ? `<span class="vbadge"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg>${mmss(p.duration)}</span><button type="button" class="chg" data-i="${i}" aria-label="영상 썸네일 변경">썸네일</button>` : ''}${i === 0 ? '<span class="rep">대표</span>' : ''}<button type="button" class="x" data-i="${i}" aria-label="포스터 ${i + 1} 삭제"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button></div>`).join('')}</div>`;
+    pf.innerHTML = `<div class="lb" style="display:flex;justify-content:space-between;font-size:14px;font-weight:600"><span>전시 포스터<span class="req" aria-hidden="true">*</span></span><span class="cnt">${n} / ${MAXP}</span></div><p class="fhelp">${help}</p>${err}<div class="thumbs">${addBtn('추가')}${st.posters.map((p, i) => `<div class="th"><img src="${p.video ? p.thumb : p.url}" alt="${p.video ? `포스터 ${i + 1} 영상 썸네일` : `포스터 ${i + 1}`}">${p.video ? `<span class="vbadge"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg>${mmss(p.duration)}</span><button type="button" class="chg" data-i="${i}" aria-label="영상 썸네일 변경">썸네일</button>` : `<button type="button" class="chg" data-i="${i}" aria-label="포스터 ${i + 1} 보이는 부분 조정">조정</button>`}${i === 0 ? '<span class="rep">대표</span>' : ''}<button type="button" class="x" data-i="${i}" aria-label="포스터 ${i + 1} 삭제"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button></div>`).join('')}</div>`;
   }
   const a = $('add'); if (a) a.addEventListener('click', () => $('file').click());
   const r = $('retry'); if (r) r.addEventListener('click', () => { st.err = false; renderPosters(); $('file').click(); });
-  pf.querySelectorAll('.chg').forEach((b) => b.addEventListener('click', () => { const p = st.posters[+b.dataset.i]; thumbSheet(p, (t) => { p.thumb = t; renderPosters(); }); }));
+  pf.querySelectorAll('.chg').forEach((b) => b.addEventListener('click', () => {
+    const p = st.posters[+b.dataset.i];
+    if (p.video) { thumbSheet(p, (t) => { p.thumb = t; renderPosters(); }); return; }
+    CropBox.open({ url: p.url, ratio: POSTER_R, title: '포스터에 보이는 부분', sub: '전시 상세에는 상자 안이 보여요. 카드에도 이 부분이 보여요', preview: '포스터에서는 이렇게 보여요', rect: p.crop, onDone: (r) => { p.crop = r || null; renderPosters(); } });   // ❓ 임시 문구
+  }));
   pf.querySelectorAll('.x').forEach((b) => b.addEventListener('click', () => { URL.revokeObjectURL(st.posters[+b.dataset.i].url); st.posters.splice(+b.dataset.i, 1); renderPosters(); validate(); }));
 }
-function thumbData(url) { /* 첫 포스터를 작게 줄여서 목록·허브 카드에 쓰기(저장소 용량 절약) */
-  return new Promise((res) => { const im = new Image(); im.onload = () => { const w = 240, h = Math.round(240 * im.height / im.width), c = document.createElement('canvas'); c.width = w; c.height = Math.min(h, 360); c.getContext('2d').drawImage(im, 0, 0, w, h); try { res(c.toDataURL('image/jpeg', .7)); } catch (e) { res(null); } }; im.onerror = () => res(null); im.src = url; });
+const POSTER_R = 402 / 568;   // 전시 상세 포스터 칸 비율
+function thumbData(url, crop) { /* 포스터를 작게 줄여서 목록·허브 카드에 쓰기(저장소 용량 절약). 고른 부분(crop, 없으면 가운데)만 잘라 저장 */
+  return new Promise((res) => { const im = new Image(); im.onload = () => { const r = crop || CropBox.fit(im.width, im.height, POSTER_R), w = 240, h = Math.round(240 / POSTER_R), c = document.createElement('canvas'); c.width = w; c.height = h; c.getContext('2d').drawImage(im, r.x * im.width, r.y * im.height, r.w * im.width, r.h * im.height, 0, 0, w, h); try { res(c.toDataURL('image/jpeg', .7)); } catch (e) { res(null); } }; im.onerror = () => res(null); im.src = url; });
 }
 $('file').addEventListener('change', async () => {
   const files = [...$('file').files]; $('file').value = '';
@@ -494,14 +500,14 @@ $('next2').addEventListener('click', () => { if ($('next2').disabled) return; if
 async function saveEdit() {
   $('next2').disabled = true;
   const e = editEx, first = st.posters[0], dept = $('dept').value.trim();
-  const poster = (first && (first.video ? first.thumb : (first.existing ? first.url : await thumbData(first.url)))) || e.poster;
+  const poster = (first && (first.video ? first.thumb : (first.existing ? first.url : await thumbData(first.url, first.crop)))) || e.poster;
   const list = [];
   await blobDB.delPrefix(e.id + ':');
   for (let i = 0; i < st.posters.length; i++) {
     const p = st.posters[i], key = e.id + ':' + i;
-    const thumb = p.video ? p.thumb : (p.existing ? p.url : await thumbData(p.url));
+    const thumb = p.video ? p.thumb : (p.existing ? p.url : await thumbData(p.url, p.crop));
     const kept = p.file ? await blobDB.put(key, p.file) : false;
-    list.push({ video: !!p.video, thumb: thumb || null, key: kept ? key : null });
+    list.push({ video: !!p.video, thumb: thumb || null, key: kept ? key : null, crop: p.crop || null });
   }
   const upd = { title: $('title-in').value.trim(), intro: $('intro').value.trim(), type: st.type, fields: [...st.fields], org: st.type === '기타 단체 전시' ? dept : `${SCHOOL} ${dept}`, start: st.start, end: st.end, ts: st.ts, te: st.te, place: $('place').value.trim(), addr: st.addr, contact: $('contact').value.trim(), notice: $('notice').value.trim(), ig: igVal(), web: webVal(), webShow: webShow(), poster, posterVideo: !!(first && first.video), hasVideo: st.posters.some((p) => p.video), posters: st.posters.length, posterList: list };
   saveExhibitions(exhibitions().map((x) => x.id === e.id ? { ...x, ...upd } : x));
@@ -511,7 +517,7 @@ async function saveEdit() {
 /* ---------- 3. 전시 작가명 → 생성 ---------- */
 $('make').addEventListener('click', async () => {
   if ($('make').disabled) return; $('make').disabled = true;
-  const first = st.posters[0]; const poster = (first && (first.video ? first.thumb : await thumbData(first.url))) || 'assets/img/explore/opt/p03.jpg';
+  const first = st.posters[0]; const poster = (first && (first.video ? first.thumb : await thumbData(first.url, first.crop))) || 'assets/img/explore/opt/p03.jpg';
   const dept = $('dept').value.trim();
   const e = {
     id: 'n' + Date.now().toString(36), status: 'prep', role: 'owner', myName: $('myname').value.trim(),
@@ -524,9 +530,9 @@ $('make').addEventListener('click', async () => {
   e.posterList = [];
   for (let i = 0; i < st.posters.length; i++) {
     const p = st.posters[i], key = e.id + ':' + i;
-    const thumb = p.video ? p.thumb : await thumbData(p.url);
+    const thumb = p.video ? p.thumb : await thumbData(p.url, p.crop);
     const kept = p.file ? await blobDB.put(key, p.file) : false;
-    e.posterList.push({ video: !!p.video, thumb: thumb || null, key: kept ? key : null });
+    e.posterList.push({ video: !!p.video, thumb: thumb || null, key: kept ? key : null, crop: p.crop || null });
   }
   const l = exhibitions(); l.unshift(e); saveExhibitions(l);
   st.made = e; $('to-pub').href = 'hub.html?id=' + e.id + '#pub'; $('to-work').href = 'work-new.html?ex=' + e.id;
@@ -568,7 +574,7 @@ if (editEx) (async () => {
   for (const it of list) {
     const blob = it.key ? await blobDB.get(it.key) : null;
     if (blob && it.video) { try { const f = new File([blob], 'poster', { type: blob.type || 'video/mp4' }); const v = await readVideo(f); st.posters.push({ video: true, name: f.name, file: f, ...v }); continue; } catch (x) {} }
-    if (blob) { st.posters.push({ url: URL.createObjectURL(blob), name: '포스터', file: blob }); continue; }
+    if (blob) { st.posters.push({ url: URL.createObjectURL(blob), name: '포스터', file: blob, crop: it.crop || null }); continue; }
     if (it.thumb) st.posters.push({ url: it.thumb, name: '포스터', existing: true });
   }
   renderPosters(); validate();

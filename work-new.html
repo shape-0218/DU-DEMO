@@ -43,7 +43,8 @@
 /* 카드에서 보이는 모습 미리보기 + 사진별 위치 조정 */
 .cprev { display: flex; align-items: center; gap: 14px; margin-top: 14px; padding: 14px; border-radius: var(--r12); background: var(--bg-secondary); }
 .cprev[hidden] { display: none; }
-.cp-im { flex: none; width: 72px; aspect-ratio: 3 / 4; border-radius: 8px; overflow: hidden; background: #000; }
+.cp-im { position: relative; flex: none; width: 72px; aspect-ratio: 3 / 4; border-radius: 8px; overflow: hidden; background: #000; }
+.cp-im img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; user-select: none; }
 .cp-tx { display: grid; gap: 2px; min-width: 0; font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-secondary); }
 .cp-tx b { font-size: 14px; font-weight: 600; color: var(--text-primary); }
 .cp-btn { justify-self: start; margin-top: 8px; min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid var(--border-primary); background: #fff; font-size: 12px; font-weight: 600; transition: transform .2s var(--ease); }
@@ -53,7 +54,6 @@
 .adjf figcaption { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
 .adjc { width: 180px; height: 248px; border-radius: var(--r12); overflow: hidden; background: #000; touch-action: none; cursor: grab; box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 4px 12px rgba(0,0,0,.1); }
 .adjc.drag { cursor: grabbing; }
-.adjc img, .adjd img, .cp-im img { width: 100%; height: 100%; object-fit: contain; display: block; pointer-events: none; user-select: none; transform-origin: 50% 50%; }
 .adjd { width: 60px; height: 80px; border-radius: 8px; overflow: hidden; background: #000; }
 .adjz { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
 .adjz button { flex: none; width: 44px; height: 44px; border-radius: 50%; background: var(--bg-secondary); display: grid; place-items: center; font-size: 20px; font-weight: 600; line-height: 1; transition: transform .2s var(--ease); }
@@ -125,9 +125,9 @@
           <div class="row" id="m-row" role="list" aria-labelledby="m-l"></div>
           <div class="cprev" id="cprev" hidden>
             <div class="cp-im"><img id="cp-img" alt=""></div>
-            <div class="cp-tx"><b>작품 상세에서는 이렇게 보여요</b><span id="cp-note">카드 썸네일도 같은 모습이에요</span><button type="button" class="cp-btn" id="cp-adj">보이는 모습 조정</button></div>
+            <div class="cp-tx"><b>카드에서는 이렇게 보여요</b><span id="cp-note">사진 가운데가 카드에 보여요</span><button type="button" class="cp-btn" id="cp-adj">보이는 부분 조정</button></div>
           </div>
-          <p class="mhelp" id="m-hint" style="margin-top:8px">가로로 밀어서 더 볼 수 있어요<br>작품 상세에서는 비율이 달라도 사진 전체가 보여요 (남는 곳은 검정). 올린 뒤 '조정'에서 확대·이동할 수 있고, 카드 썸네일도 같은 모습이에요<br>영상은 목록·카드에서 썸네일로 보이고, 작품 상세에서 재생돼요</p>
+          <p class="mhelp" id="m-hint" style="margin-top:8px">가로로 밀어서 더 볼 수 있어요<br>작품 상세에서는 비율이 달라도 사진 전체가 보여요 (남는 곳은 검정). 카드에 보이는 부분은 올린 뒤 '조정'에서 상자로 정할 수 있어요<br>영상은 목록·카드에서 썸네일로 보이고, 작품 상세에서 재생돼요</p>
         </div>
 
         <div class="field" style="margin-top:24px">
@@ -199,6 +199,7 @@
 </div>
 
 <script src="assets/flow.js"></script>
+<script src="assets/cropbox.js"></script>
 <script src="assets/media.js"></script>
 <script src="assets/exdata.js"></script>
 <script>
@@ -260,69 +261,21 @@ function coSheet() {
 
 /* ---------- 사진·영상 올리기 ---------- */
 function tileHtml(m, i, allowVideo) {
-  return `<div class="tile ${m.video ? 'v' : ''}" role="listitem"><img src="${m.video ? m.thumb : m.url}" alt="${m.video ? '영상 썸네일' : '사진'} ${i + 1}"${!m.video && (m.z > 1) ? ` style="${viewCss(m)};transform-origin:50% 50%"` : ''}>${!m.video && m.url ? `<button type="button" class="chg" data-a="adj" data-i="${i}" aria-label="${i + 1}번째 사진 카드에서 보이는 부분 조정">조정</button>` : ''}${m.video ? `<span class="vbadge"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg>${mmss(m.duration)}</span><button type="button" class="chg" data-a="chg" data-i="${i}" aria-label="영상 썸네일 변경">썸네일</button>` : ''}${i === 0 && allowVideo ? '<span class="rep">대표 사진</span>' : ''}${i === 0 && !allowVideo ? '<span class="rep">대표 사진</span>' : ''}<button type="button" class="x" data-a="rm" data-i="${i}" aria-label="${i + 1}번째 삭제"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button></div>`;
+  return `<div class="tile ${m.video ? 'v' : ''}" role="listitem"><img src="${m.video ? m.thumb : m.url}" alt="${m.video ? '영상 썸네일' : '사진'} ${i + 1}">${!m.video && m.url ? `<button type="button" class="chg" data-a="adj" data-i="${i}" aria-label="${i + 1}번째 사진 카드에서 보이는 부분 조정">조정</button>` : ''}${m.video ? `<span class="vbadge"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg>${mmss(m.duration)}</span><button type="button" class="chg" data-a="chg" data-i="${i}" aria-label="영상 썸네일 변경">썸네일</button>` : ''}${i === 0 && allowVideo ? '<span class="rep">대표 사진</span>' : ''}${i === 0 && !allowVideo ? '<span class="rep">대표 사진</span>' : ''}<button type="button" class="x" data-a="rm" data-i="${i}" aria-label="${i + 1}번째 삭제"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button></div>`;
 }
-/* 작품 상세에서 보이는 모습 = 카드 썸네일. 사진마다 확대(z)·이동(tx, ty: 칸 크기 대비 비율)을 저장하고, 기본(z=1)은 사진 전체가 보이고 남는 곳은 검정 */
-const viewCss = (m) => `transform:translate(${((m.tx || 0) * 100).toFixed(2)}%, ${((m.ty || 0) * 100).toFixed(2)}%) scale(${m.z || 1})`;
-function clampView(m, nw, nh, fw, fh) {
-  const k = Math.min(fw / nw, fh / nh), dw = nw * k * m.z, dh = nh * k * m.z;
-  const mx = Math.max(0, (dw - fw) / 2) / fw, my = Math.max(0, (dh - fh) / 2) / fh;
-  m.tx = Math.min(mx, Math.max(-mx, m.tx || 0)); m.ty = Math.min(my, Math.max(-my, m.ty || 0));
-}
+/* 카드에 보이는 부분 = 노출 범위 상자(CropBox). 사진마다 crop({x,y,w,h}, 사진 전체가 1)을 저장하고, 없으면 사진 가운데를 3:4로 가장 크게 자른 모습 */
+const CARD_R = 3 / 4;
 function refreshPrev(row) {
   const box = $('cprev'), first = st.media[0];
   if (!first || first.video || !first.url) { box.hidden = true; return; }
   const ci = $('cp-img'); if (ci.getAttribute('src') !== first.url) ci.src = first.url;
-  ci.style.cssText = (first.z > 1) ? viewCss(first) : '';
-  $('cp-note').textContent = first.z > 1 ? '확대·이동한 모습이고, 카드 썸네일도 같아요' : '사진 전체가 보여요. 카드 썸네일도 같은 모습이에요';   // ❓ 임시 문구
+  ci.style.cssText = first.crop ? CropBox.style(first.crop) : '';
+  $('cp-note').textContent = first.crop ? '고른 부분이 카드에 보여요' : '사진 가운데가 카드에 보여요';   // ❓ 임시 문구
   box.hidden = false;
 }
-/* 사진별 "작품 상세에서 보이는 모습" 조정: 끌어서 이동, 슬라이더·+/−·핀치·휠로 확대·축소 */
 function openAdjust(i) {
   const m = st.media[i]; if (!m || m.video || !m.url) return;
-  const v = { z: m.z || 1, tx: m.tx || 0, ty: m.ty || 0 };
-  showSheet(`<h2>작품 상세에서 보이는 모습</h2><p class="sub">${i === 0 ? '카드 썸네일도 이 모습 그대로 보여요' : '이 사진이 대표가 되면 카드 썸네일도 이 모습이에요'}</p>
-    <div class="adjrow">
-      <figure class="adjf"><div class="adjc" id="adj-c" tabindex="0" role="group" aria-label="작품 상세에서 보이는 모습 (끌어서 이동, 방향키로 이동, +/-로 확대·축소)"><img id="adj-i" src="${m.url}" alt="" draggable="false"></div><figcaption>작품 상세</figcaption></figure>
-      <figure class="adjf"><div class="adjd"><img id="adj-s" src="${m.url}" alt=""></div><figcaption>카드</figcaption></figure>
-    </div>
-    <div class="adjz"><button type="button" id="adj-m" aria-label="축소">−</button><input type="range" id="adj-r" min="1" max="3" step="0.05" value="${v.z}" aria-label="확대 정도"><button type="button" id="adj-p" aria-label="확대">+</button><output id="adj-o" aria-live="polite"></output></div>
-    <p class="adjn" id="adj-n"></p>
-    <div class="trow"><button type="button" class="btn btn-soft" id="adj-0">처음대로</button><button type="button" class="btn btn-dark" id="adj-ok">완료</button></div>`, '작품 상세에서 보이는 모습 조정', (sh) => {
-    const c = sh.querySelector('#adj-c'), im = sh.querySelector('#adj-i'), sm = sh.querySelector('#adj-s'), rg = sh.querySelector('#adj-r'), out = sh.querySelector('#adj-o'), n = sh.querySelector('#adj-n');
-    const FW = 180, FH = 248, ptr = new Map(); let nw = 1, nh = 1, d = null, pinch = null;
-    const paint = () => {
-      clampView(v, nw, nh, FW, FH); const css = viewCss(v);
-      im.style.cssText = css; sm.style.cssText = css; rg.value = v.z; out.textContent = Math.round(v.z * 100) + '%';
-      sh.querySelector('#adj-m').disabled = v.z <= 1; sh.querySelector('#adj-p').disabled = v.z >= 3;
-      n.textContent = v.z > 1 ? '끌어서 보이는 부분을 옮겨요' : '지금은 사진 전체가 보여요. 확대하면 끌어서 옮길 수 있어요';
-    };
-    const setZ = (z) => { v.z = Math.min(3, Math.max(1, +z)); paint(); };
-    const ready = () => { nw = im.naturalWidth || 1; nh = im.naturalHeight || 1; paint(); };
-    if (im.complete && im.naturalWidth) ready(); else im.addEventListener('load', ready, { once: true });
-    rg.addEventListener('input', () => setZ(rg.value));
-    sh.querySelector('#adj-m').addEventListener('click', () => setZ(v.z - 0.25)); sh.querySelector('#adj-p').addEventListener('click', () => setZ(v.z + 0.25));
-    c.addEventListener('wheel', (e) => { e.preventDefault(); setZ(v.z * Math.exp(-e.deltaY * 0.002)); }, { passive: false });
-    c.addEventListener('pointerdown', (e) => {
-      ptr.set(e.pointerId, { x: e.clientX, y: e.clientY }); try { c.setPointerCapture(e.pointerId); } catch (err) {} c.classList.add('drag');
-      if (ptr.size === 1) d = { x: e.clientX, y: e.clientY, tx: v.tx, ty: v.ty };
-      if (ptr.size === 2) { const [a, b] = [...ptr.values()]; pinch = { dist: Math.hypot(a.x - b.x, a.y - b.y), z: v.z }; d = null; }
-    });
-    c.addEventListener('pointermove', (e) => {
-      if (!ptr.has(e.pointerId)) return; ptr.set(e.pointerId, { x: e.clientX, y: e.clientY });
-      if (ptr.size === 2 && pinch) { const [a, b] = [...ptr.values()]; setZ(pinch.z * Math.hypot(a.x - b.x, a.y - b.y) / pinch.dist); return; }
-      if (d) { const b = c.getBoundingClientRect(); v.tx = d.tx + (e.clientX - d.x) / b.width; v.ty = d.ty + (e.clientY - d.y) / b.height; paint(); }
-    });
-    const end = (e) => { ptr.delete(e.pointerId); if (ptr.size < 2) pinch = null; if (!ptr.size) { d = null; c.classList.remove('drag'); } else if (ptr.size === 1) { const [p] = [...ptr.values()]; d = { x: p.x, y: p.y, tx: v.tx, ty: v.ty }; } };
-    c.addEventListener('pointerup', end); c.addEventListener('pointercancel', end);
-    c.addEventListener('keydown', (e) => {
-      const k = { ArrowLeft: [0.04, 0], ArrowRight: [-0.04, 0], ArrowUp: [0, 0.04], ArrowDown: [0, -0.04] }[e.key];
-      if (e.key === '+' || e.key === '=') { e.preventDefault(); setZ(v.z + 0.25); } else if (e.key === '-') { e.preventDefault(); setZ(v.z - 0.25); }
-      else if (k) { e.preventDefault(); v.tx += k[0]; v.ty += k[1]; paint(); }
-    });
-    sh.querySelector('#adj-0').addEventListener('click', () => { v.z = 1; v.tx = 0; v.ty = 0; paint(); });
-    sh.querySelector('#adj-ok').addEventListener('click', () => { m.z = v.z; m.tx = v.z > 1 ? v.tx : 0; m.ty = v.z > 1 ? v.ty : 0; closeSheet(); renderRow('media'); });
-  });
+  CropBox.open({ url: m.url, ratio: CARD_R, title: '카드에 보이는 부분', sub: i === 0 ? '카드에는 상자 안이 보여요. 작품 상세에서는 사진 전체가 보여요' : '이 사진이 대표가 되면 카드에는 상자 안이 보여요', preview: '카드에서는 이렇게 보여요', rect: m.crop, onDone: (rect) => { m.crop = rect || null; renderRow('media'); } });   // ❓ 임시 문구
 }
 $('cp-adj').addEventListener('click', () => openAdjust(0));
 function renderRow(key) {
@@ -381,13 +334,13 @@ $('form').addEventListener('submit', async (ev) => {
   ev.preventDefault(); if ($('go').disabled) return; $('go').disabled = true;
   const first = st.media[0];
   const img = first.video ? first.thumb : (first.existing ? first.url : ((first.file ? await imageThumb(first.file) : null) || first.url));
-  const work = { id: 'w' + Date.now().toString(36), exId: ex.id, title: $('title').value.trim(), fields: [...st.fields], year: $('year').value, medium: $('medium').value.trim(), size: $('size').value.trim(), desc: $('desc').value.trim(), point: $('point').value.trim(), authors: [author, ...st.co.map((c) => c.n)], media: st.media.length, video: st.media.some((m) => m.video), proc: st.proc.length, thumb: img, z: first.z || 1, tx: first.tx || 0, ty: first.ty || 0 };
+  const work = { id: 'w' + Date.now().toString(36), exId: ex.id, title: $('title').value.trim(), fields: [...st.fields], year: $('year').value, medium: $('medium').value.trim(), size: $('size').value.trim(), desc: $('desc').value.trim(), point: $('point').value.trim(), authors: [author, ...st.co.map((c) => c.n)], media: st.media.length, video: st.media.some((m) => m.video), proc: st.proc.length, thumb: img, crop: first.crop || null };
   if (editing) {
-    ExData.updateWork(ex.id, editing.id, { title: work.title, fields: work.fields, year: work.year, medium: work.medium, img, z: work.z, tx: work.tx, ty: work.ty });
+    ExData.updateWork(ex.id, editing.id, { title: work.title, fields: work.fields, year: work.year, medium: work.medium, img, crop: st.media[0].crop || null });
     st.left = true; sessionStorage.setItem('du.toast', '작품을 수정했어요'); location.href = WORKS; return;
   }
   const w = store.get('du.works', []); w.unshift(work); store.set('du.works', w);
-  ExData.addWork(ex.id, { title: work.title, author: work.authors.length > 1 ? work.authors[0] : work.authors[0], authors: work.authors, img, mine: !PROXY, fields: work.fields, year: work.year, medium: work.medium, z: work.z, tx: work.tx, ty: work.ty });
+  ExData.addWork(ex.id, { title: work.title, author: work.authors.length > 1 ? work.authors[0] : work.authors[0], authors: work.authors, img, mine: !PROXY, fields: work.fields, year: work.year, medium: work.medium, crop: st.media[0].crop || null });
   $('d-t').textContent = work.title; $('d-a').innerHTML = Byline.html(work.authors); $('d-e').textContent = ex.title;
   st.left = true; $('form').hidden = true; $('bar').hidden = true; $('done').hidden = false; window.scrollTo(0, 0); $('done-h').focus({ preventScroll: true });
 });
@@ -407,7 +360,7 @@ if (editing) {
   st.fields = new Set(editing.fields || []);
   [...$('chips').children].forEach((c) => { const on = st.fields.has(c.dataset.f); c.setAttribute('aria-pressed', on); c.innerHTML = (on ? '<svg class="i" aria-hidden="true"><use href="#i-check"/></svg>' : '') + c.dataset.f; });
   $('fcnt').textContent = `${st.fields.size}/${MAXF}`;
-  st.media = [{ url: editing.img, name: '등록된 이미지', existing: true, z: editing.z, tx: editing.tx, ty: editing.ty }];
+  st.media = [{ url: editing.img, name: '등록된 이미지', existing: true, crop: editing.crop || null }];
 }
 renderAuthors(); renderRow('media'); renderRow('proc'); validate();
 </script>
