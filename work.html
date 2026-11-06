@@ -141,7 +141,7 @@ img { display: block; }
 .more-a:hover .i { transform: rotate(90deg) translateX(3px); }
 @media (min-width: 900px) { .artist { font-size: 16px; } }
 .spec { font-size: 14px; font-weight: 500; color: var(--text-secondary); }
-.exh { margin-top: 20px; display: grid; grid-template-columns: 40px minmax(0, 1fr) 20px; align-items: center; column-gap: 14px; padding: 14px 0; border-block: 1px solid var(--bg-teritary); transition: background .2s; }
+.exh { margin-top: 20px; display: grid; grid-template-columns: 40px minmax(0, 1fr) 20px; align-items: center; column-gap: 12px; padding: 16px 0; border-block: 1px solid var(--bg-teritary); transition: background .2s; }
 .exh img { width: 40px; height: 50px; object-fit: cover; border-radius: var(--r4); background: #000; }
 .exh .state { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
 .dot { width: 7px; height: 7px; border-radius: 9999px; background: var(--text-primary); }
@@ -169,14 +169,14 @@ img { display: block; }
 .more { margin-top: 4px; text-align: right; }
 .more button { height: 28px; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
 .more button:hover { color: var(--text-primary); }
-.note { margin-top: 20px; padding: 18px 18px; background: var(--bg-secondary); border-radius: var(--r12); color: var(--text-secondary); text-wrap: pretty; }
+.note { margin-top: 20px; padding: 16px; background: var(--bg-secondary); border-radius: var(--r12); color: var(--text-secondary); text-wrap: pretty; }
 /* 작업과정: 어두운 띠 + "작업과정 5"(개수) + 4:5 카드(반경 16, 간격 8) — 사용자 규격(11-03) */
 .process { margin-top: 28px; background: #18181b; padding: 28px 0; }
 .process h2 { display: flex; align-items: baseline; gap: 8px; padding-inline: var(--pad); color: #fff; font-size: 18px; font-weight: 600; letter-spacing: -0.03em; }
 .process h2 .cnt { color: #a1a1aa; font-weight: 500; font-variant-numeric: tabular-nums; }
 .proc-row { margin-top: 12px; display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x proximity; scroll-padding-inline: var(--pad); scrollbar-width: none; padding-inline: var(--pad); }
 .proc-row::-webkit-scrollbar { display: none; }
-.pc { position: relative; flex: 0 0 162px; aspect-ratio: 162 / 203; border-radius: 16px; overflow: hidden; background: #27272a; scroll-snap-align: start; transition: transform .3s var(--ease); }
+.pc { position: relative; flex: 0 0 160px; aspect-ratio: 4 / 5; border-radius: 16px; overflow: hidden; background: #27272a; scroll-snap-align: start; transition: transform .3s var(--ease); }
 .pc:active { transform: scale(.98); }
 .pc img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
 .pc:hover img { transform: scale(1.04); }
@@ -367,17 +367,27 @@ img { display: block; }
 
 <script src="assets/save.js"></script>
 <script src="assets/fade.js"></script>
+<script src="assets/demo-data.js"></script>
 <script>
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const O = 'assets/img/work/opt/';
+/* ---------- 작품 고르기: ?w=번호(데모 작품 22점), 없으면 0번(사진 5장·소개·작업과정이 다 있는 작품) ---------- */
+const WQ = new URLSearchParams(location.search), WI = (() => { const n = +WQ.get('w'); return Number.isInteger(n) && WQ.has('w') && DEMO.WORKS[n] ? n : 0; })();
+const W = DEMO.WORKS[WI], WE = DEMO.EXH[W.e], FULL = WI === 0;
+const TT = W.t;
+document.querySelector('h1').textContent = TT;
+document.querySelector('.spec').textContent = `${W.f} · 2026 · ${W.m}`;
+document.getElementById('like-n').textContent = W.l;
+{ const a = document.querySelector('a.exh'); a.href = 'exhibition.html?e=' + WE.i; a.setAttribute('aria-label', '소속 전시 보기: ' + WE.t); a.querySelector('img').src = DEMO.src(WE.img); a.querySelector('strong').textContent = WE.t; a.querySelector('.sub').textContent = WE.s; a.querySelector('.state').lastChild.textContent = WE.st; const dt = a.querySelector('.dot'); dt.classList.toggle('soon', WE.st === '전시 예정'); dt.classList.toggle('end', WE.st === '종료'); }
+document.getElementById('back').href = 'exhibition.html?e=' + WE.i + '&tab=works';
 
 /* ---------- 이미지 슬라이더 (사진 5장) ---------- */
-const imgs = [['main', 'th1'], ['s2', 'th2'], ['s3', 'th3'], ['s4', 'th4'], ['s5', 'th5']];
+const imgs = FULL ? [['main', 'th1'], ['s2', 'th2'], ['s3', 'th3'], ['s4', 'th4'], ['s5', 'th5']].map(([f, t]) => [O + f + '.jpg', O + t + '.jpg']) : [[`assets/img/explore/opt/${W.img}.jpg`, `assets/img/explore/opt/${W.img}.jpg`]];
 const photos = imgs.length;
 const track = document.getElementById('track'), thumbs = document.getElementById('thumbs'), pager = document.getElementById('pager');
 const prev = document.getElementById('prev'), next = document.getElementById('next');
-track.innerHTML = imgs.map(([f], i) => `<div class="slide"><img src="${O}${f}.jpg" alt="접으면 달라지는 지도 ${i + 1}/${photos}" ${i ? 'loading="lazy"' : 'fetchpriority="high"'}></div>`).join('');
-thumbs.innerHTML = imgs.map(([, t], i) => `<button class="thumb" role="listitem" data-i="${i}" aria-label="${i + 1}번째 이미지 보기"><img src="${O}${t}.jpg" alt="" width="40" height="60"></button>`).join('');
+track.innerHTML = imgs.map(([f], i) => `<div class="slide"><img src="${f}" alt="${TT} ${i + 1}/${photos}" ${i ? 'loading="lazy"' : 'fetchpriority="high"'}></div>`).join('');
+thumbs.innerHTML = imgs.map(([, t], i) => `<button class="thumb" role="listitem" data-i="${i}" aria-label="${i + 1}번째 이미지 보기"><img src="${t}" alt="" width="40" height="60"></button>`).join('');
 let cur = 0, settle;
 thumbs.hidden = photos < 2; pager.hidden = photos < 2;
 let fade = null, shown = -1;
@@ -392,7 +402,7 @@ thumbs.addEventListener('click', (e) => { const b = e.target.closest('.thumb'); 
 
 /* ---------- 감상 방식 전환: 한 장씩 ↔ 이어보기 (고른 방식은 이 기기에 기억) ---------- */
 const viewer = document.querySelector('.viewer'), vmode = document.getElementById('vmode'), stackv = document.getElementById('stackv');
-stackv.innerHTML = imgs.map(([f], i) => `<img src="${O}${f}.jpg" alt="접으면 달라지는 지도 ${i + 1}/${photos}" loading="lazy" style="aspect-ratio:4/5" onload="this.style.aspectRatio=''">`).join('');
+stackv.innerHTML = imgs.map(([f], i) => `<img src="${f}" alt="${TT} ${i + 1}/${photos}" loading="lazy" style="aspect-ratio:4/5" onload="this.style.aspectRatio=''">`).join('');
 vmode.hidden = photos < 2;
 let mode = 'one'; try { if (photos > 1 && localStorage.getItem('du.view') === 'stack') mode = 'stack'; } catch (e) {}
 const headH = () => (matchMedia('(min-width:768px)').matches ? 64 : 0);
@@ -442,14 +452,14 @@ pick(tabs.find((t) => t.dataset.k === new URLSearchParams(location.search).get('
 /* ---------- 작가 표기 (11-02 확정): 상세는 4명까지 전부, 5명부터 앞 3명 + "외 N명"(누르면 그 자리에서 전부) ----------
    ?authors=N 으로 인원 확인 (예시 이름은 가상). 이름마다 각자의 프로필로 이동 */
 const ALL = ['이정우', '김서윤', '박도현', '이채원', '정우진', '한지아', '오민석', '류하린'];
-const total = Math.max(1, Math.min(ALL.length, +new URLSearchParams(location.search).get('authors') || 1));
-const names = ALL.slice(0, total), box = document.getElementById('artists');
+const total = Math.max(1, Math.min(ALL.length, +WQ.get('authors') || 1));
+const names = WQ.has('authors') ? ALL.slice(0, total) : W.a, box = document.getElementById('artists');
 const chev = '<svg class="i" aria-hidden="true"><use href="#i-chev"/></svg>';
 function renderAuthors(expanded) {
   const collapsed = names.length >= 5 && !expanded, shown = collapsed ? names.slice(0, 3) : names;
   box.innerHTML = shown.map((n) => `<a class="artist" href="artist.html" aria-label="작가 ${n} 프로필 보기">${n}${chev}</a>`).join('') +
     (collapsed ? `<button class="artist more-a" aria-expanded="false" aria-label="나머지 작가 ${names.length - 3}명 모두 보기">외 ${names.length - 3}명${chev}</button>` : '');
-  document.title = `접으면 달라지는 지도 · ${names.length > 1 ? `${names[0]} 외 ${names.length - 1}명` : names[0]} · Display U.`;
+  document.title = `${TT} · ${names.length > 1 ? `${names[0]} 외 ${names.length - 1}명` : names[0]} · Display U.`;
 }
 box.addEventListener('click', (e) => { if (e.target.closest('.more-a')) { renderAuthors(true); const f = box.querySelectorAll('.artist')[3]; if (f) f.focus(); } });
 renderAuthors(false);
@@ -461,6 +471,11 @@ document.getElementById('proc-n').textContent = document.getElementById('proc').
 /* ---------- 소개 더보기 ---------- */
 const desc = document.getElementById('desc'), moreBtn = document.getElementById('more-btn');
 requestAnimationFrame(() => { if (desc.scrollHeight <= desc.clientHeight + 1) document.getElementById('more').hidden = true; });
+/* 소개·작업과정이 없는 작품: 그 칸들을 빼고 방명록만 남겨 간결하게 */
+if (!FULL) {
+  desc.hidden = true; document.getElementById('more').hidden = true; document.querySelector('.note').hidden = true; document.querySelector('.process').hidden = true;
+  document.getElementById('t-intro').hidden = true; pick(document.getElementById('t-guest'), false, true);
+}
 moreBtn.addEventListener('click', () => { desc.classList.add('open'); moreBtn.setAttribute('aria-expanded', 'true'); document.getElementById('more').hidden = true; });
 
 /* ---------- 좋아요 · 저장 ---------- */

@@ -179,20 +179,19 @@ img { display: block; }
 @media (min-width: 900px) { .band { background: none; padding-bottom: 0; } }
 .band .sec { padding-top: 28px; }
 @media (min-width: 900px) { .band .sec { padding-top: 36px; } }
-.cards { margin-top: 16px; display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; margin-inline: calc(var(--pad) * -1); padding-inline: var(--pad); }
+.cards { margin-top: 16px; display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x proximity; scroll-padding-inline: var(--pad); scrollbar-width: none; margin-inline: calc(var(--pad) * -1); padding-inline: var(--pad); }
 .cards::-webkit-scrollbar { display: none; }
 @media (min-width: 900px) { .cards { margin-inline: 0; padding-inline: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); overflow: visible; } }
-.cc { position: relative; flex: 0 0 170px; aspect-ratio: 170 / 120; border-radius: var(--r12); overflow: hidden; scroll-snap-align: start; color: #fff; background: #111; }
-.cc img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
-.cc:hover img { transform: scale(1.04); }
-.cc::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, .72)); }
-.cc span { position: absolute; left: 12px; bottom: 10px; z-index: 1; display: grid; }
-.cc strong { font-weight: 600; font-size: 14px; }
-.cc small { font-size: 10px; font-weight: 500; opacity: .86; }
+.cc { display: block; flex: 0 0 144px; scroll-snap-align: start; color: var(--text-primary); }
+.cc .cv { position: relative; aspect-ratio: 3 / 4; border-radius: var(--r12); overflow: hidden; background: var(--bg-teritary); }
+.cc .cv img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
+.cc .cv::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08); pointer-events: none; }
+.cc:hover .cv img { transform: scale(1.04); }
+.cc strong { display: block; margin-top: 8px; font-weight: 600; font-size: 14px; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 @media (min-width: 900px) { .cc { flex: none; } }
 
 /* 위치 안내: 가짜 지도 대신 한 줄 */
-.place { margin-top: 16px; display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--bg-soft); border-radius: var(--r12); }
+.place { margin-top: 16px; display: flex; align-items: center; gap: 12px; padding: 16px; background: var(--bg-soft); border-radius: var(--r12); }
 .place .pin { width: 40px; height: 40px; display: grid; place-items: center; background: #fff; border-radius: 9999px; flex: none; }
 .place .pin .i { width: 20px; height: 20px; }
 .place .tx { flex: 1; min-width: 0; }
@@ -215,8 +214,8 @@ img { display: block; }
 .w { display: block; background: #000; border-radius: var(--r12); overflow: hidden; color: var(--text-quaternary); transition: transform .3s var(--ease); animation: rise .6s var(--ease) backwards; animation-delay: calc(var(--n, 0) * 50ms); }
 @keyframes rise { from { opacity: 0; transform: translateY(12px); } }
 .w:active { transform: scale(.98); }
-.w .im { padding: 7px; }
-.w .im div { position: relative; aspect-ratio: 161 / 215; border-radius: var(--r12); overflow: hidden; }
+.w .im { padding: 8px; }
+.w .im div { position: relative; aspect-ratio: 3 / 4; border-radius: var(--r12); overflow: hidden; }
 .w .im img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
 .w:hover .im img { transform: scale(1.03); }
 .w .bd { position: absolute; top: 8px; right: 8px; display: inline-flex; align-items: center; gap: 2px; padding: 3px 8px; border-radius: 9999px; background: rgba(0, 0, 0, .45); color: var(--text-disable); font-size: 12px; font-weight: 500; backdrop-filter: blur(10px); }
@@ -384,11 +383,7 @@ dialog.player .miss[hidden] { display: none; }
         <div class="band" id="s-content">
           <section class="sec" aria-labelledby="h-content">
             <h2 id="h-content">전시콘텐츠</h2>
-            <div class="cards">
-              <a class="cc" href="#"><img src="assets/img/detail/opt/content.jpg" alt="" width="736" height="520" loading="lazy"><span><strong>비하인드</strong><small>5개</small></span></a>
-              <a class="cc" href="#"><img src="assets/img/detail/opt/content.jpg" alt="" width="736" height="520" loading="lazy"><span><strong>안내자료</strong><small>5개</small></span></a>
-              <a class="cc" href="#"><img src="assets/img/detail/opt/content.jpg" alt="" width="736" height="520" loading="lazy"><span><strong>안내자료</strong><small>5개</small></span></a>
-            </div>
+            <div class="cards" id="x-cards"></div>
           </section>
         </div>
 
@@ -455,7 +450,11 @@ dialog.player .miss[hidden] { display: none; }
 <script src="assets/blobdb.js"></script>
 <script src="assets/save.js"></script>
 <script src="assets/fade.js"></script>
+<script src="assets/demo-data.js"></script>
 <script>
+/* ---------- 전시 고르기: ?e=번호 (데모 전시 11개), ?id= 는 허브 미리보기, 둘 다 없으면 0번 ---------- */
+const DXI = (() => { const q = new URLSearchParams(location.search); if (q.get('id')) return null; const n = +q.get('e'); return Number.isInteger(n) && q.has('e') && DEMO.EXH[n] ? n : 0; })();
+const DX = DXI === null ? null : DEMO.EXH[DXI];
 /* ---------- 탭 (주소 ?tab= 과 연동) ---------- */
 const tabs = [...document.querySelectorAll('.tab')], panels = { intro: p('p-intro'), works: p('p-works'), reviews: p('p-reviews') };
 function p(id) { return document.getElementById(id); }
@@ -484,8 +483,9 @@ document.querySelector('.poster-col').addEventListener('dragstart', (e) => e.pre
 
 /* ---------- 좋아요 · 전시 저장 ---------- */
 const like = document.getElementById('like'), likeN = document.getElementById('like-n');
-like.addEventListener('click', () => { const on = like.getAttribute('aria-pressed') !== 'true'; like.setAttribute('aria-pressed', on); likeN.textContent = on ? 205 : 204; });
-SaveBtn.init(document.querySelectorAll('.save'), { kind: '전시', id: 'ex1' });
+const likeBase = DX ? DX.l : 204; likeN.textContent = likeBase;
+like.addEventListener('click', () => { const on = like.getAttribute('aria-pressed') !== 'true'; like.setAttribute('aria-pressed', on); likeN.textContent = on ? likeBase + 1 : likeBase; });
+SaveBtn.init(document.querySelectorAll('.save'), { kind: '전시', id: DX ? 'ex' + DXI : 'ex1' });
 
 /* ---------- 작품 (Figma 작품 탭: 5점) ---------- */
 /* 영상 작품은 사진 작품과 같은 목록·같은 카드. 영상은 목록에서 썸네일로 보이고 누르면 플레이어 창에서 재생(데모용 샘플 assets/sample-video.webm) */
@@ -647,6 +647,29 @@ if (PV) {
     if (v) v.src = url; else if (im) im.src = url;
   });
 }
+/* ---------- 데모 전시(?e=): 카드에서 들어온 전시의 값으로 채움 ---------- */
+if (DX) {
+  const dotD = (iso) => iso.replace(/-/g, '.');
+  const lines = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  document.title = `${DX.t} · Display U.`;
+  lines('x-title', DX.t); lines('x-org', `${DX.s} ${DX.ty}`);
+  lines('x-date', DX.start === DX.end ? dotD(DX.start) : `${dotD(DX.start)} - ${dotD(DX.end)}`);
+  lines('x-time', DX.time); lines('x-place', DX.p); lines('x-place2', DX.p);
+  lines('x-intro', DX.intro);
+  document.getElementById('x-addr').style.display = 'none';
+  document.getElementById('x-map').href = 'map.html?ex=' + DXI;
+  document.getElementById('x-notes').innerHTML = ['작품을 손으로 만지지 말아주세요.', '날짜별 운영 시간이 다를 수 있으니 방문 전 확인해주세요.'].map((t) => `<li><svg class="i" aria-hidden="true"><use href="#i-info"/></svg>${t}</li>`).join('');
+  lines('x-org2', DX.ty === '졸업 전시' ? `${DX.s} 졸업준비위원회` : DX.s);
+  document.getElementById('x-contact').closest('div').style.display = 'none';
+  document.getElementById('x-links').style.display = 'none';
+  /* 포스터: 한 장 */
+  document.getElementById('pr').innerHTML = `<div class="ps" aria-label="포스터 1 / 1"><img src="${DEMO.src(DX.img)}" alt="${DX.t} 포스터" fetchpriority="high"></div>`;
+  /* 전시 콘텐츠: 인스타 게시물 첫 표지(3:4) 3장 */
+  document.getElementById('x-cards').innerHTML = DX.cts.map((t, k) => `<a class="cc" href="#" aria-label="${t}"><div class="cv"><img src="${DEMO.cover(DX, k)}" alt="" width="600" height="800" loading="lazy"></div><strong>${t}</strong></a>`).join('');
+  /* 작품: 이 전시에 올라온 작품 */
+  const mine = DEMO.WORKS.filter((w) => w.e === DX.i);
+  document.getElementById('works').innerHTML = mine.length ? mine.map((w, i) => `<a class="w" href="work.html?w=${w.i}" style="--n:${i}"><div class="im"><div><img src="assets/img/explore/opt/${w.img}.jpg" alt="${w.t}" loading="lazy"><span class="bd"><svg class="i" aria-hidden="true"><use href="#i-heart"/></svg>${w.l}</span></div></div><div class="tx"><b>${w.t}</b><span>${Byline.html(w.a)}</span></div></a>`).join('') : '<p class="pv-empty">아직 올라온 작품이 없어요</p>';
+}
 /* 소개 더보기 */
 document.getElementById('x-more').querySelector('a').addEventListener('click', (e) => { e.preventDefault(); const l = document.getElementById('x-intro'); const on = l.classList.toggle('open'); e.currentTarget.firstChild.textContent = on ? '접기' : '더보기'; });
 if (PV && PV.intro && PV.intro.length < 90 && !/\n/.test(PV.intro)) document.getElementById('x-more').hidden = true;
@@ -656,8 +679,8 @@ if (PV && PV.intro && PV.intro.length < 90 && !/\n/.test(PV.intro)) document.get
   const pr = document.getElementById('pr'), vid = document.getElementById('pvid'), pp = document.getElementById('pp'), snd = document.getElementById('snd'), dots = document.getElementById('pthumbs');
   const vslide = vid ? vid.closest('.ps') : null;
   const slides = [...pr.children], reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const thumbSrc = PV ? pvSlides().map((x) => x.thumb) : ['assets/poster-shore-thumb.jpg', 'assets/img/detail/opt/poster.jpg', 'assets/img/detail/opt/gallery.jpg'];
-  const isVid = (i) => (PV ? slides[i].contains(vid) && !!vid : i === 0);
+  const thumbSrc = DX ? [DEMO.src(DX.img)] : PV ? pvSlides().map((x) => x.thumb) : ['assets/poster-shore-thumb.jpg', 'assets/img/detail/opt/poster.jpg', 'assets/img/detail/opt/gallery.jpg'];
+  const isVid = (i) => (DX ? false : PV ? slides[i].contains(vid) && !!vid : i === 0);
   dots.innerHTML = thumbSrc.map((t, i) => `<button type="button" class="thumb" role="listitem" aria-label="${isVid(i) ? '영상 포스터' : '포스터 ' + (i + 1)} 보기" ${i === 0 ? 'aria-current="true"' : ''}><img src="${t}" alt="" width="40" height="60">${isVid(i) ? '<span class="mk" aria-hidden="true"><svg class="i"><use href="#i-play"/></svg></span>' : ''}</button>`).join('');
   const db = [...dots.children];
   const pg = document.getElementById('ppager'), many = slides.length > 1;

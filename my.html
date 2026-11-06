@@ -222,6 +222,7 @@ dialog.modal::backdrop { background: rgba(0, 0, 0, .5); }
 .nav a:not([aria-current]):hover { transform: translateY(-2px); }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; } }
 </style>
+<script src="assets/demo-data.js"></script>
 <script src="assets/byline.js"></script>
 </head>
 <body>
@@ -352,8 +353,8 @@ function renderVault() {
   document.querySelectorAll('.seg button').forEach((b) => { const on = b.dataset.k === tab; b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1; });
   const list = data[tab], el = $('vault');
   if (!list.length) { el.innerHTML = `<p class="empty">${empties[tab]}</p>`; return; }
-  if (tab === 'exh') el.innerHTML = '<div class="grid">' + list.map((e, n) => `<a class="card ex" href="exhibition.html" style="--n:${Math.min(n, 10)}"><div class="im"><div><img src="${O}${e[5]}.jpg" alt="${e[0]} 포스터" width="161" height="241" loading="${n < 4 ? 'eager' : 'lazy'}"><span class="badge">${ic('i-heart')}${e[4]}</span></div></div><div class="tx"><b>${e[0]}</b><span class="l">${e[1]}</span><span class="m"><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14">${e[2]}</span><span class="m"><img src="assets/img/icon-location.svg" alt="" width="14" height="14">${e[3]}</span></div></a>`).join('') + '</div>';
-  else if (tab === 'works') el.innerHTML = '<div class="grid">' + list.map((w, n) => `<a class="card wk" href="work.html${w[1].length > 1 ? '?authors=' + w[1].length : ''}" style="--n:${Math.min(n, 10)}"><div class="im"><div><img src="${O}${w[3]}.jpg" alt="${w[0]}" width="161" height="215" loading="${n < 4 ? 'eager' : 'lazy'}"><span class="badge">${ic('i-heart')}${w[2]}</span></div></div><div class="tx"><b>${w[0]}</b><span class="l">${by(w[1])}</span></div></a>`).join('') + '</div>';
+  if (tab === 'exh') el.innerHTML = '<div class="grid">' + list.map((e, n) => `<a class="card ex" href="exhibition.html?e=${+e[5].slice(1) - 1}" style="--n:${Math.min(n, 10)}"><div class="im"><div><img src="${O}${e[5]}.jpg" alt="${e[0]} 포스터" width="161" height="241" loading="${n < 4 ? 'eager' : 'lazy'}"><span class="badge">${ic('i-heart')}${e[4]}</span></div></div><div class="tx"><b>${e[0]}</b><span class="l">${e[1]}</span><span class="m"><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14">${e[2]}</span><span class="m"><img src="assets/img/icon-location.svg" alt="" width="14" height="14">${e[3]}</span></div></a>`).join('') + '</div>';
+  else if (tab === 'works') el.innerHTML = '<div class="grid">' + list.map((w, n) => `<a class="card wk" href="work.html?w=${Math.max(0, DEMO.WORKS.findIndex((x) => x.img === w[3]))}" style="--n:${Math.min(n, 10)}"><div class="im"><div><img src="${O}${w[3]}.jpg" alt="${w[0]}" width="161" height="215" loading="${n < 4 ? 'eager' : 'lazy'}"><span class="badge">${ic('i-heart')}${w[2]}</span></div></div><div class="tx"><b>${w[0]}</b><span class="l">${by(w[1])}</span></div></a>`).join('') + '</div>';
   else el.innerHTML = '<ul class="artists">' + list.map((a, n) => `<li><a class="ar" href="artist.html" style="--n:${n}"><span class="avatar"><svg aria-hidden="true"><use href="#i-avatar"/></svg></span><span><b>${a[0]}</b><span>${a[1]}</span><span class="tag">${a[2]}</span></span>${ic('i-chev')}</a></li>`).join('') + '</ul>';
   $('vault').setAttribute('aria-labelledby', 's-' + (tab === 'exh' ? 'exh' : tab === 'works' ? 'wk' : 'ar'));
 }
