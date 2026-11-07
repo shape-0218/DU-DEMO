@@ -47,12 +47,13 @@
 .wgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 12px; padding-bottom: 32px; }
 @media (min-width: 640px) { .wgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (min-width: 900px) { .wgrid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; } }
-.wc { position: relative; padding: 6px 6px 12px; border-radius: var(--r12); background: #000; color: #fff; cursor: pointer; transition: transform .3s var(--ease); touch-action: manipulation; }
+/* 11-08 Figma `Card / 작품` 2152:35390 대조: 높이 276 = 사진 영역 229 + 제목 20 + 작가 17 + 아래 10 (제목은 사진 아래 6, 제목↔작가 0) */
+.wc { position: relative; padding: 6px 6px 10px; border-radius: var(--r12); background: #000; color: #fff; cursor: pointer; transition: transform .3s var(--ease); touch-action: manipulation; }
 @media (hover: hover) { .wc:hover { transform: translateY(-2px); } }
 .wc .im { position: relative; aspect-ratio: 3 / 4; border-radius: 8px; overflow: hidden; background: #222; }
 .wc .im img { width: 100%; height: 100%; object-fit: cover; }
-.wc h3 { margin-top: 10px; padding: 0 6px; font-size: 14px; font-weight: 600; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.wc p { margin-top: 2px; padding: 0 6px; font-size: 12px; font-weight: 500; color: rgba(255,255,255,.8); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wc h3 { margin-top: 6px; padding: 0 6px; font-size: 14px; font-weight: 600; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wc p { margin-top: 0; padding: 0 6px; font-size: 12px; font-weight: 500; color: rgba(255,255,255,.8); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .wc .more { position: absolute; right: 8px; top: 8px; z-index: 2; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 9999px; background: rgba(255,255,255,.4); color: #fff; backdrop-filter: blur(6px); transition: background .2s; }
 @media (hover: hover) { .wc .more:hover { background: rgba(255,255,255,.6); } }
 .wc .more .i { width: 18px; height: 18px; }
@@ -73,8 +74,9 @@
 
 /* 전시 콘텐츠: 섹션 행 */
 .slist { margin-top: 0; }
-.srow { position: relative; display: grid; grid-template-columns: 80px minmax(0, 1fr) 24px; column-gap: 16px; align-items: stretch; padding: 16px 0; border-bottom: 1px solid var(--bg-teritary); text-align: left; width: 100%; cursor: pointer; }
-.srow .th { width: 80px; height: 100px; border-radius: var(--r12); overflow: hidden; background: var(--bg-secondary); display: grid; place-items: center; color: var(--text-primary); }
+.srow { position: relative; display: grid; grid-template-columns: 96px minmax(0, 1fr) 20px; column-gap: 16px; align-items: stretch; padding: 16px 0; border-bottom: 1px solid var(--bg-teritary); text-align: left; width: 100%; cursor: pointer; }
+/* 11-08 Figma `Card / 콘텐츠 섹션`: 대표 이미지 96×96 · 반경 12 · 글자 x112 */
+.srow .th { width: 96px; height: 96px; border-radius: var(--r12); overflow: hidden; background: var(--bg-secondary); display: grid; place-items: center; color: var(--text-primary); }
 .srow .th img { width: 100%; height: 100%; object-fit: cover; }
 .srow .th .i { width: 22px; height: 22px; }
 .srow .tx { display: flex; flex-direction: column; min-width: 0; }
@@ -83,7 +85,7 @@
 .srow .ct { margin-top: auto; font-size: 12px; font-weight: 500; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
 .srow .ch { align-self: center; width: 20px; height: 20px; transition: transform .3s var(--ease); }
 @media (hover: hover) { .srow:hover .ch { transform: translateX(3px); } }
-.slist.edit .srow { cursor: grab; touch-action: none; user-select: none; grid-template-columns: 80px minmax(0, 1fr) 44px; }
+.slist.edit .srow { cursor: grab; touch-action: none; user-select: none; grid-template-columns: 96px minmax(0, 1fr) 44px; }
 .slist.edit .ch { display: none; }
 .srow .ed { display: none; align-self: center; justify-content: flex-end; gap: 8px; }
 .slist.edit .srow .ed { display: flex; flex-direction: column; align-items: center; gap: 12px; }
@@ -95,7 +97,13 @@
 .slist + .addbtn { margin-top: 20px; margin-bottom: 32px; }
 
 /* 섹션 편집 */
-.sec-f .field:first-child { margin-top: 20px; }
+/* 11-08 Figma `섹션 · 편집` 2149:37115 대조: 제목→첫 라벨 52 · 입력 줄 47(라벨과 4) · 입력 사이 24 · 설명 칸 128 · 글자 수 위 8 · 사진 영역은 입력 아래 12, 도구 줄 44, 타일 114 간격 10. 공통 .field/.ul/.ta는 다른 입력 화면과 같이 쓰므로 이 화면 안에서만 */
+.sec-f .field { margin-top: 24px; }
+.sec-f .field:first-child { margin-top: 12px; }
+.sec-f .ul { margin-top: 4px; height: 47px; }
+.sec-f .cnt-r { margin-top: 8px; color: var(--text-teritary); }
+.sec-f .ptool { margin-top: 12px; height: 44px; }
+.sec-f .pgrid { margin-top: 4px; gap: 10px; }
 .ptool { display: flex; align-items: center; justify-content: space-between; margin-top: 28px; }
 .ptool b { font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .ptool .note { font-size: 12px; font-weight: 500; color: var(--text-secondary); }

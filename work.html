@@ -610,6 +610,8 @@ let comments = [
   { id: 2, name: '탈퇴한 회원', gone: true, date: '7시간', likes: 12 },
   { id: 3, name: 'User name', date: '3시간', likes: 12, mine: true }
 ];
+if (new URLSearchParams(location.search).get('cmdel') === 'admin') comments[0].deleted = 'admin';   // 확인용: 관리자가 지운 댓글(Figma 삭제된 댓글 2643:29821). 사용자가 지운 것은 deleted = true
+const goneText = (c) => c.deleted === 'admin' ? '운영 정책에 따라 삭제된 댓글이에요' : '삭제된 댓글이에요';
 const expanded = new Set();
 function item(c, reply) {
   const imgs = c.imgs ? c.imgs : c.photos ? Array.from({ length: c.photos }, () => 'assets/img/detail/opt/gallery.jpg') : [];
@@ -637,7 +639,7 @@ function repliesOf(c) {
   return `<ul class="rl">${list.map((r) => item({ ...r, id: c.id + '-r' }, true)).join('')}</ul>${btn}`;
 }
 function renderComments() {
-  document.getElementById('cm-list').innerHTML = comments.map((c) => c.deleted ? `<li class="cm" data-id="${c.id}"><p class="gone-note">삭제된 댓글이에요</p>${repliesOf(c)}</li>` : item(c)).join('');
+  document.getElementById('cm-list').innerHTML = comments.map((c) => c.deleted ? `<li class="cm" data-id="${c.id}"><p class="gone-note">${goneText(c)}</p>${repliesOf(c)}</li>` : item(c)).join('');
   comments.forEach((c) => { delete c.fresh; });
 }
 renderComments();

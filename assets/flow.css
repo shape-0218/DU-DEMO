@@ -41,7 +41,7 @@ img { display: block; }
 .page { width: 100%; max-width: 480px; min-height: 100dvh; margin-inline: auto; padding: max(8px, env(safe-area-inset-top)) var(--gx) 0; display: flex; flex-direction: column; }
 @media (min-width: 768px) { :root { --gx: 32px; } .page { max-width: 672px; padding-top: 40px; } .chips { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
 @media (min-width: 900px) { :root { --gx: 40px; } .page.wide { max-width: 1160px; } .page.wide .bar h1 { font-size: 24px; } }
-.bar { display: flex; align-items: center; gap: 4px; height: 56px; margin-left: -8px; flex: none; }
+.bar { display: flex; align-items: center; gap: 2px; height: 56px; margin-left: -10px; flex: none; }   /* 11-08 Figma `title`: 뒤로가기 아이콘(24)이 x20, 제목이 x56 → 누르는 영역 44는 x10~54 */
 .bar .back { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 9999px; transition: background .2s; }
 @media (hover: hover) { .bar .back:hover { background: var(--bg-secondary); } }
 .bar h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.03em; } /* 11-07 Figma 대조(확인 후 적용): Q1 제목 20은 DS title(Bold) */

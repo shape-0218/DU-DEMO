@@ -31,22 +31,22 @@
 .work, .tile { display: block; width: 100%; text-align: left; border: 1px solid var(--border-primary); border-radius: var(--r12); background: #fff; transition: border-color .2s, transform .3s var(--ease); }
 @media (hover: hover) { .work:hover, .tile:hover { border-color: #a1a1aa; } }
 .work:active, .tile:active { transform: scale(.995); }
-.work { margin-top: 20px; padding: 18px 16px; }
-.hd { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600; }
+.work { margin-top: 20px; padding: 20px; }   /* 11-08 Figma `Card / 전시 작업` 1829:15035: 안쪽 여백 20 · 제목 줄↔통계 16 · 통계 칸 152 + 구분선 1 + 둘째 칸 왼쪽 16 */
+.hd { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
 .hd .i { width: 24px; height: 24px; stroke-width: 1.6; }
 .hd .ch { margin-left: auto; width: 18px; height: 18px; transition: transform .3s var(--ease); }
 @media (hover: hover) { .work:hover .ch, .tile:hover .ch { transform: translateX(3px); } }
-.stats { display: grid; grid-template-columns: 1fr 1fr; margin-top: 16px; }
-.stats > div { padding-left: 4px; }
-.stats > div + div { padding-left: 16px; border-left: 1px solid var(--border-primary); }
-.stats small { display: block; font-size: 14px; font-weight: 500; } /* 11-07 Figma 대조 */
+.stats { display: grid; grid-template-columns: 1fr 1fr; align-items: center; min-height: 48px; margin-top: 16px; }
+.stats > span + span { padding-left: 16px; border-left: 1px solid var(--border-primary); }   /* 마크업이 span(버튼 안)이라 div 선택자로는 구분선·여백이 안 붙고 있었음 */
+@media (max-width: 899px) { .stats { grid-template-columns: 152px 1fr; } }
+.stats small { display: block; margin-bottom: 2px; font-size: 14px; font-weight: 500; } /* 11-07 Figma 대조 */
 .stats strong { font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .stats strong + span { font-size: 14px; font-weight: 500; margin-left: 2px; }
 .none { margin-top: 14px; padding-left: 34px; font-size: 14px; font-weight: 500; color: var(--text-secondary); }
 .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
 .tile { padding: 16px; }
 .tile .hd { gap: 8px; }
-.tile .hd .i { width: 22px; height: 22px; }
+.tile .hd .i { width: 24px; height: 24px; }   /* 11-08 Figma 팀원 관리·기본 정보 줄: 아이콘 24 + 간격 8 → 글자 x69 */
 .tile .ch { margin-left: auto; width: 16px; height: 16px; color: var(--text-teritary); }
 .tile ul { margin-top: 14px; display: grid; gap: 4px; font-size: 14px; font-weight: 400; color: var(--text-secondary); }
 .tile .pend { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: var(--text-primary); }

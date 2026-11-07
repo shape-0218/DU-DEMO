@@ -125,11 +125,11 @@ img { display: block; }
 }
 
 /* 요약 */
-.summary { padding: 28px var(--pad) 20px; display: grid; gap: 20px; }
-@media (min-width: 900px) { .summary { padding-inline: 0; padding-top: 0; } }
+.summary { padding: 24px var(--pad) 24px; display: grid; gap: 20px; }   /* 11-08 Figma `전시 상세 · 작품 탭` 3245:37135 대조: 정보 카드 위 24 · 아래(링크 줄 뒤) 24 → 탭 줄 y792 */
+@media (min-width: 900px) { .summary { padding-inline: 0; padding-top: 0; padding-bottom: 20px; } }
 .title-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
 .title-row h1 { font-size: 20px; line-height: 1.4; font-weight: 700; letter-spacing: -0.03em; text-wrap: balance; }
-.title-row p { margin-top: 2px; color: var(--text-secondary); }
+.title-row p { margin-top: 4px; color: var(--text-secondary); }
 .like { display: grid; justify-items: center; gap: 0; min-width: 28px; color: var(--text-primary); font-size: 12px; font-weight: 500; transition: transform .25s var(--ease); }
 .like:active { transform: scale(.92); }
 .like span { color: var(--text-secondary); }
@@ -163,17 +163,18 @@ img { display: block; }
 @media (hover: hover) { .btn-icon:hover { background: var(--bg-soft); } }
 
 /* 탭 */
-.tabs { position: sticky; top: var(--top); z-index: 20; display: flex; gap: 8px; padding: 0 calc(var(--pad) - 16px); background: var(--bg-white); border-bottom: 1px solid var(--bg-soft); }   /* 11-07 점검: 첫 탭 글자를 본문 시작선(20)에 맞춤 */
+.tabs { position: sticky; top: var(--top); z-index: 20; display: flex; gap: 8px; padding: 0 calc(var(--pad) - 16px); background: var(--bg-white); box-shadow: inset 0 -1px 0 var(--bg-soft); }   /* 11-07 점검: 첫 탭 글자를 본문 시작선(20)에 맞춤 · 11-08 Figma `tab-bar` 높이 48(아래 선 1px 안쪽 포함)이라 border 대신 안쪽 선 */
 @media (min-width: 900px) { .tabs { padding-inline: 0; margin-left: -8px; top: 64px; } }
 .tab { position: relative; height: 48px; padding: 0 16px; font-weight: 600; color: var(--text-teritary); transition: color .2s; }
 @media (hover: hover) { .tab:hover { color: var(--text-primary); } }
 .tab[aria-selected="true"] { color: var(--text-primary); }
-.tab[aria-selected="true"]::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: -1px; height: 2px; background: var(--text-primary); }
+.tab[aria-selected="true"]::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: 0; height: 2px; background: var(--text-primary); }
 .panel { padding-bottom: 40px; }
 .panel[hidden] { display: none; }
 .sec { padding: 36px var(--pad) 0; }
 @media (min-width: 900px) { .sec { padding-inline: 0; } .band .sec, .band > .sec { padding-inline: 0; } }
 .sec:has(> h2.sr) { padding-top: 20px; }
+#p-works .sec:has(> h2.sr) { padding-top: 24px; }   /* 11-08 Figma: 탭 줄 아래 작품 카드까지 36 */
 .sec > h2.sr + * { margin-top: 0; }
 .sec h2 { font-size: 20px; line-height: 1.4; font-weight: 700; letter-spacing: -0.03em; }
 .sec .lead { margin-top: 8px; color: var(--text-secondary); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-wrap: pretty; }
@@ -236,7 +237,7 @@ img { display: block; }
 .w { display: block; background: #000; border-radius: var(--r12); overflow: hidden; color: var(--text-quaternary); transition: transform .3s var(--ease); animation: rise .6s var(--ease) backwards; animation-delay: calc(var(--n, 0) * 50ms); }
 @keyframes rise { from { opacity: 0; transform: translateY(12px); } }
 .w:active { transform: scale(.98); }
-.w .im { padding: 8px; }
+.w .im { padding: 8px 8px 0; }
 .w .im div { position: relative; aspect-ratio: 3 / 4; border-radius: var(--r12); overflow: hidden; }
 .w .im img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
 @media (hover: hover) { .w:hover .im img { transform: scale(1.03); } }
@@ -247,7 +248,8 @@ img { display: block; }
 @media (hover: hover) { .w:hover .play { transform: scale(1.08); background: rgba(0, 0, 0, .7); } }
 .w .dur { position: absolute; left: 8px; bottom: 8px; padding: 2px 7px; border-radius: 6px; background: rgba(0, 0, 0, .55); color: #fff; font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; }
 .w .dur[hidden] { display: none; }
-.w .tx { padding: 0 12px 12px; }
+.w .tx { padding: 12px 12px 12px; }   /* 11-08 Figma `Card / 작품 · 검정`: 사진 아래 12 · 제목↔작가 2 · 아래 12 → 카드 283 */
+.w .tx > span { margin-top: 2px; }
 dialog.player { width: min(960px, 94vw); max-height: 92vh; padding: 0; border: 0; border-radius: var(--r16); background: #000; overflow: hidden; color: #fff; }
 dialog.player::backdrop { background: rgba(0, 0, 0, .72); }
 dialog.player video { display: block; width: 100%; max-height: 82vh; background: #000; }
@@ -621,6 +623,8 @@ let comments = [
   { id: 2, name: '탈퇴한 회원', gone: true, date: '7시간', likes: 12 },
   { id: 3, name: '민재', date: '3시간', likes: 12, mine: true }
 ];
+if (new URLSearchParams(location.search).get('cmdel') === 'admin') comments[0].deleted = 'admin';   // 확인용: 관리자가 지운 댓글(Figma 삭제된 댓글 2643:29821). 사용자가 지운 것은 deleted = true
+const goneText = (c) => c.deleted === 'admin' ? '운영 정책에 따라 삭제된 댓글이에요' : '삭제된 댓글이에요';
 const expanded = new Set();
 
 function item(c, reply) {
@@ -650,7 +654,7 @@ function repliesOf(c) {
 }
 function renderComments() {
   document.getElementById('cm-list').innerHTML = comments.map((c) => {
-    if (c.deleted) return `<li class="cm" data-id="${c.id}"><p class="gone-note">삭제된 댓글이에요</p>${repliesOf(c)}</li>`;
+    if (c.deleted) return `<li class="cm" data-id="${c.id}"><p class="gone-note">${goneText(c)}</p>${repliesOf(c)}</li>`;
     return item(c);
   }).join('');
   comments.forEach((c) => { delete c.fresh; });
