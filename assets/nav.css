@@ -1,0 +1,13 @@
+/* 하단 메뉴(넷바) 페이지 전환 (11-07): 홈·탐색·마이는 서로 다른 페이지지만 브라우저의 "페이지 전환 효과"(View Transitions)로
+   메뉴는 제자리에 두고 불(조명)만 이전 탭 자리에서 새 탭으로 이어서 움직이게 함. 둘 다 이 규칙을 켠 페이지끼리 넘어갈 때만 적용.
+   지원 안 하는 브라우저는 assets/nav.js가 대신 움직임을 줌. 움직임 줄이기 설정이면 꺼짐 */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+}
+.nav { view-transition-name: navbar; }                              /* 메뉴 자체: 아이콘 켜짐·꺼짐이 겹쳐서 바뀜 */
+.nav img.bar, .nav img.bar-i { view-transition-name: navlamp; }      /* 불: 페이지마다 하나뿐이라 브라우저가 같은 것으로 보고 이동시킴 */
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: .14s; }   /* 나머지 화면은 짧게 겹쳐 넘김 */
+::view-transition-old(navbar), ::view-transition-new(navbar) { animation-duration: .32s; }
+::view-transition-group(navlamp) { animation-duration: .46s; animation-timing-function: cubic-bezier(.16, 1, .3, 1); }
+::view-transition-old(navlamp) { display: none; }                    /* 같은 그림이라 겹쳐 흐려지지 않게 새 것만 움직임 */
+::view-transition-new(navlamp) { animation: none; opacity: 1; }

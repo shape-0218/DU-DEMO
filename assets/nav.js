@@ -5,6 +5,8 @@
    - 누른 뒤 새 페이지가 뜨는 시간만큼 지연 없이 바로 이동(페이지를 막지 않음). 움직임 줄이기 설정이면 바로 자리만 바뀜
    - 노트북에서 폭이 바뀌면(리사이즈) 불 자리를 다시 맞춤 */
 (() => {
+  /* 브라우저가 페이지 전환 효과(View Transitions, assets/nav.css)를 지원하면 거기서 불이 움직이므로 이 파일은 할 일 없음 */
+  if ('CSSViewTransitionRule' in window) return;
   const pill = document.querySelector('.nav .pill'); if (!pill) return;
   const links = [...pill.querySelectorAll('a')]; if (!links.length) return;
   const KEY = 'du.nav';
