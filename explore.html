@@ -97,7 +97,7 @@ img { display: block; }
 .sortbtn[aria-expanded="true"] .i { transform: rotate(180deg); }
 
 /* 목록 */
-.grid { margin-top: 12px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.grid { margin-top: 12px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 12px; }   /* 11-08 Figma: 카드 사이 가로 12 · 세로 16 */
 @media (min-width: 640px)  { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
 @media (min-width: 1000px) { .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 @media (min-width: 1280px) { .grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
@@ -112,12 +112,13 @@ img { display: block; }
 @media (hover: hover) { .card:hover .im img { transform: scale(1.03); } }
 .badge { position: absolute; top: 8px; right: 8px; display: inline-flex; align-items: center; gap: 2px; padding: 3px 8px; border-radius: 9999px; background: rgba(255, 255, 255, .72); color: var(--text-primary); font-size: 12px; font-weight: 500; backdrop-filter: blur(10px); }
 .badge .i { width: 13px; height: 13px; }
-.tx { padding: 2px 12px 12px; display: grid; gap: 2px; }
+.tx { padding: 0 12px 10px; display: grid; gap: 0; }   /* 11-08 Figma `card`: 글자 영역 위 0 · 제목↔학교 0 · 학교↔날짜 4 · 날짜↔장소 2 · 아래 10 → 전시 카드 342 / 작품 카드 276 */
 .tx b { font-size: 14px; font-weight: 600; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tx .l { font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tx .m { display: flex; align-items: center; gap: 3px; font-size: 12px; font-weight: 500; color: #a1a1aa; white-space: nowrap; overflow: hidden; }
 .tx .m img { width: 14px; height: 14px; flex: none; }
-.tx .m:first-of-type { margin-top: 6px; }
+.tx .l + .m { margin-top: 4px; }   /* 첫 .m은 span 중 두 번째라 :first-of-type이 안 먹던 것을 .l 바로 뒤로 */
+.tx .m + .m { margin-top: 2px; }
 .empty { padding: 120px 0 80px; text-align: center; }
 .empty strong { display: block; font-size: 16px; font-weight: 600; }
 .empty p { margin-top: 6px; color: var(--text-secondary); }

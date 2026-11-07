@@ -12,14 +12,14 @@
 /* 전시 등록 전용: 진행 막대 · 포스터 · 달력 · 시간 · 주소 검색 */
 .prog { margin-top: 4px; }
 .prog .pl { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; }
-.prog .pl span { font-weight: 500; font-variant-numeric: tabular-nums; }
+.prog .pl span { font-weight: 500; font-variant-numeric: tabular-nums; color: var(--text-secondary); }   /* 11-08 Figma "1 / 2" text/secondary */
 .segs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; margin-top: 8px; }
 .segs i { height: 4px; border-radius: 9999px; background: #e4e4e7; transition: background .4s var(--ease); }
 .segs i.on { background: var(--text-primary); }
 
 .pf { margin-top: 24px; }
 .pf-empty { display: flex; gap: 16px; align-items: flex-start; }
-.add { flex: none; width: 96px; height: 120px; display: grid; place-content: center; justify-items: center; gap: 8px; border: 1px solid var(--border-primary); border-radius: var(--r12); font-size: 12px; font-weight: 500; transition: background .2s; }
+.add { flex: none; width: 96px; height: 120px; display: grid; place-content: center; justify-items: center; gap: 8px; border: 1px solid var(--border-primary); border-radius: var(--r12); font-size: 12px; font-weight: 500; color: var(--text-secondary); transition: background .2s; }
 @media (hover: hover) { .add:hover { background: var(--bg-secondary); } }
 .add .i { width: 28px; height: 28px; stroke-width: 1.6; }
 .pf-empty .tx { padding-top: 2px; }

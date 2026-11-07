@@ -75,7 +75,7 @@
 .errbox b { display: block; font-size: 14px; font-weight: 600; color: var(--notice); }
 .errbox span { display: block; font-size: 12px; font-weight: 500; color: var(--text-secondary); }
 .errbox button { margin-left: auto; flex: none; height: 32px; padding: 0 12px; border-radius: 8px; background: #fff; font-size: 12px; font-weight: 600; }
-.two-c { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.two-c { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }   /* 11-08 안쪽 입력의 최소 폭 때문에 왼쪽 칸이 넓어지던 것(재료/매체 x221)을 Figma x213(칸 169)로 */
 .opt-i { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
 .chips { margin-top: 8px; }
 .ta.tall { height: 128px; }
