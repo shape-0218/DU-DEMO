@@ -1,12 +1,13 @@
 /* 프로필 사진 칸 (11-08 Figma 확정 `Profile Photo`)
    - 기본 프로필 = 원(80), 작가 프로필 = 둥근 사각 116×132 · 반경 12
    - 사진이 있으면 오른쪽 아래에 연필 배지(흰 원 32 + 선). 사진을 누르면 사진 아래 작은 팝업 메뉴: "사진 변경" / 빨간 "삭제" (`manage.html` 더보기 메뉴와 같은 모양)
-   - 사진이 없으면 틀·선·기본 이미지 없이 연필 배지만 있고, 누르면 바로 사진 고르기
+   - 사진이 없으면 승인된 추가 타일 규칙(Figma `Photo Upload`·`Poster Upload`와 같음)의 상자: 흰 바탕 + 1px 선(border/primary) + 반경 12(원형은 원) + 가운데 플러스(24) + "사진 추가"(12/500, 간격 4). 상자 어디를 눌러도 바로 사진 고르기 (기본 이미지·연필 배지 없음. 공개 프로필 화면에서는 사진이 없으면 칸 자체가 없음)
    - 사진 아래 안내 문구 없음 · 조정 화면은 확대 막대 없이 끌기 + 두 손가락 핀치(폰) · 터치패드 핀치/휠(웹) · +/− 키
    사용: root.innerHTML = PhotoPick.html('circle'|'rect', src); PhotoPick.bind(root, { kind, onDone(dataUrl) })   (삭제하면 onDone(''))
    결과는 틀에 맞게 잘라 낸 작은 JPEG(폭 360)라서 저장소에 넣어도 가벼움 */
 const PhotoPick = (() => {
   const R = { circle: 1, rect: 116 / 132 };
+  const PLUS = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 4v16M4 12h16"/></svg>';
   const PEN = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m4 20 1-4L16.5 4.5a2 2 0 0 1 3 3L8 19z"/><path d="m14.5 6.5 3 3"/></svg>';
   const css = `
 .pp { position: relative; display: block; width: var(--w); height: var(--h); margin-inline: auto; }
@@ -19,7 +20,9 @@ const PhotoPick = (() => {
 .pp-badge::after { content: ""; position: absolute; inset: -6px; }
 .pp-badge svg { width: 16px; height: 16px; }
 .pp-b:active .pp-badge { transform: scale(.94); }
-.pp.empty .pp-badge { right: auto; bottom: auto; left: 50%; top: 50%; margin: -16px 0 0 -16px; }
+.pp.empty .pf { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; background: #fff; color: #18181b; box-shadow: inset 0 0 0 1px #d4d4d8; }
+.pp.empty .pf svg { width: 24px; height: 24px; }
+.pp.empty .pf .pp-lab { font-size: 12px; font-weight: 500; line-height: 1.4; color: #3f3f47; }
 .pp-pop { position: absolute; z-index: 30; top: calc(100% + 8px); right: 0; width: 164px; padding: 6px 0; background: #fff; border: 1px solid #d4d4d8; border-radius: 12px; box-shadow: 0 12px 32px rgba(0, 0, 0, .12); animation: ppPop .2s var(--ease, ease); }
 .pp-pop button { display: block; width: 100%; height: 44px; padding: 0 16px; font-size: 14px; font-weight: 500; text-align: left; transition: background .15s; }
 .pp-pop button:hover { background: #f4f4f5; }
@@ -40,7 +43,7 @@ dialog.pc[open] { display: flex; flex-direction: column; animation: pcIn .25s cu
 
   function html(kind, src) {
     const w = kind === 'circle' ? 80 : 116, h = Math.round(w / R[kind]);
-    return `<div class="pp${src ? '' : ' empty'}" data-pp="${kind}" style="--w:${w}px;--h:${h}px;--r:${kind === 'circle' ? '50%' : '12px'}"><button type="button" class="pp-b" aria-label="${src ? '프로필 사진 편집' : '프로필 사진 등록'}" aria-haspopup="${src ? 'menu' : 'false'}">${src ? `<span class="pf"><img src="${src}" alt=""></span>` : ''}<span class="pp-badge">${PEN}</span></button><input type="file" accept="image/&#42;" hidden></div>`;
+    return `<div class="pp${src ? '' : ' empty'}" data-pp="${kind}" style="--w:${w}px;--h:${h}px;--r:${kind === 'circle' ? '50%' : '12px'}"><button type="button" class="pp-b" aria-label="${src ? '프로필 사진 편집' : '프로필 사진 등록'}" aria-haspopup="${src ? 'menu' : 'false'}">${src ? `<span class="pf"><img src="${src}" alt=""></span><span class="pp-badge">${PEN}</span>` : `<span class="pf">${PLUS}<span class="pp-lab">사진 추가</span></span>`}</button><input type="file" accept="image/&#42;" hidden></div>`;
   }
 
   let dlg;
