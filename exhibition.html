@@ -19,6 +19,8 @@
   --bg-soft: #f0f0f3;
   --bg-white: #fff;
   --bg-black: #000;
+  --bg-secondary: #f4f4f5;
+  --r8: 8px;
   --r12: 12px;
   --r16: 16px;
   --r20: 20px;
@@ -297,8 +299,62 @@ dialog.player .miss[hidden] { display: none; }
 .bar .btn-primary .i { width: 16px; height: 16px; } /* 11-07 Figma 위치 대조: 저장 아이콘 16(Figma) */
 @media (min-width: 900px) { .bar { display: none; } }
 .bar[hidden] { display: none; }
-.rfield { flex: 1; display: flex; align-items: center; min-height: 48px; padding: 0 16px; border-radius: var(--r12); background: var(--bg-soft); }
-.rfield input { flex: 1; min-width: 0; height: 48px; border: 0; outline: 0; background: none; font: inherit; font-size: 16px; }
+.bar-gb { display: block; padding: 16px var(--pad) max(16px, env(safe-area-inset-bottom)); border-top-color: var(--bg-secondary); }
+/* 후기 입력(11-07 확정, 작품 상세 방명록 입력과 같은 규칙·같은 모양, Figma `Bar / 후기 입력`): 그림은 단독(연필 → 그리기 화면 → 보내기, 붙이는 단계 없음), 글과 사진은 함께.
+   글을 쓰거나 사진을 붙이면 연필이 사라지고 사진 아이콘은 남음. 보내기는 내용이 있을 때만 나타나는 검은 원 32(누르는 영역 40). 사진 4장까지(임시) */
+.gbc { display: flex; flex-direction: column; background: var(--bg-secondary); border-radius: var(--r12); overflow: hidden; }
+.gbc:focus-within { outline: 2px solid var(--text-primary); outline-offset: 1px; }
+.gbc-att { display: flex; gap: 8px; padding: 12px 12px 0; }
+.gbc-att:empty { display: none; }
+.gbc-th { position: relative; flex: none; width: 64px; height: 80px; border-radius: var(--r8); overflow: hidden; background: #e4e4e7 center / cover no-repeat; animation: gbcIn .18s var(--ease) both; }
+.gbc-th button { position: absolute; top: 4px; right: 4px; width: 20px; height: 20px; border-radius: 9999px; background: var(--text-primary); color: #fff; display: grid; place-items: center; }
+.gbc-th button::before { content: ""; position: absolute; inset: -12px; }
+.gbc-th .i { width: 12px; height: 12px; stroke-width: 2.4; }
+@keyframes gbcIn { from { opacity: 0; transform: scale(.88); } }
+.gbc-row { display: flex; align-items: center; min-height: 48px; padding: 0 4px 0 16px; }
+.gbc-row.multi { align-items: flex-end; padding-bottom: 4px; }
+.gbc textarea { flex: 1; min-width: 0; height: 46px; max-height: 114px; padding: 12px 0; border: 0; outline: 0; resize: none; background: none; color: var(--text-primary); font: 400 16px/1.4 var(--font); letter-spacing: -0.03em; overflow-y: auto; scrollbar-width: none; }
+.gbc textarea::-webkit-scrollbar { display: none; }
+.gbc textarea::placeholder { color: var(--text-teritary); }
+.gbc-tools { display: flex; flex: none; }
+.gbc-tools button { position: relative; flex: none; width: 40px; height: 40px; display: grid; place-items: center; border-radius: var(--r8); overflow: visible; color: var(--text-primary); transition: background .2s, transform .16s var(--ease), width .2s var(--ease), opacity .14s; }
+.gbc.solo-off .gbc-tools .pen { width: 0; opacity: 0; visibility: hidden; pointer-events: none; overflow: hidden; transition: width .2s var(--ease), opacity .14s, visibility 0s .2s; }
+.gbc-tools button::before { content: ""; position: absolute; inset: -4px 0; }
+.gbc-tools button:hover { background: #e4e4e7; }
+.gbc-tools button:active { transform: scale(.94); }
+.gbc-tools button:disabled { opacity: .4; pointer-events: none; }
+.gbc-tools .i { width: 24px; height: 24px; }
+.gbc-send { flex: none; width: 0; height: 40px; overflow: hidden; display: grid; place-items: center; opacity: 0; transform: scale(.7); visibility: hidden; transition: width .2s var(--ease), opacity .16s, transform .2s var(--ease), visibility 0s .2s; }
+.gbc.can-send .gbc-send { width: 40px; opacity: 1; transform: none; visibility: visible; transition: width .2s var(--ease), opacity .16s, transform .2s var(--ease), visibility 0s; }
+.gbc-send .sg { width: 32px; height: 32px; border-radius: 9999px; background: var(--text-primary); color: #fff; display: grid; place-items: center; transition: transform .16s var(--ease); }
+.gbc-send:active .sg { transform: scale(.94); }
+.gbc-send .i { width: 18px; height: 18px; stroke-width: 2; }
+.cm.fresh { animation: gbcCm .42s var(--ease) both; }
+@keyframes gbcCm { from { opacity: 0; transform: translateY(-10px); } }
+/* 그리기 화면 (Figma `작품 상세 · 방명록 그리기 (초안)` 3461:526) */
+dialog.sk { width: 100%; max-width: none; height: 100%; max-height: none; margin: 0; padding: 0; border: 0; background: #fff; color: var(--text-primary); }
+dialog.sk[open] { display: flex; flex-direction: column; animation: skIn .3s var(--ease) both; }
+@keyframes skIn { from { opacity: 0; transform: translateY(16px); } }
+.sk-h { flex: none; display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 var(--pad); margin-top: env(safe-area-inset-top); }
+.sk-h h2 { font-size: 16px; font-weight: 600; }
+.sk-h button { height: 44px; font-size: 16px; font-weight: 500; color: var(--text-secondary); }
+.sk-h .ok { font-weight: 600; color: var(--text-primary); }
+.sk-w { flex: 1; min-height: 0; display: flex; padding: 8px var(--pad) 0; }
+.sk-cv { position: relative; flex: 1; border: 1px solid var(--border-primary); border-radius: var(--r12); background: #fff; overflow: hidden; touch-action: none; }
+.sk-cv canvas { position: absolute; inset: 0; width: 100%; height: 100%; cursor: crosshair; }
+.sk-t { flex: none; display: flex; align-items: center; padding: 16px var(--pad) max(34px, env(safe-area-inset-bottom)); }
+.sk-t .sw { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 9999px; box-shadow: inset 0 0 0 0 var(--text-primary); transition: box-shadow .16s var(--ease); }
+.sk-t .sw[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--text-primary); }
+.sk-t .sw i { width: 28px; height: 28px; border-radius: 9999px; background: var(--c); }
+.sk-t .gap { flex: 1; }
+.sk-t .undo { width: 40px; height: 40px; display: grid; place-items: center; border: 1px solid var(--border-primary); border-radius: var(--r12); color: var(--text-primary); transition: background .2s, transform .16s var(--ease); }
+.sk-t .undo:hover { background: var(--bg-secondary); } .sk-t .undo:active { transform: scale(.94); }
+.sk-t .i { width: 24px; height: 24px; }
+@media (min-width: 900px) { dialog.sk { width: 480px; height: min(760px, 92vh); margin: auto; border-radius: 20px; box-shadow: 0 5px 50px rgba(0, 0, 0, .12); } dialog.sk::backdrop { background: rgba(0, 0, 0, .42); } .sk-h, .sk-w, .sk-t { padding-inline: 20px; } }
+dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
+.gb-compose { display: none; margin-top: 12px; }
+@media (min-width: 900px) { .gb-compose { display: block; } .bar-gb { display: none; } }   /* 노트북은 하단 바 대신 후기 목록 아래에 입력창. .bar-gb 기본 규칙 뒤에 둬야 숨겨짐 */
+@media (prefers-reduced-motion: reduce) { .cm.fresh, .gbc-th, dialog.sk[open] { animation: none; } }
 
 /* 정보 섹션(전시콘텐츠·위치·유의사항·주최): 제목은 16px SemiBold, 구분은 연한 선 하나, 큰 회색 띠는 없앰 */
 .sec h2 { font-size: 16px; font-weight: 600; letter-spacing: -0.03em; }
@@ -333,6 +389,10 @@ dialog.player .miss[hidden] { display: none; }
     <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.8v14.4L19 12z" fill="currentColor" stroke="none"/></symbol>
     <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
     <symbol id="i-avatar" viewBox="0 0 34 34"><circle cx="17" cy="13" r="6" fill="currentColor"/><path d="M4 34c1.2-8 6.6-12 13-12s11.8 4 13 12z" fill="currentColor"/></symbol>
+    <symbol id="i-pencil" viewBox="0 0 24 24"><path d="m4 20 1-4L16.5 4.5a2 2 0 0 1 3 3L8 19z"/><path d="m14.5 6.5 3 3"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2.5"/><circle cx="9" cy="10" r="1.6"/><path d="m5 17 5-4.5 3.5 3L16 13l3 3"/></symbol>
+    <symbol id="i-arrow-up" viewBox="0 0 24 24"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/></symbol>
+    <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></symbol>
     <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5.5v13M16 5.5v13" stroke-width="2.4"/></symbol>
     <symbol id="i-sound" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></symbol>
     <symbol id="i-mute" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="m16 9.5 5 5M21 9.5l-5 5"/></symbol>
@@ -448,6 +508,7 @@ dialog.player .miss[hidden] { display: none; }
         <section class="sec" aria-labelledby="h-reviews">
           <h2 id="h-reviews" class="sr">전시 후기</h2>
           <ul class="cm-list" id="cm-list" aria-live="polite"></ul>
+          <div class="gb-compose" data-gbc></div>
         </section>
       </div>
     </div>
@@ -469,9 +530,13 @@ dialog.player .miss[hidden] { display: none; }
   <button class="btn btn-icon share" aria-label="공유"><svg class="i" aria-hidden="true"><use href="#i-share"/></svg></button>
   <button class="btn btn-primary save" aria-pressed="false"><svg class="i" aria-hidden="true"><use href="#i-bookmark"/></svg>전시 저장</button>
 </div>
-<div class="bar bar-review" id="bar-review" hidden>
-  <div class="rfield"><input type="text" placeholder="글을 입력하세요." aria-label="후기 글 입력"></div>
-</div>
+<div class="bar bar-gb" id="bar-review" hidden data-gbc></div>
+<dialog class="sk" id="sk" aria-labelledby="sk-t">
+  <div class="sk-h"><button type="button" class="cancel">취소</button><h2 id="sk-t">그리기</h2><button type="button" class="ok">보내기</button></div>
+  <div class="sk-w"><div class="sk-cv"><canvas aria-label="그림 그리기 영역"></canvas></div></div>
+  <div class="sk-t"><button type="button" class="sw" aria-pressed="true" aria-label="검정" style="--c:#18181b"><i></i></button><button type="button" class="sw" aria-pressed="false" aria-label="빨강" style="--c:#fb2c36"><i></i></button><button type="button" class="sw" aria-pressed="false" aria-label="파랑" style="--c:#2b7fff"><i></i></button><span class="gap"></span><button type="button" class="undo" aria-label="되돌리기"><svg class="i" aria-hidden="true"><use href="#i-undo"/></svg></button></div>
+</dialog>
+
 
 <script src="assets/blobdb.js"></script>
 <script src="assets/save.js"></script>
@@ -558,15 +623,17 @@ let comments = [
 const expanded = new Set();
 
 function item(c, reply) {
-  const photos = c.photos ? `<div class="ph">${Array.from({ length: c.photos }, () => '<img src="assets/img/detail/opt/gallery.jpg" alt="후기 사진" loading="lazy">').join('')}</div>` : '';
-  return `<li class="cm ${c.gone ? 'gone' : ''}" data-id="${c.id}">
+  const imgs = c.imgs ? c.imgs : c.photos ? Array.from({ length: c.photos }, () => 'assets/img/detail/opt/gallery.jpg') : [];
+  const photos = imgs.length ? `<div class="ph">${imgs.map((u) => `<img src="${u}" alt="후기 사진"${c.imgs ? '' : ' loading="lazy"'}>`).join('')}</div>` : '';
+  const body = c.text ? c.text.replace(/[&<>]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[ch])).replace(/\n/g, '<br>') : TXT;
+  return `<li class="cm ${c.gone ? 'gone' : ''}${c.fresh ? ' fresh' : ''}" data-id="${c.id}">
     <div class="row">${avatar}<div>
       <div class="head"><span class="nm">${c.name}</span>${c.team ? '<span class="tag">전시 팀원</span>' : ''}<span class="dt">${c.date}</span>
         <button class="dots" aria-label="더보기" aria-haspopup="menu" aria-expanded="false">${ic('i-dots')}</button>
         <div class="menu" role="menu" hidden><button role="menuitem" data-do="${c.mine ? 'del' : 'report'}">${c.mine ? '삭제하기' : '신고하기'}</button></div>
       </div>
       ${photos}
-      <p class="tx2">${TXT}</p>
+      ${c.text || !c.imgs || c.imgs.length === 0 ? `<p class="tx2">${body}</p>` : ''}
       <div class="act"><button class="lk" aria-pressed="false" aria-label="좋아요">${ic('i-heart')}<span>${c.likes}</span></button><button>답글 달기</button></div>
     </div></div>
     ${reply ? '' : repliesOf(c)}
@@ -585,6 +652,7 @@ function renderComments() {
     if (c.deleted) return `<li class="cm" data-id="${c.id}"><p class="gone-note">삭제된 댓글이에요</p>${repliesOf(c)}</li>`;
     return item(c);
   }).join('');
+  comments.forEach((c) => { delete c.fresh; });
 }
 renderComments();
 
@@ -603,6 +671,78 @@ listEl.addEventListener('click', (e) => {
 });
 document.addEventListener('click', (e) => { if (!e.target.closest('.head')) closeMenus(); });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenus(); });
+
+/* ---------- 후기 입력 (11-07 확정, 작품 상세 방명록 입력과 같은 규칙) ----------
+   그림은 단독: 연필 → 그리기 화면 → "보내기"를 누르면 그림만 바로 올라감(붙이는 단계 없음)
+   글과 사진은 함께: 사진을 붙이면 위에 작은 사진, 글은 그 아래. 글을 쓰거나 사진을 붙이면 연필이 사라지고 사진 아이콘은 남음
+   한도: 사진 4장(임시). 여러 줄은 4줄까지 늘어남. Figma `Bar / 후기 입력` */
+const GBC_MAX = 4;
+let nextCid = 100;
+const sk = document.getElementById('sk'), skc = sk.querySelector('canvas'), skx = skc.getContext('2d');
+let strokes = [], curStroke = null, penColor = '#18181b', skDone = null;
+function skDraw() { const r = skc.getBoundingClientRect(); skx.clearRect(0, 0, r.width, r.height); for (const t of strokes) { skx.strokeStyle = t.c; skx.lineWidth = 4; skx.lineCap = 'round'; skx.lineJoin = 'round'; skx.beginPath(); t.p.forEach(([x, y], i) => (i ? skx.lineTo(x, y) : skx.moveTo(x, y))); if (t.p.length === 1) skx.lineTo(t.p[0][0] + .01, t.p[0][1]); skx.stroke(); } }
+function skFit() { const r = skc.getBoundingClientRect(), d = devicePixelRatio || 1; skc.width = Math.round(r.width * d); skc.height = Math.round(r.height * d); skx.setTransform(d, 0, 0, d, 0, 0); skDraw(); }
+const skPt = (e) => { const r = skc.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+skc.addEventListener('pointerdown', (e) => { skc.setPointerCapture(e.pointerId); curStroke = { c: penColor, p: [skPt(e)] }; strokes.push(curStroke); skDraw(); });
+skc.addEventListener('pointermove', (e) => { if (!curStroke) return; curStroke.p.push(skPt(e)); skDraw(); });
+['pointerup', 'pointercancel'].forEach((t) => skc.addEventListener(t, () => { curStroke = null; }));
+sk.querySelectorAll('.sw').forEach((b) => b.addEventListener('click', () => { penColor = getComputedStyle(b).getPropertyValue('--c').trim(); sk.querySelectorAll('.sw').forEach((x) => x.setAttribute('aria-pressed', x === b)); }));
+sk.querySelector('.undo').addEventListener('click', () => { strokes.pop(); skDraw(); });
+sk.querySelector('.cancel').addEventListener('click', () => sk.close());
+sk.addEventListener('click', (e) => { if (e.target === sk) sk.close(); });
+addEventListener('resize', () => { if (sk.open) skFit(); });
+sk.querySelector('.ok').addEventListener('click', () => {
+  if (strokes.length && skDone) {
+    // 그린 부분을 가운데로 잘라 1:1.05 (댓글 사진 칸 비율)로 저장
+    const pts = strokes.flatMap((t) => t.p), xs = pts.map((q) => q[0]), ys = pts.map((q) => q[1]);
+    let w = Math.max(...xs) - Math.min(...xs) + 48, h = Math.max(...ys) - Math.min(...ys) + 48;
+    if (w / h > 1 / 1.05) h = w * 1.05; else w = h / 1.05;
+    const cx = (Math.max(...xs) + Math.min(...xs)) / 2, cy = (Math.max(...ys) + Math.min(...ys)) / 2, k = Math.min(2, 600 / w);
+    const o = document.createElement('canvas'); o.width = Math.round(w * k); o.height = Math.round(h * k); const c = o.getContext('2d');
+    c.fillStyle = '#f4f4f5'; c.fillRect(0, 0, o.width, o.height);   /* 흰 화면 위에서 그림 경계가 보이도록 입력칸과 같은 연회색 */ c.scale(k, k); c.translate(w / 2 - cx, h / 2 - cy);
+    for (const t of strokes) { c.strokeStyle = t.c; c.lineWidth = 4; c.lineCap = 'round'; c.lineJoin = 'round'; c.beginPath(); t.p.forEach(([x, y], i) => (i ? c.lineTo(x, y) : c.moveTo(x, y))); if (t.p.length === 1) c.lineTo(t.p[0][0] + .01, t.p[0][1]); c.stroke(); }
+    skDone(o.toDataURL('image/png'));
+  }
+  sk.close();
+});
+function openSketch(done) { strokes = []; skDone = done; sk.showModal(); setTimeout(skFit, 0); }
+
+const GBC = `<form class="gbc" novalidate>
+  <div class="gbc-att"></div>
+  <div class="gbc-row">
+    <textarea rows="1" placeholder="글을 입력하세요." aria-label="후기 글 입력"></textarea>
+    <div class="gbc-tools"><button type="button" class="pen" data-a="draw" aria-label="그림 그리기">${ic('i-pencil')}</button><button type="button" data-a="photo" aria-label="사진 추가">${ic('i-image')}</button></div>
+    <button type="submit" class="gbc-send" aria-label="보내기"><span class="sg">${ic('i-arrow-up')}</span></button>
+  </div>
+  <input type="file" accept="image/&#42;" multiple hidden>
+</form>`;
+function postFresh(text, imgs) {   // 글+사진 보내기, 그림 보내기 모두 여기로
+  comments.unshift({ id: ++nextCid, name: '민재', date: '방금', imgs, text, likes: 0, mine: true, fresh: true }); renderComments();
+  const tb = document.querySelector('.tabs'); const top = tb.getBoundingClientRect().top + scrollY - (matchMedia('(min-width:768px)').matches ? 64 : 0); if (scrollY > top) scrollTo({ top, behavior: 'smooth' });
+}
+function initGbc(host) {
+  host.insertAdjacentHTML('beforeend', GBC);
+  const f = host.querySelector('.gbc'), ta = f.querySelector('textarea'), row = f.querySelector('.gbc-row'), att = f.querySelector('.gbc-att'), file = f.querySelector('input[type=file]'), photoBtn = f.querySelector('[data-a=photo]');
+  let items = [];
+  function size() { ta.style.height = '0'; const h = ta.scrollHeight; ta.style.height = Math.min(Math.max(h, 46), 114) + 'px'; row.classList.toggle('multi', h > 48); }
+  function sync() { const typed = ta.value.trim() !== ''; f.classList.toggle('solo-off', typed || items.length > 0); f.classList.toggle('can-send', typed || items.length > 0); photoBtn.disabled = items.length >= GBC_MAX; }
+  function paint(newIdx) {
+    att.innerHTML = items.map((it, i) => `<div class="gbc-th" style="background-image:url('${it.url}');${i === newIdx ? '' : 'animation:none'}"><button type="button" data-i="${i}" aria-label="빼기">${ic('i-close')}</button></div>`).join('');
+    sync();
+  }
+  ta.addEventListener('input', () => { size(); sync(); });
+  ta.addEventListener('keydown', (e) => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); f.requestSubmit(); } });
+  att.addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; const [it] = items.splice(+b.dataset.i, 1); if (it && it.url.startsWith('blob:')) URL.revokeObjectURL(it.url); paint(-1); });
+  f.addEventListener('click', (e) => { const a = e.target.closest('[data-a]'); if (!a) return; if (a.dataset.a === 'photo') file.click(); else openSketch((url) => postFresh('', [url])); });
+  file.addEventListener('change', () => { const room = GBC_MAX - items.length; const picked = [...file.files].slice(0, Math.max(0, room)); picked.forEach((fl) => items.push({ url: URL.createObjectURL(fl) })); file.value = ''; if (picked.length) paint(items.length - picked.length); });
+  f.addEventListener('submit', (e) => {
+    e.preventDefault(); const text = ta.value.trim(); if (!text && !items.length) return;
+    postFresh(text, items.map((it) => it.url));
+    ta.value = ''; items = []; paint(-1); size();
+  });
+  sync();
+}
+document.querySelectorAll('[data-gbc]').forEach(initGbc);
 
 /* ---------- 미리보기: ?id= 로 열면 등록해 둔 전시 값으로 채움(허브의 "전시 미리보기") ----------
    저장 위치: localStorage `du.exh`(글·썸네일), IndexedDB `du.media`(포스터 원본·영상). 없으면 아래 샘플(여넥스)이 그대로 보임 */
@@ -653,7 +793,7 @@ if (PV) {
   /* 좋아요·저장·후기는 공개 뒤에 쓰는 기능이라 막음 */
   like.disabled = true; likeN.textContent = '0';
   document.querySelectorAll('.save, .share').forEach((b) => { b.disabled = true; b.title = '공개 전에는 사용할 수 없어요'; });
-  document.querySelector('#bar-review input').disabled = true;
+  document.querySelectorAll('.gbc textarea, .gbc button').forEach((i) => { i.disabled = true; });
   /* 작품·후기 */
   if (!PV.works) document.getElementById('works').innerHTML = '<p class="pv-empty">아직 등록한 작품이 없어요<br>전시에 작품을 올리면 여기에 보여요</p>';
   document.getElementById('cm-list').innerHTML = '<li class="pv-empty">공개 전이라 후기가 없어요</li>';
