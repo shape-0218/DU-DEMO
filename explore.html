@@ -48,7 +48,7 @@ img { display: block; }
 .top { background: #fff; padding-top: max(12px, env(safe-area-inset-top)); }
 .search { position: relative; margin-top: 0; }   /* 11-08 Figma `탐색 · 전시`: 상태바 아래 12에 검색창(54) */
 .search input { width: 100%; height: 54px; padding: 0 52px 0 20px; border: 0; border-radius: 9999px; background: var(--bg-secondary); font-size: 16px; font-weight: 500; outline: 0; transition: box-shadow .2s; -webkit-appearance: none; appearance: none; }
-.search input::placeholder { color: var(--text-teritary); }
+.search input::placeholder { color: var(--text-teritary); font-size: 14px; font-weight: 400; }   /* 11-08 사용자: 넓은 창 + 큰 글자라 안내 문구가 먼저 보임 → 색은 그대로 두고 크기·굵기만 낮춤(14/Regular, Figma body/lg/regular). 입력한 글자는 16 그대로(iOS 확대 방지) */
 .search input:focus-visible { box-shadow: 0 0 0 2px var(--text-primary); }
 .search input::-webkit-search-cancel-button { display: none; }
 .search .go, .search .clear { position: absolute; top: 7px; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 9999px; color: var(--text-teritary); }
