@@ -98,11 +98,8 @@
 .slist + .addbtn { margin-top: 20px; margin-bottom: 32px; }
 
 /* 섹션 편집 */
-/* 11-08 Figma `섹션 · 편집` 2149:37115 대조: 제목→첫 라벨 52 · 입력 줄 47(라벨과 4) · 입력 사이 24 · 설명 칸 128 · 글자 수 위 8 · 사진 영역은 입력 아래 12, 도구 줄 44, 타일 114 간격 10. 공통 .field/.ul/.ta는 다른 입력 화면과 같이 쓰므로 이 화면 안에서만 */
-.sec-f .field { margin-top: 24px; }
+/* 11-08 Figma `섹션 · 편집` 2149:37115 대조: 제목→첫 라벨 52 · 입력 줄 47(라벨과 4) · 입력 사이 24 · 설명 칸 128 · 글자 수 위 8 · 사진 영역은 입력 아래 12, 도구 줄 44, 타일 114 간격 10. 입력 칸 공통 값(24·4·47·128·8)은 11-08 밤에 flow.css로 올려서 여기엔 이 화면만의 값만 둠 */
 .sec-f .field:first-child { margin-top: 12px; }
-.sec-f .ul { margin-top: 4px; height: 47px; }
-.sec-f .cnt-r { margin-top: 8px; color: var(--text-teritary); }
 .sec-f .ptool { margin-top: 12px; height: 44px; }
 .sec-f .pgrid { margin-top: 4px; gap: 10px; }
 .ptool { display: flex; align-items: center; justify-content: space-between; margin-top: 28px; }

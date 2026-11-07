@@ -66,11 +66,11 @@ img { display: block; }
 .btn-red { background: var(--notice); color: #fff; } .btn-red:hover { background: #d63c41; }
 
 /* 입력 */
-.field { margin-top: 28px; }
+.field { margin-top: 24px; }   /* 11-08 Figma `Field / 입력`·`Field / 여러 줄` 값에 맞춤(입력 칸 사이 24 · 라벨→입력 4 · 입력 줄 47 · 여러 줄 상자 128 · 글자 수 위 8) */
 .field > label, .field .lb { display: flex; align-items: center; justify-content: space-between; font-size: 14px; font-weight: 600; }
 .req { color: var(--notice); margin-left: 3px; }
 .cnt { font-size: 12px; font-weight: 500; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
-.ul { position: relative; display: flex; align-items: center; height: 48px; margin-top: 8px; border-bottom: 1px solid var(--border-primary); transition: border-color .2s; }
+.ul { position: relative; display: flex; align-items: center; height: 47px; margin-top: 4px; border-bottom: 1px solid var(--border-primary); transition: border-color .2s; }
 .ul:focus-within { border-bottom-color: var(--text-primary); }
 .ul input { flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; outline: 0; background: transparent; font-size: 16px; font-weight: 500; }
 .ul input::placeholder, textarea::placeholder { color: var(--text-teritary); }   /* 11-08: Figma Field `text/teritary`(대비 4.8:1). 잠긴 칸(.locked)만 disable 유지 */
@@ -78,9 +78,9 @@ img { display: block; }
 .pick { width: 100%; text-align: left; cursor: pointer; justify-content: space-between; font-size: 16px; font-weight: 400; } /* 11-07 Figma 대조: 선택값 16 Regular */
 .pick span.ph { color: var(--text-disable); }
 .pick .i { width: 20px; height: 20px; color: var(--text-primary); }
-.ta { display: block; width: 100%; height: 132px; margin-top: 8px; padding: 14px 16px; border: 1px solid var(--border-primary); border-radius: var(--r12); font-size: 16px; font-weight: 500; line-height: 1.4; resize: none; outline: 0; transition: border-color .2s; }
+.ta { display: block; width: 100%; height: 128px; margin-top: 8px; padding: 14px 16px; border: 1px solid var(--border-primary); border-radius: var(--r12); font-size: 16px; font-weight: 500; line-height: 1.4; resize: none; outline: 0; transition: border-color .2s; }
 .ta:focus { border-color: var(--text-primary); }
-.cnt-r { margin-top: 6px; text-align: right; font-size: 12px; font-weight: 500; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.cnt-r { margin-top: 8px; text-align: right; font-size: 12px; font-weight: 500; color: var(--text-teritary); font-variant-numeric: tabular-nums; }
 .help { margin-top: 6px; font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-secondary); }
 .help.e { color: var(--notice); }
 .two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }

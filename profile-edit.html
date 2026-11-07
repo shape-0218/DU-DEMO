@@ -54,14 +54,14 @@ ul { list-style: none; }
 
 form { flex: 1; display: flex; flex-direction: column; }
 .fields { flex: 1; }
-.field { margin-top: 28px; animation: rise .45s var(--ease) backwards; }
+.field { margin-top: 24px; animation: rise .45s var(--ease) backwards; }
 @keyframes rise { from { opacity: 0; transform: translateY(8px); } }
 .field > label, .field .lb { display: flex; align-items: center; justify-content: space-between; font-size: 14px; font-weight: 600; }
 .field > label b, .field .lb b { font-weight: 600; }
 .req { color: var(--notice); margin-left: 3px; }
 .cnt { font-size: 12px; font-weight: 500; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
-.line { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
-.ul { position: relative; flex: 1; min-width: 0; display: flex; align-items: center; height: 48px; border-bottom: 1px solid var(--border-primary); transition: border-color .2s; }
+.line { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+.ul { position: relative; flex: 1; min-width: 0; display: flex; align-items: center; height: 47px; border-bottom: 1px solid var(--border-primary); transition: border-color .2s; }
 .ul:focus-within { border-bottom-color: var(--text-primary); }
 .field.err .ul { border-bottom-color: var(--notice); }
 .ul input { flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; outline: 0; background: transparent; font-size: 16px; font-weight: 500; }
@@ -117,10 +117,10 @@ dialog.modal::backdrop { background: rgba(0, 0, 0, .42); }
 .pphoto + .field { margin-top: 20px; }   /* 11-08 Figma: 사진 아래 안내 글이 없어서 사진 → 첫 입력 20 */
 .chip .ck { display: none; }
 .chip[aria-pressed="true"] .ck { display: block; }
-.ta { display: block; width: 100%; height: 132px; margin-top: 8px; padding: 14px 16px; border: 1px solid var(--border-primary); border-radius: var(--r12); font: inherit; font-size: 16px; font-weight: 500; line-height: 1.4; resize: none; outline: 0; color: inherit; transition: border-color .2s; }
+.ta { display: block; width: 100%; height: 128px; margin-top: 8px; padding: 14px 16px; border: 1px solid var(--border-primary); border-radius: var(--r12); font: inherit; font-size: 16px; font-weight: 500; line-height: 1.4; resize: none; outline: 0; color: inherit; transition: border-color .2s; }
 .ta:focus { border-color: var(--text-primary); }
 .ta::placeholder { color: var(--text-teritary); }
-.cnt-r { margin-top: 6px; text-align: right; font-size: 12px; font-weight: 500; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.cnt-r { margin-top: 8px; text-align: right; font-size: 12px; font-weight: 500; color: var(--text-teritary); font-variant-numeric: tabular-nums; }
 .field > label .opt { margin-left: 6px; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
 .ul.bad, .ul.bad:focus-within { border-bottom-color: var(--notice); }
 .help.ok { color: #00c758; }   /* 11-08 Figma: 사용 가능 = 초록 글자만(아이콘 없음) */
