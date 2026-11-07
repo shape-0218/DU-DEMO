@@ -66,8 +66,8 @@ img { display: block; }
 
 /* 구성 */
 .layout { max-width: 1240px; margin-inline: auto; }
-.poster { position: relative; background: #d1d1d1; aspect-ratio: 402 / 568; overflow: hidden; }
-.poster img, .poster video { width: 100%; height: 100%; object-fit: cover; }
+.poster { position: relative; background: #000; aspect-ratio: 402 / 568; overflow: hidden; }   /* 11-07: 상세 포스터는 항상 전체(contain), 남는 곳은 검정 */
+.poster img, .poster video { width: 100%; height: 100%; object-fit: contain; }
 /* 포스터 캐러셀: 첫 칸이 영상이면 소리 없이 반복 재생, 옆으로 넘기면 일반 포스터 */
 .pr { display: flex; height: 100%; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; touch-action: pan-x pan-y pinch-zoom; }
 .poster img, .poster video, .thumb img { -webkit-user-drag: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
@@ -770,7 +770,7 @@ const pvHide = (id) => { const el = document.getElementById(id); if (el) el.hidd
 const pvText = (id, t) => { const el = document.getElementById(id); if (el) el.textContent = t; };
 const dot = (iso) => (iso ? iso.replace(/-/g, '.') : '');
 function pvSlides() { /* 포스터 목록 → 캐러셀 칸 정보 */
-  if (PV.posterList && PV.posterList.length) return PV.posterList.map((p) => ({ video: p.video, thumb: p.thumb || PV.poster, key: p.key, crop: p.crop }));
+  if (PV.posterList && PV.posterList.length) return PV.posterList.map((p) => ({ video: p.video, thumb: p.video ? (p.thumb || PV.poster) : (p.full || p.thumb || PV.poster), key: p.key }));
   return [{ video: !!PV.posterVideo, thumb: PV.poster, key: null, src: PV.posterVideo ? 'assets/poster-shore.mp4' : null }];
 }
 if (!PVID || !PV) renderLinks('yeonex_2026', 'https://yeonex.kr/', 'yeonex.kr', true);
@@ -811,7 +811,7 @@ if (PV) {
     const blob = await blobDB.get(x.key); if (!blob) return;
     const url = URL.createObjectURL(blob);
     const v = slide.querySelector('video'), im = slide.querySelector('img');
-    if (v) v.src = url; else if (im) { im.src = url; if (x.crop) im.style.cssText = CropBox.style(x.crop); }
+    if (v) v.src = url; else if (im) { im.src = url; }
   });
 }
 /* ---------- 데모 전시(?e=): 카드에서 들어온 전시의 값으로 채움 ---------- */
@@ -849,7 +849,7 @@ if (DX) {
   cv.addEventListener('close', () => { if (cvFrom) cvFrom.focus(); });
   /* 작품: 이 전시에 올라온 작품 */
   const mine = DEMO.WORKS.filter((w) => w.e === DX.i);
-  document.getElementById('works').innerHTML = mine.length ? mine.map((w, i) => `<a class="w" href="work.html?w=${w.i}" style="--n:${i}"><div class="im"><div><img src="assets/img/explore/opt/${w.img}.jpg" alt="${w.t}" loading="lazy"><span class="bd"><svg class="i" aria-hidden="true"><use href="#i-heart"/></svg>${w.l}</span></div></div><div class="tx"><b>${w.t}</b><span>${Byline.html(w.a)}</span></div></a>`).join('') : '<p class="pv-empty">아직 올라온 작품이 없어요</p>';
+  document.getElementById('works').innerHTML = mine.length ? mine.map((w, i) => `<a class="w" href="work.html?w=${w.i}" style="--n:${i}"><div class="im"><div><img src="assets/img/explore/opt/${w.img}.jpg" alt="${w.t}" loading="lazy"></div></div><div class="tx"><b>${w.t}</b><span>${Byline.html(w.a)}</span></div></a>`).join('') : '<p class="pv-empty">아직 올라온 작품이 없어요</p>';
 }
 /* 소개 더보기 */
 document.getElementById('x-more').querySelector('a').addEventListener('click', (e) => { e.preventDefault(); const l = document.getElementById('x-intro'); const on = l.classList.toggle('open'); e.currentTarget.firstChild.textContent = on ? '접기' : '더보기'; });

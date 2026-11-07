@@ -131,7 +131,6 @@
             <div class="cp-im"><img id="cp-img" alt=""></div>
             <div class="cp-tx"><b>카드에서는 이렇게 보여요</b><span id="cp-note">사진 가운데가 카드에 보여요</span><button type="button" class="cp-btn" id="cp-adj">보이는 부분 조정</button></div>
           </div>
-          <p class="mhelp" id="m-hint" style="margin-top:8px">가로로 밀어서 더 볼 수 있어요<br>작품 상세에서는 비율이 달라도 사진 전체가 보여요 (남는 곳은 검정). 카드에 보이는 부분은 올린 뒤 '조정'에서 상자로 정할 수 있어요<br>영상은 목록·카드에서 썸네일로 보이고, 작품 상세에서 재생돼요</p>
         </div>
 
         <div class="field" style="margin-top:24px">
@@ -266,7 +265,7 @@ function coSheet() {
 
 /* ---------- 사진·영상 올리기 ---------- */
 function tileHtml(m, i, allowVideo) {
-  return `<div class="tile ${m.video ? 'v' : ''}" role="listitem"><img src="${m.video ? m.thumb : m.url}" alt="${m.video ? '영상 썸네일' : '사진'} ${i + 1}">${!m.video && m.url ? `<button type="button" class="chg" data-a="adj" data-i="${i}" aria-label="${i + 1}번째 사진 카드에서 보이는 부분 조정">조정</button>` : ''}${m.video ? `<span class="vbadge"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg>${mmss(m.duration)}</span><button type="button" class="chg" data-a="chg" data-i="${i}" aria-label="영상 썸네일 변경">썸네일</button>` : ''}${i === 0 && allowVideo ? '<span class="rep">대표 사진</span>' : ''}${i === 0 && !allowVideo ? '<span class="rep">대표 사진</span>' : ''}<button type="button" class="x" data-a="rm" data-i="${i}" aria-label="${i + 1}번째 삭제"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button></div>`;
+  return `<div class="tile ${m.video ? 'v' : ''}" role="listitem"><img src="${m.video ? m.thumb : m.url}" alt="${m.video ? '영상 썸네일' : '사진'} ${i + 1}">${!m.video && m.url && i === 0 ? `<button type="button" class="chg" data-a="adj" data-i="${i}" aria-label="대표 사진 카드에서 보이는 부분 조정">조정</button>` : ''}${m.video ? `<span class="vbadge"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg>${mmss(m.duration)}</span><button type="button" class="chg" data-a="chg" data-i="${i}" aria-label="영상 썸네일 변경">썸네일</button>` : ''}${i === 0 && allowVideo ? '<span class="rep">대표 사진</span>' : ''}${i === 0 && !allowVideo ? '<span class="rep">대표 사진</span>' : ''}<button type="button" class="x" data-a="rm" data-i="${i}" aria-label="${i + 1}번째 삭제"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button></div>`;
 }
 /* 카드에 보이는 부분 = 노출 범위 상자(CropBox). 사진마다 crop({x,y,w,h}, 사진 전체가 1)을 저장하고, 없으면 사진 가운데를 3:4로 가장 크게 자른 모습 */
 const CARD_R = 3 / 4;
@@ -280,7 +279,7 @@ function refreshPrev(row) {
 }
 function openAdjust(i) {
   const m = st.media[i]; if (!m || m.video || !m.url) return;
-  CropBox.open({ url: m.url, ratio: CARD_R, title: '카드에 보이는 부분', sub: i === 0 ? '카드에는 상자 안이 보여요. 작품 상세에서는 사진 전체가 보여요' : '이 사진이 대표가 되면 카드에는 상자 안이 보여요', preview: '카드에서는 이렇게 보여요', rect: m.crop, onDone: (rect) => { m.crop = rect || null; renderRow('media'); } });   // ❓ 임시 문구
+  CropBox.open({ url: m.url, ratio: CARD_R, title: '카드에 보이는 부분', sub: '카드에는 상자 안이 보여요', preview: '카드에서는 이렇게 보여요', rect: m.crop, onDone: (rect) => { m.crop = rect || null; renderRow('media'); } });   // ❓ 임시 문구
 }
 $('cp-adj').addEventListener('click', () => openAdjust(0));
 function renderRow(key) {
@@ -290,7 +289,6 @@ function renderRow(key) {
   if (isM) {
     $('m-err').innerHTML = st.errMedia ? '<div class="errbox" role="alert"><span class="bang" aria-hidden="true">!</span><div><b>업로드하지 못했어요</b><span>네트워크 상태를 확인하고 다시 시도해주세요</span></div><button type="button" id="m-retry">다시 시도</button></div>' : '';
     const r = $('m-retry'); if (r) r.addEventListener('click', () => { st.errMedia = false; renderRow('media'); pickFiles('media'); });
-    $('m-hint').hidden = list.length > 0;
     refreshPrev(row);
   }
   validate();

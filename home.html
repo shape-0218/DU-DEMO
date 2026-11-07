@@ -325,7 +325,7 @@ function slotHtml(e, rank) {
   const src = e.v ? 'assets/poster-shore-thumb.jpg' : DEMO.src(e.img);
   return `<article class="slot" aria-label="${rank ? '순위 ' + rank + ': ' : ''}${e.t}"><div class="poster"><img src="${src}" alt="전시 포스터: ${e.t}" width="232" height="329" decoding="async">${e.v ? '<video class="pv" data-src="assets/poster-shore.mp4" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>' : ''}
     <span class="dim"></span><span class="shade-side"></span><span class="shade-active"></span><a class="cover" href="exhibition.html?e=${e.i}" aria-label="전시 상세 보기: ${e.t}"></a>
-    <span class="badge">${HEART}${e.l}</span>${rank ? `<span class="rank">${rank}</span>` : ''}</div>
+    ${rank ? `<span class="rank">${rank}</span>` : ''}</div>
     <div class="info"><div class="t"><a class="open" href="exhibition.html?e=${e.i}"><strong>${e.t}</strong></a><span>${e.s}</span></div>
     <div class="meta"><p><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14"><span>${e.d}</span></p><p><img src="assets/img/icon-location.svg" alt="" width="14" height="14"><span>${e.p}</span></p></div></div></article>`;
 }
@@ -335,7 +335,7 @@ let view = (new URLSearchParams(location.search).get('view') === 'list' || (() =
 function listHtml(list, ranked) {
   const cols = []; for (let i = 0; i < list.length; i += 3) cols.push(list.slice(i, i + 3));
   return cols.map((c, ci) => `<div class="lcol">${c.map((e, k) => { const r = ranked ? ci * 3 + k + 1 : 0, src = e.v ? 'assets/poster-shore-thumb.jpg' : DEMO.src(e.img);
-    return `<a class="lcard" href="exhibition.html?e=${e.i}" aria-label="${r ? '순위 ' + r + ': ' : ''}${e.t}"><span class="lp"><img src="${src}" alt="" loading="lazy">${r ? `<span class="lrank">${r}</span>` : ''}</span><span class="lt"><span><h3>${e.t}</h3><p class="og">${e.s}</p></span><span class="mt"><p><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14"><span>${e.d}</span></p><p><img src="assets/img/icon-location.svg" alt="" width="14" height="14"><span>${e.p}</span></p></span><span class="lk">${HEART}${e.l}</span></span></a>`; }).join('')}</div>`).join('');
+    return `<a class="lcard" href="exhibition.html?e=${e.i}" aria-label="${r ? '순위 ' + r + ': ' : ''}${e.t}"><span class="lp"><img src="${src}" alt="" loading="lazy">${r ? `<span class="lrank">${r}</span>` : ''}</span><span class="lt"><span><h3>${e.t}</h3><p class="og">${e.s}</p></span><span class="mt"><p><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14"><span>${e.d}</span></p><p><img src="assets/img/icon-location.svg" alt="" width="14" height="14"><span>${e.p}</span></p></span></span></a>`; }).join('')}</div>`).join('');
 }
 const ICON_LIST = '<svg viewBox="0 0 15 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M5 3h8M5 7h8M5 11h8M1.5 3h.01M1.5 7h.01M1.5 11h.01"/></svg>';
 /* 리스트형: 화면 가운데에 가장 가까운 열이 선명(is-active), 나머지는 세로로 흐리게. 흐린 열을 누르면 그 열이 가운데로 */
