@@ -1,13 +1,61 @@
-/* 하단 메뉴(넷바) 페이지 전환 (11-07): 홈·탐색·마이는 서로 다른 페이지지만 브라우저의 "페이지 전환 효과"(View Transitions)로
-   메뉴는 제자리에 두고 불(조명)만 이전 탭 자리에서 새 탭으로 이어서 움직이게 함. 둘 다 이 규칙을 켠 페이지끼리 넘어갈 때만 적용.
-   지원 안 하는 브라우저는 assets/nav.js가 대신 움직임을 줌. 움직임 줄이기 설정이면 꺼짐 */
+/* 하단 메뉴(넷바) — Figma 개선안 C2 (11-08, 사용자 확정): 검은 알약 226×56, 선택 = 흰 알약이 안에서 이동 + 채움 아이콘.
+   홈·탐색·마이·작가 프로필(본인)이 이 파일 하나를 씀(페이지마다 복사본 두지 않기). 글래스(투명·블러)·그림자·그라데이션 덮개 없음.
+   Figma 값: 알약 테두리 1 + 안쪽 여백 4(= 바깥에서 5), 슬롯 72×46, 아이콘 24, 비선택 color/icon/taritary(검정 위 4.35:1).
+   움직임: 알약 하나(.cap)를 transform 으로 옮김(280ms, 강한 ease-out). 페이지가 따로라서 브라우저의 "페이지 전환 효과"(View Transitions)로
+   이전 탭 자리에서 새 탭으로 이어 줌. 지원 안 하는 브라우저는 assets/nav.js 가 대신 움직임. 움직임 줄이기 설정이면 움직임 없음. */
+:root { --nav-ease: cubic-bezier(.23, 1, .32, 1); }
+.nav {
+  --nav-bg: var(--bg-black, #000);               /* color/bg/primary - black */
+  --nav-line: #3f3f47;                           /* color/border/secondary */
+  --nav-off: var(--text-teritary, #71717b);      /* color/icon/taritary */
+  --nav-off-hover: #9f9fa9;                      /* color/zinc/400 */
+  --nav-cap: var(--bg-white, #fff);              /* color/bg/interactive/inverse */
+  --nav-on: var(--text-primary, #18181b);        /* color/icon/primary */
+  position: fixed; left: 0; right: 0; bottom: max(16px, env(safe-area-inset-bottom)); z-index: 20;
+  display: flex; justify-content: center; pointer-events: none;
+}
+.nav .pill {
+  pointer-events: auto; position: relative; box-sizing: border-box; width: 226px; height: 56px; padding: 4px;
+  background: var(--nav-bg); border: 1px solid var(--nav-line); border-radius: 9999px;
+  display: flex; align-items: center;
+}
+.nav .cap {                                       /* 선택 알약 하나: --i(0·1·2)번째 슬롯 위. 절대 위치는 테두리 안쪽 기준이라 left·top 4 */
+  position: absolute; left: 4px; top: 4px; width: 72px; height: 46px; border-radius: 9999px; background: var(--nav-cap);
+  transform: translateX(calc(var(--i, 0) * 72px));
+  transition: transform .28s var(--nav-ease);
+  will-change: transform;
+}
+.nav a {
+  position: relative; z-index: 1; box-sizing: border-box; width: 72px; height: 46px; border-radius: 9999px;
+  display: grid; place-items: center; color: var(--nav-off); text-decoration: none; -webkit-tap-highlight-color: transparent;
+  transition: color .16s ease;
+}
+.nav a[aria-current="page"] { color: var(--nav-on); }
+.nav svg { grid-area: 1 / 1; width: 24px; height: 24px; transition: opacity .16s ease, transform .1s var(--nav-ease); }
+.nav .o { opacity: 1; }
+.nav .s { opacity: 0; }
+.nav a[aria-current="page"] .o { opacity: 0; }
+.nav a[aria-current="page"] .s { opacity: 1; }
+.nav a:active svg { transform: scale(.96); }
+.nav a:focus-visible { outline: 2px solid #fafafa; outline-offset: -3px; }
+@media (hover: hover) and (pointer: fine) { .nav a:not([aria-current]):hover { color: var(--nav-off-hover); } }
+@media (prefers-reduced-motion: reduce) { .nav .cap, .nav a, .nav svg { transition: none; } }
+
+/* 페이지 전환: 메뉴 바탕은 제자리, 알약은 이전 탭에서 새 탭으로 이동, 아이콘은 짧게 겹쳐 바뀜.
+   이름을 따로 줘야 알약이 아이콘 뒤·바탕 앞에 놓이고(문서 순서), 알약만 위치가 달라서 이동으로 보임. 둘 다 이 규칙을 켠 페이지끼리만 적용 */
 @media (prefers-reduced-motion: no-preference) {
   @view-transition { navigation: auto; }
 }
-.nav { view-transition-name: navbar; }                              /* 메뉴 자체: 아이콘 켜짐·꺼짐이 겹쳐서 바뀜 */
-.nav img.bar, .nav img.bar-i { view-transition-name: navlamp; }      /* 불: 페이지마다 하나뿐이라 브라우저가 같은 것으로 보고 이동시킴 */
+.nav .pill { view-transition-name: navbar; }
+.nav .cap { view-transition-name: navcap; }
+.nav a:nth-of-type(1) { view-transition-name: navtab1; }
+.nav a:nth-of-type(2) { view-transition-name: navtab2; }
+.nav a:nth-of-type(3) { view-transition-name: navtab3; }
 ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .14s; }   /* 나머지 화면은 짧게 겹쳐 넘김 */
-::view-transition-old(navbar), ::view-transition-new(navbar) { animation-duration: .32s; }
-::view-transition-group(navlamp) { animation-duration: .46s; animation-timing-function: cubic-bezier(.16, 1, .3, 1); }
-::view-transition-old(navlamp) { display: none; }                    /* 같은 그림이라 겹쳐 흐려지지 않게 새 것만 움직임 */
-::view-transition-new(navlamp) { animation: none; opacity: 1; }
+::view-transition-old(navbar), ::view-transition-new(navbar) { animation-duration: .16s; }
+::view-transition-old(navtab1), ::view-transition-new(navtab1),
+::view-transition-old(navtab2), ::view-transition-new(navtab2),
+::view-transition-old(navtab3), ::view-transition-new(navtab3) { animation-duration: .16s; }
+::view-transition-group(navcap) { animation-duration: .28s; animation-timing-function: cubic-bezier(.23, 1, .32, 1); }
+::view-transition-old(navcap) { display: none; }                     /* 같은 모양이라 겹쳐 흐려지지 않게 새 것만 움직임 */
+::view-transition-new(navcap) { animation: none; opacity: 1; }
