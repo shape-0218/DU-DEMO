@@ -222,7 +222,7 @@ function update() {
   } else {
     $('fcnt').textContent = `${S.fields.size} / ${MAX}`; $('bcnt').textContent = `${S.bio.length} / 100`;
     const g = parseIg(S.ig), w = parseWeb(S.web);
-    linkHelp('ig', g, `instagram.com/${g.id} 로 연결돼요`, '아이디 형식을 확인해 주세요 (영문·숫자·밑줄·마침표)', '관람객이 이어서 볼 수 있어요. @ 없이 아이디만 적어주세요');
+    linkHelp('ig', g, `instagram.com/${g.id} 로 연결돼요`, '아이디 형식을 확인해 주세요 (영문·숫자·밑줄·마침표)', '@ 없이 아이디만 적어주세요');
     linkHelp('web', w, `${w.href} 로 연결돼요`, '주소 형식을 확인해 주세요 (예: sangjun-works.com)', '작업 사이트나 포트폴리오 주소를 적어주세요');
     valid = S.name.trim() && S.fields.size >= 1 && g.ok !== false && w.ok !== false;
   }

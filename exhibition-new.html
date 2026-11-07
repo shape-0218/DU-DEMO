@@ -147,7 +147,6 @@
 
       <div class="field">
         <span class="lb" id="org-l"><span>소속 정보<span class="req" aria-hidden="true">*</span></span></span>
-        <p class="help" style="margin-top:2px">입력한 소속은 전시 정보에 노출돼요</p>
         <div class="locked" role="group" aria-labelledby="org-l">
           <div class="fix" id="school-fix"><span id="school-v">한빛대학교</span><svg class="i" aria-label="변경할 수 없어요"><use href="#i-lock"/></svg></div>
           <input id="dept" type="text" maxlength="40" placeholder="학과(학부)명, 학회명,  동아리명" autocomplete="off" aria-label="학과(학부)명, 학회명, 동아리명">
@@ -195,14 +194,13 @@
       <div class="field">
         <label for="ig"><span>인스타그램<span class="opt">· 선택</span></span></label>
         <div class="ul"><input id="ig" type="text" maxlength="60" placeholder="아이디 (예: yeonex_2026)" autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="ig-h"></div>
-        <p class="help" id="ig-h">관람객이 이어서 볼 수 있어요. @ 없이 아이디만 적어주세요</p>
+        <p class="help" id="ig-h">@ 없이 아이디만 적어주세요</p>
       </div>
       <div class="field">
         <label for="web"><span>웹사이트<span class="opt">· 선택</span></span></label>
         <div class="ul"><input id="web" type="text" inputmode="url" maxlength="120" placeholder="ex) yeonex.kr" autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="web-h"></div>
         <p class="help" id="web-h">전시 사이트나 포트폴리오 주소를 적어주세요</p>
       </div>
-      <p class="help" style="margin-top:10px">둘 다 선택이에요. 적어주신 링크는 전시 상세에 보여요</p>
       <div class="field">
         <label for="notice"><span>유의사항</span></label>
         <textarea class="ta" id="notice" maxlength="500" placeholder="입력해 주세요"></textarea>
@@ -387,7 +385,7 @@ function setLinkHelp(k, r, okMsg, badMsg, idle) {
 }
 function linkUi() {
   const g = parseIg($('ig').value), w = parseWeb($('web').value);
-  setLinkHelp('ig', g, g.ok ? `instagram.com/${g.id} 로 연결돼요` : '', '아이디 형식을 확인해 주세요 (영문·숫자·밑줄·마침표)', '관람객이 이어서 볼 수 있어요. @ 없이 아이디만 적어주세요');
+  setLinkHelp('ig', g, g.ok ? `instagram.com/${g.id} 로 연결돼요` : '', '아이디 형식을 확인해 주세요 (영문·숫자·밑줄·마침표)', '@ 없이 아이디만 적어주세요');
   setLinkHelp('web', w, w.ok ? `${w.href} 로 연결돼요` : '', '주소 형식을 확인해 주세요 (예: yeonex.kr)', '전시 사이트나 포트폴리오 주소를 적어주세요');
   validate();
 }

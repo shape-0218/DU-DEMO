@@ -294,5 +294,6 @@ document.addEventListener('click', (e) => { if (e.target.closest('#edit') || (mi
 document.getElementById('back').addEventListener('click', (e) => { if (history.length > 1 && document.referrer && new URL(document.referrer).origin === location.origin) { e.preventDefault(); history.back(); } });
 </script>
 <script src="assets/auth.js"></script>
+<script src="assets/nav.js"></script>
 </body>
 </html>
