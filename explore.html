@@ -47,15 +47,19 @@ img { display: block; }
 /* 검색창: 스크롤하면 같이 올라가 사라짐(고정되는 건 아래 분야 칩) */
 .top { background: #fff; padding-top: max(12px, env(safe-area-inset-top)); }
 .search { position: relative; margin-top: 0; }   /* 11-08 Figma `탐색 · 전시`: 상태바 아래 12에 검색창(54) */
-.search input { width: 100%; height: 54px; padding: 0 52px 0 20px; border: 0; border-radius: 9999px; background: var(--bg-secondary); font-size: 16px; font-weight: 500; outline: 0; transition: box-shadow .2s; -webkit-appearance: none; appearance: none; }
+.search input { width: 100%; height: 54px; padding: 0 52px 0 20px; border: 0; border-radius: 9999px; background: var(--bg-secondary); font-size: 16px; font-weight: 500; outline: 0; transition: background-color .2s; -webkit-appearance: none; appearance: none; }
 .search input::placeholder { color: var(--text-teritary); font-size: 14px; font-weight: 400; }   /* 11-08 사용자: 넓은 창 + 큰 글자라 안내 문구가 먼저 보임 → 색은 그대로 두고 크기·굵기만 낮춤(14/Regular, Figma body/lg/regular). 입력한 글자는 16 그대로(iOS 확대 방지) */
-.search input:focus-visible { box-shadow: 0 0 0 2px var(--text-primary); }
+/* 11-08 사용자: 눌렀을 때 검은 테두리가 생기고 돋보기가 X로 바뀌어 검색이 어정쩡 → 누르면 테두리 대신 바탕만 한 단계 진해지고 돋보기가 진해짐(손가락·마우스). 테두리는 키보드(Tab)로 들어왔을 때만 */
+.search input:focus { background: var(--bg-teritary); }
+.search:focus-within .go { color: var(--text-primary); }
+html.kb .search input:focus-visible { box-shadow: 0 0 0 2px var(--text-primary); }
+.search.has input { padding-right: 92px; }
 .search input::-webkit-search-cancel-button { display: none; }
 .search .go, .search .clear { position: absolute; top: 7px; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 9999px; color: var(--text-teritary); }
-.search .go { right: 8px; pointer-events: none; }
-.search .clear { right: 8px; color: var(--text-primary); }
+.search .go { right: 8px; transition: color .2s; }   /* 돋보기는 늘 그대로 두고(검색 버튼), 지우기 X는 그 왼쪽에 */
+.search .clear { right: 48px; color: var(--text-teritary); transition: color .2s; }
 .search .clear[hidden] { display: none; }
-@media (hover: hover) { .search .clear:hover { background: #e4e4e7; } }
+@media (hover: hover) { .search .clear:hover { color: var(--text-primary); } }
 @media (min-width: 900px) { .search { max-width: 720px; margin-inline: auto; } }
 
 /* 분야 */
@@ -157,7 +161,7 @@ img { display: block; }
       <label class="sr" for="q">전시·작품 검색</label>
       <input id="q" name="q" type="search" enterkeyhint="search" placeholder="전시·작품을 검색해보세요" spellcheck="false" autocomplete="off">
       <button type="button" class="clear" id="clear" aria-label="검색어 지우기" hidden><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button>
-      <span class="go" id="go"><svg class="i" aria-hidden="true"><use href="#i-search"/></svg></span>
+      <button type="submit" class="go" id="go" aria-label="검색"><svg class="i" aria-hidden="true"><use href="#i-search"/></svg></button>
     </form>
   </div>
 </header>
@@ -249,7 +253,7 @@ function renderChrome() {
   }
   $('seg-exh').setAttribute('aria-pressed', state.tab === 'exh'); $('seg-wk').setAttribute('aria-pressed', state.tab === 'works');
   $('sortlb').textContent = state.sort;
-  $('q').value = state.q; $('clear').hidden = !state.q; $('go').hidden = !!state.q;
+  $('q').value = state.q; $('clear').hidden = !state.q; $('search-form').classList.toggle('has', !!state.q);
 }
 function render() { renderChrome(); renderList(); syncUrl(); }
 
@@ -274,7 +278,8 @@ $('fields').addEventListener('click', (e) => { const b = e.target.closest('.fiel
 $('fields').addEventListener('keydown', (e) => { const bs = [...$('fields').children], i = bs.indexOf(document.activeElement); if (e.key === 'ArrowRight' && i > -1) { e.preventDefault(); bs[Math.min(i + 1, bs.length - 1)].click(); } if (e.key === 'ArrowLeft' && i > -1) { e.preventDefault(); bs[Math.max(i - 1, 0)].click(); } });
 $('seg-exh').addEventListener('click', () => { state.tab = 'exh'; render(); });
 $('seg-wk').addEventListener('click', () => { state.tab = 'works'; render(); });
-let t; $('q').addEventListener('input', (e) => { state.q = e.target.value; $('clear').hidden = !state.q; $('go').hidden = !!state.q; clearTimeout(t); t = setTimeout(() => { renderList(); syncUrl(); }, 120); });
+let t; $('q').addEventListener('input', (e) => { state.q = e.target.value; $('clear').hidden = !state.q; $('search-form').classList.toggle('has', !!state.q); clearTimeout(t); t = setTimeout(() => { renderList(); syncUrl(); }, 120); });
+addEventListener('keydown', (e) => { if (e.key === 'Tab') document.documentElement.classList.add('kb'); }); addEventListener('pointerdown', () => document.documentElement.classList.remove('kb'));   // 키보드로 이동 중일 때만 포커스 테두리
 $('search-form').addEventListener('submit', (e) => { e.preventDefault(); $('q').blur(); renderList(); syncUrl(); });
 $('clear').addEventListener('click', () => { state.q = ''; render(); $('q').focus(); });
 
