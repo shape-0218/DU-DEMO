@@ -20,7 +20,7 @@
 .pf { margin-top: 24px; }
 .pf-empty { display: flex; gap: 16px; align-items: flex-start; }
 .add { flex: none; width: 112px; height: 132px; display: grid; place-content: center; justify-items: center; gap: 8px; border: 1px solid var(--border-primary); border-radius: var(--r12); font-size: 12px; font-weight: 500; transition: background .2s; }
-.add:hover { background: var(--bg-secondary); }
+@media (hover: hover) { .add:hover { background: var(--bg-secondary); } }
 .add .i { width: 28px; height: 28px; stroke-width: 1.6; }
 .pf-empty .tx { padding-top: 2px; }
 .fhelp { margin-top: 4px; font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-secondary); }
@@ -42,7 +42,7 @@
 .menu { position: absolute; z-index: 10; left: 0; right: 0; top: calc(100% + 6px); padding: 6px 0; background: #fff; border: 1px solid var(--border-primary); border-radius: var(--r12); box-shadow: 0 12px 32px rgba(0,0,0,.1); animation: pop .2s var(--ease); }
 @keyframes pop { from { opacity: 0; transform: translateY(-4px); } }
 .menu button { display: flex; align-items: center; justify-content: space-between; width: 100%; height: 48px; padding: 0 16px; font-size: 16px; font-weight: 500; text-align: left; transition: background .15s; }
-.menu button:hover { background: var(--bg-secondary); }
+@media (hover: hover) { .menu button:hover { background: var(--bg-secondary); } }
 .rel { position: relative; }
 
 /* 달력 */
@@ -53,7 +53,7 @@
 .cal-h { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
 .cal-h b { font-size: 14px; font-weight: 600; }
 .cal-h button { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 9999px; }
-.cal-h button:hover { background: var(--bg-secondary); }
+@media (hover: hover) { .cal-h button:hover { background: var(--bg-secondary); } }
 .cal-h .i { width: 18px; height: 18px; }
 .dow, .days { display: grid; grid-template-columns: repeat(7, 1fr); }
 .dow span { height: 32px; display: grid; place-items: center; font-size: 12px; font-weight: 500; color: var(--text-secondary); }
@@ -61,7 +61,7 @@
 .days button:disabled { color: var(--text-disable); cursor: default; }
 .days button.mid { background: var(--bg-secondary); }
 .days button.s, .days button.e { background: var(--text-primary); color: #fff; border-radius: 10px; position: relative; z-index: 1; font-weight: 600; }
-.days button:not(:disabled):not(.s):not(.e):hover { background: var(--bg-teritary); border-radius: 10px; }
+@media (hover: hover) { .days button:not(:disabled):not(.s):not(.e):hover { background: var(--bg-teritary); border-radius: 10px; } }
 .sheet .big { margin-top: 20px; }
 
 /* 시간 */
@@ -78,7 +78,7 @@
 .addr-q { display: flex; align-items: center; height: 48px; border-bottom: 1px solid var(--border-primary); }
 .addr-q:focus-within { border-bottom-color: var(--text-primary); }
 .addr-q input { flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; background: transparent; font-size: 16px; font-weight: 500; }
-.addr-q input::placeholder { color: var(--text-disable); }
+.addr-q input::placeholder { color: var(--text-teritary); }   /* 11-08: 입력 안내 글자 = Figma Field `text/teritary`(#71717b, 대비 4.8:1) */
 .addr-q button { width: 40px; height: 40px; display: grid; place-items: center; margin-right: -8px; }
 .addr-q .i { width: 22px; height: 22px; }
 .ex-h { margin-top: 20px; font-size: 14px; font-weight: 600; }
@@ -93,7 +93,7 @@
 .res .ln.j { color: var(--text-teritary); margin-top: 6px; }
 .tag { flex: none; display: inline-flex; align-items: center; height: 20px; padding: 0 6px; border-radius: 4px; font-size: 10px; font-weight: 600; background: var(--bg-teritary); color: var(--text-secondary); }
 .tag.r { background: #e3efff; color: #2563eb; }
-.res button:hover .ln:first-of-type { text-decoration: underline; text-underline-offset: 3px; }
+@media (hover: hover) { .res button:hover .ln:first-of-type { text-decoration: underline; text-underline-offset: 3px; } }
 .empty { margin-top: 32px; font-size: 14px; }
 .empty b { display: block; font-size: 16px; font-weight: 600; }
 .empty p { margin-top: 4px; color: var(--text-teritary); }
@@ -583,5 +583,6 @@ if (editEx) (async () => {
 renderPosters(); validate();
 </script>
 <script src="assets/auth.js"></script>
+<script src="assets/tap.js"></script>
 </body>
 </html>

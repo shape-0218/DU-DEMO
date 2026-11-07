@@ -74,7 +74,7 @@ body.far .pin:not(.on) .pc { opacity: 0; transform: scale(.5); pointer-events: n
 .pin.on .pc { transform: scale(1.3); background: #000; box-shadow: 0 6px 16px rgba(0, 0, 0, .3); }
 .pin.on .pc::after { border-top-color: #000; }
 .pin.on .pc .dt { display: none; }
-.st { position: absolute; left: 0; top: -92px; transform: translate(-50%, 4px); height: 22px; padding: 0 9px; display: inline-flex; align-items: center; border-radius: 11px; background: #fff; box-shadow: var(--sh-chip); font-size: 12px; font-weight: 600; line-height: 1; white-space: nowrap; font-variant-numeric: tabular-nums; opacity: 0; pointer-events: none; transition: opacity .2s var(--out), transform .25s var(--out); }
+.st { position: absolute; left: 0; top: -92px; transform: translate(-50%, 4px); height: 22px; line-height: 1.4; padding: 0 9px; display: inline-flex; align-items: center; border-radius: 11px; background: #fff; box-shadow: var(--sh-chip); font-size: 12px; font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; opacity: 0; pointer-events: none; transition: opacity .2s var(--out), transform .25s var(--out); }
 .pin.on .st { opacity: 1; transform: translate(-50%, 0); }
 .lb { position: absolute; left: 24px; top: -34px; font-size: 12px; font-weight: 600; line-height: 1.4; white-space: nowrap; color: var(--text-primary); text-shadow: 0 0 3px #ebebe8, 0 0 3px #ebebe8, 0 0 3px #ebebe8, 0 0 6px #ebebe8; opacity: 0; transition: opacity .2s var(--out); pointer-events: none; }
 body.labels .pin:not(.on):not(.off) .lb { opacity: 1; }
@@ -139,7 +139,7 @@ body.labels .pin:not(.on):not(.off) .lb { opacity: 1; }
 .empty small { display: block; margin-top: 4px; font-size: 12px; font-weight: 500; }
 
 .lcard { position: relative; display: grid; grid-template-columns: 86px minmax(0, 1fr); height: 124px; background: #18181b; border: 1px solid #27272a; border-radius: var(--r12); overflow: hidden; color: var(--text-quaternary); transition: border-color .2s, transform .3s var(--ease); text-align: left; width: 100%; }
-.lcard:hover { border-color: #3f3f46; }
+@media (hover: hover) { .lcard:hover { border-color: #3f3f46; } }
 .lcard:active { transform: scale(.99); }
 .lcard.on { border-color: #fff; border-width: 2px; }
 .lcard .lp { position: relative; background: #797979; }
@@ -535,5 +535,6 @@ body.folded { --pw: 0px; }
   if (first !== null && byId.has(+first)) selectEx(+first, 'pin');
 })();
 </script>
+<script src="assets/tap.js"></script>
 </body>
 </html>

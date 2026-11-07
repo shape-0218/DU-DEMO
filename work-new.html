@@ -21,10 +21,10 @@
 .ar small { display: block; font-size: 12px; font-weight: 500; color: var(--text-secondary); }
 .ar .nm { flex: 1; min-width: 0; }
 .ar .rm { width: 32px; height: 32px; margin-right: -6px; display: grid; place-items: center; border-radius: 9999px; }
-.ar .rm:hover { background: var(--bg-secondary); }
+@media (hover: hover) { .ar .rm:hover { background: var(--bg-secondary); } }
 .ar .rm .i { width: 18px; height: 18px; }
 .addco { display: flex; align-items: center; gap: 8px; width: 100%; padding: 16px; border-top: 1px solid var(--border-primary); font-size: 14px; font-weight: 600; text-align: left; transition: background .2s; }
-.addco:hover { background: var(--bg-secondary); }
+@media (hover: hover) { .addco:hover { background: var(--bg-secondary); } }
 .addco .i { width: 20px; height: 20px; } .addco small { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
 .info { margin-top: 40px; }
 .info > .field:first-of-type { margin-top: 16px; }
@@ -36,7 +36,7 @@
 .row::-webkit-scrollbar { display: none; }
 .tile, .add { flex: none; width: 96px; height: 120px; border-radius: var(--r12); scroll-snap-align: start; }
 .add { display: grid; place-content: center; justify-items: center; gap: 4px; border: 1px solid var(--border-primary); font-size: 12px; font-weight: 500; color: var(--text-secondary); transition: background .2s; }
-.add:hover { background: var(--bg-secondary); }
+@media (hover: hover) { .add:hover { background: var(--bg-secondary); } }
 .add .i { width: 24px; height: 24px; stroke-width: 1.6; color: var(--text-primary); }
 .tile { position: relative; overflow: hidden; background: #000; animation: rise .35s var(--ease) backwards; }
 .tile img { width: 100%; height: 100%; object-fit: contain; background: #000; }
@@ -128,7 +128,7 @@
           <div id="m-err"></div>
           <div class="row" id="m-row" role="list" aria-labelledby="m-l"></div>
           <div class="cprev" id="cprev" hidden>
-            <div class="cp-im"><img id="cp-img" alt=""></div>
+            <div class="cp-im"><img id="cp-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="></div>
             <div class="cp-tx"><b>카드에서는 이렇게 보여요</b><span id="cp-note">사진 가운데가 카드에 보여요</span><button type="button" class="cp-btn" id="cp-adj">보이는 부분 조정</button></div>
           </div>
         </div>
@@ -368,5 +368,6 @@ if (editing) {
 renderAuthors(); renderRow('media'); renderRow('proc'); validate();
 </script>
 <script src="assets/auth.js"></script>
+<script src="assets/tap.js"></script>
 </body>
 </html>

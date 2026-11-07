@@ -62,7 +62,7 @@ img { display: block; }
 .tabs { display: flex; justify-content: safe center; padding-top: 6px; overflow-x: auto; scrollbar-width: none; }
 .tabs::-webkit-scrollbar { display: none; }
 .tab { flex: none; padding: 8px 12px; font-size: 14px; font-weight: 600; color: var(--text-teritary); border-bottom: 2px solid transparent; transition: color .2s; }
-.tab:hover { color: var(--text-quaternary); }
+@media (hover: hover) { .tab:hover { color: var(--text-quaternary); } }
 .tab[aria-selected="true"] { color: var(--text-quaternary); border-bottom-color: var(--text-quaternary); }
 .tabs-wrap { padding-inline: calc(var(--pad) - 12px); max-width: calc(var(--wrap) + var(--pad) * 2); margin-inline: auto; }
 
@@ -111,7 +111,7 @@ img { display: block; }
 .cover:focus-visible { outline-offset: -3px; border-radius: var(--r12); }
 .slot.is-active .cover:active { background: rgba(255, 255, 255, .06); }
 .info .open { color: inherit; }
-.slot.is-active .info .open:hover strong { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+@media (hover: hover) { .slot.is-active .info .open:hover strong { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; } }
 .badge { position: absolute; top: 12px; right: 12px; display: flex; align-items: center; gap: 2px; padding: 4px 9px; background: #000; border-radius: 9999px; font-size: 12px; font-weight: 500; color: var(--text-disable); }
 .badge img, .badge .hi { width: 14px; height: 14px; flex: none; }
 .rank { position: absolute; left: 16px; bottom: 12px; font-size: 36px; line-height: 1.4; font-weight: 700; color: var(--text-teritary); text-shadow: 0 0 20px rgba(0, 0, 0, .25); transition: color .2s ease-out, transform .25s var(--ease); }
@@ -127,7 +127,7 @@ img { display: block; }
 .meta img { width: 14px; height: 14px; }
 .list-link { display: flex; justify-content: flex-end; padding: 4px var(--pad); }
 .list-link .vt { display: inline-flex; align-items: center; gap: 3px; padding: 4px 0; color: var(--text-teritary); font-size: 12px; font-weight: 500; text-decoration: underline; text-underline-offset: 2px; transition: color .2s; }
-.list-link .vt:hover { color: var(--text-quaternary); }
+@media (hover: hover) { .list-link .vt:hover { color: var(--text-quaternary); } }
 .list-link .vt svg { width: 15px; height: 14px; flex: none; }
 /* 리스트형: 전시 3개씩 세로로 묶어 옆으로 넘김 */
 .lst { --lw: min(340px, calc(100vw - var(--pad) * 2)); display: flex; gap: 12px; align-items: flex-start; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; padding: 16px calc(50% - var(--lw) / 2) 0; }
@@ -137,7 +137,7 @@ img { display: block; }
 .lcol:not(.is-active) { opacity: .4; }
 .lcol.is-active { cursor: auto; }
 .lcard { position: relative; display: grid; grid-template-columns: 86px minmax(0, 1fr); height: 124px; background: #18181b; border: 1px solid #27272a; border-radius: var(--r12); overflow: hidden; color: var(--text-quaternary); transition: border-color .2s, transform .3s var(--ease); }
-.lcard:hover { border-color: #3f3f46; }
+@media (hover: hover) { .lcard:hover { border-color: #3f3f46; } }
 .lcard:active { transform: scale(.99); }
 .lcard .lp { position: relative; background: #797979; }
 .lcard .lp img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -153,7 +153,7 @@ img { display: block; }
 .lcard .lk { position: absolute; right: 12px; top: 12px; display: inline-flex; align-items: center; gap: 2px; height: 25px; padding: 0 9px; border-radius: 9999px; background: rgba(255, 255, 255, .12); color: #d4d4d8; font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; }
 .lcard .lk svg { width: 14px; height: 14px; }
 .arrow { display: none; position: absolute; top: 190px; z-index: 2; width: 44px; height: 44px; border-radius: 9999px; border: 1px solid #2d2d30; background: #000; place-items: center; transition: background .2s, transform .2s var(--ease); }
-.arrow:hover { background: #18181b; }
+@media (hover: hover) { .arrow:hover { background: #18181b; } }
 .arrow:active { transform: scale(.96); }
 .arrow img { width: 24px; height: 24px; }
 .arrow.prev { left: var(--pad); } .arrow.prev img { transform: scaleX(-1); }
@@ -173,7 +173,7 @@ img { display: block; }
 .map strong { display: block; font-size: 16px; font-weight: 600; color: var(--text-quaternary); letter-spacing: -0.03em; }
 .map span { display: block; padding-top: 2px; color: var(--text-teritary); }
 .map .go { width: 32px; height: 32px; }
-.map:hover .go { transform: translateX(2px); }
+@media (hover: hover) { .map:hover .go { transform: translateX(2px); } }
 .map .go { transition: transform .3s var(--ease); }
 
 /* 흰 영역 */
@@ -191,7 +191,7 @@ img { display: block; }
 .art .im { padding: 7px; }
 .art .im div { aspect-ratio: 161 / 215; border-radius: var(--r12); overflow: hidden; }
 .art .im img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
-.art:hover .im img { transform: scale(1.03); }
+@media (hover: hover) { .art:hover .im img { transform: scale(1.03); } }
 .art .tx { padding: 0 12px 10px; }
 .art b { display: block; font-size: 14px; font-weight: 600; letter-spacing: -0.03em; }
 @media (min-width: 768px)  { .art-row { margin-right: 0; padding-right: 0; gap: 16px; } .art { flex: 0 0 200px; } }
@@ -207,7 +207,7 @@ img { display: block; }
 .foot .logo img { width: 99px; height: 22.6px; }
 .foot .links { display: flex; align-items: center; gap: 12px; color: var(--text-teritary); }
 .foot .links i { width: 1px; height: 10px; background: var(--border-primary); }
-.foot a:hover { color: var(--text-primary); }
+@media (hover: hover) { .foot a:hover { color: var(--text-primary); } }
 .foot small { font-size: 10px; font-weight: 400; color: var(--text-teritary); letter-spacing: -0.03em; }
 
 /* 하단 알약 탭 */
@@ -217,7 +217,7 @@ img { display: block; }
 .nav a img.ic { width: 40px; height: 40px; }
 .nav a[aria-current="page"] .bar { position: absolute; inset: 0; width: 56px; height: 47px; }
 .nav a:not([aria-current]) { transition: transform .25s var(--ease); }
-.nav a:not([aria-current]):hover { transform: translateY(-2px); }
+@media (hover: hover) { .nav a:not([aria-current]):hover { transform: translateY(-2px); } }
 .nav a:focus-visible { outline-color: #fafafa; }
 
 @media (prefers-reduced-motion: reduce) {
@@ -469,5 +469,6 @@ document.fonts && document.fonts.ready.then(() => slots.length && go(active, fal
 </script>
 <script src="assets/auth.js"></script>
 <script src="assets/nav.js"></script>
+<script src="assets/tap.js"></script>
 </body>
 </html>

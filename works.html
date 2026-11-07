@@ -12,7 +12,7 @@
 <style>
 .opts { display: grid; gap: 8px; margin-top: 20px; }
 .opt { display: block; width: 100%; padding: 16px; border: 1px solid var(--border-primary); border-radius: var(--r12); text-align: left; transition: background .2s, border-color .2s; }
-.opt:hover { background: var(--bg-secondary); }
+@media (hover: hover) { .opt:hover { background: var(--bg-secondary); } }
 .opt b { display: block; font-size: 16px; font-weight: 600; }
 .opt span { display: block; margin-top: 4px; font-size: 12px; font-weight: 500; color: var(--text-secondary); }
 .tabs2 { display: grid; grid-template-columns: 1fr 1fr; margin-top: 16px; border-bottom: 1px solid var(--bg-teritary); }
@@ -214,5 +214,6 @@ function addSec() {
 drawW(); drawC(); pick(tab);
 </script>
 <script src="assets/auth.js"></script>
+<script src="assets/tap.js"></script>
 </body>
 </html>

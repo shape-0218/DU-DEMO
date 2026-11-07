@@ -16,11 +16,11 @@
 .new { flex: none; display: inline-flex; align-items: center; gap: 4px; height: 36px; padding: 0 14px 0 10px; border-radius: 9999px; background: var(--text-primary); color: #fafafa; font-size: 14px; font-weight: 600; line-height: 1.4; transition: transform .2s var(--ease), background .2s; }   /* 웹뷰 칩을 모바일에도 */
 .new:active { transform: scale(.97); }
 .new .i { width: 18px; height: 18px; stroke-width: 2; transition: transform .3s var(--ease); }
-.new:hover .i { transform: rotate(90deg); }
+@media (hover: hover) { .new:hover .i { transform: rotate(90deg); } }
 .list { display: grid; gap: 12px; margin-top: 20px; padding-bottom: 40px; }
 .card { position: relative; display: grid; grid-template-columns: 96px minmax(0, 1fr); column-gap: 16px; padding: 16px; border: 1px solid var(--border-primary); border-radius: var(--r12); background: #fff; animation: rise .5s var(--ease) backwards; animation-delay: calc(var(--n, 0) * 45ms); transition: border-color .2s, transform .3s var(--ease); }
 .card.go { cursor: pointer; }
-.card.go:hover { border-color: #a1a1aa; }
+@media (hover: hover) { .card.go:hover { border-color: #a1a1aa; } }
 .card.go:active { transform: scale(.995); }
 .card .tx { display: grid; gap: 2px; align-content: start; min-width: 0; padding-right: 28px; }
 .card .top { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--text-secondary); }
@@ -32,12 +32,12 @@
 .card .meta { margin-top: 2px; }
 .card .meta + .meta { margin-top: 0; }
 .more { position: absolute; top: 8px; right: 6px; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 9999px; transition: background .2s; }
-.more:hover { background: var(--bg-secondary); }
+@media (hover: hover) { .more:hover { background: var(--bg-secondary); } }
 .more .i { width: 22px; height: 22px; }
 .pop { position: absolute; z-index: 30; top: 44px; right: 10px; width: 164px; padding: 6px 0; background: #fff; border: 1px solid var(--border-primary); border-radius: var(--r12); box-shadow: 0 12px 32px rgba(0,0,0,.12); animation: pop .2s var(--ease); }
 @keyframes pop { from { opacity: 0; transform: translateY(-4px); } }
 .pop button { display: block; width: 100%; height: 44px; padding: 0 16px; font-size: 14px; font-weight: 500; text-align: left; transition: background .15s; }
-.pop button:hover { background: var(--bg-secondary); }
+@media (hover: hover) { .pop button:hover { background: var(--bg-secondary); } }
 .pop .del { color: var(--notice); }
 .head { margin-top: 20px; }
 @media (min-width: 900px) {
@@ -147,5 +147,6 @@ function nameSheet(e) {
 }
 </script>
 <script src="assets/auth.js"></script>
+<script src="assets/tap.js"></script>
 </body>
 </html>

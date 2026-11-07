@@ -48,7 +48,7 @@ ul { list-style: none; }
 
 .bar { display: flex; align-items: center; gap: 4px; height: 56px; margin-left: -8px; }
 .bar button { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 9999px; transition: background .2s; }
-.bar button:hover { background: var(--bg-secondary); }
+@media (hover: hover) { .bar button:hover { background: var(--bg-secondary); } }
 .bar h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.03em; } /* 11-07 Figma 대조(확인 후 적용): 18→20, Q1 700 */
 .lead { margin-top: 8px; font-size: 20px; font-weight: 700; line-height: 1.4; letter-spacing: -0.03em; }
 
@@ -65,13 +65,13 @@ form { flex: 1; display: flex; flex-direction: column; }
 .ul:focus-within { border-bottom-color: var(--text-primary); }
 .field.err .ul { border-bottom-color: var(--notice); }
 .ul input { flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; outline: 0; background: transparent; font-size: 16px; font-weight: 500; }
-.ul input::placeholder { color: var(--text-disable); }
+.ul input::placeholder { color: var(--text-teritary); }   /* 11-08: Figma Field과 같은 text/teritary */
 .ul input[readonly] { color: var(--text-primary); }
 .ul .i { width: 22px; height: 22px; color: var(--text-primary); }
 .ul .tm { margin-left: 8px; font-size: 16px; font-weight: 500; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
 .field.err .tm { color: var(--notice); }
 .act { flex: none; min-width: 88px; height: 44px; padding: 0 16px; border-radius: var(--r12); background: var(--text-primary); color: #fff; font-size: 14px; font-weight: 600; transition: background .2s, color .2s, transform .2s var(--ease); }
-.act:hover:not(:disabled) { background: #2f2f35; }
+@media (hover: hover) { .act:hover:not(:disabled) { background: #2f2f35; } }
 .act:active:not(:disabled) { transform: scale(.97); }
 .act:disabled { background: var(--bg-secondary); color: var(--text-disable); cursor: default; }
 .help { margin-top: 6px; font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-secondary); }
@@ -81,7 +81,7 @@ form { flex: 1; display: flex; flex-direction: column; }
 .chips { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
 @media (min-width: 768px) { .chips { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
 .chip { height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border: 1px solid var(--border-primary); border-radius: 8px; font-size: 14px; font-weight: 500; transition: background .2s, color .2s, border-color .2s, transform .2s var(--ease); }
-.chip:hover { background: var(--bg-secondary); }
+@media (hover: hover) { .chip:hover { background: var(--bg-secondary); } }
 .chip:active { transform: scale(.97); }
 .chip[aria-pressed="true"] { background: var(--text-primary); border-color: var(--text-primary); color: #fff; }
 .chip .i { width: 16px; height: 16px; stroke-width: 2.2; }
@@ -91,7 +91,7 @@ form { flex: 1; display: flex; flex-direction: column; }
 /* 하단 버튼 */
 .cta { position: sticky; bottom: 0; padding: 20px 0 max(16px, env(safe-area-inset-bottom)); background: linear-gradient(to bottom, rgba(255,255,255,0), #fff 28%); }
 .big { width: 100%; height: 48px; border-radius: var(--r12); background: var(--text-primary); color: #fff; font-size: 16px; font-weight: 600; transition: background .2s, color .2s, transform .2s var(--ease); }
-.big:hover:not(:disabled) { background: #2f2f35; }
+@media (hover: hover) { .big:hover:not(:disabled) { background: #2f2f35; } }
 .big:active:not(:disabled) { transform: scale(.99); }
 .big:disabled { background: var(--bg-secondary); color: var(--text-disable); cursor: default; }
 .demo { margin: 0 0 12px; padding: 10px 12px; border-radius: 8px; background: var(--bg-secondary); font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-teritary); }
@@ -119,12 +119,14 @@ dialog.modal::backdrop { background: rgba(0, 0, 0, .42); }
 .chip[aria-pressed="true"] .ck { display: block; }
 .ta { display: block; width: 100%; height: 132px; margin-top: 8px; padding: 14px 16px; border: 1px solid var(--border-primary); border-radius: var(--r12); font: inherit; font-size: 16px; font-weight: 500; line-height: 1.4; resize: none; outline: 0; color: inherit; transition: border-color .2s; }
 .ta:focus { border-color: var(--text-primary); }
-.ta::placeholder { color: var(--text-disable); }
+.ta::placeholder { color: var(--text-teritary); }
 .cnt-r { margin-top: 6px; text-align: right; font-size: 12px; font-weight: 500; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
 .field > label .opt { margin-left: 6px; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
 .ul.bad, .ul.bad:focus-within { border-bottom-color: var(--notice); }
 .help.ok { color: #00c758; }   /* 11-08 Figma: 사용 가능 = 초록 글자만(아이콘 없음) */
 .field.first { animation: none; }
+/* 움직임 줄이기(11-08, 모든 화면 공통): 움직임·전환을 거의 없애되 상태 변화(색·불투명도)는 즉시 반영 */
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
 </style>
 </head>
 <body>
@@ -165,6 +167,9 @@ const $ = (id) => document.getElementById(id);
 const q = new URLSearchParams(location.search);
 const KIND = q.get('kind') === 'artist' ? 'artist' : 'basic';
 const BACK = KIND === 'artist' ? 'artist.html?me=1' : 'my.html?state=after';
+/* 이동 기록(11-08): 수정·인증 화면은 '거쳐 가는 화면'이라 기록에 남기지 않음 — 저장·나가기는 교체(replace), 온 곳이 돌아갈 곳이면 history.back()
+   (이렇게 하지 않으면 작가 프로필에서 뒤로 가기를 눌렀을 때 방금 나온 수정 화면으로 되돌아감) */
+const leaveTo = (dest) => { let ref = ''; try { const u = new URL(document.referrer); if (u.origin === location.origin) ref = u.pathname.split('/').pop(); } catch (e) {} if (ref && ref === dest.split('?')[0] && history.length > 1) history.back(); else location.replace(dest); };
 const FIELDS = ['회화', '조소', '사진', '그래픽', '브랜딩', '제품', '가구', '공간', '건축', 'UXUI', '공예', '기타'];
 const MAX = 2, TAKEN = ['admin', '디유', 'displayu', '민재', '서하'];
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -257,15 +262,16 @@ $('form').addEventListener('submit', (e) => {
   if (KIND === 'basic') store('du.profile', { ...load('du.profile'), nick: S.nick, img: S.img });
   else store('du.cert', { ...load('du.cert'), name: S.name.trim(), fields: [...S.fields], bio: S.bio.trim(), ig: parseIg(S.ig).id, web: S.web.trim(), img: S.img });
   saved = snap(); ORIG = S.nick; checked = false; update(); snack('프로필을 저장했어요');
-  setTimeout(() => { location.href = BACK; }, 900);
+  setTimeout(() => { location.replace(BACK); }, 900);   // 저장 뒤엔 수정 화면을 기록에서 빼고 돌아감
 });
 const leave = $('leave');
-$('back').addEventListener('click', () => { if (snap() !== saved) leave.showModal(); else location.href = BACK; });
+$('back').addEventListener('click', () => { if (snap() !== saved) leave.showModal(); else leaveTo(BACK); });
 $('stay').addEventListener('click', () => leave.close());
-$('exit').addEventListener('click', () => { location.href = BACK; });
+$('exit').addEventListener('click', () => leaveTo(BACK));
 leave.addEventListener('click', (e) => { if (e.target === leave) leave.close(); });
 update();
 </script>
 <script src="assets/auth.js"></script>
+<script src="assets/tap.js"></script>
 </body>
 </html>
