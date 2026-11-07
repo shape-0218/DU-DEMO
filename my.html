@@ -490,6 +490,15 @@ $('rw-new').addEventListener('click', (e) => {
 });
 syncInv();
 
+/* ============ 프로필 수정 연결 (11-07) ============
+   기본 프로필(닉네임·사진)은 profile-edit.html?kind=basic 에서 바꾸고 localStorage du.profile 에 저장 */
+const PR = (() => { try { return JSON.parse(localStorage.getItem('du.profile')) || {}; } catch (e) { return {}; } })();
+function applyProfile(root) {
+  root.querySelectorAll('b').forEach((b) => { if (b.textContent === 'sangjun' && PR.nick) b.textContent = PR.nick; });
+  const av = root.querySelector('.avatar'); if (av && PR.img) av.innerHTML = `<img src="${PR.img}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">`;
+}
+applyProfile(document.getElementById('me'));
+
 /* ============ 설정 드로어 ============ */
 $('btn-set').addEventListener('click', () => {
   const s = showSheet('right', `<div class="dr"><button class="sh-x" data-close aria-label="닫기" style="position:absolute;right:12px;top:12px">${ic('i-close')}</button>
@@ -499,7 +508,8 @@ $('btn-set').addEventListener('click', () => {
     <div class="grow"></div>
     <div class="bot"><button id="dr-out">로그아웃</button><button class="mute" id="dr-del">회원 탈퇴</button></div>
     <div class="foot"><nav><a href="#">이용약관</a><i></i><a href="#">개인정보처리방침</a></nav><small>© 2026 displayU. All rights reserved.</small></div></div>`, '설정');
-  s.querySelector('#dr-prof').addEventListener('click', () => toast('기본 정보 수정 화면은 아직 준비 중이에요'));
+  applyProfile(s.querySelector('#dr-prof'));
+  s.querySelector('#dr-prof').addEventListener('click', () => { location.href = 'profile-edit.html?kind=basic'; });
   s.querySelector('#dr-cert').addEventListener('click', () => { if (!verified) location.href = 'verify.html'; });
   s.querySelector('#dr-out').addEventListener('click', () => modal({ title: '로그아웃할까요?', body: '로그아웃 후에도 저장한 전시와 기록은\n계정에 유지돼요', acts: [{ label: '취소', cls: 'btn-soft' }, { label: '로그아웃하기', cls: 'btn-dark', fn: () => { closeSheet(); if (window.Auth) Auth.logout(); location.href = 'home.html'; } }] }));
   s.querySelector('#dr-del').addEventListener('click', () => hasOwner

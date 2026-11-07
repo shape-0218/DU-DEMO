@@ -97,6 +97,8 @@ form { flex: 1; display: flex; flex-direction: column; }
 .chip.nudge { animation: nudge .3s var(--ease); }
 @keyframes nudge { 30% { transform: translateX(-3px); } 65% { transform: translateX(3px); } }
 
+.pphoto { margin-top: 16px; }
+
 /* 하단 버튼 */
 .cta { position: sticky; bottom: 0; padding: 20px 0 max(16px, env(safe-area-inset-bottom)); background: linear-gradient(to bottom, rgba(255,255,255,0), #fff 28%); }
 .big { width: 100%; height: 48px; border-radius: var(--r12); background: var(--text-primary); color: #fff; font-size: 16px; font-weight: 600; transition: background .2s, color .2s, transform .2s var(--ease); }
@@ -195,6 +197,8 @@ dialog.modal::backdrop { background: rgba(0, 0, 0, .42); }
         </div>
 
         <!-- 프로필 (이메일 인증 후) -->
+        <div class="field" id="f-photo" hidden><div class="pphoto" id="photo"></div></div>
+
         <div class="field" id="f-name" hidden>
           <label for="pname"><span>작가 프로필명<span class="req" aria-hidden="true">*</span></span></label>
           <div class="ul" style="margin-top:8px"><input id="pname" type="text" maxlength="20" placeholder="작가 프로필명" autocomplete="off"></div>
@@ -232,6 +236,7 @@ dialog.modal::backdrop { background: rgba(0, 0, 0, .42); }
   <div class="acts"><button type="button" class="btn btn-soft" id="stay">계속 작성</button><button type="button" class="btn btn-dark" id="exit">나가기</button></div>
 </dialog>
 
+<script src="assets/photo.js"></script>
 <script>
 const $ = (id) => document.getElementById(id);
 const q = new URLSearchParams(location.search);
@@ -250,7 +255,10 @@ const SCHOOLS = [
 const FIELDS = ['회화', '조소', '사진', '그래픽', '브랜딩', '제품', '가구', '공간', '건축', 'UXUI', '공예', '기타'];
 const MAX = 2, LIMIT = 300;
 
-const st = { school: null, sent: false, verified: false, fields: new Set(), left: 0, timer: null };
+const st = { school: null, sent: false, verified: false, fields: new Set(), left: 0, timer: null, img: '' };
+/* 프로필 사진(선택): 작가 프로필 수정과 같은 부품 — 사진 올리기 한 가지, 틀 안에서 옮기고 살짝 확대 */
+$('photo').innerHTML = PhotoPick.html('rect', '');
+PhotoPick.bind($('photo'), { kind: 'rect', onDone: (d) => { st.img = d; } });
 const dirty = () => !!($('school').value || $('email').value || $('pname').value || st.fields.size);
 
 /* ---------- 스낵바 ---------- */
@@ -301,7 +309,7 @@ function setMailHelp(msg, err) { const h = $('h-email'); h.textContent = msg || 
 function resetMail(hideAll) {
   clearInterval(st.timer); st.sent = false; st.verified = false;
   $('f-code').hidden = true; code.value = ''; $('h-code').hidden = true; $('f-code').classList.remove('err');
-  $('f-name').hidden = $('f-field').hidden = true;
+  $('f-photo').hidden = $('f-name').hidden = $('f-field').hidden = true;
   email.readOnly = false; $('send').hidden = false; $('send').textContent = '메일발송'; setMailHelp('');
   if (hideAll) { $('f-email').hidden = true; email.value = ''; }
 }
@@ -342,7 +350,7 @@ $('check').addEventListener('click', () => {
   clearInterval(st.timer); st.verified = true;
   $('f-code').hidden = true; email.readOnly = true; $('send').hidden = true;
   setMailHelp('학교 이메일 인증이 완료됐어요');
-  $('f-name').hidden = false; $('f-field').hidden = false; $('pname').focus(); update();
+  $('f-photo').hidden = false; $('f-name').hidden = false; $('f-field').hidden = false; $('pname').focus(); update();
 });
 
 /* ---------- 분야 칩 ---------- */
@@ -372,7 +380,7 @@ function update() {
 /* ---------- 제출 · 이탈 ---------- */
 $('form').addEventListener('submit', (e) => {
   e.preventDefault(); if ($('submit').disabled) return;
-  try { localStorage.setItem('du.cert', JSON.stringify({ school: st.school && st.school.n, name: $('pname').value.trim(), fields: [...st.fields] })); } catch (err) {}
+  try { localStorage.setItem('du.cert', JSON.stringify({ school: st.school && st.school.n, name: $('pname').value.trim(), fields: [...st.fields], img: st.img || '' })); } catch (err) {}
   $('s-form').hidden = true; $('s-done').hidden = false; window.scrollTo(0, 0); $('done-h').focus({ preventScroll: true });
 });
 const leave = $('leave');
