@@ -69,8 +69,7 @@ img { display: block; }
 /* 작가 프로필 머리(11-07 확정: Figma `작가 프로필 · 본인` 3378:93787): 왼쪽 이름·학교·소개, 오른쪽 사진 116×132 · 반경 12, 링크는 아래 전체 폭(간격 20) */
 .profile { display: grid; grid-template-columns: minmax(0, 1fr) 116px; grid-template-rows: auto 1fr; column-gap: 16px; align-items: start; }
 .avw { position: relative; grid-column: 2; grid-row: 1 / span 2; width: 116px; height: 132px; }
-.avatar { position: relative; width: 116px; height: 132px; border-radius: 12px; background: var(--bg-teritary); display: grid; place-items: end center; overflow: hidden; color: #fafafa; }
-.avatar svg { width: 102px; height: 102px; }
+.avatar { position: relative; width: 116px; height: 132px; border-radius: 12px; overflow: hidden; }
 .avatar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 @media (min-width: 900px) { .profile { display: flex; flex-direction: column; align-items: stretch; } .avw { order: -1; margin-bottom: 20px; } }   /* 노트북: 사진이 이름 위 */
 .who { min-width: 0; grid-column: 1; grid-row: 1; }
@@ -89,22 +88,18 @@ img { display: block; }
 .links .lt span { font-size: 12px; font-weight: 500; color: var(--text-teritary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .links .out { width: 20px; height: 20px; color: var(--text-teritary); flex: none; transition: transform .25s var(--ease); }
 @media (hover: hover) { .links a:hover .out { transform: translate(2px, -2px); color: var(--text-primary); } }
-/* 작가 프로필 배지(11-06 확정, 후보 A + 다듬기 2차): 저장/수정 버튼을 없애고 아바타 오른쪽 아래에 둥근 배지 하나.
-   방문자 = 북마크(작가 저장, 저장하면 검게 채움) / 본인 = 연필(프로필 수정). 보이는 원 32(데스크톱 36), 누르는 영역 44.
-   테두리는 하나만(흰 링 + 안쪽 선이 겹쳐 보이던 것 정리), 원은 아바타 가장자리에 걸치게 바깥으로 빼서 아바타 가운데를 덜 가림.
-   (아바타 + 배지)를 한 묶음(72x64)으로 오른쪽 마진 20 선에 맞춰서 아바타는 8px 왼쪽으로 들어감. 원 위치는 디자이너가 Figma에서 잡은 값(묶음 안 36,36 = 오른쪽 끝에서 4px 안쪽, 아바타 아래로 4px)에 맞춤 */
-.bdg { position: absolute; right: 2px; bottom: 2px; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 9999px; }
-.bdg .dot { position: relative; width: 32px; height: 32px; border-radius: 9999px; background: #fff; color: var(--text-primary); display: grid; place-items: center;
-  box-shadow: 0 1px 3px rgba(24, 24, 27, .14), inset 0 0 0 1px rgba(24, 24, 27, .14);
-  transition: transform .2s var(--ease), background .25s, color .25s, box-shadow .25s; }
-.bdg .i { grid-area: 1 / 1; width: 16px; height: 16px; stroke-width: 1.8; transition: opacity .25s cubic-bezier(.2, 0, 0, 1), transform .25s cubic-bezier(.2, 0, 0, 1), filter .25s cubic-bezier(.2, 0, 0, 1); }
-.bdg .i.on { fill: currentColor; opacity: 0; transform: scale(.25); filter: blur(4px); }
-.bdg:active .dot { transform: scale(.92); }
-@media (hover: hover) { .bdg:hover .dot { box-shadow: 0 2px 6px rgba(24, 24, 27, .18), inset 0 0 0 1px rgba(24, 24, 27, .22); } }
-.bdg.is-saved .dot { background: var(--text-primary); color: #fff; box-shadow: 0 1px 3px rgba(24, 24, 27, .2); }
-.bdg.is-saved .i.on { opacity: 1; transform: none; filter: none; }
-.bdg.is-saved .i.off { opacity: 0; transform: scale(.25); filter: blur(4px); }
-@media (min-width: 900px) { .bdg { right: 0; bottom: -8px; } .bdg .dot { width: 36px; height: 36px; } .bdg .i { width: 18px; height: 18px; } }
+/* 작가 저장·수정 = 이름 줄 오른쪽 옆 아이콘 버튼 (11-08 Figma 확정 `Button / 프로필 행동 (이름 옆)`)
+   보이는 회색 원 36 · 아이콘 20(선 2) · 누르는 영역 44. 본인 = 연필(프로필 수정), 방문자 = 북마크(작가 저장, 저장하면 채운 북마크 — 같은 회색 원).
+   이름은 폭 안에서 최대 2줄, 넘으면 … (단어 중간에서 끊지 않음) */
+.nm { display: flex; align-items: center; gap: 4px; }
+.nm h1 { min-width: 0; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; word-break: keep-all; overflow-wrap: anywhere; }
+.abtn { flex: none; position: relative; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 9999px; }
+.abtn .dot { width: 36px; height: 36px; border-radius: 9999px; background: var(--bg-secondary); color: var(--text-primary); display: grid; place-items: center; transition: transform .2s var(--ease), background .2s; }
+.abtn .i { width: 20px; height: 20px; stroke-width: 2; }
+.abtn:active .dot { transform: scale(.94); }
+@media (hover: hover) { .abtn:hover .dot { background: #e4e4e7; } }
+.abtn[aria-pressed="true"] .i { fill: currentColor; }
+.profile.nophoto { grid-template-columns: minmax(0, 1fr); }   /* 사진이 없으면 사진 칸 자체가 없고 글이 전체 폭 */
 
 /* 전시 · 작품 섹션 (탭 없이 쌓음. 많아지면 "모두 보기") */
 .content { min-width: 0; }
@@ -188,13 +183,10 @@ img { display: block; }
   <div class="layout">
     <section class="profile" aria-label="작가 정보">
         <div class="who">
-          <h1>고상준</h1>
+          <div class="nm"><h1>고상준</h1><button type="button" class="abtn" id="save" aria-label="작가 저장" aria-pressed="false"><span class="dot"><svg class="i" aria-hidden="true"><use href="#i-bookmark"/></svg></span></button></div>
           <p class="school">한결대학교 · 그래픽 · 브랜딩</p>
         </div>
-        <div class="avw">
-          <div class="avatar" id="avatar"><svg aria-hidden="true"><use href="#i-avatar"/></svg></div>
-          <button type="button" class="bdg" id="save" aria-label="작가 저장" aria-pressed="false"><span class="dot"><svg class="i off" aria-hidden="true"><use href="#i-bookmark"/></svg><svg class="i on" aria-hidden="true"><use href="#i-bookmark"/></svg></span></button>
-        </div>
+        <div class="avw" id="avw"><div class="avatar" id="avatar"></div></div>
       <p class="bio" id="bio">빛과 색의 경계를 탐구하며, 일상에서 발견한 순간들을 작품으로 표현합니다.</p>
       <section class="linkbox" id="linkbox" aria-label="작가 링크"><ul class="links" id="links"></ul></section>
     </section>
@@ -272,14 +264,14 @@ drawSecs();
 /* ---------- 작가 저장 · 프로필 공유하기 ---------- */
 /* 본인 보기(?me=1, 마이 > 작가 프로필 카드): 작가 저장 배지 대신 프로필 수정 배지(연필), 하단 바 표시. 다른 작가를 볼 때는 작가 저장 배지 */
 /* 작가 사진 (116×132 · 반경 12): 데모 작가는 샘플 사진, 본인 보기(?me=1)는 프로필 수정에서 저장한 사진 — 저장한 값이 있는데 사진이 비었으면 기본 이미지 */
-{ const src = (q.get('me') === '1' && 'img' in MC) ? MC.img : 'assets/img/artist-sample.jpg'; if (src) document.getElementById('avatar').innerHTML = `<img src="${src}" alt="">`; }
+{ const src = (q.get('me') === '1' && 'img' in MC) ? MC.img : 'assets/img/artist-sample.jpg'; if (src) document.getElementById('avatar').innerHTML = `<img src="${src}" alt="">`; else { document.getElementById('avw').hidden = true; document.querySelector('.profile').classList.add('nophoto'); } }   // 사진이 없으면 아무것도 그리지 않음(11-08)
 const mine = q.get('me') === '1';
 if (mine) {
   if (MC.name) document.querySelector('.who h1').textContent = MC.name;
   if (MC.fields && MC.fields.length) document.querySelector('.school').textContent = (MC.school || '한결대학교') + ' · ' + MC.fields.join(' · ');
   if (MC.bio != null) { const be = document.getElementById('bio'); be.textContent = MC.bio; be.hidden = !MC.bio; }
   const sv = document.getElementById('save'); sv.removeAttribute('aria-pressed'); sv.id = 'edit'; sv.setAttribute('aria-label', '프로필 수정');   // 본인: 저장 대신 프로필 수정(연필)
-  sv.querySelector('.on').remove(); sv.querySelector('.off use').setAttribute('href', '#i-pencil');
+  sv.querySelector('use').setAttribute('href', '#i-pencil');
   document.getElementById('back').setAttribute('href', 'my.html');
   document.body.insertAdjacentHTML('beforeend', '<nav class="nav" aria-label="하단 메뉴"><div class="pill"><a href="home.html" aria-label="홈"><img class="ic" src="assets/img/nav-home.svg" alt="" width="40" height="40" style="opacity:.55"></a><a href="explore.html" aria-label="검색"><img class="ic" src="assets/img/nav-search.svg" alt="" width="40" height="40"></a><a href="my.html" aria-current="page" aria-label="마이"><img class="bar-i" src="assets/img/tab-bar.svg" alt="" width="56" height="47"><img class="ic" src="assets/img/nav-user.svg" alt="" width="40" height="40" style="position:relative;filter:brightness(2)"></a></div></nav>');
   document.body.style.paddingBottom = '132px';
@@ -288,7 +280,7 @@ const save = document.getElementById('save');
 if (save) SaveBtn.init([save], { kind: '작가', id: 'a1' });
 const toastEl = document.getElementById('toast'); let tt;
 function toast(msg) { toastEl.textContent = msg; toastEl.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => toastEl.classList.remove('on'), 2200); }
-document.addEventListener('click', (e) => { if (e.target.closest('#edit') || (mine && e.target.closest('#avatar'))) location.href = 'profile-edit.html?kind=artist'; });   // 본인은 연필·아바타 모두 프로필 수정으로   // 본인은 아바타를 눌러도 프로필 수정
+document.addEventListener('click', (e) => { if (e.target.closest('#edit') || (mine && e.target.closest('#avatar img'))) location.href = 'profile-edit.html?kind=artist'; });   // 본인은 연필·아바타 모두 프로필 수정으로   // 본인은 아바타를 눌러도 프로필 수정
 
 
 /* ---------- 뒤로가기: 온 곳으로 ---------- */

@@ -18,7 +18,7 @@
   --bg-secondary: #f4f4f5;
   --bg-teritary: #f0f0f3;
   --notice: #fb2c36;
-  --avatar: #e3eeff;
+  --avatar: #f0f0f3;
   --r12: 12px; --r20: 20px;
   --ease: cubic-bezier(.16, 1, .3, 1);
   --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
@@ -59,7 +59,7 @@ img { display: block; }
 .head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .me { display: flex; align-items: center; gap: 8px; min-width: 0; }   /* 11-07: 사진 36 + 닉네임 18, 화살표 없음(기본 프로필 수정은 햄버거) */
 .avatar { position: relative; width: 36px; height: 36px; border-radius: 9999px; background: var(--avatar); display: grid; place-items: end center; overflow: hidden; color: #fff; flex: none; }
-.avatar svg { width: 32px; height: 32px; }
+.avatar svg { position: absolute; width: 106.25%; height: 106.25%; left: -3.125%; top: 6.25%; }   /* 11-08 Figma `Avatar / 프로필 (무채색)`: 그림이 지름에 비례(1.0625배, 위에서 6.25%) — 36·48 모두 같은 비율 */
 .avatar::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px var(--border-primary); pointer-events: none; }   /* 흰 몸통이 바탕에 묻혀 반달처럼 보이던 것 → 원 윤곽 살림 */
 .me b { display: block; font-size: 18px; font-weight: 600; line-height: 1.4; letter-spacing: -0.03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .me small { display: block; color: var(--text-teritary); font-size: 12px; font-weight: 500; }
@@ -232,7 +232,7 @@ img { display: block; }
 .dr { padding: 28px 20px 0; display: flex; flex-direction: column; height: 100%; }
 .dr .logo img { width: 124px; height: 28px; }
 .dr .prof { display: flex; align-items: center; gap: 12px; margin-top: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--bg-teritary); width: 100%; text-align: left; }
-.dr .prof .avatar { width: 48px; height: 48px; color: #fff; } .dr .prof .avatar svg { width: 42px; height: 42px; }
+.dr .prof .avatar { width: 48px; height: 48px; color: #fff; }
 .dr .prof b { display: block; font-size: 14px; font-weight: 600; color: var(--text-primary); } .dr .prof span { display: block; font-size: 12px; color: var(--text-teritary); }
 .dr .prof .i { margin-left: auto; color: var(--text-primary); }
 .dr .cert { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 56px; padding: 14px 0; font-size: 16px; font-weight: 500; text-align: left; }
@@ -389,13 +389,13 @@ const data = { exh: savedEmpty ? [] : EXH, works: savedEmpty ? [] : WORKS, artis
 const empties = { exh: ['마음에 드는 전시를 모아 보세요', '북마크를 누르면 여기에 쌓여요', '전시 둘러보기', 'explore.html'], works: ['마음에 드는 작품을 모아 보세요', '북마크를 누르면 여기에 쌓여요', '작품 둘러보기', 'explore.html?tab=works'], artists: ['마음에 드는 작가를 모아 보세요', '작가 프로필의 북마크를 누르면 여기에 쌓여요', '전시 둘러보기', 'explore.html'] };   // 제목·설명·버튼·이동
 const by = (a) => Byline.html(a);   // 11-06: 이름을 다 보여주고 넘칠 때만 "외 N명"
 function renderVault() {
-  $('c-exh').textContent = data.exh.length; $('c-wk').textContent = data.works.length; $('c-ar').textContent = data.artists.length;
+  $('c-exh').textContent = data.exh.length || ''; $('c-wk').textContent = data.works.length || ''; $('c-ar').textContent = data.artists.length || '';   // 비어 있으면 0을 보여주지 않음(11-08)
   document.querySelectorAll('.seg button').forEach((b) => { const on = b.dataset.k === tab; b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1; });
   const list = data[tab], el = $('vault');
   if (!list.length) {
     const e = empties[tab], BM = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10a1 1 0 0 1 1 1v15l-6-3.8L6 20V5a1 1 0 0 1 1-1z"/></svg>';
     const rec = tab === 'exh' ? DEMO.TAB.pop().slice(0, 5).map((x) => ({ t: x.t, s: x.s.split(' ')[0], img: x.img, href: 'exhibition.html?e=' + x.i })) : tab === 'works' ? DEMO.WORKS.slice().sort((a, b) => b.l - a.l).slice(0, 5).map((w) => ({ t: w.t, s: w.a.join(', '), img: w.img, href: 'work.html?w=' + w.i })) : [];
-    el.innerHTML = `<div class="empty"><span class="eic" aria-hidden="true">${BM}</span><h3>${e[0]}</h3><p>${e[1]}</p><a class="egb" href="${e[3]}">${e[2]}</a></div>` + (rec.length ? `<section class="rec" aria-label="${tab === 'exh' ? '지금 인기 있는 전시' : '지금 인기 있는 작품'}"><h4>${tab === 'exh' ? '지금 인기 있는 전시' : '지금 인기 있는 작품'}</h4><div class="rail">${rec.map((r) => `<div class="rc"><a href="${r.href}"><div class="im"><img src="${DEMO.src(r.img)}" alt="" width="128" height="171" loading="lazy" draggable="false"></div><b>${r.t}</b><small>${r.s}</small></a></div>`).join('')}</div></section>` : '');
+    el.innerHTML = `<div class="empty"><span class="eic" aria-hidden="true">${BM}</span><h3>${e[0]}</h3><a class="egb" href="${e[3]}">${e[2]}</a></div>` + (rec.length ? `<section class="rec" aria-label="${tab === 'exh' ? '지금 인기 있는 전시' : '지금 인기 있는 작품'}"><h4>${tab === 'exh' ? '지금 인기 있는 전시' : '지금 인기 있는 작품'}</h4><div class="rail">${rec.map((r) => `<div class="rc"><a href="${r.href}"><div class="im"><img src="${DEMO.src(r.img)}" alt="" width="128" height="171" loading="lazy" draggable="false"></div><b>${r.t}</b><small>${r.s}</small></a></div>`).join('')}</div></section>` : '');
     $('vault').setAttribute('aria-labelledby', 's-' + (tab === 'exh' ? 'exh' : tab === 'works' ? 'wk' : 'ar')); return;
   }
   if (tab === 'exh') el.innerHTML = '<div class="grid">' + list.map((e, n) => `<a class="card ex" href="exhibition.html?e=${+e[5].slice(1) - 1}" style="--n:${Math.min(n, 10)}"><div class="im"><div><img src="${O}${e[5]}.jpg" alt="${e[0]} 포스터" width="161" height="241" loading="${n < 4 ? 'eager' : 'lazy'}"></div></div><div class="tx"><b>${e[0]}</b><span class="l">${e[1]}</span><span class="m"><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14">${e[2]}</span><span class="m"><img src="assets/img/icon-location.svg" alt="" width="14" height="14">${e[3]}</span></div></a>`).join('') + '</div>';
