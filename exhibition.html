@@ -280,6 +280,9 @@ dialog.player .miss[hidden] { display: none; }
 @media (hover: hover) { .menu button:hover { background: var(--bg-soft); } }
 .ph { margin-top: 8px; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
 .ph::-webkit-scrollbar { display: none; }
+.ph.many { --b: 20px; margin-right: calc(var(--b) * -1); padding-right: var(--b); scroll-snap-type: x proximity; }   /* 11-08 사용자: 4장 이상이면 3장 + 4번째가 조금(26) 보여서 옆으로 넘길 수 있다는 걸 알리기. 오른쪽 끝(화면 가장자리)까지 이어짐 */
+.ph.many img { flex: 0 0 calc((100% + var(--b) - 50px) / 3); min-width: 0; scroll-snap-align: start; }
+@media (min-width: 900px) { .ph.many { --b: 0px; } }
 .ph img { flex: 0 0 calc((100% - 16px) / 3); min-width: 96px; aspect-ratio: 5 / 6; object-fit: cover; border-radius: var(--r12); }
 .tx2 { margin-top: 8px; color: var(--text-primary); text-wrap: pretty; }
 .act { margin-top: 0; display: flex; align-items: center; gap: 12px; color: var(--text-secondary); font-size: 12px; font-weight: 500; }
@@ -630,7 +633,7 @@ const expanded = new Set();
 
 function item(c, reply) {
   const imgs = c.imgs ? c.imgs : c.photos ? Array.from({ length: c.photos }, () => 'assets/img/detail/opt/gallery.jpg') : [];
-  const photos = imgs.length ? `<div class="ph">${imgs.map((u) => `<img src="${u}" alt="후기 사진"${c.imgs ? '' : ' loading="lazy"'}>`).join('')}</div>` : '';
+  const photos = imgs.length ? `<div class="ph${imgs.length > 3 ? ' many' : ''}">${imgs.map((u) => `<img src="${u}" alt="후기 사진"${c.imgs ? '' : ' loading="lazy"'}>`).join('')}</div>` : '';
   const body = c.text ? c.text.replace(/[&<>]/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[ch])).replace(/\n/g, '<br>') : TXT;
   return `<li class="cm ${c.gone ? 'gone' : ''}${c.fresh ? ' fresh' : ''}" data-id="${c.id}">
     <div class="row">${avatar}<div>
