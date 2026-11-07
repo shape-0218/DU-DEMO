@@ -84,7 +84,7 @@ body.labels .pin:not(.on):not(.off) .lb { opacity: 1; }
 @keyframes pulse { 0% { transform: scale(.5); opacity: 1; } 100% { transform: scale(1.4); opacity: 0; } }
 
 /* 상단: 뒤로 + 검색 + 칩 */
-.top { position: fixed; z-index: 20; left: 20px; right: 20px; top: calc(env(safe-area-inset-top) + 12px); display: grid; gap: 12px; pointer-events: none; }
+.top { position: fixed; z-index: 20; left: 20px; right: 20px; top: calc(env(safe-area-inset-top) + 8px); display: grid; gap: 12px; pointer-events: none; }   /* 11-08 Figma `지도 · 기본` 3331:38540: 상태바 아래 8(검색창 y52, 칩 y108) */
 .top > * { pointer-events: auto; }
 .bar { display: flex; gap: 8px; align-items: center; }
 .back { flex: none; width: 44px; height: 44px; border-radius: 50%; background: #000; display: grid; place-items: center; color: #fff; transition: transform .2s var(--ease); box-shadow: var(--sh-float); }

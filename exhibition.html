@@ -174,7 +174,8 @@ img { display: block; }
 .sec { padding: 36px var(--pad) 0; }
 @media (min-width: 900px) { .sec { padding-inline: 0; } .band .sec, .band > .sec { padding-inline: 0; } }
 .sec:has(> h2.sr) { padding-top: 20px; }
-#p-works .sec:has(> h2.sr) { padding-top: 24px; }   /* 11-08 Figma: 탭 줄 아래 작품 카드까지 36 */
+#p-works .sec:has(> h2.sr) { padding-top: 24px; }
+#p-reviews .sec:has(> h2.sr) { padding-top: 8px; }   /* 11-08 Figma `전시 상세 · 후기 탭`: 탭 줄 아래 첫 댓글 카드까지 8 */   /* 11-08 Figma: 탭 줄 아래 작품 카드까지 36 */
 .sec > h2.sr + * { margin-top: 0; }
 .sec h2 { font-size: 20px; line-height: 1.4; font-weight: 700; letter-spacing: -0.03em; }
 .sec .lead { margin-top: 8px; color: var(--text-secondary); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-wrap: pretty; }
@@ -261,7 +262,7 @@ dialog.player .miss[hidden] { display: none; }
 
 /* 댓글(개선안 2627:29136) */
 .cm-list { margin-top: 12px; }
-.cm { padding: 20px 0 4px; }
+.cm { padding: 16px 0 8px; }   /* 11-08 Figma `Comment / 댓글` 3257:37174: 안쪽 위 16(아래 16 = 동작 줄 32 안의 글자 여백 + 8) */
 .row { display: grid; grid-template-columns: 32px minmax(0, 1fr); column-gap: 12px; }
 .av { width: 32px; height: 32px; border-radius: 9999px; background: var(--bg-soft); display: grid; place-items: end center; overflow: hidden; color: #fff; }
 .av svg { width: 34px; height: 34px; }
@@ -279,7 +280,7 @@ dialog.player .miss[hidden] { display: none; }
 @media (hover: hover) { .menu button:hover { background: var(--bg-soft); } }
 .ph { margin-top: 8px; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
 .ph::-webkit-scrollbar { display: none; }
-.ph img { flex: 0 0 calc((100% - 16px) / 3); min-width: 96px; aspect-ratio: 1 / 1.05; object-fit: cover; border-radius: var(--r12); }
+.ph img { flex: 0 0 calc((100% - 16px) / 3); min-width: 96px; aspect-ratio: 5 / 6; object-fit: cover; border-radius: var(--r12); }
 .tx2 { margin-top: 8px; color: var(--text-primary); text-wrap: pretty; }
 .act { margin-top: 0; display: flex; align-items: center; gap: 12px; color: var(--text-secondary); font-size: 12px; font-weight: 500; }
 .act button { display: inline-flex; align-items: center; gap: 4px; height: 32px; padding-right: 4px; transition: color .2s; }

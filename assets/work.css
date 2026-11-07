@@ -85,14 +85,15 @@
 .srow .ct { margin-top: auto; font-size: 12px; font-weight: 500; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
 .srow .ch { align-self: center; width: 20px; height: 20px; transition: transform .3s var(--ease); }
 @media (hover: hover) { .srow:hover .ch { transform: translateX(3px); } }
-.slist.edit .srow { cursor: grab; touch-action: none; user-select: none; grid-template-columns: 96px minmax(0, 1fr) 44px; }
+.slist.edit .srow { cursor: grab; touch-action: none; user-select: none; grid-template-columns: 96px minmax(0, 1fr) 72px; }
 .slist.edit .ch { display: none; }
 .srow .ed { display: none; align-self: center; justify-content: flex-end; gap: 8px; }
-.slist.edit .srow .ed { display: flex; flex-direction: column; align-items: center; gap: 12px; }
-.srow .ed .i { width: 20px; height: 20px; }
-.srow .ed .tr { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 9999px; color: var(--notice); transition: background .2s; }
-@media (hover: hover) { .srow .ed .tr:hover { background: #ffe2e2; } }
-.srow .ed .gr { color: var(--text-teritary); }
+/* 11-08 Figma `콘텐츠 · 편집 모드` 2149:36703: 삭제·손잡이는 32×32 두 개가 가로로(간격 8), 아이콘 24, 둘 다 검정 */
+.slist.edit .srow .ed { display: flex; flex-direction: row; align-items: center; gap: 8px; }
+.srow .ed .i { width: 24px; height: 24px; }
+.srow .ed .tr { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 9999px; color: var(--text-primary); transition: background .2s; }
+@media (hover: hover) { .srow .ed .tr:hover { background: var(--bg-secondary); } }
+.srow .ed .gr { width: 32px; height: 32px; display: grid; place-items: center; color: var(--text-primary); }
 .srow.drag { opacity: .6; background: var(--bg-secondary); }
 .slist + .addbtn { margin-top: 20px; margin-bottom: 32px; }
 
