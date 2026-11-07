@@ -89,7 +89,7 @@
 .slist.edit .srow .ed { display: flex; flex-direction: column; align-items: center; gap: 12px; }
 .srow .ed .i { width: 20px; height: 20px; }
 .srow .ed .tr { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 9999px; color: var(--notice); transition: background .2s; }
-.srow .ed .tr:hover { background: #ffe4e4; }
+.srow .ed .tr:hover { background: #ffe2e2; }
 .srow .ed .gr { color: var(--text-teritary); }
 .srow.drag { opacity: .6; background: var(--bg-secondary); }
 .slist + .addbtn { margin-top: 20px; margin-bottom: 32px; }
@@ -120,7 +120,7 @@
 .upnote p b { display: block; font-weight: 600; color: var(--text-primary); }
 
 /* 팀원 관리 */
-.team-h { margin-top: 12px; display: flex; align-items: baseline; gap: 8px; }
+.team-h { margin-top: 12px; display: flex; align-items: baseline; gap: 10px; }
 .team-h h2 { font-size: 16px; font-weight: 600; letter-spacing: -0.03em; }
 .team-h span { font-size: 12px; font-weight: 500; color: var(--text-teritary); } /* 11-07 Figma 대조(확인 후 적용): Q3 안내 10→12(Figma도 12로 올림) */
 .tcard { margin-top: 12px; padding: 14px 16px 16px; border: 1px solid var(--border-primary); border-radius: var(--r12); background: #fff; }
@@ -161,9 +161,9 @@
 .mtabs button { position: relative; height: 44px; font-size: 16px; font-weight: 500; color: var(--text-teritary); transition: color .2s; font-variant-numeric: tabular-nums; }
 .mtabs button[aria-selected="true"] { color: var(--text-primary); font-weight: 600; }
 .mtabs button[aria-selected="true"]::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--text-primary); }
-.grp { padding: 14px 0 0; }
-.grp + .grp { margin-top: 8px; border-top: 1px solid var(--bg-teritary); }
-.grp > h4 { margin: 0 0 4px; font-size: 12px; font-weight: 600; color: var(--text-teritary); } /* 11-07 Figma 대조(확인 후 적용): Q3 역할 묶음 제목 12 SemiBold */
+.grp { padding: 10px 0 0; }
+.grp + .grp { margin-top: 0; border-top: 1px solid var(--bg-teritary); }
+.grp > h4 { margin: 0; font-size: 12px; font-weight: 600; color: var(--text-teritary); } /* 11-07 Figma 대조: 역할 묶음 제목 12 SemiBold, 아래 간격 0 */
 .mrow { display: flex; align-items: center; gap: 12px; padding: 10px 0; }   /* Figma MemberRow: 아바타 48, 한 줄 높이 69 */
 .av { flex: none; width: 48px; height: 48px; border-radius: 9999px; display: grid; place-items: end center; overflow: hidden; }
 .av svg { width: 34px; height: 34px; fill: currentColor; opacity: .5; }

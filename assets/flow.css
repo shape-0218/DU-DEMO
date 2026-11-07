@@ -8,7 +8,7 @@
   --border-primary: #d4d4d8;
   --bg-secondary: #f4f4f5;
   --bg-teritary: #f0f0f3;
-  --notice: #e5484d;
+  --notice: #fb2c36;
   --ok: #00c758;
   --info: #3b82f6;
   --warn: #f5b800;
@@ -100,25 +100,25 @@ img { display: block; }
 .chip .i { width: 16px; height: 16px; stroke-width: 2.2; }
 
 /* 시트 · 모달 · 스낵바 · 토스트 */
-.scrim { position: fixed; inset: 0; z-index: 70; background: rgba(0, 0, 0, .42); animation: fade .25s ease; } /* 11-07 Figma 대조(확인 후 적용) */ 딤 .5→.42
+.scrim { position: fixed; inset: 0; z-index: 70; background: rgba(0, 0, 0, .42); animation: fade .25s ease; } /* 11-07 Figma 대조(확인 후 적용): 딤 .5→.42 */
 @keyframes fade { from { opacity: 0; } }
 .sheet { position: fixed; z-index: 71; left: 50%; bottom: 0; width: min(480px, 100%); max-height: 92dvh; overflow-y: auto; transform: translateX(-50%); padding: 12px 20px max(16px, env(safe-area-inset-bottom)); background: #fff; border-radius: 20px 20px 0 0; animation: slideUp .4s var(--ease); }
 @keyframes slideUp { from { transform: translate(-50%, 40px); opacity: 0; } }
-.sheet .grab { width: 40px; height: 4px; margin: 2px auto 14px; border-radius: 4px; background: #d4d4d8; } /* 11-07 Figma 대조(확인 후 적용) */ 손잡이 Figma: 40×4, 반경 4, #d4d4d8, 위아래 14
-.sheet h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.03em; } /* 11-07 Figma 대조(확인 후 적용) */ 시트 제목 20 Bold
+.sheet .grab { width: 40px; height: 4px; margin: 2px auto 14px; border-radius: 4px; background: #d4d4d8; } /* 11-07 Figma 대조(확인 후 적용): 손잡이 Figma: 40×4, 반경 4, #d4d4d8, 위아래 14 */
+.sheet h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.03em; } /* 11-07 Figma 대조(확인 후 적용): 시트 제목 20 Bold */
 .sheet .sub { margin-top: 2px; font-size: 12px; font-weight: 500; color: var(--text-secondary); }
 @media (min-width: 768px) { .sheet { bottom: 6vh; border-radius: 20px; } }
 
 dialog.modal { width: min(322px, calc(100vw - 80px)); padding: 24px 20px 20px; border: 0; border-radius: var(--r20); background: #fff; color: var(--text-primary); animation: popm .25s var(--ease); }
 dialog.modal::backdrop { background: rgba(0, 0, 0, .42); }
 @keyframes popm { from { opacity: 0; transform: scale(.96); } }
-.modal h2 { font-size: 20px; font-weight: 700; line-height: 1.4; } /* 11-07 Figma 대조(확인 후 적용) */ 모달 제목 20 Bold
-.modal p { margin-top: 8px; font-size: 14px; font-weight: 400; line-height: 1.4; color: var(--text-teritary); white-space: pre-line; } /* 11-07 Figma 대조(확인 후 적용) */ 본문 Regular, 제목과 8
+.modal h2 { font-size: 20px; font-weight: 700; line-height: 1.4; } /* 11-07 Figma 대조(확인 후 적용): 모달 제목 20 Bold */
+.modal p { margin-top: 8px; font-size: 14px; font-weight: 400; line-height: 1.4; color: var(--text-teritary); white-space: pre-line; } /* 11-07 Figma 대조(확인 후 적용): 본문 Regular, 제목과 8 */
 .modal ul { margin-top: 8px; display: grid; gap: 2px; font-size: 14px; font-weight: 500; line-height: 1.4; color: var(--text-teritary); }
-.modal .warn { margin-top: 16px; padding: 12px 14px; border-radius: var(--r12); background: #ffe4e4; }
+.modal .warn { margin-top: 16px; padding: 12px 14px; border-radius: var(--r12); background: #ffe2e2; }
 .modal .warn b { display: block; font-size: 12px; font-weight: 600; color: var(--notice); }
 .modal .warn span { display: block; margin-top: 2px; font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-secondary); white-space: pre-line; }
-.modal .acts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; } /* 11-07 Figma 대조(확인 후 적용) */ 글과 버튼 16
+.modal .acts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; } /* 11-07 Figma 대조(확인 후 적용): 글과 버튼 16 */
 .toast { position: fixed; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom)); transform: translate(-50%, 12px); width: max-content; max-width: min(440px, calc(100vw - 40px)); padding: 14px 18px; border-radius: 8px; background: #000; color: #fff; font-size: 14px; font-weight: 500; line-height: 1.4; opacity: 0; pointer-events: none; z-index: 110; transition: opacity .25s, transform .35s var(--ease); }
 .toast.on { opacity: 1; transform: translate(-50%, 0); }
 .demo { margin: 0 0 12px; padding: 10px 12px; border-radius: 8px; background: var(--bg-secondary); font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-teritary); }
@@ -140,12 +140,25 @@ dialog.modal::backdrop { background: rgba(0, 0, 0, .42); }
 /* 완료 화면 */
 .done { flex: 1; display: flex; flex-direction: column; }
 .done .top { text-align: center; padding-top: 56px; }
-.ring { width: 64px; height: 64px; margin: 0 auto; display: grid; place-items: center; border-radius: 9999px; background: var(--text-primary); color: #fff; animation: ringIn .6s var(--ease); }
-.ring .i { width: 28px; height: 28px; stroke-width: 2.4; stroke-dasharray: 28; animation: draw .5s .2s var(--ease) backwards; }
+.ring { width: 64px; height: 64px; margin: 0 auto; display: grid; place-items: center; border-radius: 9999px; background: var(--text-primary); color: #fff; }
+.ring .i { width: 28px; height: 28px; stroke-width: 2.4; stroke-dasharray: 28; animation: draw .45s .3s var(--ease) backwards; }
 @keyframes ringIn { from { transform: scale(.7); opacity: 0; } }
+@keyframes dnRing { from { transform: scale(.72); opacity: 0; } }
 @keyframes draw { from { stroke-dashoffset: 28; } }
-.done h2 { margin-top: 20px; font-size: 20px; font-weight: 600; letter-spacing: -0.03em; }
-.done .sub { margin-top: 8px; font-size: 14px; font-weight: 500; line-height: 1.4; color: var(--text-secondary); }
+.done h2 { margin-top: 20px; font-size: 20px; font-weight: 700; letter-spacing: -0.03em; }
+.done .sub { margin-top: 8px; font-size: 14px; font-weight: 400; line-height: 1.4; color: var(--text-secondary); }
+/* 완료 모션(11-07): 링이 올라오고(+ 옅은 번짐 한 번) → 체크가 그려지고 → 제목·설명 → 요약 카드·단계 → 버튼 순서로 한 번만. 강한 ease-out, 위로 12px + 투명도, 움직임 줄이기에서는 끔 */
+.ring { position: relative; animation: dnRing .6s var(--ease) both; }
+.ring::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: var(--text-primary); opacity: 0; animation: dnHalo .9s .18s var(--ease) both; z-index: -1; }
+.done h2 { animation: dnUp .5s .3s var(--ease) both; }
+.done .sub { animation: dnUp .5s .36s var(--ease) both; }
+.done .steps, .done .sum { animation: dnUp .55s .44s var(--ease) both; }
+.done .sum div { animation: dnUp .45s var(--ease) both; } .done .sum div:nth-child(1) { animation-delay: .5s; } .done .sum div:nth-child(2) { animation-delay: .55s; } .done .sum div:nth-child(3) { animation-delay: .6s; } .done .sum div:nth-child(4) { animation-delay: .65s; } .done .sum div:nth-child(5) { animation-delay: .7s; }
+.done .cta { animation: dnUp .5s .62s var(--ease) both; }
+@keyframes dnUp { from { opacity: 0; transform: translateY(12px); } }
+@keyframes dnHalo { from { opacity: .22; transform: scale(1); } to { opacity: 0; transform: scale(1.75); } }
+@media (prefers-reduced-motion: reduce) { .ring, .ring::before, .done h2, .done .sub, .done .steps, .done .sum, .done .sum div, .done .cta { animation: none !important; } }
+
 .steps { position: relative; display: grid; grid-template-columns: 1fr 1fr 1fr; margin-top: 32px; --p: .5; }
 .steps::before, .steps::after { content: ""; position: absolute; top: 11px; left: 12px; height: 2px; border-radius: 2px; }
 .steps::before { right: 12px; background: var(--border-primary); }

@@ -115,7 +115,7 @@ img { display: block; }
 .exh-list { display: grid; gap: 12px; }
 .exh-list { gap: 0; }
 .exh { display: grid; grid-template-columns: 72px minmax(0, 1fr) 20px; align-items: center; column-gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--bg-teritary); animation: rise .6s var(--ease) backwards; animation-delay: calc(var(--n, 0) * 60ms); }   /* 카드 테두리 없이 얇은 구분선만 */
-.exh:first-child { padding-top: 4px; } .exh:last-child { border-bottom: 0; }
+.exh:first-child { padding-top: 16px; } .exh:last-child { border-bottom: 0; } .exh + .exh { margin-top: 12px; }   /* 11-07 Figma 위치 대조: 전시 행 위 16·행 사이 12 */
 .exh img { width: 72px; height: 96px; object-fit: cover; border-radius: var(--r8); background: #000; box-shadow: 0 0 0 1px rgba(0, 0, 0, .06); }
 .exh .meta { display: flex; flex-wrap: wrap; gap: 2px 12px; margin-top: 4px; }
 .exh .meta .sub { margin-top: 0; }
