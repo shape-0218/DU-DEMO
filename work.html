@@ -14,6 +14,7 @@
   --text-secondary: #3f3f47;
   --text-teritary: #71717b;
   --border-primary: #d4d4d8;
+  --bg-white: #fff;
   --bg-secondary: #f4f4f5;
   --bg-teritary: #f0f0f3;
   --alert: #fb2c36;
@@ -56,14 +57,14 @@ img { display: block; }
   .layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(380px, .9fr); column-gap: 72px; padding: 32px var(--pad) 96px; align-items: start; }
   .viewer { position: sticky; top: 96px; }
 }
-.stage { position: relative; background: #000; aspect-ratio: 402 / 554; overflow: hidden; }
+.stage { position: relative; background: var(--bg-white); aspect-ratio: 402 / 554; overflow: hidden; }   /* 11-08 남는 곳은 흰색(11-05 검정에서 변경) */
 @media (min-width: 600px) and (max-width: 899px) { .stage { aspect-ratio: auto; height: 78vh; } }
 @media (min-width: 900px) { .stage { aspect-ratio: auto; height: min(78vh, 820px); border-radius: var(--r12); } }
 .track { display: flex; height: 100%; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; touch-action: pan-x pan-y pinch-zoom; }   /* 위아래로 쓸면 페이지가 스크롤되도록 방향을 명시 */
 .viewer img, .viewer video { -webkit-user-drag: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }   /* 이미지가 끌려 나오거나(드래그 고스트) 길게 눌러 메뉴가 뜨지 않게 */
 .track::-webkit-scrollbar { display: none; }
-.slide { flex: 0 0 100%; height: 100%; scroll-snap-align: center; background: #000; }
-.slide img { width: 100%; height: 100%; object-fit: contain; }   /* 어떤 비율이든 전체가 보이고, 남는 곳은 검정 (정책) */
+.slide { flex: 0 0 100%; height: 100%; scroll-snap-align: center; background: var(--bg-white); }
+.slide img { width: 100%; height: 100%; object-fit: contain; }   /* 어떤 비율이든 전체가 보이고, 남는 곳은 흰색 (11-08 정책 변경) */
 /* 감상 방식: 한 장씩(기본) / 이어보기(이미지가 여백 없이 세로로 이어 붙음) */
 .ovl { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
 .ovl > * { pointer-events: auto; }
@@ -73,7 +74,7 @@ img { display: block; }
 .vmode button[aria-pressed="true"] { background: var(--text-primary); color: #fff; }
 .vmode .i { width: 18px; height: 18px; }
 .stackv { display: none; }
-.stackv img { display: block; width: 100%; height: auto; background: #0c0f1d; }
+.stackv img { display: block; width: 100%; height: auto; background: var(--bg-secondary); }
 .viewer.stack .track, .viewer.stack .nav-btn { display: none !important; }
 .viewer.stack .stackv { display: block; }
 .viewer.stack .stage { aspect-ratio: auto; height: auto; overflow: visible; background: none; border-radius: 0; }
