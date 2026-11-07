@@ -48,7 +48,7 @@ img { display: block; }
 .top { background: #fff; padding-top: max(12px, env(safe-area-inset-top)); }
 .search { position: relative; margin-top: 0; }   /* 11-08 Figma `탐색 · 전시`: 상태바 아래 12에 검색창(54) */
 .search input { width: 100%; height: 54px; padding: 0 52px 0 20px; border: 0; border-radius: 9999px; background: var(--bg-secondary); font-size: 16px; font-weight: 500; outline: 0; transition: background-color .2s; -webkit-appearance: none; appearance: none; }
-.search input::placeholder { color: var(--text-teritary); font-size: 14px; font-weight: 400; }   /* 11-08 사용자: 넓은 창 + 큰 글자라 안내 문구가 먼저 보임 → 색은 그대로 두고 크기·굵기만 낮춤(14/Regular, Figma body/lg/regular). 입력한 글자는 16 그대로(iOS 확대 방지) */
+.search input::placeholder { color: var(--text-teritary); font-weight: 400; }   /* 11-08 안내 문구는 색은 그대로, 굵기만 Regular(Figma와 같음). 크기는 16 그대로 — 입력 칸은 무조건 16 이상(사용자 규칙, iOS 확대 방지) */
 /* 11-08 사용자: 눌렀을 때 검은 테두리가 생기고 돋보기가 X로 바뀌어 검색이 어정쩡 → 누르면 테두리 대신 바탕만 한 단계 진해지고 돋보기가 진해짐(손가락·마우스). 테두리는 키보드(Tab)로 들어왔을 때만 */
 .search input:focus { background: var(--bg-teritary); }
 .search:focus-within .go { color: var(--text-primary); }
@@ -128,14 +128,6 @@ html.kb .search input:focus-visible { box-shadow: 0 0 0 2px var(--text-primary);
 .empty p { margin-top: 6px; color: var(--text-secondary); }
 
 /* 하단 알약 탭 (홈과 같음) */
-.nav { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: flex; justify-content: center; padding: 24px 20px max(16px, env(safe-area-inset-bottom)); background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #fff); pointer-events: none; }
-.nav .pill { pointer-events: auto; width: 362px; max-width: 100%; height: 70px; background: #000; border-radius: 9999px; box-shadow: 2px 8px 18px rgba(4, 0, 250, .06); display: flex; align-items: center; justify-content: space-around; overflow: hidden; }
-.nav a { position: relative; width: 56px; height: 47px; display: grid; place-items: center; padding-top: 7px; }
-.nav a img.ic { width: 40px; height: 40px; }
-.nav a[aria-current="page"] .bar-i { position: absolute; inset: 0; width: 56px; height: 47px; }
-.nav a:not([aria-current]) { transition: transform .25s var(--ease); }
-@media (hover: hover) { .nav a:not([aria-current]):hover { transform: translateY(-2px); } }
-.nav a:focus-visible { outline-color: #fafafa; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; } }
 </style>
 <script src="assets/byline.js"></script>
@@ -192,10 +184,11 @@ html.kb .search input:focus-visible { box-shadow: 0 0 0 2px var(--text-primary);
 </main>
 
 <nav class="nav" aria-label="하단 메뉴">
-  <div class="pill">
-    <a href="home.html" aria-label="홈"><img class="ic" src="assets/img/nav-home.svg" alt="" width="40" height="40" style="opacity:.55"></a>
-    <a href="explore.html" aria-current="page" aria-label="검색"><img class="bar-i" src="assets/img/tab-bar.svg" alt="" width="56" height="47"><img class="ic" src="assets/img/nav-search.svg" alt="" width="40" height="40" style="position:relative;filter:brightness(2.4)"></a>
-    <a href="my.html" aria-label="마이"><img class="ic" src="assets/img/nav-user.svg" alt="" width="40" height="40"></a>
+  <div class="pill" style="--i:1">
+    <span class="cap" aria-hidden="true"></span>
+    <a href="home.html" aria-label="홈"><svg class="o" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg><svg class="s" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg></a>
+    <a href="explore.html" aria-current="page" aria-label="검색"><svg class="o" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg><svg class="s" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"/></svg></a>
+    <a href="my.html" aria-label="마이"><svg class="o" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg><svg class="s" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/></svg></a>
   </div>
 </nav>
 

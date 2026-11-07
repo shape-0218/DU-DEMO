@@ -91,8 +91,17 @@ body.labels .pin:not(.on):not(.off) .lb { opacity: 1; }
 .back:active { transform: scale(.96); }
 .back svg { width: 24px; height: 24px; }
 .search { flex: 1; position: relative; height: 44px; min-width: 0; }
-.search input { width: 100%; height: 44px; border: 0; border-radius: 22px; background: var(--bg-secondary); padding: 0 48px 0 20px; font-size: 16px; font-weight: 500; box-shadow: var(--sh-float); outline-offset: 2px; }
-.search input::placeholder { color: #6b6b75; }
+.search input { width: 100%; height: 44px; border: 0; border-radius: 22px; background: var(--bg-secondary); padding: 0 48px 0 20px; font-size: 16px; font-weight: 500; box-shadow: var(--sh-float); outline: 0; transition: background-color .2s; -webkit-appearance: none; appearance: none; }
+.search input::placeholder { color: #6b6b75; font-weight: 400; }   /* 11-08 탐색 검색창과 같게: 안내 문구 Regular, 크기는 16 그대로(입력 칸은 무조건 16 이상) */
+.search input::-webkit-search-cancel-button { display: none; }   /* 브라우저 기본 X 대신 아래 지우기 버튼 */
+.search input:focus { background: #f0f0f3; }   /* 눌렀을 때 테두리 대신 바탕만 한 단계 진하게 · 테두리는 키보드(Tab)로 들어왔을 때만 */
+.search:focus-within #qi { color: var(--text-primary); }
+html.kb .search input:focus-visible { outline: 2px solid var(--text-primary); outline-offset: 2px; }
+.search.has input { padding-right: 88px; }
+.search .clear { right: 44px; color: var(--text-teritary); transition: color .2s; }
+.search .clear[hidden] { display: none; }
+@media (hover: hover) { .search .clear:hover { color: var(--text-primary); } }
+.search #qi { transition: color .2s; }
 .search button, .search > svg { position: absolute; right: 12px; top: 10px; width: 24px; height: 24px; color: var(--text-teritary); }
 .search button svg { width: 24px; height: 24px; }
 .chips { display: flex; gap: 8px; }
@@ -190,6 +199,7 @@ body.folded { --pw: 0px; }
     <a class="back" id="back" href="home.html" aria-label="뒤로"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></a>
     <label class="search"><span class="sr">전시 검색</span>
       <input id="q" type="search" placeholder="어떤 전시를 찾고 있나요?" autocomplete="off" enterkeyhint="search">
+      <button type="button" class="clear" id="qc" aria-label="검색어 지우기" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
       <svg id="qi" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
     </label>
   </div>
@@ -497,8 +507,11 @@ body.folded { --pw: 0px; }
     if (items.length) fit(items);
   });
   let qt = 0;
+  const syncQ = () => { const v = $('q').value; $('qc').hidden = !v; $('q').closest('.search').classList.toggle('has', !!v); };
+  $('qc').addEventListener('click', () => { $('q').value = ''; $('q').dispatchEvent(new Event('input')); $('q').focus(); });
+  addEventListener('keydown', (e) => { if (e.key === 'Tab') document.documentElement.classList.add('kb'); }); addEventListener('pointerdown', () => document.documentElement.classList.remove('kb'));
   $('q').addEventListener('input', (ev) => {
-    query = ev.target.value.replace(/\s/g, '').toLowerCase(); sel = null; items = ALL.filter(matches); refresh();
+    syncQ(); query = ev.target.value.replace(/\s/g, '').toLowerCase(); sel = null; items = ALL.filter(matches); refresh();
     clearTimeout(qt); qt = setTimeout(() => { if (items.length) fit(items); }, 300);   // 검색하면 결과가 다 보이게 지도가 움직임
   });
   $('loc').onclick = () => {
