@@ -19,16 +19,16 @@
 
 .pf { margin-top: 24px; }
 .pf-empty { display: flex; gap: 16px; align-items: flex-start; }
-.add { flex: none; width: 112px; height: 132px; display: grid; place-content: center; justify-items: center; gap: 8px; border: 1px solid var(--border-primary); border-radius: var(--r12); font-size: 12px; font-weight: 500; transition: background .2s; }
+.add { flex: none; width: 96px; height: 120px; display: grid; place-content: center; justify-items: center; gap: 8px; border: 1px solid var(--border-primary); border-radius: var(--r12); font-size: 12px; font-weight: 500; transition: background .2s; }
 @media (hover: hover) { .add:hover { background: var(--bg-secondary); } }
 .add .i { width: 28px; height: 28px; stroke-width: 1.6; }
 .pf-empty .tx { padding-top: 2px; }
 .fhelp { margin-top: 4px; font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-secondary); }
 .thumbs { display: flex; gap: 8px; margin: 12px calc(var(--gx) * -1) 0; padding: 0 var(--gx); overflow-x: auto; scroll-snap-type: x proximity; scroll-padding-inline: var(--gx); scrollbar-width: none; }
 .thumbs::-webkit-scrollbar { display: none; }
-.thumbs .add { width: 76px; height: 100px; scroll-snap-align: start; }
+.thumbs .add { width: 84px; height: 105px; scroll-snap-align: start; }
 .thumbs .add .i { width: 24px; height: 24px; }
-.th { position: relative; flex: none; width: 100px; height: 100px; border-radius: var(--r12); overflow: hidden; background: #f4f4f5; scroll-snap-align: start; animation: rise .35s var(--ease) backwards; }
+.th { position: relative; flex: none; width: 84px; height: 105px; border-radius: var(--r12); overflow: hidden; background: #f4f4f5; scroll-snap-align: start; animation: rise .35s var(--ease) backwards; }
 .th img { width: 100%; height: 100%; object-fit: cover; }
 .th .x { position: absolute; top: 6px; right: 6px; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 9999px; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.15); }
 .th .x .i { width: 12px; height: 12px; stroke-width: 2.4; }
@@ -161,20 +161,20 @@
   <section class="screen" id="s2" aria-label="02 일정과 장소" hidden>
     <div class="prog"><div class="pl"><b>02 일정과 장소</b><span>2 / 2</span></div><div class="segs"><i class="on"></i><i class="on"></i></div></div>
     <div class="body">
-      <div class="field" style="margin-top:24px">
+      <div class="field">
         <span class="lb" id="d-l"><span>전시 기간<span class="req" aria-hidden="true">*</span></span></span>
         <div class="two">
           <button type="button" class="ul pick" id="d-s" aria-haspopup="dialog" aria-labelledby="d-l d-s"><span class="ph">시작일</span><svg class="i"><use href="#i-updown"/></svg></button>
           <button type="button" class="ul pick" id="d-e" aria-haspopup="dialog" aria-labelledby="d-l d-e"><span class="ph">종료일</span><svg class="i"><use href="#i-updown"/></svg></button>
         </div>
       </div>
-      <div class="field" style="margin-top:36px">
+      <div class="field">
         <span class="lb" id="t-l"><span>운영 시간<span class="req" aria-hidden="true">*</span></span></span>
         <div class="two">
           <button type="button" class="ul pick" id="t-s" aria-haspopup="dialog" aria-labelledby="t-l t-s"><span class="ph">시작 시간</span><svg class="i"><use href="#i-updown"/></svg></button>
           <button type="button" class="ul pick" id="t-e" aria-haspopup="dialog" aria-labelledby="t-l t-e"><span class="ph">종료 시간</span><svg class="i"><use href="#i-updown"/></svg></button>
         </div>
-        <p class="help" style="margin-top:10px">휴무일·날짜별 운영 시간은 아래 유의사항에 적어주세요</p>
+        <p class="help">휴무일·날짜별 운영 시간은 아래 유의사항에 적어주세요</p>
       </div>
       <div class="field">
         <label for="place"><span>장소명 (상세 위치)<span class="req" aria-hidden="true">*</span></span></label>

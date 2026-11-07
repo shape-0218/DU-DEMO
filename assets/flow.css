@@ -75,15 +75,15 @@ img { display: block; }
 .ul input { flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; outline: 0; background: transparent; font-size: 16px; font-weight: 500; }
 .ul input::placeholder, textarea::placeholder { color: var(--text-teritary); }   /* 11-08: Figma Field `text/teritary`(대비 4.8:1). 잠긴 칸(.locked)만 disable 유지 */
 .ul .i { width: 22px; height: 22px; }
-.pick { width: 100%; text-align: left; cursor: pointer; justify-content: space-between; font-size: 16px; font-weight: 400; } /* 11-07 Figma 대조: 선택값 16 Regular */
-.pick span.ph { color: var(--text-disable); }
+.pick { width: 100%; height: 49px; text-align: left; cursor: pointer; justify-content: space-between; font-size: 16px; font-weight: 400; } /* 11-07 Figma 대조: 선택값 16 Regular · 11-08 `Field / 선택` 입력 줄 49 */
+.pick span.ph { color: var(--text-teritary); }   /* 11-08 Figma Field 안내 글자 text/teritary(이전 disable은 대비 1.5:1) */
 .pick .i { width: 20px; height: 20px; color: var(--text-primary); }
 .ta { display: block; width: 100%; height: 128px; margin-top: 8px; padding: 14px 16px; border: 1px solid var(--border-primary); border-radius: var(--r12); font-size: 16px; font-weight: 500; line-height: 1.4; resize: none; outline: 0; transition: border-color .2s; }
 .ta:focus { border-color: var(--text-primary); }
 .cnt-r { margin-top: 8px; text-align: right; font-size: 12px; font-weight: 500; color: var(--text-teritary); font-variant-numeric: tabular-nums; }
-.help { margin-top: 6px; font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-secondary); }
+.help { margin-top: 4px; font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-secondary); }
 .help.e { color: var(--notice); }
-.two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }   /* 11-08 Figma 두 칸 175 + 12 */
 .locked { margin-top: 8px; border: 1px solid var(--border-primary); border-radius: var(--r12); overflow: hidden; }
 .locked .fix { display: flex; align-items: center; justify-content: space-between; height: 48px; padding: 0 16px; background: var(--bg-secondary); font-size: 16px; font-weight: 500; }
 .locked .fix .i { width: 18px; height: 18px; color: var(--text-teritary); }
@@ -93,7 +93,7 @@ img { display: block; }
 .locked input::placeholder { color: var(--text-disable); }
 
 /* 분야 칩 */
-.chips { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+.chips { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: 10px; }   /* 11-08 Figma 분야 칩 86 · 간격 6(줄 50) */
 .chip { height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border: 1px solid var(--border-primary); border-radius: 8px; font-size: 14px; font-weight: 500; transition: background .2s, color .2s, border-color .2s, transform .2s var(--ease); }
 @media (hover: hover) { .chip:hover { background: var(--bg-secondary); } }
 .chip:active { transform: scale(.97); }

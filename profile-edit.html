@@ -74,11 +74,11 @@ form { flex: 1; display: flex; flex-direction: column; }
 @media (hover: hover) { .act:hover:not(:disabled) { background: #2f2f35; } }
 .act:active:not(:disabled) { transform: scale(.97); }
 .act:disabled { background: var(--bg-secondary); color: var(--text-disable); cursor: default; }
-.help { margin-top: 6px; font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-secondary); }
+.help { margin-top: 4px; font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-secondary); }
 .help.e { color: var(--notice); }
 
 /* 분야 칩 */
-.chips { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+.chips { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: 10px; }
 @media (min-width: 768px) { .chips { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
 .chip { height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 4px; border: 1px solid var(--border-primary); border-radius: 8px; font-size: 14px; font-weight: 500; transition: background .2s, color .2s, border-color .2s, transform .2s var(--ease); }
 @media (hover: hover) { .chip:hover { background: var(--bg-secondary); } }
