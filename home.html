@@ -184,9 +184,10 @@ img { display: block; }
 .works .more { display: inline-flex; align-items: center; color: var(--text-teritary); }
 .works .more img { width: 16px; height: 16px; }
 .works .sub { margin-top: 2px; color: var(--text-teritary); }
+/* 11-08 사용자: 작품 2장이 폭을 꽉 채워 옆으로 넘어간다는 게 안 보였음 → 폰에서는 2장 + 3번째 32px가 보이게(카드 폭 = (화면 폭−76)/2, 175 넘으면 175) */
 .art-row { margin-top: 16px; display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; padding-right: var(--pad); margin-right: calc(var(--pad) * -1); }
 .art-row::-webkit-scrollbar { display: none; }
-.art { flex: 0 0 175px; scroll-snap-align: start; display: block; background: #000; border-radius: var(--r12); overflow: hidden; color: var(--text-quaternary); transition: transform .3s var(--ease); }
+.art { flex: 0 0 min(175px, calc((100vw - 76px) / 2)); scroll-snap-align: start; display: block; background: #000; border-radius: var(--r12); overflow: hidden; color: var(--text-quaternary); transition: transform .3s var(--ease); }
 .art:active { transform: scale(.98); }
 .art .im { padding: 7px; }
 .art .im div { aspect-ratio: 161 / 215; border-radius: var(--r12); overflow: hidden; }
