@@ -10,8 +10,8 @@
 .sumc .st { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; }
 .sumc .st::before { content: ""; width: 7px; height: 7px; border-radius: 9999px; background: var(--text-primary); }
 .sumc .st[data-s="review"]::before { background: var(--info); } .sumc .st[data-s="live"]::before { background: var(--ok); } .sumc .st[data-s="reject"]::before { background: var(--notice); }
-.sumc .prev { display: inline-flex; align-items: center; gap: 2px; font-size: 12px; font-weight: 600; white-space: nowrap; }
-.sumc .prev .i { width: 14px; height: 14px; transition: transform .3s var(--ease); }
+.sumc .prev { display: inline-flex; align-items: center; gap: 0; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.sumc .prev .i { width: 20px; height: 20px; padding: 3px; box-sizing: border-box; transition: transform .3s var(--ease); }
 @media (hover: hover) { .sumc .prev:hover .i { transform: translateX(2px); } }
 .sumc h2 { margin-top: 4px; font-size: 16px; font-weight: 600; line-height: 1.4; letter-spacing: -0.03em; }
 .sumc .org { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
@@ -31,9 +31,9 @@
 .tool .note { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
 .tool .lnk { display: inline-flex; align-items: center; gap: 4px; height: 32px; padding-left: 8px; font-size: 12px; font-weight: 600; }
 .tool .lnk .i { width: 16px; height: 16px; }
-.addbtn { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; height: 44px; margin-top: 8px; border-radius: var(--r12); background: var(--text-primary); color: #fff; font-size: 14px; font-weight: 600; transition: background .2s, transform .2s var(--ease); }
+.addbtn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 44px; margin-top: 8px; border-radius: var(--r12); background: var(--text-primary); color: #fff; font-size: 14px; font-weight: 600; transition: background .2s, transform .2s var(--ease); }
 .addbtn:hover { background: #2f2f35; } .addbtn:active { transform: scale(.99); }
-.addbtn .i { width: 18px; height: 18px; stroke-width: 2.2; }
+.addbtn .i { width: 20px; height: 20px; stroke-width: 2.2; }   /* 11-08 Figma `Button / 추가`: 아이콘 20 + 간격 8 */
 /* 11-06: 추가 버튼이 위아래 요소에 붙어 보여서 간격을 넉넉히 (도구 줄과 12, 아래 카드와 20) */
 .tool + .addbtn { margin-top: 12px; }
 .addbtn + .wgrid, .addbtn + .slist { margin-top: 20px; }

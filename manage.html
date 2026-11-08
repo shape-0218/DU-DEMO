@@ -30,7 +30,7 @@
 .card .meta { font-size: 14px; }
 .card .meta .i { width: 16px; height: 16px; }
 .card .meta { margin-top: 2px; }
-.card .meta + .meta { margin-top: 0; }
+.card .meta + .meta { margin-top: 3px; }   /* 11-08 Figma 카드: 날짜 줄→장소 줄 24(이전 21) */
 .more { position: absolute; top: 8px; right: 6px; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 9999px; transition: background .2s; }
 @media (hover: hover) { .more:hover { background: var(--bg-secondary); } }
 .more .i { width: 22px; height: 22px; }
@@ -39,7 +39,7 @@
 .pop button { display: block; width: 100%; height: 44px; padding: 0 16px; font-size: 14px; font-weight: 500; text-align: left; transition: background .15s; }
 @media (hover: hover) { .pop button:hover { background: var(--bg-secondary); } }
 .pop .del { color: var(--notice); }
-.head { margin-top: 20px; }
+.head { margin-top: 9px; }   /* 11-08 Figma `내 전시 관리`: 제목 글자 위→"참여 중인 전시" 글자 위 51(이전 62 = 여백 20) */
 @media (min-width: 900px) {
   .head { margin-top: 24px; align-items: flex-end; }
   .head h2 { font-size: 24px; } .head p { font-size: 14px; }

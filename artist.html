@@ -104,6 +104,7 @@ img { display: block; }
 /* 전시 · 작품 섹션 (탭 없이 쌓음. 많아지면 "모두 보기") */
 .content { min-width: 0; }
 .sec { padding-top: 28px; }
+@media (max-width: 899px) { #secs .sec:first-child { padding-top: 32px; } }   /* 11-08 Figma: 링크 줄 → "전시" 제목 글자 86(이전 82) */
 .sec .body { margin-top: 12px; }
 .more { display: flex; align-items: center; justify-content: center; width: 100%; height: 44px; margin-top: 12px; border-radius: 9999px; border: 1px solid var(--border-primary); font-size: 14px; font-weight: 600; }
 @media (hover: hover) { .more:hover { background: var(--bg-secondary); } }
@@ -130,8 +131,8 @@ img { display: block; }
 @keyframes rise { from { opacity: 0; transform: translateY(12px); } }
 
 /* 작품 */
-.works { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 12px; }
-@media (min-width: 900px) { .works { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 20px; } }
+.works { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 16px; padding-inline: 4px; }   /* 11-08 Figma 작가 프로필 작품 카드: 안쪽 4 + 사이 16 → 카드 폭 169(글자 x24·x209) */
+@media (min-width: 900px) { .works { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 20px; padding-inline: 0; } }
 .w { display: block; animation: rise .6s var(--ease) backwards; animation-delay: calc(var(--n, 0) * 60ms); }
 .w .im { aspect-ratio: 3 / 4; border-radius: var(--r12); overflow: hidden; background: #000; box-shadow: 0 0 0 1px rgba(0, 0, 0, .06); }
 .w .im img { width: 100%; height: 100%; object-fit: contain; transition: transform .7s var(--ease); }   /* 작품 정책: 어떤 비율이든 전체가 보이고 남는 곳은 검정 */
