@@ -176,19 +176,15 @@ img { display: block; }
 .more { margin-top: 4px; text-align: right; }
 .more button { height: 28px; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
 @media (hover: hover) { .more button:hover { color: var(--text-primary); } }
-/* 작업과정(11-06 확정, 후보 H): 어두운 띠에는 "작업과정" 줄과 작은 사진 조각만 보임. 줄을 누르면 조각이 그대로 자라 검은 전체 화면이 열림. 글(제목·설명·단계)은 넣지 않음 */
-.process { margin-top: 28px; background: #18181b; padding: 12px 0; }
-.process h2 { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -0.03em; }
-.pr-row { display: flex; align-items: center; width: 100%; min-height: 56px; padding: 4px var(--pad); color: #fff; text-align: left; transition: transform .2s var(--ease); }
-.pr-row:active { transform: scale(.99); }
-.pr-row .ths { display: flex; margin-left: auto; margin-right: 12px; }
-.pr-row .t { position: relative; flex: none; width: 36px; height: 44px; margin-left: -14px; border-radius: 8px; overflow: hidden; border: 2px solid #18181b; box-sizing: content-box; background: #27272a; }
+/* 작업과정(11-09 확정, 후보 A 조각만): 띠·제목 없이 소개 아래 "더보기" 줄 왼쪽에 작은 사진 조각이 겹쳐 놓임(최대 3장). 누르면 첫 조각이 그대로 자라 검은 전체 화면이 열림(11-06 후보 H의 조각→전체 화면 전환 그대로). 글은 넣지 않음(스크린리더용 이름만) */
+.pfoot { display: flex; align-items: center; justify-content: space-between; min-height: 44px; margin-top: 8px; }
+.pfoot .more { margin: 0 0 0 auto; }
+.pr-row { display: inline-flex; align-items: center; min-height: 44px; margin-left: -2px; padding: 0 6px 0 2px; border-radius: 12px; transition: transform .2s var(--ease); outline-offset: 2px; }
+.pr-row:active { transform: scale(.96); }
+.pr-row .g { display: flex; }
+.pr-row .t { position: relative; flex: none; width: 40px; height: 50px; margin-left: -14px; border-radius: 8px; overflow: hidden; border: 2px solid var(--bg-white); box-sizing: content-box; background: var(--bg-teritary); }
 .pr-row .t:first-child { margin-left: 0; }
 .pr-row .t img { width: 100%; height: 100%; object-fit: cover; -webkit-user-drag: none; }
-.pr-row .go { flex: none; width: 32px; height: 32px; border-radius: 50%; background: rgba(255, 255, 255, .12); display: grid; place-items: center; }
-.pr-row .go .i { width: 16px; height: 16px; transition: transform .3s var(--ease); }
-@media (hover: hover) { .pr-row:hover .go .i { transform: translateX(2px); } }
-@media (min-width: 900px) { .process { margin-top: 40px; padding: 12px 24px; border-radius: 20px; } .pr-row { padding-inline: 0; } }
 /* 작업과정 전체 화면(검정): 사진이 세로로 이어짐 */
 .pv { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: transparent; color: #fff; overflow: hidden; }
 .pv::backdrop { background: transparent; }
@@ -404,11 +400,11 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
       <div class="panel" id="p-intro" role="tabpanel" aria-labelledby="t-intro">
         <div class="wrap about">
           <p class="desc" id="desc">지도는 펼쳐 놓고 볼 때만 길이 이어지고, 접는 순간 길도 끊깁니다. 이 작업은 그 접히는 부분에서 출발했습니다. 같은 산책길을 01·02·03 세 지점으로 나눠 한 장짜리 접지 지도, 한 손에 들어오는 소책자, 실로 엮은 작은 노트에 각각 다르게 옮겼습니다. 접는 횟수와 순서에 따라 같은 길이 다른 장면으로 읽힙니다. 모아디자인대학교 졸업 전시 「펼쳐지는 장면」에서 처음 공개합니다.</p>
-          <p class="more" id="more"><button id="more-btn" aria-expanded="false" aria-controls="desc">더보기</button></p>
+          <div class="pfoot">
+            <button type="button" class="pr-row" id="proc-open" aria-haspopup="dialog" aria-label="작업과정 사진 보기"><span class="g" id="ths" aria-hidden="true"></span></button>
+            <p class="more" id="more"><button id="more-btn" aria-expanded="false" aria-controls="desc">더보기</button></p>
+          </div>
         </div>
-        <section class="process" aria-labelledby="h-proc">
-          <h2 id="h-proc"><button type="button" class="pr-row" id="proc-open" aria-haspopup="dialog">작업과정<span class="ths" id="ths" aria-hidden="true"></span><span class="go" aria-hidden="true"><svg class="i"><use href="#i-chev"/></svg></span></button></h2>
-        </section>
         <div class="wrap"><div class="end"></div></div>
       </div>
 
@@ -620,7 +616,7 @@ requestAnimationFrame(() => { if (desc.scrollHeight <= desc.clientHeight + 1) do
 /* 소개·작업과정이 없는 작품: 그 칸들을 빼고 방명록만 남겨 간결하게 */
 if (X) desc.textContent = X.d;
 if (!X) {
-  desc.hidden = true; document.getElementById('more').hidden = true; document.querySelector('.process').hidden = true;
+  desc.hidden = true; document.getElementById('more').hidden = true; document.querySelector('.pfoot').hidden = true;
   document.getElementById('t-intro').hidden = true; pick(document.getElementById('t-guest'), false, true);
 }
 moreBtn.addEventListener('click', () => { desc.classList.add('open'); moreBtn.setAttribute('aria-expanded', 'true'); document.getElementById('more').hidden = true; });
