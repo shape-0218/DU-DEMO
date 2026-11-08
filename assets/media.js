@@ -69,7 +69,7 @@ function thumbSheet(item, onDone) {
 }
 const mediaCss = document.createElement('style');
 mediaCss.textContent = `
-.tsel { margin-top: 16px; display: grid; place-items: center; border-radius: 12px; background: #000; overflow: hidden; }
+.tsel { margin-top: 16px; display: grid; place-items: center; border-radius: 12px; background: #fff; outline: 1px solid #d4d4d8; outline-offset: -1px; overflow: hidden; }
 .tsel video { display: block; width: 100%; max-height: 32vh; object-fit: contain; }
 .trange { display: grid; gap: 8px; margin-top: 16px; font-size: 12px; font-weight: 600; }
 .trange input { width: 100%; accent-color: #18181b; height: 28px; }
