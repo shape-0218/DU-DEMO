@@ -137,6 +137,9 @@ dialog.modal::backdrop { background: rgba(0, 0, 0, .42); }
 .meta { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 500; color: var(--text-secondary); min-width: 0; }
 .meta .i { width: 14px; height: 14px; color: var(--text-teritary); }
 .meta span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* 11-09 날짜 글자: Figma `body/md/regular2`(12, 500, 자간 +1%)·`body/lg/regular2`(14, 400, 자간 0) — 숫자가 붙어 보이지 않게 기본 자간(-3%)을 쓰지 않음 */
+.dt12 { font-weight: 500; letter-spacing: 0.01em; }
+.dt14 { font-weight: 400; letter-spacing: 0; }
 
 /* 완료 화면 */
 .done { flex: 1; display: flex; flex-direction: column; }

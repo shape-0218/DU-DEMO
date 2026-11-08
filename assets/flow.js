@@ -76,7 +76,7 @@ const saveExhibitions = (l) => store.set('du.exh', l);
 const ROLE = { owner: '대표자', manager: '관리자', member: '팀원' };
 const STATUS = { prep: '준비 중', review: '심사 중', reject: '반려', live: '공개 중' };
 const md = (iso) => iso ? iso.slice(5).replace('-', '.') : '';
-const range = (e) => `${md(e.start)} - ${md(e.end)}`;
+const range = (e) => { const p = (s) => s.replace(/-/g, '.'); return !e.end || e.start === e.end ? p(e.start) : `${p(e.start)} - ${e.end.slice(0, 4) === e.start.slice(0, 4) ? p(e.end).slice(5) : p(e.end)}`; };   /* 11-09 일정: 앞에 연도, 끝 연도는 다를 때만 */
 
 /* ---------- 화면 공통 ---------- */
 function stepper(el, cur) { /* cur: 1 = 등록 요청 중(생성 완료), 2 = 승인 후 공개 중(요청 완료) */

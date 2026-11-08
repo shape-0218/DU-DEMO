@@ -60,6 +60,9 @@ img { display: block; }
 .me { display: flex; align-items: center; gap: 8px; min-width: 0; }   /* 11-07: 사진 36 + 닉네임 18, 화살표 없음(기본 프로필 수정은 햄버거) */
 .avatar { position: relative; width: 36px; height: 36px; border-radius: 9999px; background: var(--avatar); display: grid; place-items: end center; overflow: hidden; color: #fff; flex: none; }
 .avatar svg { position: absolute; left: 13.44%; top: 19.54%; width: 74.38%; height: 82.34%; }   /* 11-09 Figma `Avatar / 프로필 (무채색)` 3570:40023 비율(폭 74.4%·왼쪽 13.4%·위 19.5%) — 36·48 모두 같음, 팀원 목록·댓글 등 작은 아바타도 같은 그림 */
+/* 11-09 날짜 글자: Figma `body/md/regular2`(12, 500, 자간 +1%)·`body/lg/regular2`(14, 400, 자간 0) — 숫자가 붙어 보이지 않게 기본 자간(-3%)을 쓰지 않음 */
+.dt12 { font-weight: 500; letter-spacing: 0.01em; }
+.dt14 { font-weight: 400; letter-spacing: 0; }
 .avlink { flex: none; display: block; padding: 4px; margin: -4px; border-radius: 9999px; }   /* 11-09 프로필 사진을 누르면 기본 프로필 수정 — 보이는 36, 누르는 영역 44 */
 .avlink .avatar { transition: transform .16s var(--ease, ease); }
 .avlink:active .avatar { transform: scale(.96); }
@@ -367,6 +370,8 @@ const EXH = [
   ['한 칸 너머', '나루예술대학교 만화애니메이션학과', '11.09 - 11.13', '예술관 3층 작은미술관', 88, 'p09'], ['매듭의 방향', '모루예술대학교 섬유예술전공', '12.03 - 12.09', '모루조형관 A동 4층', 76, 'p10'],
   ['사이의 치수', '소요디자인대학교 실내건축디자인학과', '11.20 - 11.22', '창작관 5층', 64, 'p11']
 ];
+/* 11-09 보관함 전시 일정은 데모 데이터와 같은 표기(앞에 연도, 끝 연도는 다를 때만) */
+EXH.forEach((r) => { const x = DEMO.EXH.find((e) => e.t === r[0]); if (x) r[2] = x.d; });
 const WORKS = [
   ['접으면 달라지는 지도', ['고상준', '김서윤'], 204, 'wk19'], ['이동하는 묘상', ['김유진'], 190, 'wk3'], ['빛으로 기록한 화단', ['박도현'], 171, 'wk1'], ['쌓아 올린 호흡', ['이채원', '정우진', '한지아'], 160, 'wk21'],
   ['빈칸의 하루', ['류하린'], 142, 'wk17'], ['되감는 계단', ['오민석'], 133, 'wk7'], ['비가 지난 가방', ['문재이'], 120, 'wk13'], ['오후의 빈방', ['강태오'], 99, 'wk5'], ['골목의 다음 칸', ['백이든'], 85, 'wk9']
@@ -409,7 +414,7 @@ function renderVault() {
     el.innerHTML = `<div class="empty"><span class="eic" aria-hidden="true">${BM}</span><h3>${e[0]}</h3><a class="egb" href="${e[3]}">${e[2]}</a></div>` + (rec.length ? `<section class="rec" aria-label="${tab === 'exh' ? '지금 인기 있는 전시' : '지금 인기 있는 작품'}"><h4>${tab === 'exh' ? '지금 인기 있는 전시' : '지금 인기 있는 작품'}</h4><div class="rail">${rec.map((r) => `<div class="rc"><a href="${r.href}"><div class="im"><img src="${DEMO.src(r.img)}" alt="" width="128" height="171" loading="lazy" draggable="false"></div><b>${r.t}</b><small>${r.s}</small></a></div>`).join('')}</div></section>` : '');
     $('vault').setAttribute('aria-labelledby', 's-' + (tab === 'exh' ? 'exh' : tab === 'works' ? 'wk' : 'ar')); return;
   }
-  if (tab === 'exh') el.innerHTML = '<div class="grid">' + list.map((e, n) => `<a class="card ex" href="exhibition.html?e=${+e[5].slice(1) - 1}" style="--n:${Math.min(n, 10)}"><div class="im"><div><img src="${O}${e[5]}.jpg" alt="${e[0]} 포스터" width="161" height="241" loading="${n < 4 ? 'eager' : 'lazy'}"></div></div><div class="tx"><b>${e[0]}</b><span class="l">${e[1]}</span><span class="m"><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14">${e[2]}</span><span class="m"><img src="assets/img/icon-location.svg" alt="" width="14" height="14">${e[3]}</span></div></a>`).join('') + '</div>';
+  if (tab === 'exh') el.innerHTML = '<div class="grid">' + list.map((e, n) => `<a class="card ex" href="exhibition.html?e=${+e[5].slice(1) - 1}" style="--n:${Math.min(n, 10)}"><div class="im"><div><img src="${O}${e[5]}.jpg" alt="${e[0]} 포스터" width="161" height="241" loading="${n < 4 ? 'eager' : 'lazy'}"></div></div><div class="tx"><b>${e[0]}</b><span class="l">${e[1]}</span><span class="m"><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14"><span class="dt12">${e[2]}</span></span><span class="m"><img src="assets/img/icon-location.svg" alt="" width="14" height="14">${e[3]}</span></div></a>`).join('') + '</div>';
   else if (tab === 'works') el.innerHTML = '<div class="grid">' + list.map((w, n) => `<a class="card wk" href="work.html?w=${Math.max(0, DEMO.WORKS.findIndex((x) => x.img === w[3]))}" style="--n:${Math.min(n, 10)}"><div class="im"><div><img src="${O}${w[3]}.jpg" alt="${w[0]}" width="161" height="215" loading="${n < 4 ? 'eager' : 'lazy'}"></div></div><div class="tx"><b>${w[0]}</b><span class="l">${by(w[1])}</span></div></a>`).join('') + '</div>';
   else {
     el.innerHTML = '<ul class="artists">' + list.map((a, n) => `<li class="ar" style="--n:${n}"><a class="ar-in" href="artist.html"><span class="nm"><b>${a[0]}</b><span>${a[1]} · ${a[2]}</span></span>${a[3] && a[3].length ? `<span class="ths" aria-hidden="true">${a[3].slice(0, 3).map((k) => `<img src="${O}wk${k}.jpg" alt="" width="40" height="52" loading="lazy">`).join('')}</span>` : ''}</a><button type="button" class="bm" aria-pressed="true" aria-label="${a[0]} 작가 저장 해제"><svg class="off" aria-hidden="true"><use href="#i-bookmark"/></svg><svg class="on" aria-hidden="true"><use href="#i-bookmark"/></svg></button></li>`).join('') + '</ul>';
@@ -469,7 +474,7 @@ function joinFlow(v, i) {
   inp.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !ok.disabled) ok.click(); });
   ok.addEventListener('click', () => {
     const name = inp.value.trim(); if (!name) return;
-    const range = '2027.' + v.d.replace(/\s*-\s*/, ' – 2027.');
+    const range = v.d.replace(' - ', ' – ');   // v.d는 이미 '2027.11.12 - 11.18' 형식(11-09 일정 표기)
     invites.splice(i, 1); syncInv();
     closeSheet();
     showSheet('full', `<div class="jd"><div class="mid">
@@ -484,7 +489,7 @@ function joinFlow(v, i) {
 /* ============ 받은 초대 (미인증도 확인·거절 가능, 수락은 작가 인증 필요) ============ */
 let invites = INVITES.slice();
 function openInvites() {
-  const render = () => `<div class="sh-head"><button class="sh-x" data-close aria-label="닫기">${ic('i-back')}</button><h2>받은 초대</h2></div><div class="sh-body">${invites.length ? `<h3 class="inv-h">받은 전시 팀원 초대</h3><p class="inv-p">초대받은 전시를 확인하고 참여 여부를 선택해보세요</p>` + invites.map((v, i) => `<div class="invite"><span class="by">초대 · ${v.by}</span><div class="row"><img class="po" src="${O}${v.img}.jpg" alt=""><div class="tx"><b>${v.t}</b><span class="sub">${v.s}</span><span class="ln"><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14">${v.d}</span><span class="ln"><img src="assets/img/icon-location.svg" alt="" width="14" height="14">${v.p}</span></div></div><div class="btns"><button class="btn btn-soft" data-a="no" data-i="${i}">거절하기</button><button class="btn btn-dark" data-a="yes" data-i="${i}">수락하기</button></div></div>`).join('') : '<p class="empty">받은 초대가 없어요</p>'}</div>`;
+  const render = () => `<div class="sh-head"><button class="sh-x" data-close aria-label="닫기">${ic('i-back')}</button><h2>받은 초대</h2></div><div class="sh-body">${invites.length ? `<h3 class="inv-h">받은 전시 팀원 초대</h3><p class="inv-p">초대받은 전시를 확인하고 참여 여부를 선택해보세요</p>` + invites.map((v, i) => `<div class="invite"><span class="by">초대 · ${v.by}</span><div class="row"><img class="po" src="${O}${v.img}.jpg" alt=""><div class="tx"><b>${v.t}</b><span class="sub">${v.s}</span><span class="ln"><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14"><span class="dt12">${v.d}</span></span><span class="ln"><img src="assets/img/icon-location.svg" alt="" width="14" height="14">${v.p}</span></div></div><div class="btns"><button class="btn btn-soft" data-a="no" data-i="${i}">거절하기</button><button class="btn btn-dark" data-a="yes" data-i="${i}">수락하기</button></div></div>`).join('') : '<p class="empty">받은 초대가 없어요</p>'}</div>`;
   const s = showSheet('full', render(), '받은 초대');
   s.addEventListener('click', (e) => {
     const b = e.target.closest('[data-a]'); if (!b) return; const i = +b.dataset.i, v = invites[i];

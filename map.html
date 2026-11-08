@@ -65,6 +65,9 @@ img { display: block; }
 .pc::after { content: ""; position: absolute; left: 50%; bottom: -10px; margin-left: -6px; border: 6px solid transparent; border-top-color: #fff; border-bottom: 0; transition: border-top-color .2s; }
 .pc img { width: 100%; height: 100%; border-radius: 6px; object-fit: cover; background: #797979; }
 .pc .dt { position: absolute; right: -4px; top: -4px; width: 10px; height: 10px; border-radius: 50%; background: var(--text-primary); box-shadow: 0 0 0 2px #fff; }
+/* 11-09 날짜 글자: Figma `body/md/regular2`(12, 500, 자간 +1%)·`body/lg/regular2`(14, 400, 자간 0) — 숫자가 붙어 보이지 않게 기본 자간(-3%)을 쓰지 않음 */
+.dt12 { font-weight: 500; letter-spacing: 0.01em; }
+.dt14 { font-weight: 400; letter-spacing: 0; }
 .pin.soon .pc .dt { background: #fff; box-shadow: inset 0 0 0 2.5px var(--text-primary), 0 0 0 2px #fff; }
 body.far .pin:not(.on) .dotp { opacity: 1; transform: none; }
 body.far .pin:not(.on) .pc { opacity: 0; transform: scale(.5); pointer-events: none; }
@@ -350,7 +353,7 @@ body.folded { --pw: 0px; }
   }
 
   /* ---- 시트 ---- */
-  const card = (e, on) => `<${on === null ? 'a href="exhibition.html"' : 'button type="button"'} class="lcard${on ? ' on' : ''}" data-id="${e.i}" aria-label="${e.t}${on ? ' (선택됨, 한 번 더 누르면 상세로 이동)' : ''}"><span class="lp"><img src="${DEMO.src(e.img)}" alt="" loading="lazy" draggable="false"></span><span class="lt"><span><h3>${e.t}</h3><p class="og">${e.s}</p></span><span class="mt"><p><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14"><span>${e.d}</span></p><p><img src="assets/img/icon-location.svg" alt="" width="14" height="14"><span>${e.p}</span></p></span>${PERM ? `<span class="lk">${fmtDist(dist(e))}</span>` : ''}</span></${on === null ? 'a' : 'button'}>`;
+  const card = (e, on) => `<${on === null ? 'a href="exhibition.html"' : 'button type="button"'} class="lcard${on ? ' on' : ''}" data-id="${e.i}" aria-label="${e.t}${on ? ' (선택됨, 한 번 더 누르면 상세로 이동)' : ''}"><span class="lp"><img src="${DEMO.src(e.img)}" alt="" loading="lazy" draggable="false"></span><span class="lt"><span><h3>${e.t}</h3><p class="og">${e.s}</p></span><span class="mt"><p><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14"><span class="dt12">${e.d}</span></p><p><img src="assets/img/icon-location.svg" alt="" width="14" height="14"><span>${e.p}</span></p></span>${PERM ? `<span class="lk">${fmtDist(dist(e))}</span>` : ''}</span></${on === null ? 'a' : 'button'}>`;
   const sortList = (l) => l.slice().sort((a, b) => PERM ? dist(a) - dist(b) : b.l - a.l);
   const inView = () => { const a = area(); return items.filter((e) => { const p = toScreen(e); return p.x >= a.x0 && p.x <= a.x1 && p.y >= a.y0 - 60 && p.y <= a.y1 + 40; }); };
   function setSheet(st) {

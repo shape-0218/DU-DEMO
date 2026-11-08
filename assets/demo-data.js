@@ -10,6 +10,8 @@ const DEMO = (() => {
   const at = (iso) => new Date(iso + 'T00:00:00');
   const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   const md = (d) => `${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+  /* 일정 표기(11-09): 앞에 연도를 붙이고, 끝 연도는 앞과 다를 때만 — 2026.11.12 - 11.18 / 2026.12.28 - 2027.01.05 / 하루면 2026.11.12 */
+  const dateRange = (a, b) => { const p = (s) => s.replace(/-/g, '.'); return !b || a === b ? p(a) : `${p(a)} - ${b.slice(0, 4) === a.slice(0, 4) ? p(b).slice(5) : p(b)}`; };
   /* 배열 순서 = 최초 공개일 최신순. dt = [시작일, 종료일] (포스터 날짜) */
   const RAW = [
     { t: '펼쳐지는 장면', img: 'p01.jpg', c: 10, intro: "2027 모아디자인대학교 시각디자인학과 졸업전시\n《펼쳐지는 장면》\nUNFOLD\n\n접혀 있을 때와 펼쳐졌을 때,\n같은 종이는 전혀 다른 장면을 보여줍니다.\n\n손바닥 안에 들어오던 지도가 길게 이어지고,\n책장을 넘기는 동작이 작은 무대를 세웁니다.\n이번 전시는 종이의 접힘과 읽는 순서를 통해\n정보와 이야기가 전달되는 방식을 살펴봅니다.\n\n접지 지도와 소책자, 페이퍼 시어터를 따라\n각자의 속도로 장면을 펼쳐 보세요.\n\n[전시 정보]\n기간 | 2027.11.12(금) — 11.18(목)\n관람 시간 | 10:00 — 18:00\n장소 | 모아디자인대학교 디자인관 1층\n주최 | 모아디자인대학교 시각디자인학과 졸업준비위원회", time: '10:00 - 18:00', cts: ['접고 펼치는 안내', '한 장에서 시작하기', '펼쳐진 전시장'], s: '모아디자인대학교 시각디자인학과', ty: '졸업 전시', dt: ['2027-11-12', '2027-11-18'], p: '디자인관 1층', f: ['그래픽'], l: 202 },
@@ -27,7 +29,7 @@ const DEMO = (() => {
   const EXH = RAW.map((e, i) => {
     const s = at(e.dt[0]), en = at(e.dt[1]);
     const st = today < s ? '전시 예정' : today > en ? '종료' : '전시 중';
-    return { ...e, i, start: iso(s), end: iso(en), st, d: e.dt[0] === e.dt[1] ? md(s) : `${md(s)} - ${md(en)}`, daysLeft: Math.round((en - today) / DAY), };
+    return { ...e, i, start: iso(s), end: iso(en), st, d: dateRange(e.dt[0], e.dt[1]), daysLeft: Math.round((en - today) / DAY), };
   });
   /* 작품 22점(11-06 새 사진): 제목, 작가(전시 작가명 ❓임시, 첫 작가가 앞), 소속 전시(EXH 인덱스), 분야, 좋아요, 사진 번호(wk1~wk22 = 전시 폴더 순서대로 전시마다 2점) */
   const WRAW = [

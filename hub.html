@@ -170,7 +170,7 @@ function render() {
   $('sumc').innerHTML = `<div class="sumc rise"><div class="poster"><img src="${esc(e.poster)}" alt="">${e.posterVideo ? '<span class="vbadge" aria-label="영상 포스터"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg></span>' : ''}</div><div class="tx">
     <div class="top"><span class="st" data-s="${e.status}">${STATUS[e.status]}</span><a class="prev" href="exhibition.html?id=${e.id}" target="_blank" rel="noopener">전시 미리보기<svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></a></div>
     <h2>${esc(e.title)}</h2><p class="org">${esc(e.org)}</p>
-    <p class="meta"><svg class="i" aria-hidden="true"><use href="#i-cal"/></svg><span>${range(e)}</span></p>
+    <p class="meta"><svg class="i" aria-hidden="true"><use href="#i-cal"/></svg><span class="dt12">${range(e)}</span></p>
     <p class="meta"><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg><span>${esc(e.place)}</span></p></div></div>`;
   const b = e.status === 'reject' ? ['등록이 반려됐어요', e.rejectNote || '수정한 뒤 다시 요청해 주세요'] : BAN[e.status];
   $('ban').innerHTML = `<div class="ban" data-s="${e.status}" role="status"><b>${b[0]}</b><p style="white-space:pre-line">${esc(b[1])}</p></div>`;

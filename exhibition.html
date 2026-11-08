@@ -268,6 +268,8 @@ dialog.player .miss[hidden] { display: none; }
 .cm.gone .nm, .cm.gone .dt { color: var(--text-teritary); }
 .tag { height: 18px; padding: 0 6px; display: inline-flex; align-items: center; border-radius: 4px; background: var(--bg-soft); color: var(--text-secondary); font-size: 10px; font-weight: 500; }
 .dt { color: var(--text-teritary); font-size: 12px; font-weight: 500; }
+/* 11-09 날짜 글자: Figma `body/lg/regular2`(14, 400, 자간 0) — 숫자가 붙어 보이지 않게 기본 자간(-3%)을 쓰지 않음 */
+.dt14 { font-weight: 400; letter-spacing: 0; }
 .dots { margin: -4px -6px -4px auto; width: 32px; height: 32px; display: grid; place-items: center; border-radius: 9999px; transition: background .2s; }
 @media (hover: hover) { .dots:hover { background: var(--bg-soft); } }
 .dots .i { width: 20px; height: 20px; }
@@ -440,7 +442,7 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
           <button class="like" id="like" aria-pressed="false" aria-label="좋아요"><svg class="i" aria-hidden="true"><use href="#i-heart"/></svg><span id="like-n">204</span></button>
         </div>
         <dl class="info">
-          <div><svg class="i" aria-hidden="true"><use href="#i-cal"/></svg><dt>일정</dt><dd id="x-date">2022.07.29</dd></div>
+          <div><svg class="i" aria-hidden="true"><use href="#i-cal"/></svg><dt>일정</dt><dd id="x-date" class="dt14">2022.07.29</dd></div>
           <div><svg class="i" aria-hidden="true"><use href="#i-clock"/></svg><dt>운영</dt><dd id="x-time">14:00 - 18:00</dd></div>
           <div><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg><dt>장소</dt><dd id="x-place">진달래홀</dd></div>
         </dl>
@@ -766,6 +768,7 @@ if (PVID) { try { PV = (JSON.parse(localStorage.getItem('du.exh')) || []).find((
 const pvHide = (id) => { const el = document.getElementById(id); if (el) el.hidden = true; };
 const pvText = (id, t) => { const el = document.getElementById(id); if (el) el.textContent = t; };
 const dot = (iso) => (iso ? iso.replace(/-/g, '.') : '');
+const dateRange = (a, b) => (!b || a === b ? dot(a) : `${dot(a)} - ${b.slice(0, 4) === a.slice(0, 4) ? dot(b).slice(5) : dot(b)}`);   // 11-09 일정: 앞에 연도, 끝 연도는 다를 때만
 function pvSlides() { /* 포스터 목록 → 캐러셀 칸 정보 */
   if (PV.posterList && PV.posterList.length) return PV.posterList.map((p) => ({ video: p.video, thumb: p.video ? (p.thumb || PV.poster) : (p.full || p.thumb || PV.poster), key: p.key }));
   return [{ video: !!PV.posterVideo, thumb: PV.poster, key: null, src: PV.posterVideo ? 'assets/poster-shore.mp4' : null }];
@@ -776,7 +779,7 @@ if (PV) {
   document.body.classList.add('is-pv'); document.getElementById('pvb').hidden = false;
   document.title = `${PV.title} · 미리보기 · Display U.`;
   pvText('x-title', PV.title); pvText('x-org', PV.org || '');
-  pvText('x-date', PV.start ? (PV.end && PV.end !== PV.start ? `${dot(PV.start)} - ${dot(PV.end)}` : dot(PV.start)) : '일정 미정');
+  pvText('x-date', PV.start ? dateRange(PV.start, PV.end) : '일정 미정');
   pvText('x-time', PV.ts && PV.te ? `${PV.ts} - ${PV.te}` : '운영 시간 미정');
   pvText('x-place', PV.place || '장소 미정');
   /* 소개 */
@@ -811,11 +814,10 @@ if (PV) {
 }
 /* ---------- 데모 전시(?e=): 카드에서 들어온 전시의 값으로 채움 ---------- */
 if (DX) {
-  const dotD = (iso) => iso.replace(/-/g, '.');
   const lines = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
   document.title = `${DX.t} · Display U.`;
   lines('x-title', DX.t); lines('x-org', DX.s);
-  lines('x-date', DX.start === DX.end ? dotD(DX.start) : `${dotD(DX.start)} - ${dotD(DX.end)}`);
+  lines('x-date', dateRange(DX.start, DX.end));
   lines('x-time', DX.time); lines('x-place', DX.p); lines('x-place2', DX.p);
   lines('x-intro', DX.intro);
   document.getElementById('x-addr').style.display = 'none';

@@ -117,6 +117,9 @@ img { display: block; }
 .exh img { width: 72px; height: 96px; object-fit: cover; border-radius: var(--r8); background: #000; box-shadow: 0 0 0 1px rgba(0, 0, 0, .06); }
 .exh .meta { display: flex; flex-wrap: wrap; gap: 2px 12px; margin-top: 4px; }
 .exh .meta .sub { margin-top: 0; }
+/* 11-09 날짜 글자: Figma `body/md/regular2`(12, 500, 자간 +1%)·`body/lg/regular2`(14, 400, 자간 0) — 숫자가 붙어 보이지 않게 기본 자간(-3%)을 쓰지 않음 */
+.dt12 { font-weight: 500; letter-spacing: 0.01em; }
+.dt14 { font-weight: 400; letter-spacing: 0; }
 .exh .state { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--text-primary); } /* 11-07 Figma 대조 */
 .exh .state.end { color: var(--text-teritary); font-weight: 500; }
 .dot { width: 7px; height: 7px; border-radius: 9999px; background: var(--text-primary); }
@@ -240,7 +243,7 @@ const works = [
 /* ?exh=N&works=N 으로 많을 때 모습 확인 */
 const nE = q.has('exh') ? +q.get('exh') : exhibitions.length, nW = q.has('works') ? +q.get('works') : works.length;
 const exAll = Array.from({ length: nE }, (_, i) => exhibitions[i % exhibitions.length]), wkAll = Array.from({ length: nW }, (_, i) => works[i % works.length]);
-const exCard = (e, i) => `<a class="exh" href="exhibition.html" style="--n:${i}"><img src="assets/img/explore/opt/${e.img}" alt="" width="72" height="96"><span><span class="state ${e.end ? 'end' : ''}"><i class="dot ${e.end ? 'end' : ''}"></i>${e.state}</span><strong>${e.title}</strong><span class="sub">${e.school}</span><span class="meta"><span class="sub">${ic('i-cal')}${e.date}</span><span class="sub">${ic('i-pin')}${e.place}</span></span></span>${ic('i-chev')}</a>`;
+const exCard = (e, i) => `<a class="exh" href="exhibition.html" style="--n:${i}"><img src="assets/img/explore/opt/${e.img}" alt="" width="72" height="96"><span><span class="state ${e.end ? 'end' : ''}"><i class="dot ${e.end ? 'end' : ''}"></i>${e.state}</span><strong>${e.title}</strong><span class="sub">${e.school}</span><span class="meta"><span class="sub">${ic('i-cal')}<span class="dt12">${e.date}</span></span><span class="sub">${ic('i-pin')}${e.place}</span></span></span>${ic('i-chev')}</a>`;
 const wkCard = (w, i) => `<a class="w" href="${w.href}" style="--n:${i}"><div class="im"><img src="${O}${w.img}" alt="" loading="lazy"></div><b>${w.title}</b><span>${w.by}</span></a>`;
 /* 섹션은 내용이 있을 때만. 전시 3개·작품 6개를 넘으면 처음엔 그만큼만 보이고 "모두 보기" */
 const SECS = [

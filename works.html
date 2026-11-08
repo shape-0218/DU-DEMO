@@ -74,7 +74,7 @@ const flash = sessionStorage.getItem('du.toast'); if (flash) { sessionStorage.re
 $('sumc').innerHTML = `<div class="sumc rise"><div class="poster"><img src="${esc(e.poster)}" alt=""></div><div class="tx">
   <div class="top"><span class="st" data-s="${e.status}">${STATUS[e.status]}</span><a class="prev" href="exhibition.html?id=${e.id}" target="_blank" rel="noopener">전시 미리보기<svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></a></div>
   <h2>${esc(e.title)}</h2><p class="org">${esc(e.org)}</p>
-  <p class="meta"><svg class="i" aria-hidden="true"><use href="#i-cal"/></svg><span>${range(e).replace(' - ', '–')}</span></p>
+  <p class="meta"><svg class="i" aria-hidden="true"><use href="#i-cal"/></svg><span class="dt12">${range(e).replace(' - ', '–')}</span></p>
   <p class="meta"><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg><span>${esc(e.place)}</span></p></div></div>`;
 
 /* ---------- 탭 ---------- */

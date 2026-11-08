@@ -100,6 +100,9 @@ html.kb .search input:focus-visible { box-shadow: 0 0 0 2px var(--text-primary);
 .menu button[aria-checked="true"] { background: var(--bg-teritary); font-weight: 600; }
 
 .meta { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; min-height: 28px; }
+/* 11-09 날짜 글자: Figma `body/md/regular2`(12, 500, 자간 +1%)·`body/lg/regular2`(14, 400, 자간 0) — 숫자가 붙어 보이지 않게 기본 자간(-3%)을 쓰지 않음 */
+.dt12 { font-weight: 500; letter-spacing: 0.01em; }
+.dt14 { font-weight: 400; letter-spacing: 0; }
 .count { font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .sortwrap { position: relative; margin-left: auto; }
 .sortbtn { height: 32px; display: inline-flex; align-items: center; gap: 2px; padding-left: 8px; font-size: 12px; font-weight: 500; transition: color .2s; }
@@ -243,7 +246,7 @@ function renderList() {
   $('count').textContent = q ? `${state.tab === 'exh' ? '전시' : '작품'} ${items.length}개` : '';
   if (!items.length) { el.innerHTML = `<div class="empty"><strong>검색 결과가 없어요</strong><p>다른 검색어나 필터로 찾아보세요</p></div>`; return; }
   el.innerHTML = '<div class="grid">' + items.map((it, n) => state.tab === 'exh'
-    ? `<a class="card ex" href="exhibition.html?e=${it.i}" style="--n:${Math.min(n, 12)}"><div class="im"><div><img src="${DEMO.src(it.img)}" alt="${it.t} 포스터" width="161" height="241" loading="${n < 6 ? 'eager' : 'lazy'}"></div></div><div class="tx"><b>${it.t}</b><span class="l">${it.s}</span><span class="m"><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14">${it.d}</span><span class="m"><img src="assets/img/icon-location.svg" alt="" width="14" height="14">${it.p}</span></div></a>`
+    ? `<a class="card ex" href="exhibition.html?e=${it.i}" style="--n:${Math.min(n, 12)}"><div class="im"><div><img src="${DEMO.src(it.img)}" alt="${it.t} 포스터" width="161" height="241" loading="${n < 6 ? 'eager' : 'lazy'}"></div></div><div class="tx"><b>${it.t}</b><span class="l">${it.s}</span><span class="m"><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14"><span class="dt12">${it.d}</span></span><span class="m"><img src="assets/img/icon-location.svg" alt="" width="14" height="14">${it.p}</span></div></a>`
     : `<a class="card wk" href="work.html?w=${it.i}" style="--n:${Math.min(n, 12)}"><div class="im"><div><img src="assets/img/explore/opt/${it.img}.jpg" alt="${it.t}" width="161" height="215" loading="${n < 6 ? 'eager' : 'lazy'}"></div></div><div class="tx"><b>${it.t}</b><span class="l">${byline(it.a)}</span></div></a>`).join('') + '</div>';
 }
 function placeInd() {
