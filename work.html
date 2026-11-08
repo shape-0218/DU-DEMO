@@ -172,33 +172,24 @@ img { display: block; }
 /* 소개: 제목 없이 글만 */
 .about { padding-top: 28px; }
 .desc { color: var(--text-primary); text-wrap: pretty; }   /* 11-09: 소개글은 접지 않고 전부 보임(더보기 없음) */
-/* 작업과정(11-09 확정, 후보 A 조각만): 띠·제목 없이 소개글(접지 않고 전부 보임, 더보기 없음) 바로 아래 왼쪽에 작은 사진 조각이 겹쳐 놓임(최대 3장). 누르면 첫 조각이 그대로 자라 검은 전체 화면이 열림(11-06 후보 H의 조각→전체 화면 전환 그대로). 글은 넣지 않음(스크린리더용 이름만) */
-.pfoot { display: flex; align-items: center; justify-content: space-between; min-height: 44px; margin-top: 8px; }
-.pr-row { display: inline-flex; align-items: center; min-height: 44px; margin-left: -2px; padding: 0 6px 0 2px; border-radius: 12px; transition: transform .2s var(--ease); outline-offset: 2px; }
-.pr-row:active { transform: scale(.96); }
+/* 작업과정(11-09 시험·임시, 미확정): 소개글 아래 한 줄 — 왼쪽 작은 사진 조각(최대 3장), 오른쪽 v. 누르면 같은 화면에서 사진들이 위부터 차례로 주르륵 펼쳐지고(v는 ^로 돌아섬), 다시 누르면 접힘. 글 없음(스크린리더용 이름만) */
+.pfoot { margin-top: 8px; }
+.pr-row { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 44px; padding: 0 2px; border-radius: 12px; text-align: left; transition: transform .2s var(--ease); outline-offset: 2px; }
+.pr-row:active { transform: scale(.98); }
 .pr-row .g { display: flex; }
 .pr-row .t { position: relative; flex: none; width: 40px; height: 50px; margin-left: -14px; border-radius: 8px; overflow: hidden; border: 2px solid var(--bg-white); box-sizing: content-box; background: var(--bg-teritary); }
 .pr-row .t:first-child { margin-left: 0; }
 .pr-row .t img { width: 100%; height: 100%; object-fit: cover; -webkit-user-drag: none; }
-/* 작업과정 전체 화면(검정): 사진이 세로로 이어짐 */
-.pv { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: transparent; color: #fff; overflow: hidden; }
-.pv::backdrop { background: transparent; }
-.pv[open] { display: flex; flex-direction: column; }
-.pv .bgd { position: absolute; inset: 0; background: #000; opacity: 0; transition: opacity .32s var(--ease); }
-.pv.show .bgd { opacity: 1; }
-.pv .vh { position: relative; z-index: 1; flex: none; display: flex; align-items: center; min-height: 56px; padding: max(6px, env(safe-area-inset-top)) var(--pad) 6px 8px; opacity: 0; transition: opacity .26s var(--ease) .12s; }
-.pv.show .vh { opacity: 1; }
-.pv .xb { flex: none; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 9999px; transition: background .2s, transform .2s var(--ease); }
-@media (hover: hover) { .pv .xb:hover { background: rgba(255, 255, 255, .12); } }
-.pv .xb:active { transform: scale(.94); }
-.pv .xb .i { width: 24px; height: 24px; }
-.pv .cn { margin-left: 4px; font-size: 14px; font-weight: 500; font-variant-numeric: tabular-nums; color: rgba(255, 255, 255, .72); }
-.pv .st { position: relative; z-index: 1; flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; display: grid; align-content: start; gap: 8px; padding-bottom: max(40px, env(safe-area-inset-bottom)); scrollbar-width: none; }
-.pv .st::-webkit-scrollbar { display: none; }
-.pv .st img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; background: #27272a; -webkit-user-drag: none; user-select: none; }
-.pv .clone { position: fixed; z-index: 3; overflow: hidden; pointer-events: none; will-change: transform, clip-path; }
-.pv .clone img { width: 100%; height: 100%; object-fit: cover; display: block; }
-@media (min-width: 768px) { .pv .st { padding-inline: calc((100% - 560px) / 2); } .pv .st img { border-radius: 12px; } }
+.pr-chev { flex: none; width: 20px; height: 20px; margin-right: 2px; color: var(--text-teritary); transform: rotate(90deg); transition: transform .4s var(--ease), color .2s ease; }
+.pr-row[aria-expanded="true"] .pr-chev { transform: rotate(270deg); color: var(--text-primary); }
+@media (hover: hover) { .pr-row:hover .pr-chev { color: var(--text-primary); } }
+.proc-wrap { display: grid; grid-template-rows: 0fr; visibility: hidden; transition: grid-template-rows .5s var(--ease), visibility 0s .5s; }
+.proc-wrap.open { grid-template-rows: 1fr; visibility: visible; transition: grid-template-rows .55s var(--ease), visibility 0s; }
+.proc-clip { min-height: 0; overflow: hidden; }
+.proc-list { display: grid; gap: 8px; padding-top: 12px; }
+.proc-list img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; border-radius: 12px; background: var(--bg-teritary); opacity: 0; transform: translateY(-18px); transition: opacity .2s ease-out, transform .2s ease-out; -webkit-user-drag: none; }
+.proc-wrap.open .proc-list img { opacity: 1; transform: none; transition: opacity .45s ease-out calc(var(--k) * 70ms + 60ms), transform .6s var(--ease) calc(var(--k) * 70ms + 60ms); }
+@media (prefers-reduced-motion: reduce) { .proc-wrap, .proc-wrap.open, .proc-list img, .proc-wrap.open .proc-list img, .pr-chev { transition-duration: .01ms; transition-delay: 0s; } }
 /* 사진 설명(한 장씩 볼 때 사진 바로 아래) */
 .end { height: 24px; }
 
@@ -396,8 +387,9 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
         <div class="wrap about">
           <p class="desc" id="desc">지도는 펼쳐 놓고 볼 때만 길이 이어지고, 접는 순간 길도 끊깁니다. 이 작업은 그 접히는 부분에서 출발했습니다. 같은 산책길을 01·02·03 세 지점으로 나눠 한 장짜리 접지 지도, 한 손에 들어오는 소책자, 실로 엮은 작은 노트에 각각 다르게 옮겼습니다. 접는 횟수와 순서에 따라 같은 길이 다른 장면으로 읽힙니다. 모아디자인대학교 졸업 전시 「펼쳐지는 장면」에서 처음 공개합니다.</p>
           <div class="pfoot">
-            <button type="button" class="pr-row" id="proc-open" aria-haspopup="dialog" aria-label="작업과정 사진 보기"><span class="g" id="ths" aria-hidden="true"></span></button>
+            <button type="button" class="pr-row" id="proc-open" aria-expanded="false" aria-controls="proc-list" aria-label="작업과정 사진"><span class="g" id="ths" aria-hidden="true"></span><svg class="i pr-chev" aria-hidden="true"><use href="#i-chev"/></svg></button>
           </div>
+          <div class="proc-wrap" id="proc-list" role="group" aria-label="작업과정 사진" inert><div class="proc-clip"><div class="proc-list" id="proc-photos"></div></div></div>
         </div>
         <div class="wrap"><div class="end"></div></div>
       </div>
@@ -428,11 +420,6 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
 <script src="assets/fade.js"></script>
 <script src="assets/demo-data.js"></script>
 <script src="assets/work-extra.js"></script>
-<dialog class="pv" id="pv" aria-label="작업과정 사진">
-  <div class="bgd"></div>
-  <div class="vh"><button type="button" class="xb" id="pv-x" aria-label="닫기"><svg class="i" aria-hidden="true"><use href="#i-back"/></svg></button><span class="cn" id="pv-c"></span></div>
-  <div class="st" id="pv-s" tabindex="0" aria-label="작업과정 사진"></div>
-</dialog>
 
 <script>
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -557,51 +544,28 @@ box.addEventListener('click', (e) => { if (e.target.closest('.more-a')) { render
 renderAuthors(false);
 
 /* ---------- 작업과정 ---------- */
-/* 후보 H(11-06 확정): 줄의 사진 조각을 누르면 그 조각이 그대로 자라 검은 전체 화면이 열림(공유 요소 전환). 닫으면 조각으로 되돌아감 */
+/* 11-09 시험(임시, 미확정): 줄의 오른쪽 v를 누르면 사진들이 같은 화면에서 위부터 차례로 주르륵 펼쳐지고 다시 누르면 접힘(전체 화면 뷰어는 쓰지 않음). 예전 전체 화면 뷰어(11-06 후보 H)는 review/_bak-process-a/work.before-inline.html */
 if (X) {
-  /* ?pp=3 : 작업과정 사진이 여러 장일 때의 열린 화면 데모(Figma `작업과정 · 열린 화면 (사진 여러 장)`) — 실제 데이터는 아직 한 장씩이라 옆 작품의 작업과정 사진을 빌려 보여줌 */
+  /* ?pp=3 : 작업과정 사진이 여러 장일 때의 펼침 데모(Figma `작업과정 · 열린 화면 (사진 여러 장)`) — 실제 데이터는 아직 한 장씩이라 옆 작품의 작업과정 사진을 빌려 보여줌 */
   const NPP = Math.max(1, Math.min(5, +new URLSearchParams(location.search).get('pp') || 1));
-  const PP = X.ps || (NPP > 1 ? [X.p, ...Array.from({ length: NPP - 1 }, (_, k) => WORK_EXTRA[(WI + 1 + k) % WORK_EXTRA.length].p)] : [X.p]), DR = 'cubic-bezier(.32,.72,0,1)';
+  const PP = X.ps || (NPP > 1 ? [X.p, ...Array.from({ length: NPP - 1 }, (_, k) => WORK_EXTRA[(WI + 1 + k) % WORK_EXTRA.length].p)] : [X.p]);
   document.getElementById('ths').innerHTML = PP.slice(0, 3).map((p, i) => `<span class="t" style="z-index:${3 - i}"><img src="${p.img}" alt="" draggable="false"></span>`).join('');
-  const pv = document.getElementById('pv'), pst = document.getElementById('pv-s'), pcn = document.getElementById('pv-c'), row = document.getElementById('proc-open'), thumb = document.querySelector('#ths .t');
-  let live = null;
-  const kfs = (F) => {                       // 조각 ↔ 전체 화면 사진 키프레임(조각과 같은 가운데 자름을 맞춰 튀지 않게)
-    const r = thumb.getBoundingClientRect(), sc = r.width / F.width, dx = r.left + r.width / 2 - (F.left + F.width / 2), dy = r.top + r.height / 2 - (F.top + F.height / 2);
-    const ix = Math.max(0, (F.width - r.width / sc) / 2), iy = Math.max(0, (F.height - r.height / sc) / 2);
-    return [{ transform: `translate(${dx}px,${dy}px) scale(${sc})`, clipPath: `inset(${iy}px ${ix}px round ${8 / sc}px)` }, { transform: 'translate(0,0) scale(1)', clipPath: `inset(0px round ${innerWidth >= 768 ? 12 : 0}px)` }];
-  };
-  const finish = () => { pv.classList.remove('show'); pv.close(); pst.innerHTML = ''; thumb.style.visibility = ''; live = null; row.focus({ preventScroll: true }); };
-  function openPV() {
-    if (live) return;
-    pst.innerHTML = PP.map(p => `<img src="${p.img}" alt="${p.a}" draggable="false">`).join('');
-    pcn.textContent = PP.length > 1 ? `1 / ${PP.length}` : '';
-    pst.scrollTop = 0; pv.showModal(); pv.querySelector('.clone')?.remove();
-    const first = pst.firstElementChild, F = first.getBoundingClientRect();
-    const clone = document.createElement('div'); clone.className = 'clone'; clone.style.cssText = `left:${F.left}px;top:${F.top}px;width:${F.width}px;height:${F.height}px`; clone.innerHTML = `<img src="${PP[0].img}" alt="">`; pv.appendChild(clone);
-    first.style.visibility = 'hidden'; thumb.style.visibility = 'hidden';
-    const a = clone.animate(kfs(F), { duration: reduce ? 1 : 520, easing: DR, fill: 'both' });
-    a.onfinish = () => { first.style.visibility = ''; clone.style.display = 'none'; };
-    requestAnimationFrame(() => pv.classList.add('show'));
-    live = { clone, first };
-    document.getElementById('pv-x').focus({ preventScroll: true });
+  document.getElementById('proc-photos').innerHTML = PP.map((p, i) => `<img src="${p.img}" alt="${p.a}" style="--k:${Math.min(i, 5)}" draggable="false" decoding="async">`).join('');
+  const prow = document.getElementById('proc-open'), pwrap = document.getElementById('proc-list');
+  let pstop = false;
+  function pbring() {                           // 펼칠 때 줄이 화면 아래쪽에 있으면 위쪽으로 부드럽게 끌어올려 펼쳐지는 사진이 보이게
+    const r = prow.getBoundingClientRect(); if (r.top < innerHeight * 0.4) return;
+    const from = scrollY, to = from + r.top - 96, t0 = performance.now(), D = reduce ? 1 : 560; pstop = false;
+    const stop = () => { pstop = true; };
+    addEventListener('touchstart', stop, { once: true, passive: true }); addEventListener('wheel', stop, { once: true, passive: true });
+    const step = (now) => { if (pstop) return; const t = Math.min(1, (now - t0) / D); window.scrollTo(0, from + (to - from) * (1 - Math.pow(1 - t, 4))); if (t < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step); setTimeout(() => { if (!pstop) window.scrollTo(0, to); }, D + 150);   // 가려진 탭에서 rAF가 멈춰도 끝 위치로
   }
-  function closePV() {
-    if (!live) return; const { clone, first } = live;
-    pv.classList.remove('show');
-    if (pst.scrollTop > 20) { setTimeout(finish, 330); return; }          // 많이 내려간 뒤에는 조각으로 돌아가지 않고 조용히 닫음
-    const F = first.getBoundingClientRect();
-    clone.style.cssText = `left:${F.left}px;top:${F.top}px;width:${F.width}px;height:${F.height}px`; clone.style.display = ''; first.style.visibility = 'hidden';
-    clone.animate(kfs(F).reverse(), { duration: reduce ? 1 : 460, easing: DR, fill: 'both' }).onfinish = finish;
-  }
-  row.addEventListener('click', openPV);
-  document.getElementById('pv-x').addEventListener('click', closePV);
-  pv.addEventListener('cancel', (e) => { e.preventDefault(); closePV(); });
-  if (PP.length > 1) pst.addEventListener('scroll', () => { const step = pst.firstElementChild.offsetHeight + 8; pcn.textContent = `${Math.min(PP.length, Math.max(1, Math.round(pst.scrollTop / step) + 1))} / ${PP.length}`; }, { passive: true });
-  let sy = null, dyy = 0;                    // 맨 위에서 아래로 끌면 닫힘
-  pst.addEventListener('pointerdown', (e) => { if (pst.scrollTop <= 0) sy = e.clientY; });
-  pst.addEventListener('pointermove', (e) => { if (sy == null) return; dyy = Math.max(0, e.clientY - sy); if (dyy > 8) pv.style.transform = `translateY(${dyy * .6}px)`; });
-  const rel = () => { if (sy == null) return; const d = dyy; sy = null; dyy = 0; pv.style.transition = 'transform .3s var(--ease)'; pv.style.transform = ''; setTimeout(() => pv.style.transition = '', 320); if (d > 110) closePV(); };
-  pst.addEventListener('pointerup', rel); pst.addEventListener('pointercancel', rel);
+  prow.addEventListener('click', () => {
+    const open = prow.getAttribute('aria-expanded') !== 'true';
+    prow.setAttribute('aria-expanded', open); pwrap.classList.toggle('open', open); pwrap.toggleAttribute('inert', !open);
+    if (open) pbring(); else pstop = true;
+  });
 }
 
 /* ---------- 소개(접지 않고 전부 보임, 더보기 없음) ---------- */
