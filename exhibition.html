@@ -149,8 +149,8 @@ img { display: block; }
 .ext a { position: relative; display: inline-flex; align-items: center; gap: 6px; min-height: 28px; max-width: 100%; font-size: 14px; font-weight: 500; color: var(--text-primary); }
 .ext a::before { content: ""; position: absolute; inset: -8px -4px; }   /* 터치 영역 44 */
 .ext a span { min-width: 0; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ext .i { width: 16px; height: 16px; color: var(--text-teritary); }
-.ext .o { width: 12px; height: 12px; transition: transform .25s var(--ease), color .2s; }
+.ext .i { width: 14px; height: 14px; color: var(--text-teritary); }   /* 11-09 Figma `Icon / instagram·website` 14, 선 1 */
+.ext .o { width: 12px; height: 12px; color: var(--text-teritary); transition: transform .25s var(--ease), color .2s; }   /* 11-09 Figma `Icon / 바깥으로` 12, #71717b */
 @media (hover: hover) { .ext a:hover span { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; } }
 @media (hover: hover) { .ext a:hover .o { transform: translate(1px, -1px); color: var(--text-primary); } }
 .actions { display: none; gap: 8px; }
@@ -386,9 +386,9 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
     <symbol id="i-cal" viewBox="0 0 24 24"><rect x="4" y="5.5" width="16" height="14.5" rx="2.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/></symbol>
     <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.5V12l3 2"/></symbol>
     <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s6.2-5.4 6.2-10.2a6.2 6.2 0 1 0-12.4 0C5.8 15.6 12 21 12 21z"/><circle cx="12" cy="10.8" r="2.2"/></symbol>
-    <symbol id="i-insta" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.2 6.8v.01" stroke-width="2.2"/></symbol>
-    <symbol id="i-web" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.3 3.6 5.2 3.6 8.5s-1.2 6.2-3.6 8.5c-2.4-2.3-3.6-5.2-3.6-8.5S9.6 5.8 12 3.5z"/></symbol>
-    <symbol id="i-out" viewBox="0 0 24 24"><path d="m7.5 16.5 9-9M9 7.5h7.5V15"/></symbol>
+    <symbol id="i-insta" viewBox="0 0 14 14"><rect x="1.53" y="1.53" width="10.94" height="10.94" rx="3.28" stroke-width="1"/><circle cx="7" cy="7" r="2.53" stroke-width="1"/><circle cx="10.15" cy="4.03" r=".52" fill="currentColor" stroke-width=".4"/></symbol>
+    <symbol id="i-web" viewBox="0 0 14 14"><circle cx="7" cy="7" r="5.47" stroke-width="1"/><path d="M1.53 7h10.94" stroke-width="1"/><path d="M6.99 1.53C8.48 3.01 9.27 4.85 9.27 6.99S8.48 10.97 6.99 12.46C5.5 10.97 4.72 9.14 4.72 6.99S5.5 3.01 6.99 1.53z" stroke-width="1" stroke-linejoin="round"/></symbol>
+    <symbol id="i-out" viewBox="0 0 12 12"><path d="M4.125 7.875 7.875 4.125M7.875 4.125h-3M7.875 4.125v3" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.2"/><path d="M12 11v5.2M12 7.8v.2"/></symbol>
     <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
     <symbol id="i-dots" viewBox="0 0 24 24"><circle cx="5.5" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="18.5" cy="12" r="1.7" fill="currentColor" stroke="none"/></symbol>
