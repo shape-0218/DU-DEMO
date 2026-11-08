@@ -60,6 +60,10 @@ img { display: block; }
 .me { display: flex; align-items: center; gap: 8px; min-width: 0; }   /* 11-07: 사진 36 + 닉네임 18, 화살표 없음(기본 프로필 수정은 햄버거) */
 .avatar { position: relative; width: 36px; height: 36px; border-radius: 9999px; background: var(--avatar); display: grid; place-items: end center; overflow: hidden; color: #fff; flex: none; }
 .avatar svg { position: absolute; width: 106.25%; height: 106.25%; left: -3.125%; top: 6.25%; }   /* 11-08 Figma `Avatar / 프로필 (무채색)`: 그림이 지름에 비례(1.0625배, 위에서 6.25%) — 36·48 모두 같은 비율 */
+.avlink { flex: none; display: block; padding: 4px; margin: -4px; border-radius: 9999px; }   /* 11-09 프로필 사진을 누르면 기본 프로필 수정 — 보이는 36, 누르는 영역 44 */
+.avlink .avatar { transition: transform .16s var(--ease, ease); }
+.avlink:active .avatar { transform: scale(.96); }
+.avlink:focus-visible { outline: 2px solid var(--text-primary); outline-offset: -2px; }
 .avatar::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px var(--border-primary); pointer-events: none; }   /* 흰 몸통이 바탕에 묻혀 반달처럼 보이던 것 → 원 윤곽 살림 */
 .me b { display: block; font-size: 18px; font-weight: 600; line-height: 1.4; letter-spacing: -0.03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .me small { display: block; color: var(--text-teritary); font-size: 12px; font-weight: 500; }
@@ -302,7 +306,7 @@ dialog.modal::backdrop { background: rgba(0, 0, 0, .42); }
   <div class="side">
     <div class="head">
       <div class="me" id="me">
-        <span class="avatar"><svg aria-hidden="true"><use href="#i-avatar"/></svg></span>
+        <a class="avlink" href="profile-edit.html?kind=basic" aria-label="기본 프로필 수정"><span class="avatar"><svg aria-hidden="true"><use href="#i-avatar"/></svg></span></a>
         <span><b>sangjun</b></span>
       </div>
       <div class="tools">

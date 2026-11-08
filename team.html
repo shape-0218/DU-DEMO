@@ -14,7 +14,7 @@
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
   <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></symbol>
   <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 8v.2"/></symbol>
-  <symbol id="i-avatar" viewBox="0 0 34 34"><circle cx="17" cy="13" r="6" fill="currentColor"/><path d="M4 34c1.2-8 6.6-12 13-12s11.8 4 13 12z" fill="currentColor"/></symbol>
+  <symbol id="i-avatar" viewBox="0 0 34 36.2"><circle cx="17" cy="7" r="7" fill="currentColor"/><path d="M0 36.2C0 26.81 7.61 19.2 17 19.2s17 7.61 17 17z" fill="currentColor"/></symbol>
 </defs></svg>
 <a class="skip" href="#main">본문으로 건너뛰기</a>
 <div class="page" id="pg">
@@ -70,7 +70,7 @@ const d = ExData.get(e);
 $('back').href = 'hub.html?id=' + e.id;
 const T = d.team;
 const RN = { owner: '대표자', manager: '관리자', member: '팀원' };
-const AV = (r, cls = '') => `<span class="av ${cls}" data-r="${r}" aria-hidden="true"><svg viewBox="0 0 34 34"><use href="#i-avatar"/></svg></span>`;
+const AV = (r, cls = '') => `<span class="av ${cls}" data-r="${r}" aria-hidden="true"><svg aria-hidden="true"><use href="#i-avatar"/></svg></span>`;
 const slug = String(e.id).replace(/[^a-z0-9]/gi, '').toLowerCase();
 const persist = () => ExData.save(e, d);
 
