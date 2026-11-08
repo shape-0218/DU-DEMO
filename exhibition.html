@@ -109,7 +109,8 @@ img { display: block; }
 .vbtn .on-s, .vbtn .off-s { display: none; }
 .vbtn[aria-pressed="true"] .on-s { display: block; } .vbtn[aria-pressed="false"] .off-s { display: block; }
 .vbtn.pp .is-play { display: none; } .vbtn.pp[aria-pressed="false"] .is-play { display: block; } .vbtn.pp[aria-pressed="false"] .is-pause { display: none; }
-.back { position: absolute; left: 20px; top: max(16px, env(safe-area-inset-top)); z-index: 2; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 9999px; background: #fff; box-shadow: 0 0 0 1px rgba(0, 0, 0, .08), 0 4px 12px rgba(0, 0, 0, .04); color: var(--text-primary); transition: transform .25s var(--ease); }   /* 11-08 상세 배경이 흰색이 되어 흰 원이 묻히지 않게 얇은 윤곽 + 그림자 */
+.back { position: absolute; left: 20px; top: max(20px, env(safe-area-inset-top)); z-index: 2; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 9999px; background: rgba(0, 0, 0, .45); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); color: #fafafa; transition: transform .25s var(--ease); }   /* 11-09 Figma `Btn / back` 메인 수정 반영: 44·검정 45%·배경 블러(Figma 12 = CSS 6)·흰 화살표 28(선 2). 11-08 흰 원+윤곽선은 폐기. 전시 상세는 포스터 위 20(Figma) */
+.back .i { width: 28px; height: 28px; }
 @media (hover: hover) { .back:hover { transform: translateX(-2px); } }
 .back:active { transform: scale(.94); }
 @media (min-width: 900px) { body:not(.is-pv) .back { display: none; } }   /* 11-07: 웹(노트북)은 위에 서비스 헤더와 브라우저 뒤로가기가 있어서 뒤로가기 버튼 없음. 폰·태블릿과 미리보기(공개 전)는 그대로 */

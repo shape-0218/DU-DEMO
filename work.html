@@ -86,7 +86,8 @@ img { display: block; }
   .viewer.stack .thumbs { position: sticky; top: 96px; left: auto; bottom: auto; align-self: flex-start; }
   .viewer.stack .stackv { border-radius: var(--r12); overflow: hidden; }
 }
-.back { position: absolute; left: 20px; top: max(16px, env(safe-area-inset-top)); z-index: 3; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 9999px; background: rgba(255, 255, 255, .78); color: var(--text-primary); backdrop-filter: blur(10px); transition: transform .25s var(--ease); }
+.back { position: absolute; left: 20px; top: max(16px, env(safe-area-inset-top)); z-index: 3; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 9999px; background: rgba(0, 0, 0, .45); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); color: #fafafa; transition: transform .25s var(--ease); }   /* 11-09 Figma `Btn / back` 메인 수정 반영: 44·검정 45%·배경 블러(Figma 12 = CSS 6)·흰 화살표 28(선 2, color/icon/White #fafafa). 이전: 40·흰 78%+블러 10·진한 화살표. 작품 상세는 무대 위 16(Figma) */
+.back .i { width: 28px; height: 28px; }
 @media (hover: hover) { .back:hover { transform: translateX(-2px); } }
 .back:active { transform: scale(.94); }
 @media (min-width: 900px) { body:not(.is-pv) .back { display: none; } }   /* 11-07: 웹(노트북)은 위에 서비스 헤더와 브라우저 뒤로가기가 있어서 뒤로가기 버튼 없음. 폰·태블릿과 미리보기(공개 전)는 그대로 */
