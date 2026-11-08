@@ -8,7 +8,7 @@
 const PhotoPick = (() => {
   const R = { circle: 1, rect: 116 / 132 };
   const PLUS = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 4v16M4 12h16"/></svg>';
-  const USER = '<svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="13" r="6" fill="currentColor"/><path d="M4 34c1.2-8 6.6-12 13-12s11.8 4 13 12z" fill="currentColor"/></svg>';   // 마이 `#i-avatar`와 같은 그림(Figma `Avatar / 프로필 (무채색)`)
+  const USER = '<svg viewBox="0 0 59.5 65.87" aria-hidden="true"><ellipse cx="29.75" cy="15.94" rx="15.23" ry="15.94" fill="currentColor"/><path d="M0 65.87C0 49.44 13.32 36.12 29.75 36.12S59.5 49.44 59.5 65.87z" fill="currentColor"/></svg>';   // 마이 `#i-avatar`와 같은 그림(Figma `Avatar / 프로필 (무채색)`)
   const PEN ='<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m4 20 1-4L16.5 4.5a2 2 0 0 1 3 3L8 19z"/><path d="m14.5 6.5 3 3"/></svg>';
   const css = `
 .pp { position: relative; display: block; width: var(--w); height: var(--h); margin-inline: auto; }
@@ -25,7 +25,7 @@ const PhotoPick = (() => {
 .pp.empty .pf svg { width: 24px; height: 24px; }
 .pp.empty .pf .pp-lab { font-size: 12px; font-weight: 500; line-height: 1.4; color: #3f3f47; }
 .pp[data-pp="circle"].empty .pf { display: block; background: #f0f0f3; color: #fff; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .06); }
-.pp[data-pp="circle"].empty .pf svg { position: absolute; width: 106.25%; height: 106.25%; left: -3.125%; top: 6.25%; }
+.pp[data-pp="circle"].empty .pf svg { position: absolute; left: 13.44%; top: 19.54%; width: 74.38%; height: 82.34%; }
 .pp-pop { position: absolute; z-index: 30; top: calc(100% + 8px); right: 0; width: 164px; padding: 6px 0; background: #fff; border: 1px solid #d4d4d8; border-radius: 12px; box-shadow: 0 12px 32px rgba(0, 0, 0, .12); animation: ppPop .2s var(--ease, ease); }
 .pp-pop button { display: block; width: 100%; height: 44px; padding: 0 16px; font-size: 14px; font-weight: 500; text-align: left; transition: background .15s; }
 @media (hover: hover) { .pp-pop button:hover { background: #f4f4f5; } }

@@ -59,7 +59,7 @@ img { display: block; }
 .head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .me { display: flex; align-items: center; gap: 8px; min-width: 0; }   /* 11-07: 사진 36 + 닉네임 18, 화살표 없음(기본 프로필 수정은 햄버거) */
 .avatar { position: relative; width: 36px; height: 36px; border-radius: 9999px; background: var(--avatar); display: grid; place-items: end center; overflow: hidden; color: #fff; flex: none; }
-.avatar svg { position: absolute; width: 106.25%; height: 106.25%; left: -3.125%; top: 6.25%; }   /* 11-08 Figma `Avatar / 프로필 (무채색)`: 그림이 지름에 비례(1.0625배, 위에서 6.25%) — 36·48 모두 같은 비율 */
+.avatar svg { position: absolute; left: 13.44%; top: 19.54%; width: 74.38%; height: 82.34%; }   /* 11-09 Figma `Avatar / 프로필 (무채색)` 3570:40023 비율(폭 74.4%·왼쪽 13.4%·위 19.5%) — 36·48 모두 같음, 팀원 목록·댓글 등 작은 아바타도 같은 그림 */
 .avlink { flex: none; display: block; padding: 4px; margin: -4px; border-radius: 9999px; }   /* 11-09 프로필 사진을 누르면 기본 프로필 수정 — 보이는 36, 누르는 영역 44 */
 .avlink .avatar { transition: transform .16s var(--ease, ease); }
 .avlink:active .avatar { transform: scale(.96); }
@@ -297,7 +297,7 @@ dialog.modal::backdrop { background: rgba(0, 0, 0, .42); }
     <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
     <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20.2S4.5 15.6 4.5 9.9A4.2 4.2 0 0 1 12 7.6a4.2 4.2 0 0 1 7.5 2.3c0 5.7-7.5 10.3-7.5 10.3z"/></symbol>
     <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M7 4h10a1 1 0 0 1 1 1v15l-6-3.8L6 20V5a1 1 0 0 1 1-1z"/></symbol>
-    <symbol id="i-avatar" viewBox="0 0 34 34"><circle cx="17" cy="13" r="6" fill="currentColor"/><path d="M4 34c1.2-8 6.6-12 13-12s11.8 4 13 12z" fill="currentColor"/></symbol>
+    <symbol id="i-avatar" viewBox="0 0 59.5 65.87"><ellipse cx="29.75" cy="15.94" rx="15.23" ry="15.94" fill="currentColor"/><path d="M0 65.87C0 49.44 13.32 36.12 29.75 36.12S59.5 49.44 59.5 65.87z" fill="currentColor"/></symbol>
   </defs>
 </svg>
 
