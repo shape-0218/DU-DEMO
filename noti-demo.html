@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>알림함 데모 · Display U.</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/* 개발 전달용 데모 페이지(제품 화면 아님). 값은 마이 화면과 같은 토큰을 씀.
+   왼쪽에서 알림을 고르면 가운데 실제 마이 화면(my.html)에서 알림함이 열린다. 알림은 제목 + 내용으로 오고, 저장한 전시·작가 알림 2개만 누르면 전시로 이동한다.
+   my.html 은 고치지 않고, 같은 주소의 iframe 안에서 알림 목록과 줄 모양만 바꿔 끼운다. */
+:root {
+  --text-primary: #18181b;
+  --text-secondary: #3f3f47;
+  --text-teritary: #71717b;
+  --border-primary: #d4d4d8;
+  --bg-secondary: #f4f4f5;
+  --bg-teritary: #f0f0f3;
+  --r12: 12px; --r20: 20px;
+  --ease: cubic-bezier(.23, 1, .32, 1);
+  --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; letter-spacing: -0.03em; line-height: 1.4; }
+html { -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: #fff; color: var(--text-primary); font-family: var(--font); font-size: 14px; font-weight: 400; }
+button { font: inherit; letter-spacing: -0.03em; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-align: left; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+button:focus-visible { outline: 2px solid var(--text-primary); outline-offset: 2px; }
+code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+h1, h2, p, dl, dd { margin: 0; }
+
+.wrap { max-width: 1200px; margin: 0 auto; padding: 32px 20px 64px; }
+.top h1 { font-size: 20px; font-weight: 700; text-wrap: balance; }
+.top p { margin-top: 8px; color: var(--text-secondary); text-wrap: pretty; }
+
+.stage { display: grid; grid-template-columns: 280px 402px minmax(0, 1fr); gap: 24px; align-items: start; margin-top: 24px; }
+.pick h2 { margin: 20px 0 4px; font-size: 12px; font-weight: 600; color: var(--text-teritary); }
+.pick h2:first-child { margin-top: 0; }
+.pk { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 44px; padding: 8px 12px; border-radius: var(--r12); font-size: 14px; font-weight: 500; transition: background-color .15s var(--ease), transform .15s var(--ease); }
+.pk[aria-current="true"] { background: var(--bg-secondary); font-weight: 600; }
+.pk:active { transform: scale(.96); }
+@media (hover: hover) { .pk:hover { background: var(--bg-secondary); } }
+
+.dev { width: 402px; border: 1px solid var(--border-primary); border-radius: var(--r20); overflow: hidden; background: #fff; }
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; padding: 0 8px 0 16px; border-bottom: 1px solid var(--bg-teritary); }
+#crumb { min-width: 0; font-size: 12px; font-weight: 500; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#crumb code { color: var(--text-teritary); margin-left: 8px; }
+.back { flex: none; min-height: 44px; padding: 0 8px; font-size: 12px; font-weight: 600; transition: transform .15s var(--ease); }
+.back:active { transform: scale(.96); }
+#ph { display: block; width: 100%; height: 820px; border: 0; background: #fff; }
+
+.info h2 { display: flex; align-items: center; gap: 12px; font-size: 20px; font-weight: 700; }
+.info dl { margin-top: 16px; }
+.info dl div { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--bg-teritary); }
+.info dt { font-size: 12px; font-weight: 500; color: var(--text-teritary); padding-top: 2px; }
+.info dd { min-width: 0; overflow-wrap: anywhere; }
+.info dd code { display: block; margin-top: 4px; color: var(--text-teritary); }
+.press { margin-top: 16px; display: grid; place-items: center; min-height: 48px; padding: 0 20px; border-radius: var(--r12); background: var(--text-primary); color: #fafafa; font-size: 14px; font-weight: 600; transition: transform .15s var(--ease), background-color .15s var(--ease); }
+.press:active { transform: scale(.96); }
+@media (hover: hover) { .press:hover { background: var(--text-secondary); } .back:hover { text-decoration: underline; text-underline-offset: 4px; } }
+
+.rt { margin-top: 48px; }
+.rt h2 { font-size: 18px; font-weight: 600; }
+.sc { margin-top: 12px; overflow-x: auto; border: 1px solid var(--bg-teritary); border-radius: var(--r12); }
+table { width: 100%; min-width: 760px; border-collapse: collapse; }
+th, td { padding: 12px 16px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--bg-teritary); }
+th { font-size: 12px; font-weight: 500; color: var(--text-teritary); background: var(--bg-secondary); }
+tr:last-child td { border-bottom: 0; }
+.note { margin-top: 12px; font-size: 12px; color: var(--text-teritary); text-wrap: pretty; }
+
+@media (max-width: 1099px) {
+  .stage { grid-template-columns: 280px 402px; }
+  .info { grid-column: 1 / -1; }
+}
+@media (max-width: 759px) {
+  .stage { grid-template-columns: minmax(0, 1fr); }
+  .dev { width: 100%; }
+  #ph { height: 780px; }
+}
+@media (prefers-reduced-motion: reduce) { .pk, .back, .press { transition: none; } }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <h1>알림함 데모</h1>
+    <p>알림을 고르면 실제 마이 화면의 알림함이 열려요. 알림은 제목과 내용으로 오고, 저장한 전시·작가 알림만 누르면 전시로 이동해요</p>
+  </header>
+
+  <div class="stage">
+    <nav class="pick" id="pick" aria-label="알림 종류"></nav>
+    <div class="dev">
+      <div class="bar"><div id="crumb" aria-live="polite"></div><button class="back" id="back" type="button">알림함으로</button></div>
+      <iframe id="ph" title="디유 화면"></iframe>
+    </div>
+    <section class="info" id="info" aria-live="polite"></section>
+  </div>
+
+  <section class="rt">
+    <h2>제목 · 내용 · 목적지 한눈에</h2>
+    <div class="sc"><table id="rt"></table></div>
+    <p class="note">문구는 1차 배포 기준으로 정한 문구예요. 알림함 줄 모양(제목·내용·화살표)은 Figma 화면이 아직 없어서 데모용이에요. 내용이 3줄을 넘으면 말줄임이 되고, 누르면 그 자리에서 펼쳐져요.</p>
+  </section>
+</main>
+
+<script>
+(() => {
+  /* 알림 목록. title=제목, body=내용(알림함에 보이는 그대로), w=시간, go=누르면 가는 기존 화면(없으면 이동 없음)
+     이름은 데모 데이터(demo-data.js·flow.js)에 있는 것을 씀. 문구는 전부 임시 초안. */
+  const ITEMS = [
+    { id: 'approved', g: '기다리던 결과', name: '등록 요청 승인', title: '등록 요청 승인',
+      body: '“빛의 결 | 조용한 흐름” 전시의 등록 요청이 승인됐어요. 승인된 시점에 저장돼 있던 내용이 공개돼요.', w: '3시간 전', go: null,
+      when: '등록 요청이 승인됐을 때', who: '그 전시의 대표자 개인', note: '대표자 개인에게만 가요. 전시 관리는 마이의 내 전시 관리에서 찾아요.' },
+    { id: 'rejected', g: '기다리던 결과', name: '등록 요청 반려', title: '등록 요청 반려',
+      body: '“빛의 결 | 조용한 흐름” 전시의 등록 요청이 반려됐어요. 이미지 출처를 확인할 수 없어요 수정한 뒤 다시 요청해 주세요', w: '4일 전', go: null,
+      when: '등록 요청이 반려됐을 때', who: '그 전시의 대표자 개인', note: '반려 사유는 운영자가 쓴 내용 그대로 내용에 들어가요(이 샘플은 허브의 반려 예시 문구). 길면 누르면 펼쳐져요. 팀원 전체에게는 보내지 않아요.' },
+    { id: 'invite', g: '나에게 일이 생김', name: '전시 초대', title: '전시 초대',
+      body: '“펼쳐지는 장면” 전시에 팀원으로 초대받았어요. 초대한 사람: 김도윤(doyoon)', w: '1시간 전', go: null,
+      when: '대표자가 팀원을 전시에 초대했을 때', who: '초대받은 계정', note: '수락·거절은 마이의 받은 초대에서 해요. 알림에서 바로 하지 않아요.' },
+    { id: 'coauthor', g: '나에게 일이 생김', name: '공동 작가로 추가됨', title: '공동 작가로 추가됨',
+      body: '“접으면 달라지는 지도” 작품에 공동 작가로 추가됐어요. 작가와 같은 권한으로 수정·삭제할 수 있어요.', w: '어제', go: null,
+      when: '작품에 공동 작업자로 추가됐을 때', who: '추가된 계정(이름만 입력한 작가는 계정이 없어서 제외, 추가한 본인도 제외)', note: '공동 작업자의 편집 권한이 작가와 같은 건 확정 정책이에요.' },
+    { id: 'proxy', g: '나에게 일이 생김', name: '작가로 지정됨', title: '작가로 지정됨',
+      body: '“장면을 넘기는 극장” 작품의 작가로 지정됐어요. 등록한 사람: 김도윤', w: '어제', go: null,
+      when: '대표자·관리자가 팀원을 작가로 골라 작품을 대신 등록했을 때', who: '지정된 팀원(이름을 직접 입력한 경우는 제외)', note: '지정된 팀원도 수정·삭제할 수 있어요(확정).' },
+    { id: 'workdel', g: '나에게 일이 생김', name: '작품 삭제', title: '작품 삭제',
+      body: '“얇은 경계” 작품이 삭제됐어요. 함께 작가로 등록된 계정이 “손끝의 지도” 전시에서 나가거나 내보내져 작품도 함께 삭제됐어요. 복구할 수 없어요.', w: '3일 전', go: null,
+      when: '작가 계정이 전시에서 나가거나 내보내져 그 계정이 작가로 있던 작품이 삭제됐을 때', who: '삭제된 작품에 함께 연결돼 있던 다른 계정(공동 작가, 대신 등록한 등록자). 나간 계정 본인은 제외', note: '사유에 나간 사람의 이름은 넣지 않아요. 보관은 180일이에요.' },
+    { id: 'removed', g: '나에게 일이 생김', name: '전시에서 내보내짐', title: '전시에서 내보내짐',
+      body: '“손끝의 지도” 전시에서 내보내졌어요. 작가로 등록돼 있던 작품이 있었다면 함께 삭제됐어요.', w: '5일 전', go: null,
+      when: '대표자·관리자가 팀원을 내보냈을 때', who: '내보내진 팀원', note: '작품 삭제 알림과 합치지 않아요. 내보내진 사람은 이 알림만, 남은 작가는 작품 삭제 알림만 받아요.' },
+    { id: 'exdel', g: '나에게 일이 생김', name: '전시 삭제', title: '전시 삭제',
+      body: '“움직임의 기록” 전시가 삭제됐어요.', w: '6일 전', go: null,
+      when: '대표자가 전시를 삭제했을 때(대표자는 나가기가 없고 전시 삭제만 가능)', who: '그 전시의 팀원(삭제한 대표자 본인은 제외)', note: '팀원 작품이 어떻게 되는지는 내용에 적지 않아요. 작품 처리는 별도 정책을 따라요.' },
+    { id: 'followartist', g: '저장한 것', name: '저장한 작가의 새 전시', title: '저장한 작가의 새 전시',
+      body: '송하윤님이 참여한 “재생 중” 전시가 공개됐어요. 12.02 - 12.07 · 미온미디어관 B1', w: '2일 전', go: { page: '전시 상세', url: 'exhibition.html?e=5' },
+      when: '저장한 작가가 참여한 전시가 공개됐을 때', who: '그 작가를 저장한 계정', note: '저장한 작가가 여러 명이어도 작가마다 1건씩, 같은 전시는 한 번만 보내요. 새 전시는 데모 전시 5번으로 이어 둔 샘플이에요.' },
+    { id: 'started', g: '저장한 것', name: '저장한 전시 시작', title: '저장한 전시 시작',
+      body: '저장한 “빛이 지나간 자리” 전시가 시작됐어요. 12.04 - 12.06 · 스튜디오 여백 B1', w: '어제', go: { page: '전시 상세', url: 'exhibition.html?e=7' },
+      when: '저장한 전시의 시작일 오전 9시(시작일 전에 저장한 계정만, 시작일에 비공개면 제외)', who: '그 전시를 저장한 계정', note: '시작일에 맞춘 예약 작업이 필요해요. 이번 배포에 어려우면 이 알림만 2차로 미뤄요. 데모 시계가 2026-12-05로 고정돼 있어서 12-04에 시작한 전시를 썼어요.' },
+    { id: 'operator', g: '운영', name: '운영자 특별 알림', title: '전시 노출 중단 안내',
+      body: '조치 대상, 사유와 필요한 후속 조치를 작성해 주세요.', w: '방금', go: null,
+      when: '운영자가 어드민에서 발송했을 때', who: '운영자가 한 명씩 고른 회원(전체 발송 아님)', note: '제목은 40자, 본문은 1000자까지예요. 운영 표시 없이 운영자가 쓴 그대로 보여요. 이 샘플의 글은 어드민 입력 칸의 placeholder예요.' }
+  ];
+  const GROUPS = ['기다리던 결과', '나에게 일이 생김', '저장한 것', '운영'];
+  /* 알림함에 보이는 순서(최신순) */
+  const ORDER = ['operator', 'invite', 'approved', 'coauthor', 'proxy', 'started', 'followartist', 'workdel', 'rejected', 'removed', 'exdel'];
+  const PAGE = { 'my.html': '마이', 'hub.html': '전시 관리 허브', 'work.html': '작품 상세', 'exhibition.html': '전시 상세', 'artist.html': '작가 프로필', 'manage.html': '내 전시 관리' };
+  const START = 'my.html?noti=3';   // 위 3개가 안 읽은 상태로 시작
+  const $ = (id) => document.getElementById(id);
+  const ph = $('ph');
+  const byId = (id) => ITEMS.find((x) => x.id === id);
+  let cur = 'approved', wantOpen = false, pendingPress = false;
+
+  const dest = (x) => x.go ? `${x.go.page}<code>${x.go.url}</code>` : '이동 없음';
+
+  /* ---------- 왼쪽 목록 ---------- */
+  $('pick').innerHTML = GROUPS.map((g) => `<h2>${g}</h2>` + ITEMS.filter((x) => x.g === g).map((x) =>
+    `<button class="pk" type="button" data-id="${x.id}" aria-current="false">${x.name}</button>`).join('')).join('');
+  $('pick').addEventListener('click', (e) => { const b = e.target.closest('.pk'); if (b) choose(b.dataset.id); });
+
+  /* ---------- 오른쪽 설명 ---------- */
+  function renderInfo() {
+    const x = byId(cur);
+    $('info').innerHTML = `<h2>${x.name}</h2>
+      <dl><div><dt>제목</dt><dd>${x.title}</dd></div><div><dt>내용</dt><dd>${x.body}</dd></div><div><dt>목적지</dt><dd>${dest(x)}</dd></div>
+      <div><dt>보내는 때</dt><dd>${x.when}</dd></div><div><dt>받는 사람</dt><dd>${x.who}</dd></div>${x.note ? `<div><dt>참고</dt><dd>${x.note}</dd></div>` : ''}</dl>` +
+      (x.go ? '<button class="press" id="press" type="button">알림 눌러 보기</button>' : '');
+    const p = $('press'); if (p) p.addEventListener('click', () => { const r = rowOf(cur); if (r) r.click(); else pendingPress = true; });
+    document.querySelectorAll('.pk').forEach((b) => b.setAttribute('aria-current', String(b.dataset.id === cur)));
+  }
+  $('rt').innerHTML = '<thead><tr><th>제목</th><th>내용</th><th>목적지</th></tr></thead><tbody>' +
+    ORDER.map(byId).map((x) => `<tr><td>${x.title}</td><td>${x.body}</td><td>${dest(x)}</td></tr>`).join('') + '</tbody>';
+
+  /* ---------- 폰 안(my.html) 다루기 ---------- */
+  const win = () => { try { return ph.contentWindow && ph.contentWindow.document ? ph.contentWindow : null; } catch (e) { return null; } };
+  const rowOf = (id) => { const w = win(); return w ? w.document.querySelector(`.noti[data-k="${id}"]`) : null; };
+  const crumb = (text, url) => { $('crumb').innerHTML = text + (url ? `<code>${url}</code>` : ''); };
+
+  function focusRow() {
+    const w = win(); if (!w) return;
+    w.document.querySelectorAll('.noti.demo-focus').forEach((r) => r.classList.remove('demo-focus'));
+    const r = rowOf(cur); if (r) { r.classList.add('demo-focus'); r.scrollIntoView({ block: 'nearest' }); }
+  }
+
+  function prepare(w) {
+    const d = w.document;
+    /* 알림 목록을 11개(제목+내용)로 바꿔 끼움. my.html 의 NOTIS 는 const 라서 같은 배열 안의 내용만 바꿈 */
+    const list = w.eval('NOTIS'); list.length = 0;
+    ORDER.map(byId).forEach((x) => list.push({ t: `<b class="nt">${x.title}</b><span class="nb">${x.body}</span>`, w: x.w, k: x.id }));
+    const st = d.createElement('style');
+    const chev = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m9 6 6 6-6 6'/%3E%3C/svg%3E\")";
+    st.textContent = `.noti { position: relative; }
+      .noti.demo-focus::before { content: ""; position: absolute; inset: 0 -20px; background: #f4f4f5; z-index: -1; }
+      .noti p { font-weight: 400; }
+      .noti .nt { display: block; font-size: 14px; font-weight: 600; line-height: 1.4; }
+      .noti .nb { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; margin-top: 2px; font-size: 14px; font-weight: 400; line-height: 1.4; color: #3f3f47; }
+      .noti.open .nb { display: block; }
+      .noti[data-k="started"], .noti[data-k="followartist"] { grid-template-columns: 8px minmax(0, 1fr) 16px; }
+      .noti[data-k="started"]::after, .noti[data-k="followartist"]::after { content: ""; width: 16px; height: 16px; align-self: center; background: ${chev} center / 16px no-repeat; }`;
+    d.head.appendChild(st);
+    /* 알림을 누르면: 이동할 곳이 있으면 그 화면으로, 없으면 그 자리에서 내용을 펼침 */
+    d.addEventListener('click', (ev) => {
+      const b = ev.target.closest && ev.target.closest('.noti'); if (!b) return;
+      const x = byId(b.dataset.k); if (!x) return;
+      cur = x.id; renderInfo(); wantOpen = true; history.replaceState(null, '', '#' + x.id);
+      if (x.go) w.location.href = x.go.url; else { b.classList.toggle('open'); focusRow(); }
+    });
+    if (wantOpen) { w.openNoti(); focusRow(); crumb('마이 › 알림함'); } else crumb('마이', START);
+    /* 화면이 뜨기 전에 "알림 눌러 보기"를 눌렀다면 준비되자마자 이어서 누름 */
+    if (pendingPress) { pendingPress = false; const r = rowOf(cur); if (r) r.click(); }
+  }
+
+  ph.addEventListener('load', () => {
+    const w = win(); if (!w) { crumb('서버 주소로 열어야 동작해요'); return; }
+    const file = w.location.pathname.split('/').pop();
+    if (file === 'my.html') prepare(w);
+    else if (file) crumb(PAGE[file] || file, file + w.location.search);
+  });
+
+  function choose(id) {
+    cur = id; wantOpen = true; renderInfo(); history.replaceState(null, '', '#' + id);
+    const w = win();
+    if (w && w.location.pathname.endsWith('my.html') && w.eval('typeof openNoti') === 'function') {
+      if (!w.document.querySelector('.sheet.full .noti')) { w.closeSheet(); w.openNoti(); crumb('마이 › 알림함'); }
+      focusRow();
+    } else ph.src = START;
+    /* 폰 폭에서는 목록 아래에 화면이 있으므로 고르면 화면 위치로 데려감 */
+    if (matchMedia('(max-width: 759px)').matches) ph.closest('.dev').scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  }
+  $('back').addEventListener('click', () => {
+    wantOpen = true; const w = win();
+    if (w && w.location.pathname.endsWith('my.html')) { w.closeSheet(); w.openNoti(); focusRow(); crumb('마이 › 알림함'); } else ph.src = START;
+  });
+
+  /* 주소 끝 #종류 로 바로 열기: noti-demo.html#rejected */
+  const hashId = location.hash.slice(1);
+  if (byId(hashId)) { cur = hashId; wantOpen = true; }
+  renderInfo();
+  ph.src = START;
+})();
+</script>
+</body>
+</html>
