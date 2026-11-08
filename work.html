@@ -57,14 +57,14 @@ img { display: block; }
   .layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(380px, .9fr); column-gap: 72px; padding: 32px var(--pad) 96px; align-items: start; }
   .viewer { position: sticky; top: 96px; }
 }
-.stage { position: relative; background: var(--bg-white); aspect-ratio: 402 / 554; overflow: hidden; }   /* 11-08 남는 곳은 흰색(11-05 검정에서 변경) */
+.stage { position: relative; background: var(--bg-secondary); aspect-ratio: 402 / 554; overflow: hidden; }   /* 11-08 남는 곳은 연한 회색 bg/secondary(11-05 검정 → 흰색 시험 → 연한 회색 확정) */
 @media (min-width: 600px) and (max-width: 899px) { .stage { aspect-ratio: auto; height: 78vh; } }
 @media (min-width: 900px) { .stage { aspect-ratio: auto; height: min(78vh, 820px); border-radius: var(--r12); } }
 .track { display: flex; height: 100%; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; touch-action: pan-x pan-y pinch-zoom; }   /* 위아래로 쓸면 페이지가 스크롤되도록 방향을 명시 */
 .viewer img, .viewer video { -webkit-user-drag: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }   /* 이미지가 끌려 나오거나(드래그 고스트) 길게 눌러 메뉴가 뜨지 않게 */
 .track::-webkit-scrollbar { display: none; }
-.slide { flex: 0 0 100%; height: 100%; scroll-snap-align: center; background: var(--bg-white); }
-.slide img { width: 100%; height: 100%; object-fit: contain; }   /* 어떤 비율이든 전체가 보이고, 남는 곳은 흰색 (11-08 정책 변경) */
+.slide { flex: 0 0 100%; height: 100%; scroll-snap-align: center; background: var(--bg-secondary); }
+.slide img { width: 100%; height: 100%; object-fit: contain; }   /* 어떤 비율이든 전체가 보이고, 남는 곳은 연한 회색 (11-08 정책 변경) */
 /* 감상 방식: 한 장씩(기본) / 이어보기(이미지가 여백 없이 세로로 이어 붙음) */
 .ovl { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
 .ovl > * { pointer-events: auto; }
@@ -75,7 +75,6 @@ img { display: block; }
 .vmode .i { width: 18px; height: 18px; }
 .stackv { display: none; }
 .stackv img { display: block; width: 100%; height: auto; background: var(--bg-secondary); }
-html.stage-gray .stage, html.stage-gray .slide { background: var(--bg-secondary); }   /* 확인용 ?stage=gray */
 .viewer.stack .track, .viewer.stack .nav-btn { display: none !important; }
 .viewer.stack .stackv { display: block; }
 .viewer.stack .stage { aspect-ratio: auto; height: auto; overflow: visible; background: none; border-radius: 0; }
@@ -463,11 +462,10 @@ const track = document.getElementById('track'), thumbs = document.getElementById
 const prev = document.getElementById('prev'), next = document.getElementById('next');
 track.innerHTML = imgs.map(([f], i) => `<div class="slide"><img src="${f}" alt="${TT} ${i + 1}/${photos}" ${i ? 'loading="lazy"' : 'fetchpriority="high"'}></div>`).join('');
 thumbs.innerHTML = imgs.map(([, t], i) => `<button class="thumb" role="listitem" data-i="${i}" aria-label="${i + 1}번째 이미지 보기"><img src="${t}" alt="" width="40" height="60"></button>`).join('');
-/* 확인용(제품 화면 아님, 주소에 붙여 보기): ?stage=gray → 사진 무대를 연한 회색(bg/secondary)으로 · ?demo=ratio → 극단 비율 예시로 사진을 바꿔 가로로 넘겨 보기
-   (1: 3:1 가로로 아주 긴 · 2: 16:9 · 3: 1:1 · 4: 1:2.5 세로로 긴 · 5: 3:4 기본 · 6: 2:1) — 두 가지를 함께 써도 됨 */
+/* 확인용(제품 화면 아님, 주소에 붙여 보기): ?demo=ratio → 극단 비율 예시로 사진을 바꿔 가로로 넘겨 보기
+   (1: 3:1 가로로 아주 긴 · 2: 16:9 · 3: 1:1 · 4: 1:2.5 세로로 긴 · 5: 3:4 기본 · 6: 2:1) */
 (() => {
   const q = new URLSearchParams(location.search);
-  if (q.get('stage') === 'gray') document.documentElement.classList.add('stage-gray');
   if (q.get('demo') !== 'ratio') return;
   const src = new Image();
   src.onload = () => {

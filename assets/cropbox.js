@@ -5,7 +5,7 @@
    - 조작: 상자를 끌어 옮김 / 네 모서리를 끌어 크기 변경(비율 유지) / 키보드: 방향키 이동, + − 크기 */
 const CropBox = (() => {
   const css = `
-.cbx { position: relative; margin: 16px auto 0; overflow: hidden; border-radius: 8px; background: #fff; outline: 1px solid #d4d4d8; outline-offset: -1px; touch-action: none; user-select: none; -webkit-user-select: none; }   /* 11-08 상세 뒤 배경 흰색(확정)에 맞춰 조정 무대도 흰색 + 얇은 윤곽 */
+.cbx { position: relative; margin: 16px auto 0; overflow: hidden; border-radius: 8px; background: #f4f4f5; touch-action: none; user-select: none; -webkit-user-select: none; }   /* 11-08 상세 무대(연한 회색)에 맞춰 조정 무대도 같은 색 */
 .cbx > img { display: block; width: 100%; height: 100%; pointer-events: none; -webkit-user-drag: none; }
 .cbx-box { position: absolute; box-sizing: border-box; border: 2px solid #fff; box-shadow: 0 0 0 9999px rgba(0, 0, 0, .55); cursor: grab; touch-action: none; outline: 0; }
 .cbx-box:active { cursor: grabbing; }
@@ -18,7 +18,7 @@ const CropBox = (() => {
 .cbx-h[data-h="bl"] { left: -2px; bottom: -2px; cursor: nesw-resize; } .cbx-h[data-h="bl"]::after { left: 4px; bottom: 4px; border-width: 0 0 4px 4px; }
 .cbx-h[data-h="br"] { right: -2px; bottom: -2px; cursor: nwse-resize; } .cbx-h[data-h="br"]::after { right: 4px; bottom: 4px; border-width: 0 4px 4px 0; }
 .cbx-pv { display: flex; align-items: center; gap: 12px; margin-top: 16px; }
-.cbx-th { position: relative; flex: none; width: 72px; border-radius: 8px; overflow: hidden; background: #fff; outline: 1px solid #d4d4d8; outline-offset: -1px; }
+.cbx-th { position: relative; flex: none; width: 72px; border-radius: 8px; overflow: hidden; background: #f4f4f5; }
 .cbx-th img { position: absolute; max-width: none; pointer-events: none; }
 .cbx-tx { display: grid; gap: 2px; font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-secondary); }
 .cbx-tx b { font-size: 14px; font-weight: 600; color: var(--text-primary); }`;

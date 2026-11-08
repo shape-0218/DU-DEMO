@@ -66,15 +66,14 @@ img { display: block; }
 
 /* 구성 */
 .layout { max-width: 1240px; margin-inline: auto; }
-.poster { position: relative; background: var(--bg-white); aspect-ratio: 402 / 568; overflow: hidden; }   /* 11-07: 상세 포스터는 항상 전체(contain) · 11-08 남는 곳은 흰색(사용자 결정: 카드는 꽉 채우니 상세 안은 배경과 이질감 없게) */
+.poster { position: relative; background: var(--bg-secondary); aspect-ratio: 402 / 568; overflow: hidden; }   /* 11-07: 상세 포스터는 항상 전체(contain) · 11-08 남는 곳은 검정이 아니라 연한 회색(bg/secondary, 사용자 확정: 흰색은 비율이 다른 작품에서 허공에 떠 보이고 검정은 이질감) */
 .poster img, .poster video { width: 100%; height: 100%; object-fit: contain; }
 /* 포스터 캐러셀: 첫 칸이 영상이면 소리 없이 반복 재생, 옆으로 넘기면 일반 포스터 */
 .pr { display: flex; height: 100%; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; touch-action: pan-x pan-y pinch-zoom; }
 .poster img, .poster video, .thumb img { -webkit-user-drag: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
 .pr::-webkit-scrollbar { display: none; }
 .ps { position: relative; flex: none; width: 100%; height: 100%; scroll-snap-align: center; }
-.ps video { background: var(--bg-white); }
-html.stage-gray .poster, html.stage-gray .ps video { background: var(--bg-secondary); }   /* 확인용 ?stage=gray (포스터 뒤 배경을 연한 회색으로 보기) */
+.ps video { background: var(--bg-secondary); }
 
 /* 상세 썸네일: 폰·태블릿은 생략(장수 칩만) / 노트북(900~)은 이미지 왼쪽에 세로로 늘 보임 */
 .poster-col { position: relative; }
@@ -557,7 +556,6 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
 const DXI = (() => { const q = new URLSearchParams(location.search); if (q.get('id')) return null; const n = +q.get('e'); return Number.isInteger(n) && q.has('e') && DEMO.EXH[n] ? n : 0; })();
 const DX = DXI === null ? null : DEMO.EXH[DXI];
 /* ---------- 탭 (주소 ?tab= 과 연동) ---------- */
-if (new URLSearchParams(location.search).get('stage') === 'gray') document.documentElement.classList.add('stage-gray');   // 확인용
 const tabs = [...document.querySelectorAll('.tab')], panels = { intro: p('p-intro'), works: p('p-works'), reviews: p('p-reviews') };
 function p(id) { return document.getElementById(id); }
 function pick(tab, focus, silent) {
