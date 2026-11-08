@@ -68,11 +68,13 @@ img { display: block; }
 /* 감상 방식: 한 장씩(기본) / 이어보기(이미지가 여백 없이 세로로 이어 붙음) */
 .ovl { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
 .ovl > * { pointer-events: auto; }
-.vmode { position: absolute; right: 20px; top: max(16px, env(safe-area-inset-top)); z-index: 4; display: inline-flex; gap: 2px; padding: 4px; border-radius: 9999px; background: rgba(255, 255, 255, .78); backdrop-filter: blur(10px); }
+.vmode { position: absolute; right: 20px; top: calc(max(16px, env(safe-area-inset-top)) + 2px); z-index: 4; display: inline-flex; gap: 2px; padding: 4px; border-radius: 9999px; background: rgba(0, 0, 0, .45); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }   /* 11-09 Figma 새 `View mode` 컴포넌트 3865:52464: 82×40·검정 45%·배경 블러 40(= CSS 20)·칸 36×32·간격 2·안쪽 4, 높이 44 뒤로가기와 가운데를 맞춤(+2) */
 .vmode[hidden] { display: none; }
-.vmode button { width: 36px; height: 32px; display: grid; place-items: center; border-radius: 9999px; color: var(--text-secondary); transition: background .2s, color .2s; }
-.vmode button[aria-pressed="true"] { background: var(--text-primary); color: #fff; }
-.vmode .i { width: 18px; height: 18px; }
+.vmode button { width: 36px; height: 32px; display: grid; place-items: center; border-radius: 9999px; color: #d4d4d8; transition: background .2s, color .2s, transform .16s var(--ease); }   /* 안 고른 칸 아이콘 zinc/300 */
+.vmode button:active { transform: scale(.94); }
+@media (hover: hover) { .vmode button[aria-pressed="false"]:hover { color: #fff; } }
+.vmode button[aria-pressed="true"] { background: #18181b; color: #fafafa; }   /* 고른 칸: 검정 원 + 흰 아이콘 */
+.vmode .i { width: 18px; height: 18px; stroke-width: 2; }   /* 18 아이콘, 선 1.5(= 24칸 기준 2) */
 .stackv { display: none; }
 .stackv img { display: block; width: 100%; height: auto; background: var(--bg-secondary); }
 .viewer.stack .track, .viewer.stack .nav-btn { display: none !important; }
@@ -86,9 +88,21 @@ img { display: block; }
   .viewer.stack .thumbs { position: sticky; top: 96px; left: auto; bottom: auto; align-self: flex-start; }
   .viewer.stack .stackv { border-radius: var(--r12); overflow: hidden; }
 }
-.back { position: absolute; left: 20px; top: max(16px, env(safe-area-inset-top)); z-index: 3; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 9999px; background: rgba(0, 0, 0, .45); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); color: #fafafa; transition: transform .25s var(--ease); }   /* 11-09 Figma `Btn / back` 메인 수정 반영: 44·검정 45%·배경 블러(Figma 12 = CSS 6)·흰 화살표 28(선 2, color/icon/White #fafafa). 이전: 40·흰 78%+블러 10·진한 화살표. 작품 상세는 무대 위 16(Figma) */
+.back { position: absolute; left: 20px; top: var(--bk); z-index: 2; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 9999px; background: rgba(0, 0, 0, .45); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); color: #fafafa; transition: transform .25s var(--ease), opacity .25s var(--ease); }   /* 11-09 Figma `Btn / back` 메인 수정 반영: 44·검정 45%·배경 블러(Figma 12 = CSS 6)·흰 화살표 28(선 2, color/icon/White #fafafa). 이전: 40·흰 78%+블러 10·진한 화살표 */
+.backa { position: sticky; top: calc(var(--top) - var(--bk)); height: 0; z-index: 25; --bk: max(16px, env(safe-area-inset-top)); }   /* 11-09 스크롤을 따라다님: 처음엔 사진 위 16, 탭 줄이 맨 위에 붙을 때쯤엔 맨 위(--top)에 붙어 탭 줄과 같은 줄에 앉음. 높이 0이라 레이아웃엔 영향 없음 */
+.is-pv .backa { top: calc(var(--top) + 40px - var(--bk)); }   /* 미리보기 배너(40) 밑 */
+.is-pv .tabs { top: calc(var(--top) + 40px); }   /* 탭 줄도 배너 밑에 붙게 — 안 그러면 배너 뒤로 숨음 */
+.tabs { transition: padding-left .2s var(--ease); }
+@media (max-width: 899px) { .tabs.stuck { padding-left: 68px; } }   /* 뒤로가기(20+44)가 탭 줄 왼쪽에 앉는 동안 첫 탭을 오른쪽으로 비켜 줌 */
+@media (prefers-reduced-motion: reduce) { .tabs { transition: none; } }
+.tsent { display: block; height: 1px; margin-bottom: -1px; visibility: hidden; pointer-events: none; }
+.bk-dim .back { opacity: .5; }   /* 이어서 보기로 사진을 내려 읽는 동안만 뒤로가기를 흐리게(숨기지 않음, 올리거나 맨 위·탭 줄에 닿으면 또렷, 올려 두거나 초점이 가면 또렷) */
+@media (hover: hover) { .bk-dim .back:hover { opacity: 1; } }
+.bk-dim .back:focus-visible { opacity: 1; }
 .back .i { width: 28px; height: 28px; }
 @media (hover: hover) { .back:hover { transform: translateX(-2px); } }
+.back .i { width: 28px; height: 28px; }
+@media (min-width: 900px) { .layout { position: relative; } .backa { position: absolute; top: 32px; left: var(--pad); width: 0; z-index: 5; --bk: 16px; } .is-pv .backa { top: 32px; } }   /* 노트북 미리보기: 예전처럼 무대 왼쪽 위(20, 16)에 가만히 */
 .back:active { transform: scale(.94); }
 @media (min-width: 900px) { body:not(.is-pv) .back { display: none; } }   /* 11-07: 웹(노트북)은 위에 서비스 헤더와 브라우저 뒤로가기가 있어서 뒤로가기 버튼 없음. 폰·태블릿과 미리보기(공개 전)는 그대로 */
 .pager { position: absolute; right: 16px; bottom: 16px; z-index: 3; padding: 3px 8px; border-radius: 9999px; background: rgba(0, 0, 0, .6); color: #fff; font-size: 10px; font-weight: 500; font-variant-numeric: tabular-nums; }
@@ -335,10 +349,10 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
 
 <main id="main">
   <div class="layout">
+    <div class="backa"><a class="back" id="back" href="exhibition.html?tab=works" aria-label="뒤로가기"><svg class="i" aria-hidden="true"><use href="#i-back"/></svg></a></div>
     <section class="viewer" aria-label="작품 이미지">
       <div class="stage">
         <div class="ovl">
-          <a class="back" id="back" href="exhibition.html?tab=works" aria-label="뒤로가기"><svg class="i" aria-hidden="true"><use href="#i-back"/></svg></a>
           <div class="vmode" id="vmode" role="group" aria-label="감상 방식">
             <button type="button" data-m="one" aria-pressed="true" aria-label="한 장씩 보기" title="한 장씩 보기"><svg class="i" aria-hidden="true" viewBox="0 0 24 24"><rect x="6.5" y="3.5" width="11" height="17" rx="2"/></svg></button>
             <button type="button" data-m="stack" aria-pressed="false" aria-label="이어서 보기" title="이어서 보기"><svg class="i" aria-hidden="true" viewBox="0 0 24 24"><rect x="6.5" y="3.5" width="11" height="17" rx="2"/><path d="M6.5 9.2h11M6.5 14.8h11"/></svg></button>
@@ -419,6 +433,7 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
 
 <script src="assets/save.js"></script>
 <script src="assets/fade.js"></script>
+<script src="assets/stickback.js"></script>
 <script src="assets/demo-data.js"></script>
 <script src="assets/work-extra.js"></script>
 
@@ -526,6 +541,15 @@ tabs.forEach((t, i) => {
 });
 pick(tabs.find((t) => t.dataset.k === new URLSearchParams(location.search).get('tab')) || tabs[0], false, true);
 new ResizeObserver(placeInd).observe(tabsEl);
+if (window.StickBack) StickBack.init({ tabs: tabsEl, onShift: placeInd });   // 뒤로가기가 따라다니는 동안 탭 줄이 맨 위에 붙으면 첫 탭을 오른쪽으로 비켜 줌
+(() => {   // 이어서 보기로 사진을 내려 읽는 동안만 뒤로가기를 흐리게(숨기지 않음)
+  const root = document.documentElement; let lastY = scrollY;
+  addEventListener('scroll', () => {
+    const y = scrollY, dy = y - lastY, stuck = tabsEl.classList.contains('stuck');
+    if (mode === 'stack' && !stuck && dy > 8 && y > 80) { root.classList.add('bk-dim'); lastY = y; }
+    else if (dy < -8 || y <= 80 || mode !== 'stack' || stuck) { root.classList.remove('bk-dim'); lastY = y; }
+  }, { passive: true });
+})();
 if (document.fonts) document.fonts.ready.then(placeInd);
 requestAnimationFrame(() => requestAnimationFrame(() => { tabsEl.classList.add('ready'); document.documentElement.classList.add('tabs-live'); }));
 

@@ -109,8 +109,16 @@ img { display: block; }
 .vbtn .on-s, .vbtn .off-s { display: none; }
 .vbtn[aria-pressed="true"] .on-s { display: block; } .vbtn[aria-pressed="false"] .off-s { display: block; }
 .vbtn.pp .is-play { display: none; } .vbtn.pp[aria-pressed="false"] .is-play { display: block; } .vbtn.pp[aria-pressed="false"] .is-pause { display: none; }
-.back { position: absolute; left: 20px; top: max(20px, env(safe-area-inset-top)); z-index: 2; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 9999px; background: rgba(0, 0, 0, .45); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); color: #fafafa; transition: transform .25s var(--ease); }   /* 11-09 Figma `Btn / back` 메인 수정 반영: 44·검정 45%·배경 블러(Figma 12 = CSS 6)·흰 화살표 28(선 2). 11-08 흰 원+윤곽선은 폐기. 전시 상세는 포스터 위 20(Figma) */
+.back { position: absolute; left: 20px; top: var(--bk); z-index: 2; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 9999px; background: rgba(0, 0, 0, .45); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); color: #fafafa; transition: transform .25s var(--ease); }   /* 11-09 Figma `Btn / back` 메인 수정 반영: 44·검정 45%·배경 블러(Figma 12 = CSS 6)·흰 화살표 28(선 2). 11-08 흰 원+윤곽선은 폐기 */
+.backa { position: sticky; top: calc(var(--top) - var(--bk)); height: 0; z-index: 25; --bk: max(20px, env(safe-area-inset-top)); }   /* 11-09 스크롤을 따라다님: 처음엔 사진 위 20, 탭 줄이 맨 위에 붙을 때쯤엔 맨 위(--top)에 붙어 탭 줄과 같은 줄에 앉음. 높이 0이라 레이아웃엔 영향 없음 */
+.is-pv .backa { top: calc(var(--top) + 40px - var(--bk)); }   /* 미리보기 배너(40) 밑 */
+.is-pv .tabs { top: calc(var(--top) + 40px); }   /* 탭 줄도 배너 밑에 붙게 — 안 그러면 배너 뒤로 숨음 */
+.tabs { transition: padding-left .2s var(--ease); }
+@media (max-width: 899px) { .tabs.stuck { padding-left: 68px; } }   /* 뒤로가기(20+44)가 탭 줄 왼쪽에 앉는 동안 첫 탭을 오른쪽으로 비켜 줌 */
+@media (prefers-reduced-motion: reduce) { .tabs { transition: none; } }
+.tsent { display: block; height: 1px; margin-bottom: -1px; visibility: hidden; pointer-events: none; }
 .back .i { width: 28px; height: 28px; }
+@media (min-width: 900px) { .layout { position: relative; } .backa { position: absolute; top: 32px; left: var(--pad); width: 0; z-index: 5; --bk: 20px; } .is-pv .backa { top: 32px; } }   /* 노트북 미리보기: 예전처럼 포스터 왼쪽 위(20, 20)에 가만히 */
 @media (hover: hover) { .back:hover { transform: translateX(-2px); } }
 .back:active { transform: scale(.94); }
 @media (min-width: 900px) { body:not(.is-pv) .back { display: none; } }   /* 11-07: 웹(노트북)은 위에 서비스 헤더와 브라우저 뒤로가기가 있어서 뒤로가기 버튼 없음. 폰·태블릿과 미리보기(공개 전)는 그대로 */
@@ -192,8 +200,8 @@ img { display: block; }
 /* 전시콘텐츠 */
 .band { margin-top: 36px; background: var(--bg-soft); padding-bottom: 32px; }
 @media (min-width: 900px) { .band { background: none; padding-bottom: 0; } }
-.band .sec { padding-top: 28px; }
-@media (min-width: 900px) { .band .sec { padding-top: 36px; } }
+.band .sec { padding-top: 20px; }   /* 11-09 제목 글자 삭제: 선 아래 콘텐츠까지 20(Figma 8+12) */
+@media (min-width: 900px) { .band .sec { padding-top: 20px; } }
 .cards { margin-top: 20px; display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x proximity; scroll-padding-inline: var(--pad); scrollbar-width: none; margin-inline: calc(var(--pad) * -1); padding-inline: var(--pad); }
 .cards::-webkit-scrollbar { display: none; }
 @media (min-width: 900px) { .cards { margin-inline: 0; padding-inline: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); overflow: visible; } }
@@ -220,15 +228,18 @@ img { display: block; }
 .cv .st img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; border-radius: var(--r12); background: var(--bg-teritary); -webkit-user-drag: none; user-select: none; }
 @media (min-width: 768px) { .cv .st { padding-inline: calc((100% - 560px) / 2); } .cv .tp { padding-inline: max(8px, calc((100% - 560px) / 2 - 12px)); } }
 
-/* 위치 안내: 가짜 지도 대신 한 줄 */
-.place { margin-top: 16px; display: flex; align-items: center; gap: 12px; padding: 16px; background: var(--bg-soft); border-radius: var(--r12); }
-.place .pin { width: 40px; height: 40px; display: grid; place-items: center; background: #fff; border-radius: 9999px; flex: none; }
-.place .pin .i { width: 20px; height: 20px; }
+/* 위치 안내 (11-09 Figma `전시 상세 · 소개 탭` 3865:50261): 제목 글자 없이 위는 지도 그림 160, 아래는 검은 정보 카드(이름·주소 + 지도 보기). 지도는 저작권 때문에 실제 지도 캡처 대신 코드로 그린 무채색 지도(map.html과 같은 색) */
+.place { margin-top: 0; display: block; overflow: hidden; border-radius: var(--r12); background: #000; }
+.place .pm { position: relative; height: 160px; background: #ebebe8; }
+.place .mp { display: block; width: 100%; height: 100%; }
+.place .pn { position: absolute; left: 50%; top: 62px; width: 35px; height: 35px; margin-left: -17.5px; }
+.place .pi { display: flex; align-items: center; gap: 12px; min-height: 72px; padding: 16px; }   /* Figma Place 72(글 두 줄 20+20) */
 .place .tx { flex: 1; min-width: 0; }
-.place strong { display: block; font-weight: 600; }
-.place small { display: block; color: var(--text-teritary); font-size: 12px; font-weight: 500; }
-.place a { flex: none; height: 32px; padding: 0 12px; display: inline-flex; align-items: center; border: 1px solid var(--border-primary); background: #fff; border-radius: var(--r12); font-size: 12px; font-weight: 600; transition: background .2s; }
-@media (hover: hover) { .place a:hover { background: var(--bg-soft); } }
+.place strong { display: block; color: #fafafa; font-weight: 600; }   /* Figma 14 Bold → 프로토는 SemiBold(DS 일괄 정리 규칙) */
+.place small { display: block; color: #9f9fa9; font-size: 12px; font-weight: 500; }   /* 검정 위 보조 글자는 zinc/400(Figma text/teritary보다 대비 높게, 검은 작가 카드와 같은 결정) */
+.place a { flex: none; height: 32px; padding: 0 12px; display: inline-flex; align-items: center; border: 1px solid #d4d4d8; background: #000; color: #fafafa; border-radius: 8px; font-size: 12px; font-weight: 600; transition: background .2s, transform .16s var(--ease); }
+.place a:active { transform: scale(.96); }
+@media (hover: hover) { .place a:hover { background: rgba(255, 255, 255, .12); } }
 
 /* 작품 */
 .works { margin-top: 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
@@ -366,12 +377,15 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
 /* 정보 섹션(전시콘텐츠·위치): 제목은 16px SemiBold, 구분은 연한 선 하나, 큰 회색 띠는 없앰 */
 .sec h2 { font-size: 16px; font-weight: 600; letter-spacing: -0.03em; }
 .band { margin-top: 0; background: none; padding-bottom: 0; }
-.sec[aria-labelledby="h-content"], .sec[aria-labelledby="h-place"] { position: relative; margin-top: 28px; padding-top: 28px; }
+.sec[aria-labelledby="h-content"], .sec[aria-labelledby="h-place"] { position: relative; margin-top: 28px; padding-top: 21px; }   /* 11-09 Figma: 선(1) 아래 8+12=20 → 선 두께 포함 21 (제목 글자 삭제) */
+.sec[aria-labelledby="h-place"] { margin-top: 20px; }   /* 콘텐츠 아래 12+8=20 → 선 */
+#s-content > .sec { padding-top: 21px; }   /* 선(1) 아래 8+12=20 → 선 두께 포함 21. `.sec:has(> h2.sr)`(20)보다 세게 id로 */
+#s-place { padding-top: 25px; }   /* 선(1) 아래 8+16=24 → 지도 (선 두께 포함 25) */
 .sec[aria-labelledby="h-content"]::before, .sec[aria-labelledby="h-place"]::before { content: ""; position: absolute; top: 0; left: var(--pad); right: var(--pad); height: 1px; background: var(--bg-soft); }
 @media (min-width: 900px) { .sec[aria-labelledby="h-content"]::before, .sec[aria-labelledby="h-place"]::before { left: 0; right: 0; } }
-.band .sec { padding-top: 28px; }
+.band .sec { padding-top: 20px; }
 .cards, .place { margin-top: 12px; }
-.sec[aria-labelledby="h-intro"] { padding-top: 28px; }
+.sec[aria-labelledby="h-intro"] { padding-top: 20px; }   /* 11-09 Figma: 탭 줄 아래 소개글까지 20(제목 글자 삭제) */
 </style>
 <script src="assets/byline.js"></script>
 </head>
@@ -416,6 +430,7 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
 
 <main id="main">
   <div class="layout">
+    <div class="backa"><a class="back" href="home.html" aria-label="뒤로가기"><svg class="i" aria-hidden="true"><use href="#i-back"/></svg></a></div>
     <div class="poster-col">
       <div class="poster">
         <div class="pr" id="pr" role="group" aria-roledescription="캐러셀" aria-label="전시 포스터">
@@ -428,7 +443,6 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
           <div class="ps" aria-label="포스터 3 / 3"><img src="assets/img/detail/opt/gallery.jpg" alt="전시 포스터 이미지" loading="lazy"></div>
         </div>
         <span class="ppager" id="ppager" aria-hidden="true"></span>
-        <a class="back" href="home.html" aria-label="뒤로가기"><svg class="i" aria-hidden="true"><use href="#i-back"/></svg></a>
       </div>
       <div class="thumbs" id="pthumbs" role="list" aria-label="포스터 목록"></div>
     </div>
@@ -464,24 +478,29 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
       <!-- 소개 -->
       <div class="panel" id="p-intro" role="tabpanel" aria-labelledby="t-intro">
         <section class="sec" id="s-intro" aria-labelledby="h-intro">
-          <h2 id="h-intro">전시소개</h2>
+          <h2 id="h-intro" class="sr">전시소개</h2>
           <p class="lead" id="x-intro">움직임이 멈춘 자리에서 색은 더 또렷해집니다. 이번 졸업 전시는 한결대학교 시각디자인학과 졸업 예정자 24명이 그래픽·브랜딩·모션으로 풀어낸 「여넥스 — 선명하되, 투명한 연결」을 소개합니다. 겹치고 비치는 색의 층을 따라, 서로 다른 작업이 하나의 흐름으로 이어지는 순간을 만나 보세요.</p>
           <p class="more" id="x-more"><a href="#">더보기<svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></a></p>
         </section>
 
         <div class="band" id="s-content">
           <section class="sec" aria-labelledby="h-content">
-            <h2 id="h-content">전시콘텐츠</h2>
+            <h2 id="h-content" class="sr">전시콘텐츠</h2>
             <div class="cards" id="x-cards"></div>
           </section>
         </div>
 
         <section class="sec" id="s-place" aria-labelledby="h-place">
-          <h2 id="h-place">위치 안내</h2>
+          <h2 id="h-place" class="sr">위치 안내</h2>
           <div class="place">
-            <span class="pin"><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg></span>
-            <div class="tx"><strong id="x-place2">진달래홀</strong><small id="x-addr">서울특별시 한결구 예술로 12</small></div>
-            <a href="map.html?ex=0" id="x-map">지도 보기</a>
+            <div class="pm" aria-hidden="true">
+              <svg class="mp" viewBox="0 0 362 160" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="362" height="160" fill="#ebebe8"/><g fill="#e3e3df"><rect x="14" y="14" width="46" height="30" rx="2"/><rect x="72" y="10" width="38" height="36" rx="2"/><rect x="236" y="12" width="52" height="32" rx="2"/><rect x="300" y="18" width="44" height="28" rx="2"/><rect x="18" y="108" width="50" height="34" rx="2"/><rect x="82" y="116" width="34" height="30" rx="2"/><rect x="262" y="104" width="46" height="36" rx="2"/><rect x="318" y="112" width="30" height="34" rx="2"/><rect x="128" y="124" width="52" height="26" rx="2"/></g><rect x="196" y="104" width="52" height="38" rx="10" fill="#dfe2dc"/><path d="M-10 150 C 60 128 120 156 190 136 S 300 120 372 134" fill="none" stroke="#d9dee1" stroke-width="20" stroke-linecap="round"/><g fill="none" stroke="#f6f6f4" stroke-width="3"><path d="M-6 58 Q 180 50 368 62"/><path d="M-6 100 Q 180 94 368 104"/><path d="M96 -6 Q 100 80 92 166"/><path d="M226 -6 Q 232 80 222 166"/><path d="M300 -6 Q 296 80 304 166"/></g><path d="M-10 30 L 372 118" stroke="#d5d5d0" stroke-width="11" fill="none"/><path d="M-10 30 L 372 118" stroke="#fbfbfa" stroke-width="8" fill="none"/></svg>
+              <svg class="pn" viewBox="0 0 35 35" focusable="false"><path d="M17.5 31s-7.5-6.7-7.5-13a7.5 7.5 0 0 1 15 0c0 6.3-7.5 13-7.5 13z" fill="#18181b" stroke="#18181b" stroke-width="1.5" stroke-linejoin="round"/><circle cx="17.5" cy="17.5" r="3" fill="#fff"/></svg>
+            </div>
+            <div class="pi">
+              <div class="tx"><strong id="x-place2">진달래홀</strong><small id="x-addr">서울특별시 한결구 예술로 12</small></div>
+              <a href="map.html?ex=0" id="x-map">지도 보기</a>
+            </div>
           </div>
         </section>
       </div>
@@ -532,6 +551,7 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
 <script src="assets/blobdb.js"></script>
 <script src="assets/save.js"></script>
 <script src="assets/fade.js"></script>
+<script src="assets/stickback.js"></script>
 <script src="assets/demo-data.js"></script>
 <script src="assets/cropbox.js"></script>
 <script>
@@ -567,6 +587,7 @@ tabs.forEach((t, i) => {
 });
 pick(tabs.find((t) => t.dataset.k === new URLSearchParams(location.search).get('tab')) || tabs[0], false, true);
 new ResizeObserver(placeInd).observe(tabsEl);
+if (window.StickBack) StickBack.init({ tabs: tabsEl, onShift: placeInd });   // 뒤로가기가 따라다니는 동안 탭 줄이 맨 위에 붙으면 첫 탭을 오른쪽으로 비켜 줌
 if (document.fonts) document.fonts.ready.then(placeInd);
 requestAnimationFrame(() => requestAnimationFrame(() => { tabsEl.classList.add('ready'); document.documentElement.classList.add('tabs-live'); }));
 document.querySelector('.poster-col').addEventListener('dragstart', (e) => e.preventDefault());   // 포스터를 끌어 당기는 동작 방지
