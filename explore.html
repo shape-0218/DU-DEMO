@@ -138,6 +138,7 @@ html.kb .search input:focus-visible { box-shadow: 0 0 0 2px var(--text-primary);
 </style>
 <script src="assets/byline.js"></script>
 <link rel="stylesheet" href="assets/nav.css">
+<script src="assets/nav.js"></script>
 <script type="speculationrules">{"prerender":[{"source":"list","urls":["home.html","my.html"],"eagerness":"eager"}]}</script>
 </head>
 <body>
@@ -302,7 +303,6 @@ try { const y = +sessionStorage.getItem('explore-y'); if (y && performance.getEn
 (() => { const f = document.getElementById('fields'); const on = () => f.classList.toggle('stuck', f.getBoundingClientRect().top <= 0.5); addEventListener('scroll', on, { passive: true }); on(); })();
 </script>
 <script src="assets/auth.js"></script>
-<script src="assets/nav.js"></script>
 <script src="assets/tap.js"></script>
 </body>
 </html>

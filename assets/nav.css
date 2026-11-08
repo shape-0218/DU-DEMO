@@ -49,6 +49,10 @@
 .nav a:active svg { transform: scale(.96); }
 .nav a:focus-visible { z-index: 3; outline: 2px solid #fafafa; outline-offset: -3px; }
 @media (hover: hover) and (pointer: fine) { .nav a:not([aria-current]):hover { color: var(--nav-off-hover); } }
+/* 새 페이지가 처음 그려질 때 알약은 이전 탭 자리에 있어야 함: nav.js(head)가 <html data-nav-from> 과 --nav-from 을 먼저 달고,
+   알약이 그려진 뒤 속성을 떼면 --i 가 인라인의 현재 탭으로 돌아와 알약이 거기서부터 이동. 속성이 있는 동안은 전환 없이 자리만 잡음 */
+html[data-nav-from] .nav .pill { --i: var(--nav-from) !important; }
+html[data-nav-from] .nav .cap, html[data-nav-from] .nav .cap .nav-row { transition: none !important; }
 @media (prefers-reduced-motion: reduce) { .nav .cap, .nav .cap .nav-row, .nav a, .nav a svg { transition: none; } }
 
 /* 페이지 전환: 나머지 화면만 짧게 겹쳐 넘김(넷바는 새 페이지에서 알약이 이어서 움직이므로 전환 효과에 맡기지 않음). 이 규칙을 켠 페이지끼리만 적용 */
