@@ -67,23 +67,29 @@ html.kb .search input:focus-visible { box-shadow: 0 0 0 2px var(--text-primary);
 .fields.stuck { box-shadow: inset 0 -1px 0 var(--bg-teritary); }
 .fields::-webkit-scrollbar { display: none; }
 @media (min-width: 900px) { .fields { justify-content: center; flex-wrap: wrap; } }
-.field { position: relative; flex: none; height: 40px; padding: 0 12px; font-size: 16px; font-weight: 600; color: var(--text-disable); transition: color .2s; } /* 11-07 Figma 대조 */
+.field { position: relative; flex: none; height: 40px; padding: 0 12px; font-size: 16px; font-weight: 600; color: var(--text-disable); transition: color .2s, transform .16s var(--ease); } /* 11-07 Figma 대조 */
 @media (hover: hover) { .field:hover { color: var(--text-teritary); } }
+.field:active { transform: scale(.96); }
 .field[aria-selected="true"] { color: var(--text-primary); font-weight: 600; }
-.field[aria-selected="true"]::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--text-primary); }
+.field[aria-selected="true"]:hover { color: var(--text-primary); }
+/* 선택 밑줄: 칸 전체 폭, 칩 사이를 미끄러져 옮겨감(transform만 씀) — 위치·폭은 JS가 칩 크기를 재서 넣음 */
+.fields .ind { position: absolute; left: 0; top: 0; width: 1px; height: 2px; background: var(--text-primary); transform-origin: 0 0; pointer-events: none; transition: transform .26s var(--ease); }
+.fields:not(.ready) .ind { transition: none; }
 
 /* 필터 · 전시/작품 전환 */
 .bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; position: relative; }
 .chips { display: flex; gap: 8px; }
 .chip { position: relative; }
-.chip > button { height: 36px; padding: 0 12px 0 14px; display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--border-primary); border-radius: 9999px; background: #fff; font-size: 12px; font-weight: 500; white-space: nowrap; transition: background .2s, border-color .2s, color .2s; }
+.chip > button { height: 36px; padding: 0 12px 0 14px; display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--border-primary); border-radius: 9999px; background: #fff; font-size: 12px; font-weight: 500; white-space: nowrap; transition: background .2s, border-color .2s, color .2s, transform .16s var(--ease); }
+.chip > button:active { transform: scale(.96); }
 @media (hover: hover) { .chip > button:hover { border-color: var(--text-teritary); } }
 .chip > button .i { width: 18px; height: 18px; transition: transform .25s var(--ease); }
 .chip > button[aria-expanded="true"] { border-color: var(--text-primary); }
 .chip > button[aria-expanded="true"] .i { transform: rotate(180deg); }
 .chip.on > button { background: var(--text-primary); border-color: var(--text-primary); color: #fff; }
 .seg { display: inline-flex; padding: 2px; border-radius: 9999px; background: var(--bg-secondary); }
-.seg button { height: 32px; min-width: 54px; padding: 0 14px; border-radius: 9999px; font-size: 12px; font-weight: 600; color: var(--text-secondary); transition: background .25s var(--ease), color .2s; }
+.seg button { height: 32px; min-width: 54px; padding: 0 14px; border-radius: 9999px; font-size: 12px; font-weight: 600; color: var(--text-secondary); transition: background .25s var(--ease), color .2s, transform .16s var(--ease); }
+.seg button:active { transform: scale(.96); }
 .seg button[aria-pressed="true"] { background: var(--text-primary); color: #fff; }
 .menu { position: absolute; left: 0; top: 44px; z-index: 40; min-width: 168px; padding: 8px; background: #fff; border: 1px solid var(--bg-teritary); border-radius: var(--r12); box-shadow: 0 5px 50px rgba(0, 0, 0, .1); transform-origin: top left; animation: pop .22s var(--ease); }
 .menu[hidden] { display: none; }
@@ -239,8 +245,15 @@ function renderList() {
     ? `<a class="card ex" href="exhibition.html?e=${it.i}" style="--n:${Math.min(n, 12)}"><div class="im"><div><img src="${DEMO.src(it.img)}" alt="${it.t} 포스터" width="161" height="241" loading="${n < 6 ? 'eager' : 'lazy'}"></div></div><div class="tx"><b>${it.t}</b><span class="l">${it.s}</span><span class="m"><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14">${it.d}</span><span class="m"><img src="assets/img/icon-location.svg" alt="" width="14" height="14">${it.p}</span></div></a>`
     : `<a class="card wk" href="work.html?w=${it.i}" style="--n:${Math.min(n, 12)}"><div class="im"><div><img src="assets/img/explore/opt/${it.img}.jpg" alt="${it.t}" width="161" height="215" loading="${n < 6 ? 'eager' : 'lazy'}"></div></div><div class="tx"><b>${it.t}</b><span class="l">${byline(it.a)}</span></div></a>`).join('') + '</div>';
 }
+function placeInd() {
+  const fl = $('fields'), b = fl.querySelector('.field[aria-selected="true"]'), ind = fl.querySelector('.ind'); if (!b || !ind) return;
+  ind.style.transform = `translate(${b.offsetLeft}px, ${b.offsetTop + b.offsetHeight - 2}px) scaleX(${b.offsetWidth})`;
+}
 function renderChrome() {
-  $('fields').innerHTML = FIELDS.map((f) => `<button class="field" role="tab" aria-selected="${f === state.field}" tabindex="${f === state.field ? 0 : -1}" data-f="${f}">${f}</button>`).join('');
+  const fl = $('fields');
+  if (!fl.querySelector('.field')) fl.innerHTML = FIELDS.map((f) => `<button class="field" role="tab" data-f="${f}">${f}</button>`).join('') + '<span class="ind" aria-hidden="true"></span>';   // 버튼은 한 번만 만들고 속성만 바꿔야 색·밑줄이 이어서 움직임
+  fl.querySelectorAll('.field').forEach((b) => { const on = b.dataset.f === state.field; b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1; });
+  placeInd();
   for (const [k, id, all] of [['type', 'chip-type', '전시 유형'], ['status', 'chip-status', '전시 상태']]) {
     const chip = $(id); chip.classList.toggle('on', state[k] !== '전체'); chip.querySelector('.lb').textContent = state[k] === '전체' ? all : state[k];
   }
@@ -267,8 +280,8 @@ document.addEventListener('click', (e) => { if (!e.target.closest('.chip') && !e
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { const open = document.querySelector('[aria-expanded="true"]'); closeMenus(); if (open) open.focus(); } });
 
 /* ============ 분야 · 전환 · 검색 ============ */
-$('fields').addEventListener('click', (e) => { const b = e.target.closest('.field'); if (!b) return; state.field = b.dataset.f; render(); $('fields').querySelector('[aria-selected="true"]').focus(); });
-$('fields').addEventListener('keydown', (e) => { const bs = [...$('fields').children], i = bs.indexOf(document.activeElement); if (e.key === 'ArrowRight' && i > -1) { e.preventDefault(); bs[Math.min(i + 1, bs.length - 1)].click(); } if (e.key === 'ArrowLeft' && i > -1) { e.preventDefault(); bs[Math.max(i - 1, 0)].click(); } });
+$('fields').addEventListener('click', (e) => { const b = e.target.closest('.field'); if (!b) return; state.field = b.dataset.f; render(); b.focus({ preventScroll: true }); b.scrollIntoView({ inline: 'center', block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); });
+$('fields').addEventListener('keydown', (e) => { const bs = [...$('fields').querySelectorAll('.field')], i = bs.indexOf(document.activeElement); if (e.key === 'ArrowRight' && i > -1) { e.preventDefault(); bs[Math.min(i + 1, bs.length - 1)].click(); } if (e.key === 'ArrowLeft' && i > -1) { e.preventDefault(); bs[Math.max(i - 1, 0)].click(); } });
 $('seg-exh').addEventListener('click', () => { state.tab = 'exh'; render(); });
 $('seg-wk').addEventListener('click', () => { state.tab = 'works'; render(); });
 let t; $('q').addEventListener('input', (e) => { state.q = e.target.value; $('clear').hidden = !state.q; $('search-form').classList.toggle('has', !!state.q); clearTimeout(t); t = setTimeout(() => { renderList(); syncUrl(); }, 120); });
@@ -279,6 +292,8 @@ $('clear').addEventListener('click', () => { state.q = ''; render(); $('q').focu
 /* 선택된 분야 탭이 화면 안에 보이게 */
 render();
 const selTab = $('fields').querySelector('[aria-selected="true"]'); if (selTab) selTab.scrollIntoView({ inline: 'center', block: 'nearest' });
+placeInd(); requestAnimationFrame(() => $('fields').classList.add('ready'));   // 처음 자리 잡을 땐 움직이지 않고, 그 뒤부터 미끄러짐
+new ResizeObserver(placeInd).observe($('fields')); document.fonts && document.fonts.ready.then(placeInd);   // 창 크기·글꼴이 바뀌면 밑줄 자리를 다시 잡음
 /* 상세에서 돌아오면 보던 위치 복원 */
 addEventListener('pagehide', () => { try { sessionStorage.setItem('explore-y', String(scrollY)); } catch (e) {} });
 try { const y = +sessionStorage.getItem('explore-y'); if (y && performance.getEntriesByType('navigation')[0]?.type === 'back_forward') requestAnimationFrame(() => scrollTo(0, y)); } catch (e) {}
