@@ -34,7 +34,6 @@
 @keyframes au-up { from { transform: translateY(100%); } }
 @media (prefers-reduced-motion: reduce) { .au-modal[open] { animation: none; } }
 .au-modal h2 { font-size: 20px; line-height: 1.4; font-weight: 600; letter-spacing: -0.03em; }
-.au-modal p { margin-top: 6px; font-size: 14px; line-height: 1.4; color: var(--text-secondary, #52525b); word-break: keep-all; text-wrap: pretty; }
 .au-btns { display: grid; gap: 8px; margin-top: 20px; }
 .au-btns button { position: relative; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 54px; border-radius: 12px; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; transition: transform .15s, filter .2s; }
 .au-btns button:active { transform: scale(.98); }
@@ -54,8 +53,8 @@
   function open(onLogin, onSkip) {
     if (dlg) dlg.remove();
     dlg = document.createElement('dialog');
-    dlg.className = 'au-modal'; dlg.setAttribute('aria-labelledby', 'au-t'); dlg.setAttribute('aria-describedby', 'au-d');
-    dlg.innerHTML = `<span class="au-grab" aria-hidden="true"></span><h2 id="au-t">로그인이 필요해요</h2><p id="au-d">로그인하면 저장한 전시·작품·작가를 모아볼 수 있어요</p>
+    dlg.className = 'au-modal'; dlg.setAttribute('aria-labelledby', 'au-t');
+    dlg.innerHTML = `<span class="au-grab" aria-hidden="true"></span><h2 id="au-t">로그인이 필요해요</h2>
       <div class="au-btns"><button type="button" class="au-kakao" data-p="kakao">${KAKAO}카카오로 시작하기</button><button type="button" class="au-google" data-p="google">${GOOGLE}Google로 시작하기</button></div>
       <button type="button" class="au-skip">비회원으로 계속 둘러보기</button>`;
     const d = dlg; let done = false;
