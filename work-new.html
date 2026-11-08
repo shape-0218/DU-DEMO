@@ -172,13 +172,6 @@
           <p class="mhelp">작품을 만든 과정을 보여주는 사진을 추가해요</p>
           <div class="row" id="p-row" role="list" aria-labelledby="p-l"></div>
         </div>
-
-        <div class="field" style="margin-top:24px">
-          <label for="point"><span>감상 포인트 <span class="opt-i">· 선택</span></span></label>
-          <p class="mhelp">관람객이 눈여겨보면 좋을 부분을 알려주세요</p>
-          <textarea class="ta tall" id="point" maxlength="1500" placeholder="입력해 주세요" style="margin-top:8px"></textarea>
-          <p class="cnt-r" id="point-n">0 / 1500</p>
-        </div>
       </section>
       <p class="demo" style="margin-top:28px"><b>데모용</b> 사진·영상은 내 기기에서 고르며 서버에는 올라가지 않아요.</p>
     </div>
@@ -222,7 +215,7 @@ const TEAM = [{ n: '이정우', h: 'quietroom', ok: true }, { n: '김서윤', h:
 $('d-ok').href = WORKS;
 
 const st = { media: [], proc: [], fields: new Set(), co: [], errMedia: false, errProc: false, left: false };
-const dirty = () => !!(st.media.length || st.proc.length || st.fields.size || st.co.length || $('title').value || $('desc').value || $('year').value || $('medium').value || $('size').value || $('point').value);
+const dirty = () => !!(st.media.length || st.proc.length || st.fields.size || st.co.length || $('title').value || $('desc').value || $('year').value || $('medium').value || $('size').value);
 
 /* ---------- 작가 ---------- */
 const AV = '<span class="av" aria-hidden="true"><svg><use href="#i-avatar"/></svg></span>';
@@ -330,7 +323,6 @@ $('chips').addEventListener('click', (e) => {
 $('year').addEventListener('input', () => { $('year').value = $('year').value.replace(/\D/g, '').slice(0, 4); validate(); });
 ['title', 'medium'].forEach((id) => $(id).addEventListener('input', validate));
 $('desc').addEventListener('input', () => { $('desc-n').textContent = `${$('desc').value.length} / 1500`; });
-$('point').addEventListener('input', () => { $('point-n').textContent = `${$('point').value.length} / 1500`; });
 function validate() { $('go').disabled = !(st.media.length && $('title').value.trim() && st.fields.size && /^\d{4}$/.test($('year').value) && $('medium').value.trim()); }
 
 /* ---------- 등록 ---------- */
@@ -338,7 +330,7 @@ $('form').addEventListener('submit', async (ev) => {
   ev.preventDefault(); if ($('go').disabled) return; $('go').disabled = true;
   const first = st.media[0];
   const img = first.video ? first.thumb : (first.existing ? first.url : ((first.file ? await imageThumb(first.file) : null) || first.url));
-  const work = { id: 'w' + Date.now().toString(36), exId: ex.id, title: $('title').value.trim(), fields: [...st.fields], year: $('year').value, medium: $('medium').value.trim(), size: $('size').value.trim(), desc: $('desc').value.trim(), point: $('point').value.trim(), authors: [author, ...st.co.map((c) => c.n)], media: st.media.length, video: st.media.some((m) => m.video), proc: st.proc.length, thumb: img, crop: first.crop || null };
+  const work = { id: 'w' + Date.now().toString(36), exId: ex.id, title: $('title').value.trim(), fields: [...st.fields], year: $('year').value, medium: $('medium').value.trim(), size: $('size').value.trim(), desc: $('desc').value.trim(), authors: [author, ...st.co.map((c) => c.n)], media: st.media.length, video: st.media.some((m) => m.video), proc: st.proc.length, thumb: img, crop: first.crop || null };
   if (editing) {
     ExData.updateWork(ex.id, editing.id, { title: work.title, fields: work.fields, year: work.year, medium: work.medium, img, crop: st.media[0].crop || null });
     st.left = true; sessionStorage.setItem('du.toast', '작품을 수정했어요'); location.href = WORKS; return;
@@ -359,8 +351,8 @@ window.addEventListener('beforeunload', (ev) => { if (!st.left && !editing && di
 /* 수정: 등록된 값을 채움(작가 행은 그대로 고정) */
 if (editing) {
   document.querySelector('#bar h1').textContent = '작품 수정'; document.title = '작품 수정 · Display U.'; $('go').textContent = '수정 완료';
-  $('title').value = editing.title || ''; $('year').value = editing.year || ''; $('medium').value = editing.medium || ''; $('size').value = editing.size || ''; $('desc').value = editing.desc || ''; $('point').value = editing.point || '';
-  $('desc-n').textContent = `${$('desc').value.length} / 1500`; $('point-n').textContent = `${$('point').value.length} / 1500`;
+  $('title').value = editing.title || ''; $('year').value = editing.year || ''; $('medium').value = editing.medium || ''; $('size').value = editing.size || ''; $('desc').value = editing.desc || '';
+  $('desc-n').textContent = `${$('desc').value.length} / 1500`;
   st.fields = new Set(editing.fields || []);
   [...$('chips').children].forEach((c) => { const on = st.fields.has(c.dataset.f); c.setAttribute('aria-pressed', on); c.innerHTML = (on ? '<svg class="i" aria-hidden="true"><use href="#i-check"/></svg>' : '') + c.dataset.f; });
   $('fcnt').textContent = `${st.fields.size}/${MAXF}`;

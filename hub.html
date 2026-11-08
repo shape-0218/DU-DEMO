@@ -179,7 +179,7 @@ function render() {
     (empty ? '<p class="none">아직 등록된 작품과 전시 콘텐츠가 없어요</p>'
       : `<span class="stats"><span><small>작품</small><strong>${e.works}</strong><span>점</span></span><span><small>전시 콘텐츠</small><strong>${e.sections}</strong><span>섹션</span></span></span>`);
   $('team').innerHTML = `<span class="hd"><svg class="i" aria-hidden="true"><use href="#i-team"/></svg>팀원 관리<svg class="i ch" aria-hidden="true"><use href="#i-chev"/></svg></span><ul><li>참여 ${e.members}명</li><li>${e.pending ? `<span class="pend">초대 대기 ${e.pending}명</span>` : '초대 대기 0명'}</li></ul>`;
-  $('info').innerHTML = `<span class="hd"><svg class="i" aria-hidden="true"><use href="#i-pencil"/></svg>기본 정보<svg class="i ch" aria-hidden="true"><use href="#i-chev"/></svg></span><ul><li>전시명·소개·일정</li><li>장소·유의사항</li></ul>`;
+  $('info').innerHTML = `<span class="hd"><svg class="i" aria-hidden="true"><use href="#i-pencil"/></svg>기본 정보<svg class="i ch" aria-hidden="true"><use href="#i-chev"/></svg></span><ul><li>전시명·소개·일정</li><li>장소</li></ul>`;
   renderPub();
   const c = $('cta');
   c.innerHTML = e.status === 'review' ? '<button type="button" class="big soft" id="act">요청 취소하기</button>' : e.status === 'live' ? '<button type="button" class="big soft" id="act">비공개로 전환</button>' : '<button type="button" class="big" id="act">등록 요청하기</button>';

@@ -229,14 +229,6 @@ img { display: block; }
 .place a { flex: none; height: 32px; padding: 0 12px; display: inline-flex; align-items: center; border: 1px solid var(--border-primary); background: #fff; border-radius: var(--r12); font-size: 12px; font-weight: 600; transition: background .2s; }
 @media (hover: hover) { .place a:hover { background: var(--bg-soft); } }
 
-/* 유의사항·주최 */
-.notes { margin-top: 12px; display: grid; gap: 8px; }
-.notes li { display: grid; grid-template-columns: 20px 1fr; gap: 8px; align-items: start; color: var(--text-teritary); font-weight: 500; } /* 11-07 Figma 위치 대조: 아이콘 20, 글자 14/500 연한 회색 */
-.notes .i { width: 20px; height: 20px; color: var(--text-teritary); }
-.host { margin-top: 12px; display: grid; gap: 8px; }
-.host div { display: grid; grid-template-columns: 32px 1fr; column-gap: 8px; }
-.host dt { color: var(--text-teritary); }
-
 /* 작품 */
 .works { margin-top: 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 @media (min-width: 900px) { .works { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
@@ -368,12 +360,12 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
 @media (min-width: 900px) { .gb-compose { display: block; } .bar-gb { display: none; } }   /* 노트북은 하단 바 대신 후기 목록 아래에 입력창. .bar-gb 기본 규칙 뒤에 둬야 숨겨짐 */
 @media (prefers-reduced-motion: reduce) { .cm.fresh, .gbc-th, dialog.sk[open] { animation: none; } }
 
-/* 정보 섹션(전시콘텐츠·위치·유의사항·주최): 제목은 16px SemiBold, 구분은 연한 선 하나, 큰 회색 띠는 없앰 */
+/* 정보 섹션(전시콘텐츠·위치): 제목은 16px SemiBold, 구분은 연한 선 하나, 큰 회색 띠는 없앰 */
 .sec h2 { font-size: 16px; font-weight: 600; letter-spacing: -0.03em; }
 .band { margin-top: 0; background: none; padding-bottom: 0; }
-.sec[aria-labelledby="h-content"], .sec[aria-labelledby="h-place"], .sec[aria-labelledby="h-notes"], .sec[aria-labelledby="h-host"] { position: relative; margin-top: 28px; padding-top: 28px; }
-.sec[aria-labelledby="h-content"]::before, .sec[aria-labelledby="h-place"]::before, .sec[aria-labelledby="h-notes"]::before, .sec[aria-labelledby="h-host"]::before { content: ""; position: absolute; top: 0; left: var(--pad); right: var(--pad); height: 1px; background: var(--bg-soft); }
-@media (min-width: 900px) { .sec[aria-labelledby="h-content"]::before, .sec[aria-labelledby="h-place"]::before, .sec[aria-labelledby="h-notes"]::before, .sec[aria-labelledby="h-host"]::before { left: 0; right: 0; } }
+.sec[aria-labelledby="h-content"], .sec[aria-labelledby="h-place"] { position: relative; margin-top: 28px; padding-top: 28px; }
+.sec[aria-labelledby="h-content"]::before, .sec[aria-labelledby="h-place"]::before { content: ""; position: absolute; top: 0; left: var(--pad); right: var(--pad); height: 1px; background: var(--bg-soft); }
+@media (min-width: 900px) { .sec[aria-labelledby="h-content"]::before, .sec[aria-labelledby="h-place"]::before { left: 0; right: 0; } }
 .band .sec { padding-top: 28px; }
 .cards, .place { margin-top: 12px; }
 .sec[aria-labelledby="h-intro"] { padding-top: 28px; }
@@ -443,7 +435,7 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
         <div class="title-row">
           <div>
             <h1 id="x-title">여넥스</h1>
-            <p id="x-org">한결대학교 시각디자인학과 졸업 전시</p>
+            <p id="x-org">한결대학교 시각디자인학과</p>
           </div>
           <button class="like" id="like" aria-pressed="false" aria-label="좋아요"><svg class="i" aria-hidden="true"><use href="#i-heart"/></svg><span id="like-n">204</span></button>
         </div>
@@ -488,23 +480,6 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
             <div class="tx"><strong id="x-place2">진달래홀</strong><small id="x-addr">서울특별시 한결구 예술로 12</small></div>
             <a href="map.html?ex=0" id="x-map">지도 보기</a>
           </div>
-        </section>
-
-        <section class="sec" id="s-notes" aria-labelledby="h-notes">
-          <h2 id="h-notes">유의사항</h2>
-          <ul class="notes" id="x-notes">
-            <li><svg class="i" aria-hidden="true"><use href="#i-info"/></svg>행사 당일 14:00부터 입장할 수 있어요.</li>
-            <li><svg class="i" aria-hidden="true"><use href="#i-info"/></svg>작품을 손으로 만지지 말아주세요.</li>
-            <li><svg class="i" aria-hidden="true"><use href="#i-info"/></svg>날짜별 운영 시간이 다를 수 있으니 방문 전 확인해주세요.</li>
-          </ul>
-        </section>
-
-        <section class="sec" id="s-host" aria-labelledby="h-host">
-          <h2 id="h-host">주최 · 문의</h2>
-          <dl class="host">
-            <div><dt>주최</dt><dd id="x-org2">한결대학교 시각디자인학과 졸업준비위원회</dd></div>
-            <div><dt>문의</dt><dd id="x-contact">@hangyeol_vd (인스타그램 DM)</dd></div>
-          </dl>
         </section>
       </div>
 
@@ -808,10 +783,8 @@ if (PV) {
   if (PV.intro) { pvText('x-intro', PV.intro); } else pvHide('s-intro');
   /* 전시콘텐츠는 등록 후 따로 만들기 때문에 아직 없으면 숨김 */
   if (!PV.sections) pvHide('s-content');
-  /* 위치·유의사항·주최 */
+  /* 위치 */
   pvText('x-place2', PV.place || ''); pvText('x-addr', PV.addr || ''); if (!PV.addr) document.getElementById('x-addr').hidden = true;
-  if (PV.notice) document.getElementById('x-notes').innerHTML = PV.notice.split(/\n+/).filter(Boolean).map((t) => `<li><svg class="i" aria-hidden="true"><use href="#i-info"/></svg>${t.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]))}</li>`).join(''); else pvHide('s-notes');
-  pvText('x-org2', PV.org || ''); pvText('x-contact', PV.contact || '입력한 문의처가 없어요');
   /* 좋아요·저장·후기는 공개 뒤에 쓰는 기능이라 막음 */
   like.disabled = true; likeN.textContent = '0';
   document.querySelectorAll('.save, .share').forEach((b) => { b.disabled = true; b.title = '공개 전에는 사용할 수 없어요'; });
@@ -841,15 +814,12 @@ if (DX) {
   const dotD = (iso) => iso.replace(/-/g, '.');
   const lines = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
   document.title = `${DX.t} · Display U.`;
-  lines('x-title', DX.t); lines('x-org', `${DX.s} ${DX.ty}`);
+  lines('x-title', DX.t); lines('x-org', DX.s);
   lines('x-date', DX.start === DX.end ? dotD(DX.start) : `${dotD(DX.start)} - ${dotD(DX.end)}`);
   lines('x-time', DX.time); lines('x-place', DX.p); lines('x-place2', DX.p);
   lines('x-intro', DX.intro);
   document.getElementById('x-addr').style.display = 'none';
   document.getElementById('x-map').href = 'map.html?ex=' + DXI;
-  document.getElementById('x-notes').innerHTML = ['작품을 손으로 만지지 말아주세요.', '날짜별 운영 시간이 다를 수 있으니 방문 전 확인해주세요.'].map((t) => `<li><svg class="i" aria-hidden="true"><use href="#i-info"/></svg>${t}</li>`).join('');
-  lines('x-org2', DX.ty === '졸업 전시' ? `${DX.s} 졸업준비위원회` : DX.s);
-  document.getElementById('x-contact').closest('div').style.display = 'none';
   const SLUG = ['unfold', 'growing_elsewhere', 'pixel_garden', 'in_the_making', 'worlds_in_progress', 'playback', 'after_use', 'passage_of_light', 'beyond_the_panel', 'ways_of_knotting', 'measuring_between'][DXI];
   renderLinks(SLUG + '_2026', 'https://' + SLUG.replace(/_/g, '-') + '.kr/', SLUG.replace(/_/g, '-') + '.kr', true);   // 가상 계정·주소라서 눌러도 이동하지 않고 안내만
   /* 포스터: 한 장 */

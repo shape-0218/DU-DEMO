@@ -174,7 +174,6 @@
           <button type="button" class="ul pick" id="t-s" aria-haspopup="dialog" aria-labelledby="t-l t-s"><span class="ph">시작 시간</span><svg class="i"><use href="#i-updown"/></svg></button>
           <button type="button" class="ul pick" id="t-e" aria-haspopup="dialog" aria-labelledby="t-l t-e"><span class="ph">종료 시간</span><svg class="i"><use href="#i-updown"/></svg></button>
         </div>
-        <p class="help">휴무일·날짜별 운영 시간은 아래 유의사항에 적어주세요</p>
       </div>
       <div class="field">
         <label for="place"><span>장소명 (상세 위치)<span class="req" aria-hidden="true">*</span></span></label>
@@ -187,11 +186,6 @@
         <p class="help">검색 결과에서 전시 장소의 주소를 선택해주세요</p>
       </div>
       <div class="field">
-        <label for="contact"><span>문의 방법</span></label>
-        <div class="ul"><input id="contact" type="text" maxlength="80" placeholder="ex) example@email.com" autocomplete="off"></div>
-        <p class="help">예: @displayu_oo / example@email.com</p>
-      </div>
-      <div class="field">
         <label for="ig"><span>인스타그램<span class="opt">· 선택</span></span></label>
         <div class="ul"><input id="ig" type="text" maxlength="60" placeholder="아이디 (예: yeonex_2026)" autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="ig-h"></div>
         <p class="help" id="ig-h">@ 없이 아이디만 적어주세요</p>
@@ -200,11 +194,6 @@
         <label for="web"><span>웹사이트<span class="opt">· 선택</span></span></label>
         <div class="ul"><input id="web" type="text" inputmode="url" maxlength="120" placeholder="ex) yeonex.kr" autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="web-h"></div>
         <p class="help" id="web-h">전시 사이트나 포트폴리오 주소를 적어주세요</p>
-      </div>
-      <div class="field">
-        <label for="notice"><span>유의사항</span></label>
-        <textarea class="ta" id="notice" maxlength="500" placeholder="입력해 주세요"></textarea>
-        <p class="cnt-r" id="notice-n">0 / 500</p>
       </div>
     </div>
     <div class="cta"><button type="button" class="big" id="next2" disabled>다음</button></div>
@@ -272,7 +261,7 @@ const st = { step: 1, posters: [], err: false, type: '', fields: new Set(), star
 const today = new Date(); today.setHours(0, 0, 0, 0);
 const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 const dot = (s) => s ? s.replace(/-/g, '.') : '';
-const dirty = () => !!(st.posters.length || $('title-in').value || $('intro').value || st.type || st.fields.size || $('dept').value || st.start || st.end || $('place').value || st.addr || $('contact').value || $('notice').value || $('ig').value || $('web').value);
+const dirty = () => !!(st.posters.length || $('title-in').value || $('intro').value || st.type || st.fields.size || $('dept').value || st.start || st.end || $('place').value || st.addr || $('ig').value || $('web').value);
 
 /* ---------- 화면 전환 ---------- */
 const TITLES = { 1: '전시 기본 정보', 2: '전시 기본 정보', addr: '주소 검색', 3: '전시 작가명 설정' };
@@ -406,7 +395,6 @@ $('ig').addEventListener('input', linkUi); $('web').addEventListener('input', li
 $('ig').addEventListener('blur', () => { const g = parseIg($('ig').value); if (g.ok) { $('ig').value = g.id; linkUi(); } });      // @나 주소를 붙여 넣어도 아이디만 남김
 $('web').addEventListener('blur', () => { const w = parseWeb($('web').value); if (w.ok) { $('web').value = w.field; linkUi(); } });
 $('myname').addEventListener('input', validate);
-$('notice').addEventListener('input', () => { $('notice-n').textContent = `${$('notice').value.length} / 500`; });
 const setPick = (id, v) => { const el = $(id).querySelector('span'); el.textContent = v; el.classList.remove('ph'); };
 
 /* 기간 달력 */
@@ -455,7 +443,6 @@ function openTime() {
   const col = (id, sel) => `<div class="wheel" id="${id}" role="listbox" tabindex="0">${TIMES.map((t) => `<button type="button" role="option" data-t="${t}" aria-selected="${t === sel}">${t}</button>`).join('')}</div>`;
   showSheet(`<h2>운영 시간 선택</h2><p class="sub">일반적인 관람 시작·종료 시간을 선택해주세요</p>
     <div class="times"><div class="col"><h3 id="ws">시작 시간</h3>${col('w-s', s)}</div><div class="col"><h3 id="we">종료 시간</h3>${col('w-e', e)}</div></div>
-    <p class="help" style="margin-top:12px">휴무일·날짜별 시간은 유의사항에 적어주세요</p>
     <button type="button" class="big" id="t-ok" style="margin-top:16px">선택 완료</button>`, '운영 시간 선택', () => {
     const wire = (id, set) => {
       const w = $(id); w.setAttribute('aria-labelledby', id === 'w-s' ? 'ws' : 'we');
@@ -509,7 +496,7 @@ async function saveEdit() {
     const kept = p.file ? await blobDB.put(key, p.file) : false;
     list.push({ video: !!p.video, thumb: thumb || null, full: full || null, key: kept ? key : null, crop: i === 0 ? (p.crop || null) : null });
   }
-  const upd = { title: $('title-in').value.trim(), intro: $('intro').value.trim(), type: st.type, fields: [...st.fields], org: st.type === '기타 단체 전시' ? dept : `${SCHOOL} ${dept}`, start: st.start, end: st.end, ts: st.ts, te: st.te, place: $('place').value.trim(), addr: st.addr, contact: $('contact').value.trim(), notice: $('notice').value.trim(), ig: igVal(), web: webVal(), webShow: webShow(), poster, posterVideo: !!(first && first.video), hasVideo: st.posters.some((p) => p.video), posters: st.posters.length, posterList: list };
+  const upd = { title: $('title-in').value.trim(), intro: $('intro').value.trim(), type: st.type, fields: [...st.fields], org: st.type === '기타 단체 전시' ? dept : `${SCHOOL} ${dept}`, start: st.start, end: st.end, ts: st.ts, te: st.te, place: $('place').value.trim(), addr: st.addr, ig: igVal(), web: webVal(), webShow: webShow(), poster, posterVideo: !!(first && first.video), hasVideo: st.posters.some((p) => p.video), posters: st.posters.length, posterList: list };
   saveExhibitions(exhibitions().map((x) => x.id === e.id ? { ...x, ...upd } : x));
   leaving = true; sessionStorage.setItem('du.toast', '전시 정보를 수정했어요'); location.href = 'hub.html?id=' + e.id;
 }
@@ -523,7 +510,7 @@ $('make').addEventListener('click', async () => {
     id: 'n' + Date.now().toString(36), status: 'prep', role: 'owner', myName: $('myname').value.trim(),
     title: $('title-in').value.trim(), intro: $('intro').value.trim(), type: st.type, fields: [...st.fields],
     org: st.type === '기타 단체 전시' ? dept : `${SCHOOL} ${dept}`, start: st.start, end: st.end, ts: st.ts, te: st.te,
-    place: $('place').value.trim(), addr: st.addr, contact: $('contact').value.trim(), notice: $('notice').value.trim(), ig: igVal(), web: webVal(), webShow: webShow(),
+    place: $('place').value.trim(), addr: st.addr, ig: igVal(), web: webVal(), webShow: webShow(),
     poster, posterVideo: !!(first && first.video), hasVideo: st.posters.some((p) => p.video), posters: st.posters.length, works: 0, sections: 0, members: 1, pending: 0, pubWork: 'start', pubCont: 'approve'
   };
   /* 미리보기용: 포스터마다 작은 그림(썸네일)은 목록에 저장하고, 원본(영상 포함)은 IndexedDB에 보관 */
@@ -568,7 +555,6 @@ if (editEx) (async () => {
   if (st.start) view = new Date(+st.start.slice(0, 4), +st.start.slice(5, 7) - 1, 1);
   $('place').value = e.place || ''; st.addr = e.addr || ADDR[0].r; setPick('addr', st.addr);
   $('ig').value = e.ig || ''; $('web').value = (e.web || '').replace(/^https?:\/\//i, '').replace(/\/$/, '') || e.webShow || ''; linkUi();
-  $('contact').value = e.contact || ''; $('notice').value = e.notice || ''; $('notice-n').textContent = `${$('notice').value.length} / 500`;
   $('next2').textContent = '수정 완료';
   /* 포스터: 저장해 둔 원본(영상 포함)을 불러오고, 없으면 작은 그림으로 */
   const list = e.posterList && e.posterList.length ? e.posterList : [{ video: false, thumb: e.poster, key: null }];
