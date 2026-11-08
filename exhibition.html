@@ -74,6 +74,8 @@ img { display: block; }
 .pr::-webkit-scrollbar { display: none; }
 .ps { position: relative; flex: none; width: 100%; height: 100%; scroll-snap-align: center; }
 .ps video { background: var(--bg-white); }
+html.stage-gray .poster, html.stage-gray .ps video { background: var(--bg-secondary); }   /* 확인용 ?stage=gray (포스터 뒤 배경을 연한 회색으로 보기) */
+
 /* 상세 썸네일: 폰·태블릿은 생략(장수 칩만) / 노트북(900~)은 이미지 왼쪽에 세로로 늘 보임 */
 .poster-col { position: relative; }
 .thumbs { position: absolute; left: 50%; bottom: 84px; z-index: 3; transform: translate(-50%, 8px); display: none; gap: 6px; padding: 6px; max-width: calc(100% - 32px); overflow-x: auto; border-radius: 14px; background: rgba(0,0,0,.45); backdrop-filter: blur(10px); scrollbar-width: none; opacity: 0; visibility: hidden; transition: opacity .25s var(--ease), transform .25s var(--ease), visibility 0s .25s; }
@@ -555,6 +557,7 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
 const DXI = (() => { const q = new URLSearchParams(location.search); if (q.get('id')) return null; const n = +q.get('e'); return Number.isInteger(n) && q.has('e') && DEMO.EXH[n] ? n : 0; })();
 const DX = DXI === null ? null : DEMO.EXH[DXI];
 /* ---------- 탭 (주소 ?tab= 과 연동) ---------- */
+if (new URLSearchParams(location.search).get('stage') === 'gray') document.documentElement.classList.add('stage-gray');   // 확인용
 const tabs = [...document.querySelectorAll('.tab')], panels = { intro: p('p-intro'), works: p('p-works'), reviews: p('p-reviews') };
 function p(id) { return document.getElementById(id); }
 function pick(tab, focus, silent) {
