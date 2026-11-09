@@ -199,9 +199,9 @@ $('fields').innerHTML = KIND === 'basic' ? `${photo}
   <div class="field"><label for="bio"><span>소개<span class="opt">· 선택</span></span></label>
     <textarea class="ta" id="bio" maxlength="100" placeholder="나를 소개해 주세요">${esc(S.bio)}</textarea><p class="cnt-r" id="bcnt"></p></div>
   <div class="field"><label for="ig"><span>Instagram<span class="opt">· 선택</span></span></label>
-    <div class="ul" id="igul" style="margin-top:8px"><input id="ig" type="text" maxlength="60" placeholder="아이디 (예: sangjun.works)" autocomplete="off" autocapitalize="none" spellcheck="false" value="${esc(S.ig)}" aria-describedby="ighelp"></div><p class="help" id="ighelp"></p></div>
+    <div class="ul" id="igul" style="margin-top:8px"><input id="ig" type="text" maxlength="60" placeholder="아이디 (예: displayu)" autocomplete="off" autocapitalize="none" spellcheck="false" value="${esc(S.ig)}" aria-describedby="ighelp"></div><p class="help" id="ighelp"></p></div>
   <div class="field"><label for="web"><span>Portfolio<span class="opt">· 선택</span></span></label>
-    <div class="ul" id="webul" style="margin-top:8px"><input id="web" type="text" inputmode="url" maxlength="120" placeholder="ex) sangjun-works.com" autocomplete="off" autocapitalize="none" spellcheck="false" value="${esc(S.web)}" aria-describedby="webhelp"></div><p class="help" id="webhelp"></p></div>`;
+    <div class="ul" id="webul" style="margin-top:8px"><input id="web" type="text" inputmode="url" maxlength="120" placeholder="ex) displayu.kr" autocomplete="off" autocapitalize="none" spellcheck="false" value="${esc(S.web)}" aria-describedby="webhelp"></div><p class="help" id="webhelp"></p></div>`;
 if (KIND === 'basic') $('demo').hidden = false;
 $('photo').innerHTML = PhotoPick.html(KIND === 'basic' ? 'circle' : 'rect', S.img);
 PhotoPick.bind($('photo'), { kind: KIND === 'basic' ? 'circle' : 'rect', onDone: (d) => { S.img = d; update(); } });
@@ -230,7 +230,7 @@ function update() {
     $('fcnt').textContent = `${S.fields.size} / ${MAX}`; $('bcnt').textContent = `${S.bio.length} / 100`;
     const g = parseIg(S.ig), w = parseWeb(S.web);
     linkHelp('ig', g, `instagram.com/${g.id} 로 연결돼요`, '아이디 형식을 확인해 주세요 (영문·숫자·밑줄·마침표)', '@ 없이 아이디만 적어주세요');
-    linkHelp('web', w, `${w.href} 로 연결돼요`, '주소 형식을 확인해 주세요 (예: sangjun-works.com)', '작업 사이트나 포트폴리오 주소를 적어주세요');
+    linkHelp('web', w, `${w.href} 로 연결돼요`, '주소 형식을 확인해 주세요 (예: displayu.kr)', '작업 사이트나 포트폴리오 주소를 적어주세요');
     valid = S.name.trim() && S.fields.size >= 1 && g.ok !== false && w.ok !== false;
   }
   $('save').disabled = !(snap() !== saved && valid);

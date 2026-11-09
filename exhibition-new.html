@@ -187,12 +187,12 @@
       </div>
       <div class="field">
         <label for="ig"><span>인스타그램<span class="opt">· 선택</span></span></label>
-        <div class="ul"><input id="ig" type="text" maxlength="60" placeholder="아이디 (예: yeonex_2026)" autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="ig-h"></div>
+        <div class="ul"><input id="ig" type="text" maxlength="60" placeholder="아이디 (예: displayu)" autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="ig-h"></div>
         <p class="help" id="ig-h">@ 없이 아이디만 적어주세요</p>
       </div>
       <div class="field">
         <label for="web"><span>웹사이트<span class="opt">· 선택</span></span></label>
-        <div class="ul"><input id="web" type="text" inputmode="url" maxlength="120" placeholder="ex) yeonex.kr" autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="web-h"></div>
+        <div class="ul"><input id="web" type="text" inputmode="url" maxlength="120" placeholder="ex) displayu.kr" autocomplete="off" autocapitalize="none" spellcheck="false" aria-describedby="web-h"></div>
         <p class="help" id="web-h">전시 사이트나 포트폴리오 주소를 적어주세요</p>
       </div>
     </div>
@@ -375,7 +375,7 @@ function setLinkHelp(k, r, okMsg, badMsg, idle) {
 function linkUi() {
   const g = parseIg($('ig').value), w = parseWeb($('web').value);
   setLinkHelp('ig', g, g.ok ? `instagram.com/${g.id} 로 연결돼요` : '', '아이디 형식을 확인해 주세요 (영문·숫자·밑줄·마침표)', '@ 없이 아이디만 적어주세요');
-  setLinkHelp('web', w, w.ok ? `${w.href} 로 연결돼요` : '', '주소 형식을 확인해 주세요 (예: yeonex.kr)', '전시 사이트나 포트폴리오 주소를 적어주세요');
+  setLinkHelp('web', w, w.ok ? `${w.href} 로 연결돼요` : '', '주소 형식을 확인해 주세요 (예: displayu.kr)', '전시 사이트나 포트폴리오 주소를 적어주세요');
   validate();
 }
 const igVal = () => { const g = parseIg($('ig').value); return g.ok ? g.id : ''; };
