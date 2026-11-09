@@ -170,7 +170,7 @@ const BACK = KIND === 'artist' ? 'artist.html?me=1' : 'my.html?state=after';
 /* 이동 기록(11-08): 수정·인증 화면은 '거쳐 가는 화면'이라 기록에 남기지 않음 — 저장·나가기는 교체(replace), 온 곳이 돌아갈 곳이면 history.back()
    (이렇게 하지 않으면 작가 프로필에서 뒤로 가기를 눌렀을 때 방금 나온 수정 화면으로 되돌아감) */
 const leaveTo = (dest) => { let ref = ''; try { const u = new URL(document.referrer); if (u.origin === location.origin) ref = u.pathname.split('/').pop(); } catch (e) {} if (ref && ref === dest.split('?')[0] && history.length > 1) history.back(); else location.replace(dest); };
-const FIELDS = ['회화', '조소', '사진', '그래픽', '브랜딩', '제품', '가구', '공간', '건축', 'UXUI', '공예', '기타'];
+const FIELDS = ['회화', '조소', '사진', '그래픽', '브랜딩', '제품', '영상', '공간', '건축', 'UXUI', '공예', '기타'];
 const MAX = 2, TAKEN = ['admin', '디유', 'displayu', '민재', '서하'];
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const load = (k) => { try { return JSON.parse(localStorage.getItem(k)) || {}; } catch (e) { return {}; } };

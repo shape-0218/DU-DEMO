@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>가입 · Display U.</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/* 소셜 로그인 뒤 가입(온보딩): 약관 → 닉네임 → 가입 완료. 값은 Figma `온보딩 · 개선안 (11-09)` 3890:46585 9장에서 가져옴 (11-09 사용자 "로그인 플로우도 프로토에 넣어줘") */
+:root {
+  --text-primary: #18181b;
+  --text-secondary: #3f3f47;
+  --text-teritary: #71717b;
+  --text-disable: #d4d4d8;
+  --border-primary: #d4d4d8;
+  --bg-secondary: #f4f4f5;
+  --notice: #fb2c36;
+  --success: #00c950;
+  --check-off: #c4c4c4;   /* Figma `Terms / 행` 체크=off 테두리 */
+  --check-on: #111111;    /* Figma `Terms / 행` 체크=on 채움 */
+  --check-mark: #d7d7df;
+  --r12: 12px;
+  --ease: cubic-bezier(.16, 1, .3, 1);
+  --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  --gx: 20px;
+  color-scheme: light;
+}
+*, *::before, *::after { box-sizing: border-box; letter-spacing: -0.03em; line-height: 1.4; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: #fff; color: var(--text-primary); font: 500 14px/1.4 var(--font); -webkit-font-smoothing: antialiased; }
+::selection { background: var(--text-primary); color: #fff; }
+a { color: inherit; text-decoration: none; }
+button, input { font: inherit; letter-spacing: -0.03em; color: inherit; }
+button { background: none; border: 0; padding: 0; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; text-align: left; }
+h1, h2, p, ul { margin: 0; padding: 0; }
+ul { list-style: none; }
+:focus-visible { outline: 2px solid var(--text-primary); outline-offset: 2px; border-radius: 6px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.skip { position: absolute; left: 16px; top: -64px; z-index: 90; height: 44px; padding: 0 16px; display: inline-flex; align-items: center; background: var(--text-primary); color: #fff; border-radius: var(--r12); font-size: 14px; font-weight: 600; transition: top .2s var(--ease); }
+.skip:focus-visible { top: 8px; }
+.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+[hidden] { display: none !important; }
+
+/* 한 칸짜리 세로 화면: 폰은 전체 폭, 태블릿·노트북은 가운데 (작가 인증·전시 등록과 같은 규칙) */
+.page { width: 100%; max-width: 480px; min-height: 100dvh; margin-inline: auto; padding: max(8px, env(safe-area-inset-top)) var(--gx) 0; display: flex; flex-direction: column; }
+@media (min-width: 768px) { :root { --gx: 32px; } .page { max-width: 672px; padding-top: 40px; } }
+@media (min-width: 900px) { :root { --gx: 40px; } }
+.step { flex: 1; display: flex; flex-direction: column; }
+
+.bar { display: flex; align-items: center; height: 56px; margin-left: -10px; }
+.bar button { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 9999px; transition: background .2s; }
+@media (hover: hover) { .bar button:hover { background: var(--bg-secondary); } }
+.lead { margin-top: 8px; font-size: 20px; font-weight: 700; line-height: 1.4; }
+.lead:focus { outline: 0; }
+
+/* 약관: 전체 동의 줄 56 + 선 + 항목 줄 52 (Figma 3891:46750) */
+.terms { margin-top: 40px; }
+.row { position: relative; display: flex; align-items: center; width: 100%; min-height: 52px; gap: 12px; }
+.row.all { min-height: 56px; }
+.row .main { flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; min-height: inherit; }
+.row .go { flex: none; width: 44px; height: 44px; margin-right: -10px; display: grid; place-items: center; color: var(--text-teritary); }
+.row .go .i { stroke-width: 2; }
+.cb { flex: none; position: relative; width: 24px; height: 24px; border-radius: 9999px; border: 2px solid var(--check-off); transition: background-color .15s, border-color .15s; }
+.cb svg { position: absolute; inset: -2px; width: 24px; height: 24px; opacity: 0; transition: opacity .15s; }
+.row [aria-checked="true"] .cb { background: var(--check-on); border-color: var(--check-on); }
+.row [aria-checked="true"] .cb svg { opacity: 1; }
+.row .main:active .cb { transform: scale(.96); }
+.row .lb { font-size: 14px; font-weight: 400; color: var(--text-primary); }
+.row .lb em { font-style: normal; color: var(--text-teritary); margin-left: 4px; }
+.row.all .lb { font-size: 16px; font-weight: 600; }
+.sep { height: 1px; margin: 0; border: 0; background: var(--border-primary); }
+
+/* 닉네임 (Figma 3891:46838~47099) */
+.desc { margin-top: 8px; font-size: 14px; font-weight: 400; color: var(--text-secondary); }
+.nick { margin-top: 32px; }
+.line { display: flex; align-items: flex-start; gap: 8px; }
+.ul { position: relative; flex: 1; min-width: 0; display: flex; align-items: center; height: 47px; border-bottom: 1px solid var(--border-primary); transition: border-color .2s; }
+.ul:focus-within { border-bottom-color: var(--text-primary); }
+.ul.bad { border-bottom-color: var(--notice); }
+.ul input { flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; outline: 0; background: transparent; font-size: 16px; font-weight: 400; }
+.ul input::placeholder { color: var(--text-teritary); }
+.act { flex: none; min-width: 88px; height: 44px; padding: 0 16px; border-radius: var(--r12); background: var(--text-primary); color: #fff; font-size: 14px; font-weight: 600; text-align: center; transition: background .2s, color .2s, transform .2s var(--ease); }
+@media (hover: hover) { .act:hover:not(:disabled) { background: #2f2f35; } }
+.act:active:not(:disabled) { transform: scale(.97); }
+.act:disabled { background: var(--bg-secondary); color: var(--text-disable); cursor: default; }
+.help { margin-top: 4px; font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-secondary); }
+.help.w { color: var(--text-teritary); }
+.help.e { color: var(--notice); }
+.help.ok { color: var(--success); }
+
+/* 하단 버튼 */
+.cta { position: sticky; bottom: 0; margin-top: auto; padding: 20px 0 max(16px, env(safe-area-inset-bottom)); background: linear-gradient(to bottom, rgba(255,255,255,0), #fff 28%); }
+.big { display: grid; place-items: center; width: 100%; height: 48px; border-radius: var(--r12); background: var(--text-primary); color: #fff; font-size: 16px; font-weight: 600; text-align: center; transition: background .2s, color .2s, transform .2s var(--ease); }
+@media (hover: hover) { .big:hover:not(:disabled) { background: #2f2f35; } }
+.big:active:not(:disabled) { transform: scale(.99); }
+.big:disabled { background: var(--bg-secondary); color: var(--text-disable); cursor: default; }
+.demo { margin: 0 0 12px; padding: 10px 12px; border-radius: 8px; background: var(--bg-secondary); font-size: 12px; font-weight: 500; color: var(--text-teritary); }
+.demo b { color: var(--text-secondary); font-weight: 600; }
+
+/* 가입 완료: 체크 원 64 + 제목 (Figma 3891:47167) */
+.done .mid { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding-bottom: 48px; }
+.ring { position: relative; width: 64px; height: 64px; display: grid; place-items: center; border-radius: 9999px; background: var(--text-primary); color: #fafafa; animation: dnRing .6s var(--ease) both; }
+.ring .i { width: 28px; height: 28px; stroke-width: 2.4; stroke-dasharray: 26; stroke-dashoffset: 0; animation: draw .45s .3s var(--ease) backwards; }
+.done h2 { margin-top: 12px; font-size: 20px; font-weight: 700; animation: dnUp .5s .3s var(--ease) both; }
+@keyframes dnRing { from { transform: scale(.72); opacity: 0; } }
+@keyframes dnUp { from { opacity: 0; transform: translateY(12px); } }
+@keyframes draw { from { stroke-dashoffset: 26; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  </defs>
+</svg>
+
+<div class="page">
+  <main id="main" style="flex:1;display:flex;flex-direction:column">
+
+  <!-- 1. 약관 -->
+  <section class="step" id="s-terms" aria-labelledby="t-terms">
+    <div class="bar"><button type="button" class="back" aria-label="뒤로"><svg class="i"><use href="#i-back"/></svg></button></div>
+    <h1 class="lead" id="t-terms" tabindex="-1">서비스 이용을 위해<br>이용약관 동의가 필요합니다</h1>
+    <div class="terms">
+      <div class="row all"><button type="button" class="main" role="checkbox" aria-checked="false" id="all"><span class="cb"><svg viewBox="0 0 24 24" fill="none" stroke="#d7d7df" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8.4 12.4 2.6 2.4 4.8-5.2"/></svg></span><span class="lb">전체 동의</span></button></div>
+      <hr class="sep">
+      <ul id="rows"></ul>
+    </div>
+    <div class="cta"><button type="button" class="big" id="next" disabled>다음</button></div>
+  </section>
+
+  <!-- 2. 닉네임 -->
+  <section class="step" id="s-nick" aria-labelledby="t-nick" hidden>
+    <div class="bar"><button type="button" class="back" aria-label="뒤로"><svg class="i"><use href="#i-back"/></svg></button></div>
+    <h1 class="lead" id="t-nick" tabindex="-1">디유에서 사용할<br>닉네임을 정해주세요</h1>
+    <p class="desc">방명록, 게시판, 프로필에서 표시되는 이름이에요.</p>
+    <form id="form" novalidate autocomplete="off" style="flex:1;display:flex;flex-direction:column">
+      <div class="nick">
+        <div class="line">
+          <div class="ul" id="nul"><input id="nick" type="text" maxlength="15" placeholder="닉네임" autocomplete="off" autocapitalize="none" spellcheck="false" enterkeyhint="done" aria-label="닉네임" aria-describedby="nhelp"></div>
+          <button type="button" class="act" id="ck" disabled>중복 확인</button>
+        </div>
+        <p class="help" id="nhelp" aria-live="polite">한글, 영문, 숫자로 2~15자</p>
+      </div>
+      <div class="cta">
+        <p class="demo"><b>데모용</b> 닉네임 <b>admin · 디유 · 민재 · 서하</b>는 “이미 사용 중”으로 보여줘요</p>
+        <button type="submit" class="big" id="done" disabled>완료</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- 3. 가입 완료 -->
+  <section class="step done" id="s-done" aria-labelledby="t-done" hidden>
+    <div class="mid">
+      <div class="ring" aria-hidden="true"><svg class="i"><use href="#i-check"/></svg></div>
+      <h2 id="t-done" tabindex="-1">가입이 완료되었어요</h2>
+    </div>
+    <div class="cta"><a class="big" id="go" href="home.html">이용하기</a></div>
+  </section>
+
+  </main>
+</div>
+
+<script>
+/* 가입(온보딩) — 데모라 서버가 없어서 값은 localStorage에 둠
+   du.profile { nick } (마이·설정이 읽는 기본 프로필) · du.onboarded '1' · du.auth '1'
+   로그인 모달(assets/auth.js)에서 처음 로그인하면 이 화면으로 오고, 끝나면 ?next 로 돌아감(없으면 홈) */
+const $ = (id) => document.getElementById(id);
+const q = new URLSearchParams(location.search);
+const SAFE = /^[\w.-]+\.html(\?[\w=&.%-]*)?(#[\w-]*)?$/;
+const NEXT = q.get('next') && SAFE.test(q.get('next')) ? q.get('next') : 'home.html';
+const TAKEN = ['admin', '디유', 'displayu', '민재', '서하'];
+$('go').href = NEXT;
+
+/* ---------- 약관 (Figma 3891:46750: 필수 3 + 선택 1, 화살표는 문서가 있는 3개) ---------- */
+const TERMS = [
+  { n: '서비스 이용약관', req: true, doc: true },
+  { n: '개인정보 수집·이용 동의', req: true, doc: true },
+  { n: '만 14세 이상 확인', req: true, doc: false },
+  { n: '위치기반서비스 이용약관', req: false, doc: true }
+];
+const on = TERMS.map(() => false);
+const MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="#d7d7df" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8.4 12.4 2.6 2.4 4.8-5.2"/></svg>';
+$('rows').innerHTML = TERMS.map((t, i) => `<li class="row"><button type="button" class="main" role="checkbox" aria-checked="false" data-i="${i}"><span class="cb">${MARK}</span><span class="lb">${t.n}<em>(${t.req ? '필수' : '선택'})</em></span></button>${t.doc ? `<button type="button" class="go" aria-label="${t.n} 보기"><svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></button>` : ''}</li>`).join('');
+function paintTerms() {
+  const rows = [...$('rows').querySelectorAll('[role=checkbox]')];
+  rows.forEach((b, i) => b.setAttribute('aria-checked', on[i]));
+  $('all').setAttribute('aria-checked', on.every(Boolean));
+  $('next').disabled = !TERMS.every((t, i) => !t.req || on[i]);
+}
+$('rows').addEventListener('click', (e) => { const b = e.target.closest('[data-i]'); if (!b) return; on[+b.dataset.i] = !on[+b.dataset.i]; paintTerms(); });
+$('all').addEventListener('click', () => { const v = !on.every(Boolean); on.fill(v); paintTerms(); });
+
+/* ---------- 화면 이동 (뒤로 가기 키로도 한 단계씩) ---------- */
+const STEPS = ['terms', 'nick', 'done'];
+function show(name, push) {
+  STEPS.forEach((s) => { $('s-' + s).hidden = s !== name; });
+  if (push) history.pushState({ s: name }, '');
+  window.scrollTo(0, 0);
+  const h = $('t-' + name); if (h) h.focus({ preventScroll: true });
+}
+history.replaceState({ s: 'terms' }, '');
+addEventListener('popstate', (e) => { const s = e.state && e.state.s; if (s && s !== 'done') show(s, false); });
+document.querySelectorAll('.back').forEach((b) => b.addEventListener('click', () => {
+  if (!$('s-nick').hidden) history.back();
+  else if (history.length > 1) history.back(); else location.replace('home.html');
+}));
+$('next').addEventListener('click', () => { if (!$('next').disabled) show('nick', true); });
+
+/* ---------- 닉네임 (기본 정보 수정과 같은 규칙: 한글·영문·숫자, 공백·특수문자 불가, 2~15자, 중복 확인 필수) ---------- */
+let checked = false, taken = false;
+const nick = $('nick');
+function update() {
+  const v = nick.value; let err = '';
+  /* Figma 06 형식 오류 프레임: "sj 2026!"(공백+특수문자)에 "한글, 영문, 숫자만 쓸 수 있어요" → 특수문자 검사를 먼저, 공백만 있을 때 공백 문구 */
+  if (/[^0-9A-Za-z가-힣\s]/.test(v)) err = '한글, 영문, 숫자만 쓸 수 있어요'; else if (/\s/.test(v)) err = '공백은 쓸 수 없어요'; else if (v.length && v.length < 2) err = '2자 이상 입력해주세요';
+  const ok = !err && v.length >= 2;
+  const help = $('nhelp');
+  $('nul').classList.toggle('bad', !!err || taken);
+  $('ck').disabled = checked || !ok;
+  $('ck').textContent = checked ? '확인 완료' : '중복 확인';
+  help.className = 'help';
+  if (err) { help.classList.add('e'); help.textContent = err; }
+  else if (taken) { help.classList.add('e'); help.textContent = '이미 사용 중인 닉네임이에요'; }
+  else if (checked) { help.classList.add('ok'); help.textContent = '사용할 수 있는 닉네임이에요'; }
+  else if (ok) { help.classList.add('w'); help.textContent = '중복 확인을 해주세요'; }
+  else help.textContent = '한글, 영문, 숫자로 2~15자';
+  $('done').disabled = !(ok && checked);
+}
+nick.addEventListener('input', () => { checked = false; taken = false; update(); });
+function check() {
+  if ($('ck').disabled) return;
+  if (TAKEN.includes(nick.value.toLowerCase())) { checked = false; taken = true; } else { checked = true; taken = false; }
+  update();
+}
+$('ck').addEventListener('click', check);
+nick.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); if (!$('done').disabled) $('form').requestSubmit(); else check(); } });
+$('form').addEventListener('submit', (e) => {
+  e.preventDefault(); if ($('done').disabled) return;
+  try {
+    const P = JSON.parse(localStorage.getItem('du.profile')) || {};
+    localStorage.setItem('du.profile', JSON.stringify({ ...P, nick: nick.value }));
+    localStorage.setItem('du.onboarded', '1');
+    localStorage.setItem('du.auth', '1');
+  } catch (err) {}
+  show('done', false); history.replaceState({ s: 'done' }, '');
+});
+update();
+</script>
+</body>
+</html>

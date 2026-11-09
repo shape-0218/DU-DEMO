@@ -10,8 +10,11 @@
   const ok = () => { try { const v = localStorage.getItem(KEY); return v === null ? mem : v !== '0'; } catch (e) { return mem; } };
   const set = (v) => { mem = v; try { localStorage.setItem(KEY, v ? '1' : '0'); } catch (e) {} };
   const q = new URLSearchParams(location.search);
-  if (q.get('login') === '0') set(false);
+  /* 가입(온보딩, 11-09): 처음 로그인하면 onboarding.html(약관 → 닉네임 → 완료)을 거친 뒤 원래 화면으로 돌아옴. ?login=0 은 처음 방문한 사람 상태라 가입 기록도 지움 */
+  const onboarded = () => { try { return localStorage.getItem('du.onboarded') === '1'; } catch (e) { return true; } };
+  if (q.get('login') === '0') { set(false); try { localStorage.removeItem('du.onboarded'); } catch (e) {} }
   if (q.get('login') === '1') set(true);
+  const here = () => { const p = new URLSearchParams(location.search); p.delete('login'); const s = p.toString(); return (location.pathname.split('/').pop() || 'home.html') + (s ? '?' + s : '') + location.hash; };
 
   const page = (location.pathname.split('/').pop() || 'index.html').replace(/\?.*$/, '');
   const PROTECTED = ['my.html', 'manage.html', 'hub.html', 'team.html', 'works.html', 'section.html', 'verify.html', 'exhibition-new.html', 'work-new.html'];
@@ -61,6 +64,7 @@
     const finish = (loggedIn) => {
       if (done) return; done = true;
       if (d.open) d.close(); d.remove(); if (dlg === d) dlg = null;
+      if (loggedIn && !onboarded()) { location.href = 'onboarding.html?next=' + encodeURIComponent(here()); return; }
       if (loggedIn) { set(true); if (onLogin) onLogin(); } else if (onSkip) onSkip();
     };
     d.querySelectorAll('.au-btns button').forEach((b) => b.addEventListener('click', () => finish(true)));
