@@ -234,8 +234,11 @@ linksEl.addEventListener('click', (ev) => {
 
 /* ---------- 참여한 전시 / 작품 (예시 데이터) ---------- */
 /* 정렬은 상태와 상관없이 최신 순(최초 공개일 최신순, 정책 문서와 동일): 진행 중인 전시는 보통 가장 최근이라 자연스럽게 맨 위 */
-const exhibitions = [DEMO.EXH[7], DEMO.EXH[0]].map((e) => ({ img: e.img, pub: String(100 - e.i), state: e.st, end: e.st === '종료', title: e.t, school: e.s, date: e.d, place: e.p }))
-.sort((a, b) => (a.pub < b.pub ? 1 : a.pub > b.pub ? -1 : 0));
+const exOf = (e) => ({ img: e.img, pub: String(100 - e.i), state: e.st, end: e.st === '종료', title: e.t, school: e.s, date: e.d, place: e.p });
+/* 11-10 종료 전시 샘플(Figma 작가 프로필 5장과 같음: 전시 중 → 전시 예정 → 종료, 종료 = 회색 점·글자). 맨 끝에 붙임 */
+const exhibitions = [DEMO.EXH[7], DEMO.EXH[0]].map(exOf)
+.sort((a, b) => (a.pub < b.pub ? 1 : a.pub > b.pub ? -1 : 0))
+.concat([DEMO.EXH[10]].map(exOf));
 const works = [
   { img: 'w1.jpg', title: '접으면 달라지는 지도', by: '고상준', href: 'work.html' },
   { img: '../../explore/opt/wk20.jpg', title: '장면을 넘기는 극장', by: '고상준', href: 'work.html?w=11' }
@@ -243,7 +246,7 @@ const works = [
 /* ?exh=N&works=N 으로 많을 때 모습 확인 */
 const nE = q.has('exh') ? +q.get('exh') : exhibitions.length, nW = q.has('works') ? +q.get('works') : works.length;
 const exAll = Array.from({ length: nE }, (_, i) => exhibitions[i % exhibitions.length]), wkAll = Array.from({ length: nW }, (_, i) => works[i % works.length]);
-const exCard = (e, i) => `<a class="exh" href="exhibition.html" style="--n:${i}"><img src="assets/img/explore/opt/${e.img}" alt="" width="72" height="96"><span><span class="state ${e.end ? 'end' : ''}"><i class="dot ${e.end ? 'end' : ''}"></i>${e.state}</span><strong>${e.title}</strong><span class="sub">${e.school}</span><span class="meta"><span class="sub">${ic('i-cal')}<span class="dt12">${e.date}</span></span><span class="sub">${ic('i-pin')}${e.place}</span></span></span>${ic('i-chev')}</a>`;
+const exCard = (e, i) => `<a class="exh" href="exhibition.html" style="--n:${i}"><img src="assets/img/explore/opt/${e.img}" alt="" width="72" height="96"><span><span class="state ${e.end ? 'end' : ''}"><i class="dot ${e.end ? 'end' : e.state === '전시 예정' ? 'soon' : ''}"></i>${e.state}</span><strong>${e.title}</strong><span class="sub">${e.school}</span><span class="meta"><span class="sub">${ic('i-cal')}<span class="dt12">${e.date}</span></span><span class="sub">${ic('i-pin')}${e.place}</span></span></span>${ic('i-chev')}</a>`;
 const wkCard = (w, i) => `<a class="w" href="${w.href}" style="--n:${i}"><div class="im"><img src="${O}${w.img}" alt="" loading="lazy"></div><b>${w.title}</b><span>${w.by}</span></a>`;
 /* 섹션은 내용이 있을 때만. 전시 3개·작품 6개를 넘으면 처음엔 그만큼만 보이고 "모두 보기" */
 const SECS = [
