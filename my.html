@@ -408,7 +408,8 @@ function renderVault() {
   const list = data[tab], el = $('vault');
   if (!list.length) {
     const e = empties[tab];
-    const rec = tab === 'exh' ? DEMO.TAB.pop().slice(0, 5).map((x) => ({ t: x.t, s: x.s.split(' ')[0], img: x.img, href: 'exhibition.html?e=' + x.i })) : tab === 'works' ? DEMO.WORKS.slice().sort((a, b) => b.l - a.l).slice(0, 5).map((w) => ({ t: w.t, s: w.a.join(', '), img: w.img, href: 'work.html?w=' + w.i })) : [];
+    /* 11-10 확정 노출 정책: 전시 = 홈 인기 전시와 같은 기준(진행 중·예정, 좋아요 누적 순) 상위 5, 작품 = 소속 전시가 진행 중·예정인 작품의 좋아요 순 상위 5, 작가 탭은 줄 없음, 0개면 줄 숨김 */
+    const rec = tab === 'exh' ? DEMO.TAB.pop().slice(0, 5).map((x) => ({ t: x.t, s: x.s.split(' ')[0], img: x.img, href: 'exhibition.html?e=' + x.i })) : tab === 'works' ? DEMO.WORKS.filter((w) => { const ex = DEMO.EXH[w.e]; return ex && (ex.st === '전시 중' || ex.st === '전시 예정'); }).sort((a, b) => b.l - a.l || a.i - b.i).slice(0, 5).map((w) => ({ t: w.t, s: w.a.join(', '), img: w.img, href: 'work.html?w=' + w.i })) : [];
     el.innerHTML = `<div class="empty"><h3>${e[0]}</h3><a class="egb" href="${e[2]}">${e[1]}${ic('i-chev')}</a></div>` + (rec.length ? `<section class="rec" aria-label="${tab === 'exh' ? '지금 인기 있는 전시' : '지금 인기 있는 작품'}"><div class="rail">${rec.map((r) => `<div class="rc"><a href="${r.href}"><div class="im"><img src="${DEMO.src(r.img)}" alt="" width="128" height="171" loading="lazy" draggable="false"></div><b>${r.t}</b><small>${r.s}</small></a></div>`).join('')}</div></section>` : '');
     $('vault').setAttribute('aria-labelledby', 's-' + (tab === 'exh' ? 'exh' : tab === 'works' ? 'wk' : 'ar')); return;
   }
