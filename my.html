@@ -242,7 +242,7 @@ img { display: block; }
 .dr { padding: 28px 20px 0; display: flex; flex-direction: column; height: 100%; }
 .dr .logo img { width: 124px; height: 28px; }
 .dr .prof { display: flex; align-items: center; gap: 12px; margin-top: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--bg-teritary); width: 100%; text-align: left; }
-.dr .prof .avatar { width: 48px; height: 48px; color: #fff; }
+.dr .prof .avatar { width: 40px; height: 40px; color: #fff; }   /* 11-10: 48 → 40 (마이 헤더 36과 가깝게, 사용자 확인) */
 .dr .prof b { display: block; font-size: 18px; font-weight: 600; color: var(--text-primary); }   /* 11-10 위계: 이름 18 > 메뉴 행 16 > 보조 12 (Figma body/xxl/semibold) */ .dr .prof span { display: block; font-size: 12px; color: var(--text-teritary); }
 .dr .prof .i { margin-left: auto; color: var(--text-primary); }
 .dr .cert { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 56px; padding: 14px 0; font-size: 16px; font-weight: 500; text-align: left; }
@@ -408,8 +408,8 @@ function renderVault() {
   const list = data[tab], el = $('vault');
   if (!list.length) {
     const e = empties[tab];
-    /* 11-10 확정 노출 정책: 전시 = 홈 인기 전시와 같은 기준(진행 중·예정, 좋아요 누적 순) 상위 5, 작품 = 소속 전시가 진행 중·예정인 작품의 좋아요 순 상위 5, 작가 탭은 줄 없음, 0개면 줄 숨김 */
-    const rec = tab === 'exh' ? DEMO.TAB.pop().slice(0, 5).map((x) => ({ t: x.t, s: x.s.split(' ')[0], img: x.img, href: 'exhibition.html?e=' + x.i })) : tab === 'works' ? DEMO.WORKS.filter((w) => { const ex = DEMO.EXH[w.e]; return ex && (ex.st === '전시 중' || ex.st === '전시 예정'); }).sort((a, b) => b.l - a.l || a.i - b.i).slice(0, 5).map((w) => ({ t: w.t, s: w.a.join(', '), img: w.img, href: 'work.html?w=' + w.i })) : [];
+    /* 11-10 확정 노출 정책: 전시 = 홈 인기 전시와 같은 기준(진행 중·예정, 좋아요 누적 순) 상위 5, 작품 = 공개 작품의 좋아요 순 상위 5(종료 전시 작품 포함, 사용자 11-10), 작가 탭은 줄 없음, 0개면 줄 숨김 */
+    const rec = tab === 'exh' ? DEMO.TAB.pop().slice(0, 5).map((x) => ({ t: x.t, s: x.s.split(' ')[0], img: x.img, href: 'exhibition.html?e=' + x.i })) : tab === 'works' ? DEMO.WORKS.slice().sort((a, b) => b.l - a.l || a.i - b.i).slice(0, 5).map((w) => ({ t: w.t, s: w.a.join(', '), img: w.img, href: 'work.html?w=' + w.i })) : [];
     el.innerHTML = `<div class="empty"><h3>${e[0]}</h3><a class="egb" href="${e[2]}">${e[1]}${ic('i-chev')}</a></div>` + (rec.length ? `<section class="rec" aria-label="${tab === 'exh' ? '지금 인기 있는 전시' : '지금 인기 있는 작품'}"><div class="rail">${rec.map((r) => `<div class="rc"><a href="${r.href}"><div class="im"><img src="${DEMO.src(r.img)}" alt="" width="128" height="171" loading="lazy" draggable="false"></div><b>${r.t}</b><small>${r.s}</small></a></div>`).join('')}</div></section>` : '');
     $('vault').setAttribute('aria-labelledby', 's-' + (tab === 'exh' ? 'exh' : tab === 'works' ? 'wk' : 'ar')); return;
   }
