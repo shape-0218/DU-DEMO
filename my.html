@@ -250,6 +250,7 @@ img { display: block; }
 .dr .prof .i { margin-left: auto; color: var(--text-primary); }
 .dr .cert { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 56px; padding: 14px 0; font-size: 16px; font-weight: 500; text-align: left; }
 .dr .cert small { font-size: 12px; font-weight: 500; color: var(--text-teritary); }
+.dr .cert:not(.act) > small { text-align: right; max-width: 170px; }   /* 11-10 V2: 오른쪽에 "OO대학교 인증 완료" */
 .dr .cert.act b { display: block; font-size: 16px; font-weight: 600; }   /* 11-07: 상태만 보이던 줄 → 인증하러 가는 행동 */
 .dr .cert.act small { display: block; margin-top: 2px; color: var(--text-secondary); }
 .dr .cert .i { flex: none; color: var(--text-primary); }
@@ -292,7 +293,7 @@ dialog.modal::backdrop { background: rgba(0, 0, 0, .42); }
     <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
     <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 14.5a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3h0a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5h0a1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8v0a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></symbol>
     <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
-    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1"/><rect x="13" y="4" width="7" height="7" rx="1"/><rect x="4" y="13" width="7" height="7" rx="1"/><rect x="13" y="13" width="7" height="7" rx="1"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="5" y="5" width="5" height="5"/><rect x="14" y="5" width="5" height="5"/><rect x="5" y="14" width="5" height="5"/><rect x="14" y="14" width="5" height="5"/></symbol>   <!-- 11-10: Figma Icon/Outline/view-grid = 7×7 네모 + 선 2 안쪽 정렬, 바깥 모서리 반경 1(둥근 이음새로 같은 모양) -->
     <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 8l7.89 5.26a2 2 0 0 0 2.22 0L21 8"/></symbol>
     <symbol id="i-plussq" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3.5"/><path d="M12 8.5v7M8.5 12h7"/></symbol>
     <symbol id="i-chev" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
@@ -511,6 +512,7 @@ syncInv();
 /* ============ 프로필 수정 연결 (11-07) ============
    기본 프로필(닉네임·사진)은 profile-edit.html?kind=basic 에서 바꾸고 localStorage du.profile 에 저장 */
 const PR = (() => { try { return JSON.parse(localStorage.getItem('du.profile')) || {}; } catch (e) { return {}; } })();
+const SCHOOL = (() => { try { return (JSON.parse(localStorage.getItem('du.cert')) || {}).school || ''; } catch (e) { return ''; } })() || '한결대학교';   /* 11-10: 인증 후 드로어 "OO대학교 인증 완료" — verify.html이 저장한 학교, 없으면 데모 학교(여넥스 대표 고상준의 소속) */
 function applyProfile(root) {
   root.querySelectorAll('b').forEach((b) => { if (b.textContent === 'sangjun' && PR.nick) b.textContent = PR.nick; });
   const av = root.querySelector('.avatar'); if (av && PR.img) av.innerHTML = `<img src="${PR.img}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">`;
@@ -522,7 +524,7 @@ $('btn-set').addEventListener('click', () => {
   const s = showSheet('right', `<div class="dr"><button class="sh-x" data-close aria-label="닫기" style="position:absolute;right:12px;top:12px">${ic('i-close')}</button>
     <a class="logo" href="home.html" aria-label="Display U. 홈"><img src="assets/img/logo.svg" alt="Display U." width="124" height="28"></a>
     <button class="prof" id="dr-prof"><span class="avatar"><svg aria-hidden="true"><use href="#i-avatar"/></svg></span><span><b>sangjun</b></span>${ic('i-chev')}</button>
-    ${verified ? `<button class="cert" id="dr-cert"><span>작가 인증</span><small>인증 완료</small></button>` : `<button class="cert act" id="dr-cert"><span><b>작가 인증하기</b><small>전시를 등록하거나 초대를 수락할 때 필요해요</small></span>${ic('i-chev')}</button>`}
+    ${verified ? `<button class="cert" id="dr-cert"><span>작가 인증</span><small>${SCHOOL} 인증 완료</small></button>` : `<button class="cert act" id="dr-cert"><span><b>작가 인증하기</b><small>학교 이메일로 인증해요</small></span>${ic('i-chev')}</button>`}
     <div class="grow"></div>
     <div class="bot"><button id="dr-out">로그아웃</button><button class="mute" id="dr-del">회원 탈퇴</button></div>
     <div class="foot"><nav><a href="#">이용약관</a><i></i><a href="#">개인정보처리방침</a></nav><small>© 2026 displayU. All rights reserved.</small></div></div>`, '설정');
