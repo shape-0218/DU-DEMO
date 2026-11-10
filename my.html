@@ -147,16 +147,13 @@ img { display: block; }
 .ar .bm svg { grid-area: 1 / 1; width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; transition: opacity .25s cubic-bezier(.2, 0, 0, 1), transform .25s cubic-bezier(.2, 0, 0, 1), filter .25s cubic-bezier(.2, 0, 0, 1); }
 .ar .bm .on { fill: currentColor; }
 .ar .bm[aria-pressed="false"] .on, .ar .bm[aria-pressed="true"] .off { opacity: 0; transform: scale(.25); filter: blur(4px); }
-/* 보관함 빈 상태(11-07 확정, 후보 B): 사과 대신 초대 — 아이콘 + 제목 + 설명 + 버튼, 아래에 인기 전시(작품) 줄 */
-.empty { display: grid; justify-items: center; gap: 6px; padding: 40px 0 8px; text-align: center; }
-.empty .eic { width: 56px; height: 56px; border-radius: 9999px; background: var(--bg-secondary); display: grid; place-items: center; margin-bottom: 4px; }
-.empty .eic svg { width: 26px; height: 26px; fill: none; stroke: var(--text-primary); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+/* 보관함 빈 상태(11-10 H2 확정): 한 줄 머리글(문장 왼쪽 · 링크 오른쪽) + 바로 아래 인기 전시(작품) 줄 — 아이콘·알약 버튼·가운데 정렬 없음 */
+.empty { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 24px 0 12px; text-align: left; }
 .empty h3 { margin: 0; font-size: 16px; font-weight: 600; line-height: 1.4; letter-spacing: -0.03em; }
-.empty p { margin: 0; font-size: 14px; font-weight: 500; line-height: 1.4; color: var(--text-secondary); text-wrap: balance; }
-.empty .egb { margin-top: 14px; width: auto; height: 44px; display: inline-flex; align-items: center; justify-content: center; height: 44px; padding: 0 20px; border-radius: 9999px; background: var(--text-primary); color: #fff; font-size: 14px; font-weight: 600; transition: transform .2s var(--ease); }
+.empty .egb { flex: none; display: inline-flex; align-items: center; height: 44px; color: var(--text-teritary); font-size: 14px; font-weight: 500; transition: transform .2s var(--ease); }
+.empty .egb .i { width: 24px; height: 24px; stroke-width: 2; }   /* 위 줄(.rw .rt .i)의 화살표와 같은 열(.rw는 안쪽 2 + 여백 -2라 오른쪽 끝이 20) */
 .empty .egb:active { transform: scale(.97); }
-.rec { margin-top: 32px; }
-.rec h4 { margin: 0 0 12px; font-size: 16px; font-weight: 600; line-height: 1.4; letter-spacing: -0.03em; }
+.rec { margin-top: 0; }
 .rail { display: flex; gap: 8px; margin-inline: calc(var(--pad) * -1); padding-inline: var(--pad); overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; scroll-padding-inline: var(--pad); padding-bottom: 28px; }
 .rail::-webkit-scrollbar { display: none; }
 .rc { position: relative; flex: none; width: 128px; scroll-snap-align: start; }
@@ -410,9 +407,9 @@ function renderVault() {
   document.querySelectorAll('.seg button').forEach((b) => { const on = b.dataset.k === tab; b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1; });
   const list = data[tab], el = $('vault');
   if (!list.length) {
-    const e = empties[tab], BM = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10a1 1 0 0 1 1 1v15l-6-3.8L6 20V5a1 1 0 0 1 1-1z"/></svg>';
+    const e = empties[tab];
     const rec = tab === 'exh' ? DEMO.TAB.pop().slice(0, 5).map((x) => ({ t: x.t, s: x.s.split(' ')[0], img: x.img, href: 'exhibition.html?e=' + x.i })) : tab === 'works' ? DEMO.WORKS.slice().sort((a, b) => b.l - a.l).slice(0, 5).map((w) => ({ t: w.t, s: w.a.join(', '), img: w.img, href: 'work.html?w=' + w.i })) : [];
-    el.innerHTML = `<div class="empty"><span class="eic" aria-hidden="true">${BM}</span><h3>${e[0]}</h3><a class="egb" href="${e[2]}">${e[1]}</a></div>` + (rec.length ? `<section class="rec" aria-label="${tab === 'exh' ? '지금 인기 있는 전시' : '지금 인기 있는 작품'}"><h4>${tab === 'exh' ? '지금 인기 있는 전시' : '지금 인기 있는 작품'}</h4><div class="rail">${rec.map((r) => `<div class="rc"><a href="${r.href}"><div class="im"><img src="${DEMO.src(r.img)}" alt="" width="128" height="171" loading="lazy" draggable="false"></div><b>${r.t}</b><small>${r.s}</small></a></div>`).join('')}</div></section>` : '');
+    el.innerHTML = `<div class="empty"><h3>${e[0]}</h3><a class="egb" href="${e[2]}">${e[1]}${ic('i-chev')}</a></div>` + (rec.length ? `<section class="rec" aria-label="${tab === 'exh' ? '지금 인기 있는 전시' : '지금 인기 있는 작품'}"><div class="rail">${rec.map((r) => `<div class="rc"><a href="${r.href}"><div class="im"><img src="${DEMO.src(r.img)}" alt="" width="128" height="171" loading="lazy" draggable="false"></div><b>${r.t}</b><small>${r.s}</small></a></div>`).join('')}</div></section>` : '');
     $('vault').setAttribute('aria-labelledby', 's-' + (tab === 'exh' ? 'exh' : tab === 'works' ? 'wk' : 'ar')); return;
   }
   if (tab === 'exh') el.innerHTML = '<div class="grid">' + list.map((e, n) => `<a class="card ex" href="exhibition.html?e=${+e[5].slice(1) - 1}" style="--n:${Math.min(n, 10)}"><div class="im"><div><img src="${O}${e[5]}.jpg" alt="${e[0]} 포스터" width="161" height="241" loading="${n < 4 ? 'eager' : 'lazy'}"></div></div><div class="tx"><b>${e[0]}</b><span class="l">${e[1]}</span><span class="m"><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14"><span class="dt12">${e[2]}</span></span><span class="m"><img src="assets/img/icon-location.svg" alt="" width="14" height="14">${e[3]}</span></div></a>`).join('') + '</div>';
