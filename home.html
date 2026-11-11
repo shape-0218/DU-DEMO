@@ -95,7 +95,7 @@ img { display: block; }
 .slot.is-active { cursor: default; }
 .slot:not(.is-active) .badge { opacity: .4; }
 /* 포스터 크기는 늘 같고(레이아웃 고정), 옆 칸 모습은 transform으로: JS가 중앙과의 거리에 따라 손가락을 따라 연속으로 바꿈(paint) */
-.poster { position: relative; width: var(--a); aspect-ratio: 232 / 329; border-radius: var(--r12); overflow: hidden; background: #797979; transform-origin: 50% 0; transform: translateY(calc(var(--a) * 14 / 232)) scale(var(--side)); }
+.poster { position: relative; width: var(--a); aspect-ratio: 232 / 329; overflow: hidden; background: #797979; transform-origin: 50% 0; transform: translateY(calc(var(--a) * 14 / 232)) scale(var(--side)); }   /* 11-12 포스터 모서리 0 (이전 12) */
 .slot.is-active .poster { transform: none; }
 .poster img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 /* 영상 포스터: 가운데(활성) 포스터일 때만 소리 없이 반복 재생, 다른 칸은 썸네일(첫 이미지)만 */
@@ -108,7 +108,7 @@ img { display: block; }
 .slot.is-active .dim, .slot.is-active .shade-side { opacity: 0; }
 .slot.is-active .shade-active { opacity: 1; }
 .cover { position: absolute; inset: 0; z-index: 2; cursor: pointer; }
-.cover:focus-visible { outline-offset: -3px; border-radius: var(--r12); }
+.cover:focus-visible { outline-offset: -3px; border-radius: 0; }
 .slot.is-active .cover:active { background: rgba(255, 255, 255, .06); }
 .info .open { color: inherit; }
 @media (hover: hover) { .slot.is-active .info .open:hover strong { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; } }
@@ -124,7 +124,6 @@ img { display: block; }
 .slot.is-active .info .t { color: var(--text-quaternary); }
 .meta { display: grid; gap: 2px; color: var(--text-teritary); }
 .meta p { display: flex; align-items: center; justify-content: center; gap: 2px; min-width: 0; }
-.meta img { width: 14px; height: 14px; }
 /* 11-09 날짜 글자: Figma `body/md/regular2`(12, 500, 자간 +1%)·`body/lg/regular2`(14, 400, 자간 0) — 숫자가 붙어 보이지 않게 기본 자간(-3%)을 쓰지 않음 */
 .dt12 { font-weight: 500; letter-spacing: 0.01em; }
 .dt14 { font-weight: 400; letter-spacing: 0; }
@@ -139,7 +138,7 @@ img { display: block; }
 .lcol { flex: 0 0 var(--lw); display: grid; gap: 12px; scroll-snap-align: center; cursor: pointer; transition: opacity .45s var(--ease); }
 .lcol:not(.is-active) { opacity: .4; }
 .lcol.is-active { cursor: auto; }
-.lcard { position: relative; display: grid; grid-template-columns: 86px minmax(0, 1fr); height: 124px; background: #18181b; border: 1px solid #27272a; border-radius: var(--r12); overflow: hidden; color: var(--text-quaternary); transition: border-color .2s, transform .3s var(--ease); }
+.lcard { position: relative; display: grid; grid-template-columns: 86px minmax(0, 1fr); height: 124px; background: #18181b; border: 1px solid #27272a; overflow: hidden; color: var(--text-quaternary); transition: border-color .2s, transform .3s var(--ease); }
 @media (hover: hover) { .lcard:hover { border-color: #3f3f46; } }
 .lcard:active { transform: scale(.99); }
 .lcard .lp { position: relative; background: #797979; }
@@ -152,7 +151,6 @@ img { display: block; }
 .lcard .lt .mt { display: grid; gap: 2px; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
 .lcard .lt .mt p { display: flex; align-items: center; gap: 2px; min-width: 0; }
 .lcard .lt .mt p span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.lcard .lt .mt img { width: 14px; height: 14px; flex: none; }
 .lcard .lk { position: absolute; right: 12px; top: 12px; display: inline-flex; align-items: center; gap: 2px; height: 25px; padding: 0 9px; border-radius: 9999px; background: rgba(255, 255, 255, .12); color: #d4d4d8; font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; }
 .lcard .lk svg { width: 14px; height: 14px; }
 .arrow { display: none; position: absolute; top: 190px; z-index: 2; width: 44px; height: 44px; border-radius: 9999px; border: 1px solid #2d2d30; background: #000; place-items: center; transition: background .2s, transform .2s var(--ease); }
@@ -190,13 +188,13 @@ img { display: block; }
 /* 11-08 사용자: 작품 2장이 폭을 꽉 채워 옆으로 넘어간다는 게 안 보였음 → 폰에서는 2장 + 3번째 32px가 보이게(카드 폭 = (화면 폭−76)/2, 175 넘으면 175) */
 .art-row { margin-top: 16px; display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; padding-right: var(--pad); margin-right: calc(var(--pad) * -1); }
 .art-row::-webkit-scrollbar { display: none; }
-.art { flex: 0 0 min(175px, calc((100vw - 76px) / 2)); scroll-snap-align: start; display: block; background: #000; border-radius: var(--r12); overflow: hidden; color: var(--text-quaternary); transition: transform .3s var(--ease); }
+.art { flex: 0 0 min(175px, calc((100vw - 76px) / 2)); scroll-snap-align: start; display: block; color: var(--text-primary); transition: transform .3s var(--ease); }   /* 11-12 카드 E: 검은 틀·모서리 없음 */
 .art:active { transform: scale(.98); }
-.art .im { padding: 7px; }
-.art .im div { aspect-ratio: 161 / 215; border-radius: var(--r12); overflow: hidden; }
+.art .im div { aspect-ratio: 161 / 215; overflow: hidden; background: var(--bg-secondary, #f4f4f5); }   /* 11-12 사진 여백 7·모서리 12 없음, 외곽선 없음 */
 .art .im img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
 @media (hover: hover) { .art:hover .im img { transform: scale(1.03); } }
-.art .tx { padding: 0 12px 10px; }
+.art .tx { padding: 8px 0 0; }
+.art .by { color: var(--text-secondary); }
 .art b { display: block; font-size: 14px; font-weight: 600; letter-spacing: -0.03em; }
 @media (min-width: 768px)  { .art-row { margin-right: 0; padding-right: 0; gap: 16px; } .art { flex: 0 0 200px; } }
 @media (min-width: 1100px) { .art-row { gap: 24px; } .art { flex: 0 0 220px; } }
@@ -327,7 +325,7 @@ function slotHtml(e, rank) {
     <span class="dim"></span><span class="shade-side"></span><span class="shade-active"></span><a class="cover" href="exhibition.html?e=${e.i}" aria-label="전시 상세 보기: ${e.t}"></a>
     ${rank ? `<span class="rank">${rank}</span>` : ''}</div>
     <div class="info"><div class="t"><a class="open" href="exhibition.html?e=${e.i}"><strong>${e.t}</strong></a><span>${e.s}</span></div>
-    <div class="meta"><p><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14"><span class="dt12">${e.d}</span></p><p><img src="assets/img/icon-location.svg" alt="" width="14" height="14"><span>${e.p}</span></p></div></div></article>`;
+    <div class="meta"><p><span class="dt12">${e.d}</span></p><p><span>${e.p}</span></p></div></div></article>`;
 }
 /* 리스트형: 3개씩 세로로 묶은 칸을 옆으로 넘김. 순위는 인기 전시 탭에서만 */
 const lst = document.getElementById('lst'), vt = document.getElementById('vt');
@@ -335,7 +333,7 @@ let view = (new URLSearchParams(location.search).get('view') === 'list' || (() =
 function listHtml(list, ranked) {
   const cols = []; for (let i = 0; i < list.length; i += 3) cols.push(list.slice(i, i + 3));
   return cols.map((c, ci) => `<div class="lcol">${c.map((e, k) => { const r = ranked ? ci * 3 + k + 1 : 0, src = e.v ? 'assets/poster-shore-thumb.jpg' : DEMO.src(e.img);
-    return `<a class="lcard" href="exhibition.html?e=${e.i}" aria-label="${r ? '순위 ' + r + ': ' : ''}${e.t}"><span class="lp"><img src="${src}" alt="" loading="lazy">${r ? `<span class="lrank">${r}</span>` : ''}</span><span class="lt"><span><h3>${e.t}</h3><p class="og">${e.s}</p></span><span class="mt"><p><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14"><span class="dt12">${e.d}</span></p><p><img src="assets/img/icon-location.svg" alt="" width="14" height="14"><span>${e.p}</span></p></span></span></a>`; }).join('')}</div>`).join('');
+    return `<a class="lcard" href="exhibition.html?e=${e.i}" aria-label="${r ? '순위 ' + r + ': ' : ''}${e.t}"><span class="lp"><img src="${src}" alt="" loading="lazy">${r ? `<span class="lrank">${r}</span>` : ''}</span><span class="lt"><span><h3>${e.t}</h3><p class="og">${e.s}</p></span><span class="mt"><p><span class="dt12">${e.d}</span></p><p><span>${e.p}</span></p></span></span></a>`; }).join('')}</div>`).join('');
 }
 const ICON_LIST = '<svg viewBox="0 0 15 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M5 3h8M5 7h8M5 11h8M1.5 3h.01M1.5 7h.01M1.5 11h.01"/></svg>';
 /* 리스트형: 화면 가운데에 가장 가까운 열이 선명(is-active), 나머지는 세로로 흐리게. 흐린 열을 누르면 그 열이 가운데로 */

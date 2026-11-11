@@ -1,5 +1,5 @@
 /* 프로필 사진 칸 (11-08 Figma 확정 `Profile Photo`)
-   - 기본 프로필 = 원(80), 작가 프로필 = 둥근 사각 116×132 · 반경 12
+   - 기본 프로필 = 원(80), 작가 프로필 = 사각 116×132 · 모서리 0 (11-12 각진 사진, 이전 반경 12)
    - 사진이 있으면 오른쪽 아래에 연필 배지(흰 원 32 + 선). 사진을 누르면 사진 아래 작은 팝업 메뉴: "사진 변경" / 빨간 "삭제" (`manage.html` 더보기 메뉴와 같은 모양)
    - 사진이 없을 때(11-08): 원형(기본 정보 수정) = 기본 프로필(연회색 원 + 흰 사람 그림, 마이 아바타와 같은 비율) + 연필 배지, 누르면 바로 사진 고르기 / 사각(작가 프로필) = 승인된 추가 타일 규칙(Figma `Photo Upload`·`Poster Upload`와 같음)의 상자: 흰 바탕 + 1px 선(border/primary) + 반경 12 + 가운데 플러스(24) + "사진 추가"(12/500, 간격 4). 공개 프로필 화면에서는 사진이 없으면 칸 자체가 없음
    - 사진 아래 안내 문구 없음 · 조정 화면은 확대 막대 없이 끌기 + 두 손가락 핀치(폰) · 터치패드 핀치/휠(웹) · +/− 키
@@ -46,7 +46,7 @@ dialog.pc[open] { display: flex; flex-direction: column; animation: pcIn .25s cu
 
   function html(kind, src) {
     const w = kind === 'circle' ? 80 : 116, h = Math.round(w / R[kind]);
-    return `<div class="pp${src ? '' : ' empty'}" data-pp="${kind}" style="--w:${w}px;--h:${h}px;--r:${kind === 'circle' ? '50%' : '12px'}"><button type="button" class="pp-b" aria-label="${src ? '프로필 사진 편집' : '프로필 사진 등록'}" aria-haspopup="${src ? 'menu' : 'false'}">${src ? `<span class="pf"><img src="${src}" alt=""></span><span class="pp-badge">${PEN}</span>` : kind === 'circle' ? `<span class="pf">${USER}</span><span class="pp-badge">${PEN}</span>` : `<span class="pf">${PLUS}<span class="pp-lab">사진 추가</span></span>`}</button><input type="file" accept="image/&#42;" hidden></div>`;
+    return `<div class="pp${src ? '' : ' empty'}" data-pp="${kind}" style="--w:${w}px;--h:${h}px;--r:${kind === 'circle' ? '50%' : '0'}"><button type="button" class="pp-b" aria-label="${src ? '프로필 사진 편집' : '프로필 사진 등록'}" aria-haspopup="${src ? 'menu' : 'false'}">${src ? `<span class="pf"><img src="${src}" alt=""></span><span class="pp-badge">${PEN}</span>` : kind === 'circle' ? `<span class="pf">${USER}</span><span class="pp-badge">${PEN}</span>` : `<span class="pf">${PLUS}<span class="pp-lab">사진 추가</span></span>`}</button><input type="file" accept="image/&#42;" hidden></div>`;
   }
 
   let dlg;
@@ -71,7 +71,7 @@ dialog.pc[open] { display: flex; flex-direction: column; animation: pcIn .25s cu
         SW = stage.clientWidth; SH = stage.clientHeight; FW = Math.round(kind === 'circle' ? Math.min(300, SW - 48, SH - 40) : Math.min(264, SW - 72, (SH - 40) * r)); FH = Math.round(FW / r);
         clamp(); const k = FW / c.cw;
         img.style.width = nw * k + 'px'; img.style.height = nh * k + 'px'; img.style.left = SW / 2 - c.cx * k + 'px'; img.style.top = SH / 2 - c.cy * k + 'px';
-        Object.assign(ring.style, { width: FW + 'px', height: FH + 'px', left: (SW - FW) / 2 + 'px', top: (SH - FH) / 2 + 'px', borderRadius: kind === 'circle' ? '50%' : '12px' });
+        Object.assign(ring.style, { width: FW + 'px', height: FH + 'px', left: (SW - FW) / 2 + 'px', top: (SH - FH) / 2 + 'px', borderRadius: kind === 'circle' ? '50%' : '0' });
       };
       /* 끌기(손가락 1개) · 핀치(손가락 2개) */
       const pts = new Map(); let drag = null, pinch = null;

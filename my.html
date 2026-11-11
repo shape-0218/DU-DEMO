@@ -112,25 +112,23 @@ img { display: block; }
 .seg { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 14px; padding: 4px; border-radius: 9999px; background: var(--bg-secondary); }
 .seg button { height: 40px; border-radius: 9999px; font-size: 14px; font-weight: 500; color: var(--text-secondary); font-variant-numeric: tabular-nums; transition: background .25s var(--ease), color .2s; }
 .seg button[aria-selected="true"] { background: #000; color: #fff; font-weight: 600; }
-.grid { margin-top: 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-@media (min-width: 640px)  { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
+.grid { margin-top: 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 12px; }   /* 11-12 카드 E(U-94): 세로 24 · 가로 12, 모든 폭 같음 (이전 12, 640 이상 16) */
+@media (min-width: 640px)  { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (min-width: 1280px) { .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-.card { display: block; background: #000; border-radius: var(--r12); overflow: hidden; color: #fff; animation: rise .55s var(--ease) backwards; animation-delay: calc(var(--n, 0) * 35ms); transition: transform .3s var(--ease); }
+.card { display: block; color: var(--text-primary); animation: rise .55s var(--ease) backwards; animation-delay: calc(var(--n, 0) * 35ms); transition: transform .3s var(--ease); }
 .card:active { transform: scale(.98); }
 @keyframes rise { from { opacity: 0; transform: translateY(12px); } }
-.card .im { padding: 7px; }
-.card .im div { position: relative; border-radius: var(--r12); overflow: hidden; background: #111; }
+.card .im div { position: relative; overflow: hidden; background: var(--bg-secondary); }   /* 11-12 카드 E: 검은 틀·사진 여백 7·모서리 12 없음, 사진 외곽선 없음 */
 .card.ex .im div { aspect-ratio: 161 / 241; }
 .card.wk .im div { aspect-ratio: 161 / 215; }
 .card .im img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
 @media (hover: hover) { .card:hover .im img { transform: scale(1.03); } }
 .badge { position: absolute; top: 8px; right: 8px; display: inline-flex; align-items: center; gap: 2px; padding: 3px 8px; border-radius: 9999px; background: rgba(255, 255, 255, .72); color: var(--text-primary); font-size: 12px; font-weight: 500; backdrop-filter: blur(10px); }
 .badge .i { width: 13px; height: 13px; }
-.tx { padding: 2px 12px 12px; display: grid; gap: 2px; }
+.tx { padding: 8px 0 0; display: grid; gap: 2px; }   /* 11-12 카드 E: 사진↔글자 8, 좌우·아래 여백 없음 (이전 2/12/12) */
 .tx b { font-size: 14px; font-weight: 600; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.tx .l { font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.tx .m { display: flex; align-items: center; gap: 3px; font-size: 12px; font-weight: 500; color: #a1a1aa; white-space: nowrap; overflow: hidden; }
-.tx .m img { width: 14px; height: 14px; flex: none; }
+.tx .l { font-size: 12px; font-weight: 500; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tx .m { display: block; font-size: 12px; font-weight: 500; color: var(--text-teritary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }   /* 11-12 날짜·장소 아이콘 없음 */
 .tx .m:first-of-type { margin-top: 6px; }
 .artists { margin-top: 8px; }
 /* 저장한 작가(11-06 확정, 후보 B): 글자 한 줄 "학교 · 분야" + 작품 사진 3점 미리보기 + 저장 아이콘. 분야 칩·아바타 없음. 작품이 1점이면 1점만, 없으면 이름만 */
@@ -141,7 +139,7 @@ img { display: block; }
 .ar .nm b { display: block; font-size: 16px; font-weight: 600; line-height: 1.4; letter-spacing: -0.03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ar .nm span { display: block; margin-top: 2px; font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-teritary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ar .ths { flex: none; display: flex; gap: 4px; }
-.ar .ths img { width: 40px; height: 52px; border-radius: 8px; object-fit: cover; background: var(--bg-teritary); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08); }
+.ar .ths img { width: 40px; height: 52px; object-fit: cover; background: var(--bg-teritary); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08); }
 .ar .bm { position: relative; flex: none; width: 44px; height: 44px; margin-right: -12px; display: grid; place-items: center; border-radius: 9999px; color: var(--text-primary); transition: transform .16s var(--ease); }
 .ar .bm:active { transform: scale(.9); }
 .ar .bm svg { grid-area: 1 / 1; width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; transition: opacity .25s cubic-bezier(.2, 0, 0, 1), transform .25s cubic-bezier(.2, 0, 0, 1), filter .25s cubic-bezier(.2, 0, 0, 1); }
@@ -159,7 +157,7 @@ img { display: block; }
 .rc { position: relative; flex: none; width: 128px; scroll-snap-align: start; }
 .rc a { display: block; transition: transform .2s var(--ease); }
 .rc a:active { transform: scale(.97); }
-.rc .im { position: relative; aspect-ratio: 3 / 4; border-radius: var(--r12); overflow: hidden; background: var(--bg-teritary); }
+.rc .im { position: relative; aspect-ratio: 3 / 4; overflow: hidden; background: var(--bg-teritary); }
 .rc .im img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .rc .im::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08); pointer-events: none; }
 .rc b { display: block; margin-top: 8px; font-size: 14px; font-weight: 600; line-height: 1.4; letter-spacing: -0.03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -226,12 +224,11 @@ img { display: block; }
 .invite { padding: 16px 0; border-bottom: 1px solid var(--bg-teritary); }
 .invite .by { display: block; font-size: 12px; font-weight: 500; color: var(--text-secondary); }
 .invite .row { display: grid; grid-template-columns: 72px minmax(0, 1fr); column-gap: 16px; margin-top: 12px; }
-.invite img.po { width: 72px; height: 96px; object-fit: cover; border-radius: 8px; background: #000; box-shadow: 0 0 0 1px rgba(0, 0, 0, .06); }
+.invite img.po { width: 72px; height: 96px; object-fit: cover; background: #000; box-shadow: 0 0 0 1px rgba(0, 0, 0, .06); }
 .invite .tx { min-width: 0; display: grid; align-content: start; gap: 2px; }
 .invite b { display: block; font-size: 16px; font-weight: 600; line-height: 1.4; }
 .invite .sub { display: block; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
 .invite .ln { display: flex; align-items: center; gap: 2px; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
-.invite .ln img { width: 14px; height: 14px; flex: none; }
 .invite .btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
 .btn { height: 44px; display: inline-flex; align-items: center; justify-content: center; border-radius: var(--r12); font-size: 14px; font-weight: 600; transition: background .2s, transform .2s var(--ease); }
 .btn:active { transform: scale(.98); }
@@ -408,12 +405,12 @@ function renderVault() {
   const list = data[tab], el = $('vault');
   if (!list.length) {
     const e = empties[tab];
-    /* 11-10 확정 노출 정책: 전시 = 홈 인기 전시와 같은 기준(진행 중·예정, 좋아요 누적 순) 상위 5, 작품 = 공개 작품의 좋아요 순 상위 5(종료 전시 작품 포함, 사용자 11-10), 작가 탭은 줄 없음, 0개면 줄 숨김 */
-    const rec = tab === 'exh' ? DEMO.TAB.pop().slice(0, 5).map((x) => ({ t: x.t, s: x.s.split(' ')[0], img: x.img, href: 'exhibition.html?e=' + x.i })) : tab === 'works' ? DEMO.WORKS.slice().sort((a, b) => b.l - a.l || a.i - b.i).slice(0, 5).map((w) => ({ t: w.t, s: w.a.join(', '), img: w.img, href: 'work.html?w=' + w.i })) : [];
-    el.innerHTML = `<div class="empty"><h3>${e[0]}</h3><a class="egb" href="${e[2]}">${e[1]}${ic('i-chev')}</a></div>` + (rec.length ? `<section class="rec" aria-label="${tab === 'exh' ? '지금 인기 있는 전시' : '지금 인기 있는 작품'}"><div class="rail">${rec.map((r) => `<div class="rc"><a href="${r.href}"><div class="im"><img src="${DEMO.src(r.img)}" alt="" width="128" height="171" loading="lazy" draggable="false"></div><b>${r.t}</b><small>${r.s}</small></a></div>`).join('')}</div></section>` : '');
+    /* 11-10 확정 노출 정책: 전시 = 홈 인기 전시와 같은 기준(진행 중·예정, 좋아요 누적 순) 상위 5, 작품 = 공개 작품의 좋아요 순 상위 5(종료 전시 작품 포함, 사용자 11-10), 작가 탭도 전시 줄(링크가 '전시 둘러보기'라서, 사용자 11-10), 0개면 줄 숨김 */
+    const rec = tab === 'exh' || tab === 'artists' ? DEMO.TAB.pop().slice(0, 5).map((x) => ({ t: x.t, s: x.s.split(' ')[0], img: x.img, href: 'exhibition.html?e=' + x.i })) : tab === 'works' ? DEMO.WORKS.slice().sort((a, b) => b.l - a.l || a.i - b.i).slice(0, 5).map((w) => ({ t: w.t, s: w.a.join(', '), img: w.img, href: 'work.html?w=' + w.i })) : [];
+    el.innerHTML = `<div class="empty"><h3>${e[0]}</h3><a class="egb" href="${e[2]}">${e[1]}${ic('i-chev')}</a></div>` + (rec.length ? `<section class="rec" aria-label="${tab === 'works' ? '지금 인기 있는 작품' : '지금 인기 있는 전시'}"><div class="rail">${rec.map((r) => `<div class="rc"><a href="${r.href}"><div class="im"><img src="${DEMO.src(r.img)}" alt="" width="128" height="171" loading="lazy" draggable="false"></div><b>${r.t}</b><small>${r.s}</small></a></div>`).join('')}</div></section>` : '');
     $('vault').setAttribute('aria-labelledby', 's-' + (tab === 'exh' ? 'exh' : tab === 'works' ? 'wk' : 'ar')); return;
   }
-  if (tab === 'exh') el.innerHTML = '<div class="grid">' + list.map((e, n) => `<a class="card ex" href="exhibition.html?e=${+e[5].slice(1) - 1}" style="--n:${Math.min(n, 10)}"><div class="im"><div><img src="${O}${e[5]}.jpg" alt="${e[0]} 포스터" width="161" height="241" loading="${n < 4 ? 'eager' : 'lazy'}"></div></div><div class="tx"><b>${e[0]}</b><span class="l">${e[1]}</span><span class="m"><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14"><span class="dt12">${e[2]}</span></span><span class="m"><img src="assets/img/icon-location.svg" alt="" width="14" height="14">${e[3]}</span></div></a>`).join('') + '</div>';
+  if (tab === 'exh') el.innerHTML = '<div class="grid">' + list.map((e, n) => `<a class="card ex" href="exhibition.html?e=${+e[5].slice(1) - 1}" style="--n:${Math.min(n, 10)}"><div class="im"><div><img src="${O}${e[5]}.jpg" alt="${e[0]} 포스터" width="161" height="241" loading="${n < 4 ? 'eager' : 'lazy'}"></div></div><div class="tx"><b>${e[0]}</b><span class="l">${e[1]}</span><span class="m"><span class="dt12">${e[2]}</span></span><span class="m">${e[3]}</span></div></a>`).join('') + '</div>';
   else if (tab === 'works') el.innerHTML = '<div class="grid">' + list.map((w, n) => `<a class="card wk" href="work.html?w=${Math.max(0, DEMO.WORKS.findIndex((x) => x.img === w[3]))}" style="--n:${Math.min(n, 10)}"><div class="im"><div><img src="${O}${w[3]}.jpg" alt="${w[0]}" width="161" height="215" loading="${n < 4 ? 'eager' : 'lazy'}"></div></div><div class="tx"><b>${w[0]}</b><span class="l">${by(w[1])}</span></div></a>`).join('') + '</div>';
   else {
     el.innerHTML = '<ul class="artists">' + list.map((a, n) => `<li class="ar" style="--n:${n}"><a class="ar-in" href="artist.html"><span class="nm"><b>${a[0]}</b><span>${a[1]} · ${a[2]}</span></span>${a[3] && a[3].length ? `<span class="ths" aria-hidden="true">${a[3].slice(0, 3).map((k) => `<img src="${O}wk${k}.jpg" alt="" width="40" height="52" loading="lazy">`).join('')}</span>` : ''}</a><button type="button" class="bm" aria-pressed="true" aria-label="${a[0]} 작가 저장 해제"><svg class="off" aria-hidden="true"><use href="#i-bookmark"/></svg><svg class="on" aria-hidden="true"><use href="#i-bookmark"/></svg></button></li>`).join('') + '</ul>';
@@ -488,7 +485,7 @@ function joinFlow(v, i) {
 /* ============ 받은 초대 (미인증도 확인·거절 가능, 수락은 작가 인증 필요) ============ */
 let invites = INVITES.slice();
 function openInvites() {
-  const render = () => `<div class="sh-head"><button class="sh-x" data-close aria-label="닫기">${ic('i-back')}</button><h2>받은 초대</h2></div><div class="sh-body">${invites.length ? `<h3 class="inv-h">받은 전시 팀원 초대</h3><p class="inv-p">초대받은 전시를 확인하고 참여 여부를 선택해보세요</p>` + invites.map((v, i) => `<div class="invite"><span class="by">초대 · ${v.by}</span><div class="row"><img class="po" src="${O}${v.img}.jpg" alt=""><div class="tx"><b>${v.t}</b><span class="sub">${v.s}</span><span class="ln"><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14"><span class="dt12">${v.d}</span></span><span class="ln"><img src="assets/img/icon-location.svg" alt="" width="14" height="14">${v.p}</span></div></div><div class="btns"><button class="btn btn-soft" data-a="no" data-i="${i}">거절하기</button><button class="btn btn-dark" data-a="yes" data-i="${i}">수락하기</button></div></div>`).join('') : '<p class="empty">받은 초대가 없어요</p>'}</div>`;
+  const render = () => `<div class="sh-head"><button class="sh-x" data-close aria-label="닫기">${ic('i-back')}</button><h2>받은 초대</h2></div><div class="sh-body">${invites.length ? `<h3 class="inv-h">받은 전시 팀원 초대</h3><p class="inv-p">초대받은 전시를 확인하고 참여 여부를 선택해보세요</p>` + invites.map((v, i) => `<div class="invite"><span class="by">초대 · ${v.by}</span><div class="row"><img class="po" src="${O}${v.img}.jpg" alt=""><div class="tx"><b>${v.t}</b><span class="sub">${v.s}</span><span class="ln"><span class="dt12">${v.d}</span></span><span class="ln">${v.p}</span></div></div><div class="btns"><button class="btn btn-soft" data-a="no" data-i="${i}">거절하기</button><button class="btn btn-dark" data-a="yes" data-i="${i}">수락하기</button></div></div>`).join('') : '<p class="empty">받은 초대가 없어요</p>'}</div>`;
   const s = showSheet('full', render(), '받은 초대');
   s.addEventListener('click', (e) => {
     const b = e.target.closest('[data-a]'); if (!b) return; const i = +b.dataset.i, v = invites[i];

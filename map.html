@@ -150,7 +150,7 @@ html.kb .search input:focus-visible { outline: 2px solid var(--text-primary); ou
 .empty { padding: 28px 0; text-align: center; font-size: 14px; font-weight: 600; color: var(--text-teritary); }
 .empty small { display: block; margin-top: 4px; font-size: 12px; font-weight: 500; }
 
-.lcard { position: relative; display: grid; grid-template-columns: 86px minmax(0, 1fr); height: 124px; background: #18181b; border: 1px solid #27272a; border-radius: var(--r12); overflow: hidden; color: var(--text-quaternary); transition: border-color .2s, transform .3s var(--ease); text-align: left; width: 100%; }
+.lcard { position: relative; display: grid; grid-template-columns: 86px minmax(0, 1fr); height: 124px; background: #18181b; border: 1px solid #27272a; overflow: hidden; color: var(--text-quaternary); transition: border-color .2s, transform .3s var(--ease); text-align: left; width: 100%; }
 @media (hover: hover) { .lcard:hover { border-color: #3f3f46; } }
 .lcard:active { transform: scale(.99); }
 .lcard.on { border-color: #fff; border-width: 2px; }
@@ -162,7 +162,6 @@ html.kb .search input:focus-visible { outline: 2px solid var(--text-primary); ou
 .lcard .lt .mt { display: grid; gap: 2px; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
 .lcard .lt .mt p { display: flex; align-items: center; gap: 2px; min-width: 0; }
 .lcard .lt .mt p span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.lcard .lt .mt img { width: 14px; height: 14px; flex: none; }
 .lcard .lk { position: absolute; right: 12px; top: 12px; display: inline-flex; align-items: center; height: 25px; padding: 0 9px; border-radius: 9999px; background: rgba(255, 255, 255, .12); color: #d4d4d8; font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; }
 
 .toast { position: fixed; z-index: 100; left: 50%; bottom: calc(var(--vis, 300px) + 80px); transform: translate(-50%, 8px); max-width: calc(100vw - 40px); padding: 14px 18px; border-radius: 8px; background: #000; color: #fff; font-size: 14px; font-weight: 500; line-height: 1.4; opacity: 0; pointer-events: none; transition: opacity .25s, transform .3s var(--ease); }
@@ -353,7 +352,7 @@ body.folded { --pw: 0px; }
   }
 
   /* ---- 시트 ---- */
-  const card = (e, on) => `<${on === null ? 'a href="exhibition.html"' : 'button type="button"'} class="lcard${on ? ' on' : ''}" data-id="${e.i}" aria-label="${e.t}${on ? ' (선택됨, 한 번 더 누르면 상세로 이동)' : ''}"><span class="lp"><img src="${DEMO.src(e.img)}" alt="" loading="lazy" draggable="false"></span><span class="lt"><span><h3>${e.t}</h3><p class="og">${e.s}</p></span><span class="mt"><p><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14"><span class="dt12">${e.d}</span></p><p><img src="assets/img/icon-location.svg" alt="" width="14" height="14"><span>${e.p}</span></p></span>${PERM ? `<span class="lk">${fmtDist(dist(e))}</span>` : ''}</span></${on === null ? 'a' : 'button'}>`;
+  const card = (e, on) => `<${on === null ? 'a href="exhibition.html"' : 'button type="button"'} class="lcard${on ? ' on' : ''}" data-id="${e.i}" aria-label="${e.t}${on ? ' (선택됨, 한 번 더 누르면 상세로 이동)' : ''}"><span class="lp"><img src="${DEMO.src(e.img)}" alt="" loading="lazy" draggable="false"></span><span class="lt"><span><h3>${e.t}</h3><p class="og">${e.s}</p></span><span class="mt"><p><span class="dt12">${e.d}</span></p><p><span>${e.p}</span></p></span>${PERM ? `<span class="lk">${fmtDist(dist(e))}</span>` : ''}</span></${on === null ? 'a' : 'button'}>`;
   const sortList = (l) => l.slice().sort((a, b) => PERM ? dist(a) - dist(b) : b.l - a.l);
   const inView = () => { const a = area(); return items.filter((e) => { const p = toScreen(e); return p.x >= a.x0 && p.x <= a.x1 && p.y >= a.y0 - 60 && p.y <= a.y1 + 40; }); };
   function setSheet(st) {

@@ -34,7 +34,7 @@
 .mhelp { margin-top: 4px; font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-secondary); }
 .row { display: flex; gap: 8px; margin: 12px calc(var(--gx) * -1) 0; padding: 0 var(--gx); overflow-x: auto; scroll-snap-type: x proximity; scroll-padding-inline: var(--gx); scrollbar-width: none; }
 .row::-webkit-scrollbar { display: none; }
-.tile, .add { flex: none; width: 96px; height: 120px; border-radius: var(--r12); scroll-snap-align: start; }
+.tile, .add { flex: none; width: 96px; height: 120px; scroll-snap-align: start; }   /* 11-12 사진 칸·추가 칸 모서리 0 (이전 12) */
 .add { display: grid; place-content: center; justify-items: center; gap: 4px; border: 1px solid var(--border-primary); font-size: 12px; font-weight: 500; color: var(--text-secondary); transition: background .2s; }
 @media (hover: hover) { .add:hover { background: var(--bg-secondary); } }
 .add .i { width: 24px; height: 24px; stroke-width: 1.6; color: var(--text-primary); }
@@ -43,7 +43,7 @@
 /* 카드에서 보이는 모습 미리보기 + 사진별 위치 조정 */
 .cprev { display: flex; align-items: center; gap: 14px; margin-top: 14px; padding: 14px; border-radius: var(--r12); background: var(--bg-secondary); }
 .cprev[hidden] { display: none; }
-.cp-im { position: relative; flex: none; width: 72px; aspect-ratio: 3 / 4; border-radius: 8px; overflow: hidden; background: var(--bg-secondary); }
+.cp-im { position: relative; flex: none; width: 72px; aspect-ratio: 3 / 4; overflow: hidden; background: var(--bg-secondary); }
 .cp-im img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; user-select: none; }
 .cp-tx { display: grid; gap: 2px; min-width: 0; font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-secondary); }
 .cp-tx b { font-size: 14px; font-weight: 600; color: var(--text-primary); }
@@ -53,9 +53,9 @@
 .adjf { margin: 0; display: grid; gap: 8px; justify-items: center; }
 .adjf figcaption { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
 /* 11-08 상세 무대가 연한 회색(bg/secondary)이라 조정 무대도 같은 색 */
-.adjc { width: 180px; height: 248px; border-radius: var(--r12); overflow: hidden; background: var(--bg-secondary); touch-action: none; cursor: grab; box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 4px 12px rgba(0,0,0,.1); }
+.adjc { width: 180px; height: 248px; overflow: hidden; background: var(--bg-secondary); touch-action: none; cursor: grab; box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 4px 12px rgba(0,0,0,.1); }
 .adjc.drag { cursor: grabbing; }
-.adjd { width: 60px; height: 80px; border-radius: 8px; overflow: hidden; background: var(--bg-secondary); }
+.adjd { width: 60px; height: 80px; overflow: hidden; background: var(--bg-secondary); }
 .adjz { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
 .adjz button { flex: none; width: 44px; height: 44px; border-radius: 50%; background: var(--bg-secondary); display: grid; place-items: center; font-size: 20px; font-weight: 600; line-height: 1; transition: transform .2s var(--ease); }
 .adjz button:active { transform: scale(.96); }

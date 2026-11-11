@@ -28,7 +28,6 @@
 .card .org { font-size: 14px; font-weight: 500; color: var(--text-secondary); }
 .card .poster { width: 96px; aspect-ratio: 4 / 5; }   /* Figma 카드 포스터 4:5(10-21 확정)와 통일 */
 .card .meta { font-size: 14px; }
-.card .meta .i { width: 16px; height: 16px; }
 .card .meta { margin-top: 2px; }
 .card .meta + .meta { margin-top: 3px; }   /* 11-08 Figma 카드: 날짜 줄→장소 줄 24(이전 21) */
 .more { position: absolute; top: 8px; right: 6px; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 9999px; transition: background .2s; }
@@ -88,8 +87,8 @@ function render() {
       <div class="top"><span class="st" data-s="${e.status}">${STATUS[e.status]}</span><span>· ${ROLE[e.role]}(${esc(e.myName)})</span></div>
       <h3>${e.role === 'owner' ? `<a href="hub.html?id=${e.id}" class="stretch">${esc(e.title)}</a>` : esc(e.title)}</h3>
       <p class="org">${esc(e.org)}</p>
-      <p class="meta"><svg class="i" aria-hidden="true"><use href="#i-cal"/></svg><span>${range(e)}</span></p>
-      <p class="meta"><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg><span>${esc(e.place)}</span></p>
+      <p class="meta"><span>${range(e)}</span></p>
+      <p class="meta"><span>${esc(e.place)}</span></p>
     </div>
     <button type="button" class="more" aria-haspopup="menu" aria-expanded="false" aria-label="${esc(e.title)} 메뉴" data-id="${e.id}"><svg class="i" aria-hidden="true"><use href="#i-more"/></svg></button>
   </li>`).join('');

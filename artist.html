@@ -69,7 +69,7 @@ img { display: block; }
 /* 작가 프로필 머리(11-07 확정: Figma `작가 프로필 · 본인` 3378:93787): 왼쪽 이름·학교·소개, 오른쪽 사진 116×132 · 반경 12, 링크는 아래 전체 폭(간격 20) */
 .profile { display: grid; grid-template-columns: minmax(0, 1fr) 116px; grid-template-rows: auto 1fr; column-gap: 16px; align-items: start; }
 .avw { position: relative; grid-column: 2; grid-row: 1 / span 2; width: 116px; height: 132px; }
-.avatar { position: relative; width: 116px; height: 132px; border-radius: 12px; overflow: hidden; }
+.avatar { position: relative; width: 116px; height: 132px; overflow: hidden; }   /* 11-12 작가 사진 모서리 0 (이전 12) */
 .avatar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 @media (min-width: 900px) { .profile { display: flex; flex-direction: column; align-items: stretch; } .avw { order: -1; margin-bottom: 20px; } }   /* 노트북: 사진이 이름 위 */
 .who { min-width: 0; grid-column: 1; grid-row: 1; }
@@ -114,13 +114,13 @@ img { display: block; }
 .exh-list { gap: 0; }
 .exh { display: grid; grid-template-columns: 72px minmax(0, 1fr) 20px; align-items: center; column-gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--bg-teritary); animation: rise .6s var(--ease) backwards; animation-delay: calc(var(--n, 0) * 60ms); }   /* 카드 테두리 없이 얇은 구분선만 */
 .exh:first-child { padding-top: 16px; } .exh:last-child { border-bottom: 0; } .exh + .exh { margin-top: 12px; }   /* 11-07 Figma 위치 대조: 전시 행 위 16·행 사이 12 */
-.exh img { width: 72px; height: 96px; object-fit: cover; border-radius: var(--r8); background: #000; box-shadow: 0 0 0 1px rgba(0, 0, 0, .06); }
+.exh img { width: 72px; height: 96px; object-fit: cover; background: #000; box-shadow: 0 0 0 1px rgba(0, 0, 0, .06); }
 .exh .meta { display: flex; flex-wrap: wrap; gap: 2px 12px; margin-top: 4px; }
 .exh .meta .sub { margin-top: 0; }
 /* 11-09 날짜 글자: Figma `body/md/regular2`(12, 500, 자간 +1%)·`body/lg/regular2`(14, 400, 자간 0) — 숫자가 붙어 보이지 않게 기본 자간(-3%)을 쓰지 않음 */
 .dt12 { font-weight: 500; letter-spacing: 0.01em; }
 .dt14 { font-weight: 400; letter-spacing: 0; }
-.exh .state { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--text-primary); } /* 11-07 Figma 대조 */
+.exh .state { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--text-teritary); } /* 11-10 Figma `Card / 전시 행 · 일정 포함` 3135:37488: 세 상태 모두 #71717b (이전 전시 중·예정은 text-primary) */
 .exh .state.end { color: var(--text-teritary); font-weight: 500; }
 .dot { width: 7px; height: 7px; border-radius: 9999px; background: var(--text-primary); }
 .dot.end { background: var(--border-primary); }
@@ -137,7 +137,7 @@ img { display: block; }
 .works { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 16px; padding-inline: 4px; }   /* 11-08 Figma 작가 프로필 작품 카드: 안쪽 4 + 사이 16 → 카드 폭 169(글자 x24·x209) */
 @media (min-width: 900px) { .works { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 20px; padding-inline: 0; } }
 .w { display: block; animation: rise .6s var(--ease) backwards; animation-delay: calc(var(--n, 0) * 60ms); }
-.w .im { aspect-ratio: 3 / 4; border-radius: var(--r12); overflow: hidden; background: #000; box-shadow: 0 0 0 1px rgba(0, 0, 0, .06); }
+.w .im { aspect-ratio: 3 / 4; overflow: hidden; background: #000; box-shadow: 0 0 0 1px rgba(0, 0, 0, .06); }
 .w .im img { width: 100%; height: 100%; object-fit: contain; transition: transform .7s var(--ease); }   /* 작품 정책: 어떤 비율이든 전체가 보이고 남는 곳은 검정 */
 @media (hover: hover) { .w:hover .im img { transform: scale(1.03); } }
 .w b { display: block; margin-top: 10px; font-weight: 600; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -233,12 +233,11 @@ linksEl.addEventListener('click', (ev) => {
 });
 
 /* ---------- 참여한 전시 / 작품 (예시 데이터) ---------- */
-/* 정렬은 상태와 상관없이 최신 순(최초 공개일 최신순, 정책 문서와 동일): 진행 중인 전시는 보통 가장 최근이라 자연스럽게 맨 위 */
-const exOf = (e) => ({ img: e.img, pub: String(100 - e.i), state: e.st, end: e.st === '종료', title: e.t, school: e.s, date: e.d, place: e.p });
-/* 11-10 종료 전시 샘플(Figma 작가 프로필 5장과 같음: 전시 중 → 전시 예정 → 종료, 종료 = 회색 점·글자). 맨 끝에 붙임 */
-const exhibitions = [DEMO.EXH[7], DEMO.EXH[0]].map(exOf)
-.sort((a, b) => (a.pub < b.pub ? 1 : a.pub > b.pub ? -1 : 0))
-.concat([DEMO.EXH[10]].map(exOf));
+const exOf = (e) => ({ img: e.img, pub: 100 - e.i, state: e.st, end: e.st === '종료', title: e.t, school: e.s, date: e.d, place: e.p });
+/* 11-10 사용자 결정: 상태 순서 전시 중 → 전시 예정 → 종료(11-05 "상태와 상관없이 최신순"을 대체). 같은 상태 안에서는 최초 공개일 최신순(숫자 비교). 종료 = 회색 점·글자, Figma 작가 프로필 5장과 같은 순서 */
+const RANK = { '전시 중': 0, '전시 예정': 1, '종료': 2 };
+const exhibitions = [DEMO.EXH[7], DEMO.EXH[0], DEMO.EXH[10]].map(exOf)
+.sort((a, b) => (RANK[a.state] - RANK[b.state]) || (b.pub - a.pub));
 const works = [
   { img: 'w1.jpg', title: '접으면 달라지는 지도', by: '고상준', href: 'work.html' },
   { img: '../../explore/opt/wk20.jpg', title: '장면을 넘기는 극장', by: '고상준', href: 'work.html?w=11' }
@@ -246,7 +245,7 @@ const works = [
 /* ?exh=N&works=N 으로 많을 때 모습 확인 */
 const nE = q.has('exh') ? +q.get('exh') : exhibitions.length, nW = q.has('works') ? +q.get('works') : works.length;
 const exAll = Array.from({ length: nE }, (_, i) => exhibitions[i % exhibitions.length]), wkAll = Array.from({ length: nW }, (_, i) => works[i % works.length]);
-const exCard = (e, i) => `<a class="exh" href="exhibition.html" style="--n:${i}"><img src="assets/img/explore/opt/${e.img}" alt="" width="72" height="96"><span><span class="state ${e.end ? 'end' : ''}"><i class="dot ${e.end ? 'end' : e.state === '전시 예정' ? 'soon' : ''}"></i>${e.state}</span><strong>${e.title}</strong><span class="sub">${e.school}</span><span class="meta"><span class="sub">${ic('i-cal')}<span class="dt12">${e.date}</span></span><span class="sub">${ic('i-pin')}${e.place}</span></span></span>${ic('i-chev')}</a>`;
+const exCard = (e, i) => `<a class="exh" href="exhibition.html" style="--n:${i}"><img src="assets/img/explore/opt/${e.img}" alt="" width="72" height="96"><span><span class="state ${e.end ? 'end' : ''}"><i class="dot ${e.end ? 'end' : e.state === '전시 예정' ? 'soon' : ''}"></i>${e.state}</span><strong>${e.title}</strong><span class="sub">${e.school}</span><span class="meta"><span class="sub"><span class="dt12">${e.date}</span></span><span class="sub">${e.place}</span></span></span>${ic('i-chev')}</a>`;
 const wkCard = (w, i) => `<a class="w" href="${w.href}" style="--n:${i}"><div class="im"><img src="${O}${w.img}" alt="" loading="lazy"></div><b>${w.title}</b><span>${w.by}</span></a>`;
 /* 섹션은 내용이 있을 때만. 전시 3개·작품 6개를 넘으면 처음엔 그만큼만 보이고 "모두 보기" */
 const SECS = [

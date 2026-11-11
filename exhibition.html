@@ -57,7 +57,6 @@ img { display: block; }
 .is-pv .top { top: 40px; }
 .is-pv .btn[disabled], .is-pv .like[disabled] { opacity: .45; cursor: not-allowed; }
 .pv-empty { padding: 56px 0 24px; text-align: center; color: var(--text-teritary); }
-.sec .lead.open { display: block; -webkit-line-clamp: unset; white-space: pre-line; }
 .sec .lead { white-space: pre-line; }
 .top { display: none; position: sticky; top: 0; z-index: 30; height: 64px; background: var(--bg-white); border-bottom: 1px solid var(--bg-soft); }
 .top .in { height: 100%; max-width: 1240px; margin-inline: auto; padding-inline: var(--pad); display: flex; align-items: center; justify-content: space-between; }
@@ -80,7 +79,7 @@ img { display: block; }
 .thumbs { position: absolute; left: 50%; bottom: 84px; z-index: 3; transform: translate(-50%, 8px); display: none; gap: 6px; padding: 6px; max-width: calc(100% - 32px); overflow-x: auto; border-radius: 14px; background: rgba(0,0,0,.45); backdrop-filter: blur(10px); scrollbar-width: none; opacity: 0; visibility: hidden; transition: opacity .25s var(--ease), transform .25s var(--ease), visibility 0s .25s; }
 .thumbs::-webkit-scrollbar { display: none; }
 .thumbs[hidden] { display: none !important; }
-.thumb { position: relative; flex: none; width: 36px; height: 54px; border-radius: 6px; overflow: hidden; border: 2px solid transparent; opacity: .7; transition: opacity .2s, border-color .2s; }
+.thumb { position: relative; flex: none; width: 36px; height: 54px; overflow: hidden; border: 2px solid transparent; opacity: .7; transition: opacity .2s, border-color .2s; }
 .thumb img { width: 100%; height: 100%; object-fit: cover; }
 @media (hover: hover) { .thumb:hover { opacity: 1; } }
 .thumb[aria-current="true"] { border-color: #fff; opacity: 1; }
@@ -124,13 +123,12 @@ img { display: block; }
 @media (min-width: 900px) { body:not(.is-pv) .back { display: none; } }   /* 11-07: 웹(노트북)은 위에 서비스 헤더와 브라우저 뒤로가기가 있어서 뒤로가기 버튼 없음. 폰·태블릿과 미리보기(공개 전)는 그대로 */
 .sheet { position: relative; margin-top: 0; background: var(--bg-white); }
 @media (min-width: 600px) and (max-width: 899px) {
-  .poster { max-width: 480px; margin: 24px auto 0; border-radius: var(--r16); }
+  .poster { max-width: 480px; margin: 24px auto 0; }   /* 11-12 넓은 화면 포스터도 모서리 0 (이전 16) */
   .sheet { margin-top: 0; border-radius: 0; max-width: 640px; margin-inline: auto; }
 }
 @media (min-width: 900px) {
   .layout { display: grid; grid-template-columns: minmax(320px, 40%) minmax(0, 1fr); column-gap: 56px; padding: 32px var(--pad) 80px; align-items: start; }
   .poster-col { position: sticky; top: 96px; }
-  .poster { border-radius: var(--r16); }
   .sheet { margin-top: 0; border-radius: 0; max-width: 680px; }
 }
 
@@ -146,10 +144,14 @@ img { display: block; }
 .like .i { width: 24px; height: 24px; transition: transform .35s var(--ease); }
 .like[aria-pressed="true"] .i { fill: currentColor; transform: scale(1.1); }
 .info { display: grid; gap: 8px; }
-.info div { display: grid; grid-template-columns: 14px 28px 1fr; align-items: center; min-height: 20px; } /* 11-07 Figma 위치 대조: 아이콘 14 + 4 + 라벨 24 + 8 + 값 */
-.info .i { width: 14px; height: 14px; color: var(--text-teritary); }
-.info dt { padding-left: 4px; }
-.info dd { padding-left: 8px; }
+.info div { display: grid; grid-template-columns: auto 1fr; align-items: center; min-height: 20px; }   /* 11-12 Figma 4122:107784: 아이콘 없음, 라벨 24 + 8 + 값 */
+.info dd { padding-left: 8px; min-width: 0; }
+.info .pl { position: relative; display: inline-flex; align-items: center; gap: 8px; max-width: 100%; color: var(--text-primary); font-weight: 500; }   /* 장소 = 진한 글자 + ↗, 누르면 카카오 지도 */
+.info .pl::before { content: ""; position: absolute; inset: -12px -4px; }   /* 터치 영역 44 */
+.info .pl span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.info .pl .o { flex: none; width: 12px; height: 12px; color: var(--text-teritary); transition: transform .25s var(--ease), color .2s; }   /* Figma `Icon / 바깥으로` 12 */
+.info .pl.off { color: var(--text-secondary); font-weight: 400; } .info .pl.off .o { display: none; }
+@media (hover: hover) { .info .pl[href]:hover span { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; } .info .pl[href]:hover .o { transform: translate(1px, -1px); color: var(--text-primary); } }
 .info dt { color: var(--text-teritary); }
 .info dd { color: var(--text-secondary); }
 /* 전시 링크: 카드·버튼이 아니라 아이콘 + 글자 링크 한 줄 */
@@ -192,10 +194,7 @@ img { display: block; }
 #p-reviews .sec:has(> h2.sr) { padding-top: 8px; }   /* 11-08 Figma `전시 상세 · 후기 탭`: 탭 줄 아래 첫 댓글 카드까지 8 */   /* 11-08 Figma: 탭 줄 아래 작품 카드까지 36 */
 .sec > h2.sr + * { margin-top: 0; }
 .sec h2 { font-size: 20px; line-height: 1.4; font-weight: 700; letter-spacing: -0.03em; }
-.sec .lead { margin-top: 8px; color: var(--text-secondary); line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-wrap: pretty; }
-.more { margin-top: 8px; display: flex; justify-content: flex-end; }
-.more a { display: inline-flex; align-items: center; gap: 2px; color: var(--text-teritary); font-size: 12px; font-weight: 500; }
-.more .i { width: 14px; height: 14px; }
+.sec .lead { margin-top: 8px; color: var(--text-secondary); line-height: 1.4; text-wrap: pretty; }   /* 11-12 소개글 접지 않음·더보기 없음 (이전 3줄 자르기) */
 
 /* 전시콘텐츠 */
 .band { margin-top: 36px; background: var(--bg-soft); padding-bottom: 32px; }
@@ -206,7 +205,7 @@ img { display: block; }
 .cards::-webkit-scrollbar { display: none; }
 @media (min-width: 900px) { .cards { margin-inline: 0; padding-inline: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); overflow: visible; } }
 .cc { display: block; flex: 0 0 144px; scroll-snap-align: start; color: var(--text-primary); }
-.cc .cv { position: relative; inset: auto; width: 100%; height: auto; aspect-ratio: 3 / 4; border-radius: var(--r12); overflow: hidden; background: var(--bg-teritary); }
+.cc .cv { position: relative; inset: auto; width: 100%; height: auto; aspect-ratio: 3 / 4; overflow: hidden; background: var(--bg-teritary); }
 .cc .cv img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
 .cc .cv::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08); pointer-events: none; }
 /* 묶음 아이콘(11-09 확정, Figma `Icon / 묶음` 3918:46965): 섹션 사진이 2장 이상일 때만 표지 오른쪽 위 8·8, 20×20, 흰색 + 그림자 0 0 2 / 20% */
@@ -228,40 +227,26 @@ img { display: block; }
 .cv .tt b { font-size: 16px; font-weight: 600; line-height: 1.4; letter-spacing: -0.03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .cv .tt span { font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-teritary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .cv .st { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 20px var(--pad) max(40px, env(safe-area-inset-bottom)); display: grid; align-content: start; gap: 12px; }
-.cv .st img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; border-radius: var(--r12); background: var(--bg-teritary); -webkit-user-drag: none; user-select: none; }
+.cv .st img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; background: var(--bg-teritary); -webkit-user-drag: none; user-select: none; }
 @media (min-width: 768px) { .cv .st { padding-inline: calc((100% - 560px) / 2); } .cv .tp { padding-inline: max(8px, calc((100% - 560px) / 2 - 12px)); } }
 
-/* 위치 안내 (11-09 Figma `전시 상세 · 소개 탭` 3865:50261): 제목 글자 없이 위는 지도 그림 160, 아래는 검은 정보 카드(이름·주소 + 지도 보기). 지도는 저작권 때문에 실제 지도 캡처 대신 코드로 그린 무채색 지도(map.html과 같은 색) */
-.place { margin-top: 0; display: block; overflow: hidden; border-radius: var(--r12); background: #000; }
-.place .pm { position: relative; height: 160px; background: #ebebe8; }
-.place .mp { display: block; width: 100%; height: 100%; }
-.place .pn { position: absolute; left: 50%; top: 62px; width: 35px; height: 35px; margin-left: -17.5px; }
-.place .pi { display: flex; align-items: center; gap: 12px; min-height: 72px; padding: 16px; }   /* Figma Place 72(글 두 줄 20+20) */
-.place .tx { flex: 1; min-width: 0; }
-.place strong { display: block; color: #fafafa; font-weight: 600; }   /* Figma 14 Bold → 프로토는 SemiBold(DS 일괄 정리 규칙) */
-.place small { display: block; color: #9f9fa9; font-size: 12px; font-weight: 500; }   /* 검정 위 보조 글자는 zinc/400(Figma text/teritary보다 대비 높게, 검은 작가 카드와 같은 결정) */
-.place a { flex: none; height: 32px; padding: 0 12px; display: inline-flex; align-items: center; border: 1px solid #d4d4d8; background: #000; color: #fafafa; border-radius: 8px; font-size: 12px; font-weight: 600; transition: background .2s, transform .16s var(--ease); }
-.place a:active { transform: scale(.96); }
-@media (hover: hover) { .place a:hover { background: rgba(255, 255, 255, .12); } }
+/* 11-12 위치 영역 삭제 — 장소는 위 정보 줄(일정·운영·장소)에서 카카오 지도로 바로 연결 */
 
 /* 작품 */
-.works { margin-top: 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-@media (min-width: 900px) { .works { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
-.w { display: block; background: #000; border-radius: var(--r12); overflow: hidden; color: var(--text-quaternary); transition: transform .3s var(--ease); animation: rise .6s var(--ease) backwards; animation-delay: calc(var(--n, 0) * 50ms); }
+.works { margin-top: 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 12px; }   /* 11-12 카드 E: 세로 24 · 가로 12 (이전 12, 900 이상 16) */
+@media (min-width: 900px) { .works { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.w { display: block; color: var(--text-primary); transition: transform .3s var(--ease); animation: rise .6s var(--ease) backwards; animation-delay: calc(var(--n, 0) * 50ms); }
 @keyframes rise { from { opacity: 0; transform: translateY(12px); } }
 .w:active { transform: scale(.98); }
-.w .im { padding: 8px 8px 0; }
-.w .im div { position: relative; aspect-ratio: 3 / 4; border-radius: var(--r12); overflow: hidden; }
+.w .im div { position: relative; aspect-ratio: 3 / 4; overflow: hidden; background: var(--bg-secondary); }   /* 11-12 카드 E: 검은 틀·사진 여백 8·모서리 12 없음 */
 .w .im img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
 @media (hover: hover) { .w:hover .im img { transform: scale(1.03); } }
-.w .bd { position: absolute; top: 8px; right: 8px; display: inline-flex; align-items: center; gap: 2px; padding: 3px 8px; border-radius: 9999px; background: rgba(0, 0, 0, .45); color: var(--text-disable); font-size: 12px; font-weight: 500; backdrop-filter: blur(10px); }
-.w .bd .i { width: 13px; height: 13px; }
 .w .play { position: absolute; left: 50%; top: 50%; width: 44px; height: 44px; margin: -22px 0 0 -22px; display: grid; place-items: center; border-radius: 9999px; background: rgba(0, 0, 0, .55); color: #fff; backdrop-filter: blur(10px); transition: transform .35s var(--ease), background .2s; }
 .w .play .i { width: 20px; height: 20px; margin-left: 2px; }
 @media (hover: hover) { .w:hover .play { transform: scale(1.08); background: rgba(0, 0, 0, .7); } }
 .w .dur { position: absolute; left: 8px; bottom: 8px; padding: 2px 7px; border-radius: 6px; background: rgba(0, 0, 0, .55); color: #fff; font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; }
 .w .dur[hidden] { display: none; }
-.w .tx { padding: 12px 12px 12px; }   /* 11-08 Figma `Card / 작품 · 검정`: 사진 아래 12 · 제목↔작가 2 · 아래 12 → 카드 283 */
+.w .tx { padding: 8px 0 0; }   /* 11-12 카드 E(Figma `Card / 작품 · 검정` 3245:37126): 사진 아래 8 · 제목↔작가 2 → 카드 281 */
 .w .tx > span { margin-top: 2px; }
 dialog.player { width: min(960px, 94vw); max-height: 92vh; padding: 0; border: 0; border-radius: var(--r16); background: #000; overflow: hidden; color: #fff; }
 dialog.player::backdrop { background: rgba(0, 0, 0, .72); }
@@ -270,7 +255,7 @@ dialog.player .x { position: absolute; right: 12px; top: 12px; z-index: 2; width
 dialog.player .miss { padding: 64px 20px; text-align: center; color: var(--text-disable); }
 dialog.player .miss[hidden] { display: none; }
 .w b { display: block; font-weight: 600; }
-.w .tx > span { display: block; font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.w .tx > span { display: block; font-size: 12px; font-weight: 500; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* 댓글(개선안 2627:29136) */
 .cm-list { margin-top: 12px; }
@@ -297,7 +282,7 @@ dialog.player .miss[hidden] { display: none; }
 .ph.many { --b: 20px; margin-right: calc(var(--b) * -1); padding-right: var(--b); scroll-snap-type: x proximity; }   /* 11-08 사용자: 4장 이상이면 3장 + 4번째가 조금(26) 보여서 옆으로 넘길 수 있다는 걸 알리기. 오른쪽 끝(화면 가장자리)까지 이어짐 */
 .ph.many img { flex: 0 0 calc((100% + var(--b) - 50px) / 3); min-width: 0; scroll-snap-align: start; }
 @media (min-width: 900px) { .ph.many { --b: 0px; } }
-.ph img { flex: 0 0 calc((100% - 16px) / 3); min-width: 96px; aspect-ratio: 5 / 6; object-fit: cover; border-radius: var(--r12); }
+.ph img { flex: 0 0 calc((100% - 16px) / 3); min-width: 96px; aspect-ratio: 5 / 6; object-fit: cover; }   /* 11-12 후기 사진 모서리 0 (이전 12) */
 .tx2 { margin-top: 8px; color: var(--text-primary); text-wrap: pretty; }
 .act { margin-top: 0; display: flex; align-items: center; gap: 12px; color: var(--text-secondary); font-size: 12px; font-weight: 500; }
 .act button { display: inline-flex; align-items: center; gap: 4px; height: 32px; padding-right: 4px; transition: color .2s; }
@@ -380,14 +365,12 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
 /* 정보 섹션(전시콘텐츠·위치): 제목은 16px SemiBold, 구분은 연한 선 하나, 큰 회색 띠는 없앰 */
 .sec h2 { font-size: 16px; font-weight: 600; letter-spacing: -0.03em; }
 .band { margin-top: 0; background: none; padding-bottom: 0; }
-.sec[aria-labelledby="h-content"], .sec[aria-labelledby="h-place"] { position: relative; margin-top: 28px; padding-top: 21px; }   /* 11-09 Figma: 선(1) 아래 8+12=20 → 선 두께 포함 21 (제목 글자 삭제) */
-.sec[aria-labelledby="h-place"] { margin-top: 20px; }   /* 콘텐츠 아래 12+8=20 → 선 */
+.sec[aria-labelledby="h-content"] { position: relative; margin-top: 28px; padding-top: 21px; }   /* 11-09 Figma: 선(1) 아래 8+12=20 → 선 두께 포함 21 (제목 글자 삭제) · 11-12 위치 영역 삭제 */
 #s-content > .sec { padding-top: 21px; }   /* 선(1) 아래 8+12=20 → 선 두께 포함 21. `.sec:has(> h2.sr)`(20)보다 세게 id로 */
-#s-place { padding-top: 25px; }   /* 선(1) 아래 8+16=24 → 지도 (선 두께 포함 25) */
-.sec[aria-labelledby="h-content"]::before, .sec[aria-labelledby="h-place"]::before { content: ""; position: absolute; top: 0; left: var(--pad); right: var(--pad); height: 1px; background: var(--bg-soft); }
-@media (min-width: 900px) { .sec[aria-labelledby="h-content"]::before, .sec[aria-labelledby="h-place"]::before { left: 0; right: 0; } }
+.sec[aria-labelledby="h-content"]::before { content: ""; position: absolute; top: 0; left: var(--pad); right: var(--pad); height: 1px; background: var(--bg-soft); }
+@media (min-width: 900px) { .sec[aria-labelledby="h-content"]::before { left: 0; right: 0; } }
 .band .sec { padding-top: 20px; }
-.cards, .place { margin-top: 12px; }
+.cards { margin-top: 12px; }
 .sec[aria-labelledby="h-intro"] { padding-top: 20px; }   /* 11-09 Figma: 탭 줄 아래 소개글까지 20(제목 글자 삭제) */
 </style>
 <script src="assets/byline.js"></script>
@@ -460,9 +443,9 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
           <button class="like" id="like" aria-pressed="false" aria-label="좋아요"><svg class="i" aria-hidden="true"><use href="#i-heart"/></svg><span id="like-n">204</span></button>
         </div>
         <dl class="info">
-          <div><svg class="i" aria-hidden="true"><use href="#i-cal"/></svg><dt>일정</dt><dd id="x-date" class="dt14">2022.07.29</dd></div>
-          <div><svg class="i" aria-hidden="true"><use href="#i-clock"/></svg><dt>운영</dt><dd id="x-time">14:00 - 18:00</dd></div>
-          <div><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg><dt>장소</dt><dd id="x-place">진달래홀</dd></div>
+          <div><dt>일정</dt><dd id="x-date" class="dt14">2022.07.29</dd></div>
+          <div><dt>운영</dt><dd id="x-time">14:00 - 18:00</dd></div>
+          <div><dt>장소</dt><dd><a class="pl" id="x-plink" target="_blank" rel="noopener noreferrer"><span id="x-place">진달래홀</span><svg class="o" aria-hidden="true"><use href="#i-out"/></svg></a></dd></div>
         </dl>
         <div class="ext" id="x-links" aria-label="전시 링크"></div>
         <div class="actions">
@@ -483,7 +466,6 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
         <section class="sec" id="s-intro" aria-labelledby="h-intro">
           <h2 id="h-intro" class="sr">전시소개</h2>
           <p class="lead" id="x-intro">움직임이 멈춘 자리에서 색은 더 또렷해집니다. 이번 졸업 전시는 한결대학교 시각디자인학과 졸업 예정자 24명이 그래픽·브랜딩·모션으로 풀어낸 「여넥스 — 선명하되, 투명한 연결」을 소개합니다. 겹치고 비치는 색의 층을 따라, 서로 다른 작업이 하나의 흐름으로 이어지는 순간을 만나 보세요.</p>
-          <p class="more" id="x-more"><a href="#">더보기<svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></a></p>
         </section>
 
         <div class="band" id="s-content">
@@ -493,19 +475,7 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
           </section>
         </div>
 
-        <section class="sec" id="s-place" aria-labelledby="h-place">
-          <h2 id="h-place" class="sr">위치 안내</h2>
-          <div class="place">
-            <div class="pm" aria-hidden="true">
-              <svg class="mp" viewBox="0 0 362 160" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="362" height="160" fill="#ebebe8"/><g fill="#e3e3df"><rect x="14" y="14" width="46" height="30" rx="2"/><rect x="72" y="10" width="38" height="36" rx="2"/><rect x="236" y="12" width="52" height="32" rx="2"/><rect x="300" y="18" width="44" height="28" rx="2"/><rect x="18" y="108" width="50" height="34" rx="2"/><rect x="82" y="116" width="34" height="30" rx="2"/><rect x="262" y="104" width="46" height="36" rx="2"/><rect x="318" y="112" width="30" height="34" rx="2"/><rect x="128" y="124" width="52" height="26" rx="2"/></g><rect x="196" y="104" width="52" height="38" rx="10" fill="#dfe2dc"/><path d="M-10 150 C 60 128 120 156 190 136 S 300 120 372 134" fill="none" stroke="#d9dee1" stroke-width="20" stroke-linecap="round"/><g fill="none" stroke="#f6f6f4" stroke-width="3"><path d="M-6 58 Q 180 50 368 62"/><path d="M-6 100 Q 180 94 368 104"/><path d="M96 -6 Q 100 80 92 166"/><path d="M226 -6 Q 232 80 222 166"/><path d="M300 -6 Q 296 80 304 166"/></g><path d="M-10 30 L 372 118" stroke="#d5d5d0" stroke-width="11" fill="none"/><path d="M-10 30 L 372 118" stroke="#fbfbfa" stroke-width="8" fill="none"/></svg>
-              <svg class="pn" viewBox="0 0 35 35" focusable="false"><path d="M17.5 31s-7.5-6.7-7.5-13a7.5 7.5 0 0 1 15 0c0 6.3-7.5 13-7.5 13z" fill="#18181b" stroke="#18181b" stroke-width="1.5" stroke-linejoin="round"/><circle cx="17.5" cy="17.5" r="3" fill="#fff"/></svg>
-            </div>
-            <div class="pi">
-              <div class="tx"><strong id="x-place2">진달래홀</strong><small id="x-addr">서울특별시 한결구 예술로 12</small></div>
-              <a href="map.html?ex=0" id="x-map">지도 보기</a>
-            </div>
-          </div>
-        </section>
+        <!-- 11-12 위치 영역(지도 그림 + 검은 정보 카드) 삭제 — 장소는 위 정보 줄에서 카카오 지도로 바로 연결 -->
       </div>
 
       <!-- 작품 -->
@@ -612,7 +582,7 @@ const works = [
   { f: 'art-head', n: 2 }, { f: 'art-picasso', n: 1 }, { f: 'art-model', n: 5 }
 ];
 document.getElementById('works').innerHTML = works.map((w, i) =>
-  `<a class="w" href="${w.video ? '#' : 'work.html' + (w.n > 1 ? '?authors=' + w.n : '')}" style="--n:${i}" ${w.video ? `data-video="${w.video}" aria-haspopup="dialog"` : ''}><div class="im"><div><img src="${w.thumb || `assets/img/detail/opt/${w.f}.jpg`}" alt="${w.video ? '여넥스 영상 작품' : '여넥스 작품'}" loading="lazy"><span class="bd"><svg class="i" aria-hidden="true"><use href="#i-heart"/></svg>202</span>${w.video ? `<span class="play"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg></span><span class="dur" hidden></span>` : ''}</div></div><div class="tx"><b>여넥스</b><span>${byline(w.n, i)}</span></div></a>`).join('');
+  `<a class="w" href="${w.video ? '#' : 'work.html' + (w.n > 1 ? '?authors=' + w.n : '')}" style="--n:${i}" ${w.video ? `data-video="${w.video}" aria-haspopup="dialog"` : ''}><div class="im"><div><img src="${w.thumb || `assets/img/detail/opt/${w.f}.jpg`}" alt="${w.video ? '여넥스 영상 작품' : '여넥스 작품'}" loading="lazy">${w.video ? `<span class="play"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg></span><span class="dur" hidden></span>` : ''}</div></div><div class="tx"><b>여넥스</b><span>${byline(w.n, i)}</span></div></a>`).join('');
 
 /* 영상 작품: 길이는 파일을 읽을 수 있을 때만 표시, 클릭하면 플레이어 */
 const player = document.getElementById('player'), pv = document.getElementById('player-v'), pmiss = document.getElementById('player-miss');
@@ -812,7 +782,7 @@ if (PV) {
   /* 전시콘텐츠는 등록 후 따로 만들기 때문에 아직 없으면 숨김 */
   if (!PV.sections) pvHide('s-content');
   /* 위치 */
-  pvText('x-place2', PV.place || ''); pvText('x-addr', PV.addr || ''); if (!PV.addr) document.getElementById('x-addr').hidden = true;
+  placeLink(PV.addr || PV.place || '');
   /* 좋아요·저장·후기는 공개 뒤에 쓰는 기능이라 막음 */
   like.disabled = true; likeN.textContent = '0';
   document.querySelectorAll('.save, .share').forEach((b) => { b.disabled = true; b.title = '공개 전에는 사용할 수 없어요'; });
@@ -843,10 +813,8 @@ if (DX) {
   document.title = `${DX.t} · Display U.`;
   lines('x-title', DX.t); lines('x-org', DX.s);
   lines('x-date', dateRange(DX.start, DX.end));
-  lines('x-time', DX.time); lines('x-place', DX.p); lines('x-place2', DX.p);
+  lines('x-time', DX.time); lines('x-place', DX.p); placeLink(DX.p);
   lines('x-intro', DX.intro);
-  document.getElementById('x-addr').style.display = 'none';
-  document.getElementById('x-map').href = 'map.html?ex=' + DXI;
   const SLUG = ['unfold', 'growing_elsewhere', 'pixel_garden', 'in_the_making', 'worlds_in_progress', 'playback', 'after_use', 'passage_of_light', 'beyond_the_panel', 'ways_of_knotting', 'measuring_between'][DXI];
   renderLinks(SLUG + '_2026', 'https://' + SLUG.replace(/_/g, '-') + '.kr/', SLUG.replace(/_/g, '-') + '.kr', true);   // 가상 계정·주소라서 눌러도 이동하지 않고 안내만
   /* 포스터: 한 장 */
@@ -878,9 +846,14 @@ if (DX) {
   const mine = DEMO.WORKS.filter((w) => w.e === DX.i);
   document.getElementById('works').innerHTML = mine.length ? mine.map((w, i) => `<a class="w" href="work.html?w=${w.i}" style="--n:${i}"><div class="im"><div><img src="assets/img/explore/opt/${w.img}.jpg" alt="${w.t}" loading="lazy"></div></div><div class="tx"><b>${w.t}</b><span>${Byline.html(w.a)}</span></div></a>`).join('') : '<p class="pv-empty">아직 올라온 작품이 없어요</p>';
 }
-/* 소개 더보기 */
-document.getElementById('x-more').querySelector('a').addEventListener('click', (e) => { e.preventDefault(); const l = document.getElementById('x-intro'); const on = l.classList.toggle('open'); e.currentTarget.firstChild.textContent = on ? '접기' : '더보기'; });
-if (PV && PV.intro && PV.intro.length < 90 && !/\n/.test(PV.intro)) document.getElementById('x-more').hidden = true;
+/* 11-12 소개글 더보기 없음(작품 상세와 같게 전부 보임) · 장소를 누르면 카카오 지도
+   데모는 장소 이름(미리보기는 주소 우선)으로 검색 링크를 만듦. 실제 서비스는 개발에서 좌표·주소 기반 카카오 지도 링크로 */
+function placeLink(q) {
+  const a = document.getElementById('x-plink'); if (!a) return;
+  if (!q) { a.removeAttribute('href'); a.classList.add('off'); return; }
+  a.href = 'https://map.kakao.com/link/search/' + encodeURIComponent(q);
+  a.setAttribute('aria-label', '장소 ' + document.getElementById('x-place').textContent + ', 카카오맵에서 보기 (새 탭에서 열려요)');
+}
 
 /* ---------- 포스터 캐러셀(영상 칸이 어디 있어도 동작) ---------- */
 (() => {
