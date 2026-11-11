@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>탐색 · Display U.</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/* 값은 Figma 변수와 탐색 · 정리안(2652:30397)에서 가져옴 */
+:root {
+  --text-primary: #18181b;
+  --text-secondary: #3f3f47;
+  --text-teritary: #71717b;
+  --text-disable: #d4d4d8;
+  --border-primary: #d4d4d8;
+  --bg-secondary: #f4f4f5;
+  --bg-teritary: #f0f0f3;
+  --r12: 12px;
+  --ease: cubic-bezier(.16, 1, .3, 1);
+  --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  --pad: 20px;
+  color-scheme: light;
+}
+@media (min-width: 768px)  { :root { --pad: 32px; } }
+@media (min-width: 1100px) { :root { --pad: 48px; } }
+
+*, *::before, *::after { box-sizing: border-box; letter-spacing: -0.03em; }
+html { -webkit-text-size-adjust: 100%; scrollbar-color: var(--border-primary) transparent; scrollbar-width: thin; }
+body { margin: 0; background: #fff; color: var(--text-primary); font: 500 12px/1.4 var(--font); letter-spacing: -0.03em; -webkit-font-smoothing: antialiased; padding-bottom: 150px; }
+::selection { background: var(--text-primary); color: #fff; }
+a { color: inherit; text-decoration: none; }
+button, input { font: inherit; letter-spacing: -0.03em; color: inherit; }
+button { background: none; border: 0; padding: 0; cursor: pointer; }
+a, button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+h1, h2, p, ul { margin: 0; padding: 0; }
+ul { list-style: none; }
+img { display: block; }
+:focus-visible { outline: 2px solid var(--text-primary); outline-offset: 2px; border-radius: 6px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.skip { position: absolute; left: 16px; top: -64px; z-index: 60; height: 44px; padding: 0 16px; display: inline-flex; align-items: center; background: var(--text-primary); color: #fff; border-radius: var(--r12); font-size: 14px; font-weight: 600; transition: top .2s var(--ease); }
+.skip:focus-visible { top: 8px; }
+.i { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.wrap { width: 100%; max-width: 1320px; margin-inline: auto; padding-inline: var(--pad); }
+
+/* 검색창: 스크롤하면 같이 올라가 사라짐(고정되는 건 아래 분야 칩) */
+.top { background: #fff; padding-top: max(12px, env(safe-area-inset-top)); }
+.search { position: relative; margin-top: 0; }   /* 11-08 Figma `탐색 · 전시`: 상태바 아래 12에 검색창(54) */
+.search input { width: 100%; height: 54px; padding: 0 52px 0 20px; border: 0; border-radius: 9999px; background: var(--bg-secondary); font-size: 16px; font-weight: 500; outline: 0; transition: background-color .2s; -webkit-appearance: none; appearance: none; }
+.search input::placeholder { color: var(--text-teritary); font-weight: 400; }   /* 11-08 안내 문구는 색은 그대로, 굵기만 Regular(Figma와 같음). 크기는 16 그대로 — 입력 칸은 무조건 16 이상(사용자 규칙, iOS 확대 방지) */
+/* 11-08 사용자: 눌렀을 때 검은 테두리가 생기고 돋보기가 X로 바뀌어 검색이 어정쩡 → 누르면 테두리 대신 바탕만 한 단계 진해지고 돋보기가 진해짐(손가락·마우스). 테두리는 키보드(Tab)로 들어왔을 때만 */
+.search input:focus { background: var(--bg-teritary); }
+.search:focus-within .go { color: var(--text-primary); }
+html.kb .search input:focus-visible { box-shadow: 0 0 0 2px var(--text-primary); }
+.search.has input { padding-right: 92px; }
+.search input::-webkit-search-cancel-button { display: none; }
+.search .go, .search .clear { position: absolute; top: 7px; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 9999px; color: var(--text-teritary); }
+.search .go { right: 8px; transition: color .2s; }   /* 돋보기는 늘 그대로 두고(검색 버튼), 지우기 X는 그 왼쪽에 */
+.search .clear { right: 48px; color: var(--text-teritary); transition: color .2s; }
+.search .clear[hidden] { display: none; }
+@media (hover: hover) { .search .clear:hover { color: var(--text-primary); } }
+@media (min-width: 900px) { .search { max-width: 720px; margin-inline: auto; } }
+
+/* 분야 */
+.fields { display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; margin-inline: calc(var(--pad) * -1); padding-inline: var(--pad); margin-top: 12px; box-shadow: inset 0 -1px 0 #fff; position: sticky; top: 0; z-index: 30; background: #fff; transition: border-color .2s; }
+.fields.stuck { box-shadow: inset 0 -1px 0 var(--bg-teritary); }
+.fields::-webkit-scrollbar { display: none; }
+@media (min-width: 900px) { .fields { justify-content: center; flex-wrap: wrap; } }
+.field { position: relative; flex: none; height: 40px; padding: 0 12px; font-size: 16px; font-weight: 600; color: var(--text-disable); transition: color .2s, transform .16s var(--ease); } /* 11-07 Figma 대조 */
+@media (hover: hover) { .field:hover { color: var(--text-teritary); } }
+.field:active { transform: scale(.96); }
+.field[aria-selected="true"] { color: var(--text-primary); font-weight: 600; }
+.field[aria-selected="true"]:hover { color: var(--text-primary); }
+/* 선택 밑줄: 칸 전체 폭, 칩 사이를 미끄러져 옮겨감(transform만 씀) — 위치·폭은 JS가 칩 크기를 재서 넣음 */
+.fields .ind { position: absolute; left: 0; top: 0; width: 1px; height: 2px; background: var(--text-primary); transform-origin: 0 0; pointer-events: none; transition: transform .26s var(--ease); }
+.fields:not(.ready) .ind { transition: none; }
+
+/* 필터 · 전시/작품 전환 */
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; position: relative; }
+.chips { display: flex; gap: 8px; }
+.chip { position: relative; }
+.chip > button { height: 36px; padding: 0 12px 0 14px; display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--border-primary); border-radius: 9999px; background: #fff; font-size: 12px; font-weight: 500; white-space: nowrap; transition: background .2s, border-color .2s, color .2s, transform .16s var(--ease); }
+.chip > button:active { transform: scale(.96); }
+@media (hover: hover) { .chip > button:hover { border-color: var(--text-teritary); } }
+.chip > button .i { width: 18px; height: 18px; transition: transform .25s var(--ease); }
+.chip > button[aria-expanded="true"] { border-color: var(--text-primary); }
+.chip > button[aria-expanded="true"] .i { transform: rotate(180deg); }
+.chip.on > button { background: var(--text-primary); border-color: var(--text-primary); color: #fff; }
+.seg { display: inline-flex; padding: 2px; border-radius: 9999px; background: var(--bg-secondary); }
+.seg button { height: 32px; min-width: 54px; padding: 0 14px; border-radius: 9999px; font-size: 12px; font-weight: 600; color: var(--text-secondary); transition: background .25s var(--ease), color .2s, transform .16s var(--ease); }
+.seg button:active { transform: scale(.96); }
+.seg button[aria-pressed="true"] { background: var(--text-primary); color: #fff; }
+.menu { position: absolute; left: 0; top: 44px; z-index: 40; min-width: 168px; padding: 8px; background: #fff; border: 1px solid var(--bg-teritary); border-radius: var(--r12); box-shadow: 0 5px 50px rgba(0, 0, 0, .1); transform-origin: top left; animation: pop .22s var(--ease); }
+.menu[hidden] { display: none; }
+.menu.right { left: auto; right: 0; transform-origin: top right; }
+@keyframes pop { from { opacity: 0; transform: translateY(-4px) scale(.98); } }
+.menu button { width: 100%; height: 42px; padding: 0 12px; display: flex; align-items: center; justify-content: space-between; text-align: left; border-radius: 8px; font-size: 14px; font-weight: 500; white-space: nowrap; }
+@media (hover: hover) { .menu button:hover { background: var(--bg-secondary); } }
+.menu button[aria-checked="true"] { background: var(--bg-teritary); font-weight: 600; }
+
+.meta { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; min-height: 28px; }
+/* 11-09 날짜 글자: Figma `body/md/regular2`(12, 500, 자간 +1%)·`body/lg/regular2`(14, 400, 자간 0) — 숫자가 붙어 보이지 않게 기본 자간(-3%)을 쓰지 않음 */
+.dt12 { font-weight: 500; letter-spacing: 0.01em; }
+.dt14 { font-weight: 400; letter-spacing: 0; }
+.count { font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.sortwrap { position: relative; margin-left: auto; }
+.sortbtn { height: 32px; display: inline-flex; align-items: center; gap: 2px; padding-left: 8px; font-size: 12px; font-weight: 500; transition: color .2s; }
+.sortbtn .i { width: 18px; height: 18px; transition: transform .25s var(--ease); }
+.sortbtn[aria-expanded="true"] .i { transform: rotate(180deg); }
+
+/* 목록 */
+.grid { margin-top: 12px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 12px; }   /* 11-08 Figma: 카드 사이 가로 12 · 세로 16 */
+@media (min-width: 640px)  { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
+@media (min-width: 1000px) { .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (min-width: 1280px) { .grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+.card { display: block; background: #000; border-radius: var(--r12); overflow: hidden; color: #fff; animation: rise .55s var(--ease) backwards; animation-delay: calc(var(--n, 0) * 35ms); transition: transform .3s var(--ease); }
+.card:active { transform: scale(.98); }
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+.card .im { padding: 7px; }
+.card .im div { position: relative; border-radius: var(--r12); overflow: hidden; background: #111; }
+.card.ex .im div { aspect-ratio: 161 / 241; }
+.card.wk .im div { aspect-ratio: 161 / 215; }
+.card .im img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
+@media (hover: hover) { .card:hover .im img { transform: scale(1.03); } }
+.badge { position: absolute; top: 8px; right: 8px; display: inline-flex; align-items: center; gap: 2px; padding: 3px 8px; border-radius: 9999px; background: rgba(255, 255, 255, .72); color: var(--text-primary); font-size: 12px; font-weight: 500; backdrop-filter: blur(10px); }
+.badge .i { width: 13px; height: 13px; }
+.tx { padding: 0 12px 10px; display: grid; gap: 0; }   /* 11-08 Figma `card`: 글자 영역 위 0 · 제목↔학교 0 · 학교↔날짜 4 · 날짜↔장소 2 · 아래 10 → 전시 카드 342 / 작품 카드 276 */
+.tx b { font-size: 14px; font-weight: 600; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tx .l { font-size: 12px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tx .m { display: flex; align-items: center; gap: 3px; font-size: 12px; font-weight: 500; color: #a1a1aa; white-space: nowrap; overflow: hidden; }
+.tx .m img { width: 14px; height: 14px; flex: none; }
+.tx .l + .m { margin-top: 4px; }   /* 첫 .m은 span 중 두 번째라 :first-of-type이 안 먹던 것을 .l 바로 뒤로 */
+.tx .m + .m { margin-top: 2px; }
+.empty { padding: 120px 0 80px; text-align: center; }
+.empty strong { display: block; font-size: 16px; font-weight: 600; }
+.empty p { margin-top: 6px; color: var(--text-secondary); }
+
+/* 하단 알약 탭 (홈과 같음) */
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; } }
+</style>
+<script src="assets/byline.js"></script>
+<link rel="stylesheet" href="assets/nav.css">
+<script src="assets/nav.js"></script>
+<script type="speculationrules">{"prerender":[{"source":"list","urls":["home.html","my.html"],"eagerness":"eager"}]}</script>
+<!-- 카드 모양 비교용 사본(11-11 explore.html 기준, card-compare.html 안에서 씀): ?v=a|b|e|f|c|d. explore.html과 다른 곳은 이 주석 블록, 분야 탭 scrollIntoView 조건 한 곳, 맨 아래 클릭 막기 한 줄뿐 -->
+<script>document.documentElement.dataset.v = ((new URLSearchParams(location.search).get('v')) || 'a').toLowerCase();</script>
+<link rel="stylesheet" href="card-compare.css">
+</head>
+<body>
+<a class="skip" href="#list">목록으로 건너뛰기</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9.5 6 6 6-6"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20.2S4.5 15.6 4.5 9.9A4.2 4.2 0 0 1 12 7.6a4.2 4.2 0 0 1 7.5 2.3c0 5.7-7.5 10.3-7.5 10.3z"/></symbol>
+  </defs>
+</svg>
+
+<header class="top">
+  <div class="wrap">
+    <h1 class="sr">탐색</h1>
+    <form class="search" role="search" id="search-form" autocomplete="off">
+      <label class="sr" for="q">전시·작품 검색</label>
+      <input id="q" name="q" type="search" enterkeyhint="search" placeholder="전시·작품을 검색해보세요" spellcheck="false" autocomplete="off">
+      <button type="button" class="clear" id="clear" aria-label="검색어 지우기" hidden><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button>
+      <button type="submit" class="go" id="go" aria-label="검색"><svg class="i" aria-hidden="true"><use href="#i-search"/></svg></button>
+    </form>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+  <div class="fields" id="fields" role="tablist" aria-label="분야"></div>
+
+  <div class="bar">
+    <div class="chips">
+      <div class="chip" id="chip-type"><button aria-haspopup="menu" aria-expanded="false" aria-controls="menu-type"><span class="lb">전시 유형</span><svg class="i" aria-hidden="true"><use href="#i-down"/></svg></button><div class="menu" id="menu-type" role="menu" hidden></div></div>
+      <div class="chip" id="chip-status"><button aria-haspopup="menu" aria-expanded="false" aria-controls="menu-status"><span class="lb">전시 상태</span><svg class="i" aria-hidden="true"><use href="#i-down"/></svg></button><div class="menu" id="menu-status" role="menu" hidden></div></div>
+    </div>
+    <div class="seg" role="group" aria-label="보기">
+      <button id="seg-exh" aria-pressed="true">전시</button>
+      <button id="seg-wk" aria-pressed="false">작품</button>
+    </div>
+  </div>
+
+  <div class="meta">
+    <p class="count" id="count" aria-live="polite"></p>
+    <div class="sortwrap">
+      <button class="sortbtn" id="sortbtn" aria-haspopup="menu" aria-expanded="false" aria-controls="menu-sort"><span id="sortlb">최신순</span><svg class="i" aria-hidden="true"><use href="#i-down"/></svg></button>
+      <div class="menu right" id="menu-sort" role="menu" hidden></div>
+    </div>
+  </div>
+
+  <div id="list" tabindex="-1"></div>
+</main>
+
+<nav class="nav" aria-label="하단 메뉴">
+  <div class="pill" style="--i:1">
+    <span class="cap" aria-hidden="true"><span class="nav-row"><span class="nav-slot"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.847 2.74991C12.3783 2.28128 11.6185 2.28128 11.1499 2.74991L2.74991 11.1499C2.28128 11.6185 2.28128 12.3783 2.74991 12.847C3.21854 13.3156 3.97834 13.3156 4.44697 12.847L4.79844 12.4955V20.3984C4.79844 21.0612 5.3357 21.5984 5.99844 21.5984H8.39844C9.06118 21.5984 9.59844 21.0612 9.59844 20.3984V17.9984C9.59844 17.3357 10.1357 16.7984 10.7984 16.7984H13.1984C13.8612 16.7984 14.3984 17.3357 14.3984 17.9984V20.3984C14.3984 21.0612 14.9357 21.5984 15.5984 21.5984H17.9984C18.6612 21.5984 19.1984 21.0612 19.1984 20.3984V12.4955L19.5499 12.847C20.0185 13.3156 20.7783 13.3156 21.247 12.847C21.7156 12.3783 21.7156 11.6185 21.247 11.1499L12.847 2.74991Z"/></svg></span><span class="nav-slot"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.59844 4.79844C6.94747 4.79844 4.79844 6.94747 4.79844 9.59844C4.79844 12.2494 6.94747 14.3984 9.59844 14.3984C12.2494 14.3984 14.3984 12.2494 14.3984 9.59844C14.3984 6.94747 12.2494 4.79844 9.59844 4.79844ZM2.39844 9.59844C2.39844 5.62199 5.62199 2.39844 9.59844 2.39844C13.5749 2.39844 16.7984 5.62199 16.7984 9.59844C16.7984 11.1534 16.3055 12.5933 15.4673 13.7703L21.247 19.5499C21.7156 20.0185 21.7156 20.7783 21.247 21.247C20.7783 21.7156 20.0185 21.7156 19.5499 21.247L13.7703 15.4673C12.5933 16.3055 11.1534 16.7984 9.59844 16.7984C5.62199 16.7984 2.39844 13.5749 2.39844 9.59844Z"/></svg></span><span class="nav-slot"><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z"/><path d="M12 14C8.13401 14 5 17.134 5 21H19C19 17.134 15.866 14 12 14Z"/></svg></span></span></span>
+    <a href="home.html" aria-label="홈"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg></a>
+    <a href="explore.html" aria-current="page" aria-label="검색"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></a>
+    <a href="my.html" aria-label="마이"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg></a>
+  </div>
+</nav>
+
+<script src="assets/demo-data.js"></script>
+<script>
+/* ============ 예시 데이터 (가상) — 형식은 Figma 카드 그대로 ============ */
+const FIELDS = ['전체', '회화', '조소', '사진', '그래픽', '브랜딩', '제품', '영상', '공간', '건축', 'UXUI', '공예', '기타'];
+const TYPES = ['전체', '졸업 전시', '학과·학회 전시', '과제 전시', '연합 전시', '소모임·동아리 전시', '기타 단체 전시'];
+const STATUS = ['전체', '전시 중', '전시 예정', '종료'];
+const SORTS = ['최신순', '인기순'];
+/* 전시 15개·작품 24개: 공용 데이터(assets/demo-data.js)에서 가져옴. 날짜는 오늘 기준이라 상태(전시 중·예정·종료)가 항상 맞음 */
+const EXH = DEMO.EXH;
+const WORKS = DEMO.WORKS;
+
+/* ============ 상태 (주소와 연동: 상세에서 돌아와도 검색어·분야·필터 유지) ============ */
+const P = new URLSearchParams(location.search);
+const pick = (v, list, d) => (list.includes(v) ? v : d);
+const state = { q: P.get('q') || '', tab: P.get('tab') === 'works' ? 'works' : 'exh', field: pick(P.get('field'), FIELDS, '전체'), type: pick(P.get('type'), TYPES, '전체'), status: pick(P.get('status'), STATUS, '전체'), sort: pick(P.get('sort'), SORTS, '최신순') };
+function syncUrl() {
+  const u = new URL(location.href); const def = { q: '', tab: 'exh', field: '전체', type: '전체', status: '전체', sort: '최신순' };
+  for (const k in state) state[k] === def[k] ? u.searchParams.delete(k) : u.searchParams.set(k, state[k]);
+  try { history.replaceState(null, '', u); } catch (e) {}
+}
+
+/* ============ 렌더 ============ */
+const $ = (id) => document.getElementById(id);
+const ic = (id) => `<svg class="i" aria-hidden="true"><use href="#${id}"/></svg>`;
+const norm = (s) => s.toLowerCase().replace(/\s+/g, ' ').trim();
+/* 카드 작가 표기(11-02 확정): 한 명은 이름, 2명부터 "첫 작가 외 N명" — 검색 결과도 같은 표기 */
+const byline = (names) => Byline.html(names);   // 11-06: 이름을 다 보여주고 카드 폭을 넘칠 때만 "외 N명"
+function filtered() {
+  const q = norm(state.q);
+  const ex = EXH.map((e, i) => ({ ...e, i }));
+  const typeStatusOk = (e) => (state.type === '전체' || e.ty === state.type) && (state.status === '전체' || e.st === state.status);
+  let items;
+  if (state.tab === 'exh') {
+    items = ex.filter((e) => typeStatusOk(e) && (state.field === '전체' || e.f.includes(state.field)) && (!q || norm(e.t).includes(q) || norm(e.s).includes(q)));
+  } else {
+    items = WORKS.map((w, i) => ({ ...w, i })).filter((w) => typeStatusOk(ex[w.e]) && (state.field === '전체' || w.f === state.field) && (!q || norm(w.t).includes(q) || w.a.some((n) => norm(n).includes(q))));
+  }
+  return state.sort === '인기순' ? items.sort((a, b) => b.l - a.l || a.i - b.i) : items.sort((a, b) => a.i - b.i);
+}
+function renderList() {
+  const items = filtered(), q = norm(state.q), el = $('list');
+  $('count').textContent = q ? `${state.tab === 'exh' ? '전시' : '작품'} ${items.length}개` : '';
+  if (!items.length) { el.innerHTML = `<div class="empty"><strong>검색 결과가 없어요</strong><p>다른 검색어나 필터로 찾아보세요</p></div>`; return; }
+  el.innerHTML = '<div class="grid">' + items.map((it, n) => state.tab === 'exh'
+    ? `<a class="card ex" href="exhibition.html?e=${it.i}" style="--n:${Math.min(n, 12)}"><div class="im"><div><img src="${DEMO.src(it.img)}" alt="${it.t} 포스터" width="161" height="241" loading="${n < 6 ? 'eager' : 'lazy'}"></div></div><div class="tx"><b>${it.t}</b><span class="l">${it.s}</span><span class="m"><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14"><span class="dt12">${it.d}</span></span><span class="m"><img src="assets/img/icon-location.svg" alt="" width="14" height="14">${it.p}</span></div></a>`
+    : `<a class="card wk" href="work.html?w=${it.i}" style="--n:${Math.min(n, 12)}"><div class="im"><div><img src="assets/img/explore/opt/${it.img}.jpg" alt="${it.t}" width="161" height="215" loading="${n < 6 ? 'eager' : 'lazy'}"></div></div><div class="tx"><b>${it.t}</b><span class="l">${byline(it.a)}</span></div></a>`).join('') + '</div>';
+}
+function placeInd() {
+  const fl = $('fields'), b = fl.querySelector('.field[aria-selected="true"]'), ind = fl.querySelector('.ind'); if (!b || !ind) return;
+  ind.style.transform = `translate(${b.offsetLeft}px, ${b.offsetTop + b.offsetHeight - 2}px) scaleX(${b.offsetWidth})`;
+}
+function renderChrome() {
+  const fl = $('fields');
+  if (!fl.querySelector('.field')) fl.innerHTML = FIELDS.map((f) => `<button class="field" role="tab" data-f="${f}">${f}</button>`).join('') + '<span class="ind" aria-hidden="true"></span>';   // 버튼은 한 번만 만들고 속성만 바꿔야 색·밑줄이 이어서 움직임
+  fl.querySelectorAll('.field').forEach((b) => { const on = b.dataset.f === state.field; b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1; });
+  placeInd();
+  for (const [k, id, all] of [['type', 'chip-type', '전시 유형'], ['status', 'chip-status', '전시 상태']]) {
+    const chip = $(id); chip.classList.toggle('on', state[k] !== '전체'); chip.querySelector('.lb').textContent = state[k] === '전체' ? all : state[k];
+  }
+  $('seg-exh').setAttribute('aria-pressed', state.tab === 'exh'); $('seg-wk').setAttribute('aria-pressed', state.tab === 'works');
+  $('sortlb').textContent = state.sort;
+  $('q').value = state.q; $('clear').hidden = !state.q; $('search-form').classList.toggle('has', !!state.q);
+}
+function render() { renderChrome(); renderList(); syncUrl(); }
+
+/* ============ 메뉴 (팝오버) ============ */
+const menus = { type: ['menu-type', TYPES, 'type'], status: ['menu-status', STATUS, 'status'], sort: ['menu-sort', SORTS, 'sort'] };
+function buildMenu(k) { const [id, list, key] = menus[k]; $(id).innerHTML = list.map((v) => `<button role="menuitemradio" aria-checked="${state[key] === v}" data-v="${v}">${v}</button>`).join(''); }
+function closeMenus() { for (const k in menus) { $(menus[k][0]).hidden = true; } document.querySelectorAll('[aria-haspopup]').forEach((b) => b.setAttribute('aria-expanded', 'false')); }
+function toggleMenu(k, btn) { const m = $(menus[k][0]), open = m.hidden; closeMenus(); if (open) { buildMenu(k); m.hidden = false; btn.setAttribute('aria-expanded', 'true'); const sel = m.querySelector('[aria-checked="true"]'); (sel || m.querySelector('button')).focus(); } }
+$('chip-type').querySelector('button').addEventListener('click', (e) => toggleMenu('type', e.currentTarget));
+$('chip-status').querySelector('button').addEventListener('click', (e) => toggleMenu('status', e.currentTarget));
+$('sortbtn').addEventListener('click', (e) => toggleMenu('sort', e.currentTarget));
+for (const k in menus) {
+  const m = $(menus[k][0]);
+  m.addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; state[menus[k][2]] = b.dataset.v; closeMenus(); render(); });
+  m.addEventListener('keydown', (e) => { const bs = [...m.querySelectorAll('button')], i = bs.indexOf(document.activeElement); if (e.key === 'ArrowDown') { e.preventDefault(); bs[(i + 1) % bs.length].focus(); } if (e.key === 'ArrowUp') { e.preventDefault(); bs[(i + bs.length - 1) % bs.length].focus(); } });
+}
+document.addEventListener('click', (e) => { if (!e.target.closest('.chip') && !e.target.closest('.sortwrap')) closeMenus(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { const open = document.querySelector('[aria-expanded="true"]'); closeMenus(); if (open) open.focus(); } });
+
+/* ============ 분야 · 전환 · 검색 ============ */
+$('fields').addEventListener('click', (e) => { const b = e.target.closest('.field'); if (!b) return; state.field = b.dataset.f; render(); b.focus({ preventScroll: true }); b.scrollIntoView({ inline: 'center', block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); });
+$('fields').addEventListener('keydown', (e) => { const bs = [...$('fields').querySelectorAll('.field')], i = bs.indexOf(document.activeElement); if (e.key === 'ArrowRight' && i > -1) { e.preventDefault(); bs[Math.min(i + 1, bs.length - 1)].click(); } if (e.key === 'ArrowLeft' && i > -1) { e.preventDefault(); bs[Math.max(i - 1, 0)].click(); } });
+$('seg-exh').addEventListener('click', () => { state.tab = 'exh'; render(); });
+$('seg-wk').addEventListener('click', () => { state.tab = 'works'; render(); });
+let t; $('q').addEventListener('input', (e) => { state.q = e.target.value; $('clear').hidden = !state.q; $('search-form').classList.toggle('has', !!state.q); clearTimeout(t); t = setTimeout(() => { renderList(); syncUrl(); }, 120); });
+addEventListener('keydown', (e) => { if (e.key === 'Tab') document.documentElement.classList.add('kb'); }); addEventListener('pointerdown', () => document.documentElement.classList.remove('kb'));   // 키보드로 이동 중일 때만 포커스 테두리
+$('search-form').addEventListener('submit', (e) => { e.preventDefault(); $('q').blur(); renderList(); syncUrl(); });
+$('clear').addEventListener('click', () => { state.q = ''; render(); $('q').focus(); });
+
+/* 선택된 분야 탭이 화면 안에 보이게 */
+render();
+const selTab = $('fields').querySelector('[aria-selected="true"]'); if (selTab && window === top) selTab.scrollIntoView({ inline: 'center', block: 'nearest' });   /* 비교용: 비교 페이지 안(iframe)에서는 바깥 페이지를 끌어내리지 않게 */
+placeInd(); requestAnimationFrame(() => $('fields').classList.add('ready'));   // 처음 자리 잡을 땐 움직이지 않고, 그 뒤부터 미끄러짐
+new ResizeObserver(placeInd).observe($('fields')); document.fonts && document.fonts.ready.then(placeInd);   // 창 크기·글꼴이 바뀌면 밑줄 자리를 다시 잡음
+/* 상세에서 돌아오면 보던 위치 복원 */
+addEventListener('pagehide', () => { try { sessionStorage.setItem('explore-y', String(scrollY)); } catch (e) {} });
+try { const y = +sessionStorage.getItem('explore-y'); if (y && performance.getEntriesByType('navigation')[0]?.type === 'back_forward') requestAnimationFrame(() => scrollTo(0, y)); } catch (e) {}
+
+/* 분야 칩이 화면 맨 위에 붙으면 아래에 옅은 선 */
+(() => { const f = document.getElementById('fields'); const on = () => f.classList.toggle('stuck', f.getBoundingClientRect().top <= 0.5); addEventListener('scroll', on, { passive: true }); on(); })();
+</script>
+<script src="assets/auth.js"></script>
+<script src="assets/tap.js"></script>
+<script>/* 비교용: 비교 화면 안에서 다른 페이지로 넘어가지 않게(같은 화면 안 #링크는 그대로) */ document.addEventListener('click', (e) => { const a = e.target.closest('a[href]'); if (a && !a.getAttribute('href').startsWith('#')) e.preventDefault(); }, true);</script>
+</body>
+</html>

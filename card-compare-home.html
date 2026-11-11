@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Display U. · 홈</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/* 값은 Figma 변수(UuCPBJWbsAY64wI93X1ORF · 홈 2609:52999)에서 가져옴 */
+:root {
+  --text-primary: #18181b;
+  --text-secondary: #3f3f47;
+  --text-teritary: #71717b;
+  --text-quaternary: #fafafa;
+  --text-disable: #d4d4d8;
+  --border-primary: #d4d4d8;
+  --bg-white: #ffffff;
+  --bg-black: #000000;
+  --line-soft: #f0f0f0;
+  --r12: 12px;
+  --r20: 20px;
+  --ease: cubic-bezier(.16, 1, .3, 1);
+  --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  /* 카로셀: 가운데 포스터 폭(앱 232). 노트북에서는 아래 미디어쿼리로 키움(제안) */
+  --a: 232px;
+  --gap: 12px;
+  --side: .9138;
+  --wrap: 1320px;
+  --pad: 20px;
+  color-scheme: light;
+}
+@media (min-width: 768px)  { :root { --a: 264px; --gap: 16px; --pad: 32px; } }
+@media (min-width: 1100px) { :root { --a: 320px; --gap: 24px; --pad: 48px; } }
+
+*, *::before, *::after { box-sizing: border-box; letter-spacing: -0.03em; }
+html { -webkit-text-size-adjust: 100%; scrollbar-color: var(--border-primary) transparent; scrollbar-width: thin; }
+body { margin: 0; background: var(--bg-white); color: var(--text-primary); font: 500 12px/1.4 var(--font); letter-spacing: -0.03em; -webkit-font-smoothing: antialiased; padding-bottom: 132px; }
+::selection { background: var(--text-primary); color: #fff; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; letter-spacing: -0.03em; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+a, button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+h1, h2, h3, p { margin: 0; }
+img { display: block; }
+:focus-visible { outline: 2px solid var(--text-primary); outline-offset: 2px; border-radius: 4px; }
+.dark :focus-visible { outline-color: var(--text-quaternary); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.skip { position: absolute; left: 16px; top: -64px; z-index: 30; height: 44px; padding: 0 16px; display: inline-flex; align-items: center; background: var(--text-primary); color: #fff; border-radius: var(--r12); font-size: 14px; font-weight: 600; transition: top .2s var(--ease); }
+.skip:focus-visible { top: 8px; }
+.inner { width: 100%; max-width: calc(var(--wrap) + var(--pad) * 2); margin-inline: auto; padding-inline: var(--pad); }
+
+/* 헤더 */
+.head { background: var(--bg-white); }
+.head .inner { padding-block: 16px; display: flex; align-items: center; justify-content: space-between; }   /* 11-08 Figma `홈 - 수정` 헤더: 위아래 16 + 로고 28.3 = 60.3 (이전 44) */
+.head .logo img { width: 124px; height: 28.3px; }
+.head .search { width: 28px; height: 28px; }
+@media (min-width: 768px) { .head .inner { height: 64px; } }
+
+/* 검정 영역 */
+.dark { position: relative; background: var(--bg-black); color: var(--text-quaternary); padding-bottom: 26px; }
+.tabs { display: flex; justify-content: safe center; padding-top: 6px; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { flex: none; padding: 8px 12px; font-size: 14px; font-weight: 600; color: var(--text-teritary); border-bottom: 2px solid transparent; transition: color .2s; }
+@media (hover: hover) { .tab:hover { color: var(--text-quaternary); } }
+.tab[aria-selected="true"] { color: var(--text-quaternary); border-bottom-color: var(--text-quaternary); }
+.tabs-wrap { padding-inline: calc(var(--pad) - 12px); max-width: calc(var(--wrap) + var(--pad) * 2); margin-inline: auto; }
+
+.stage { position: relative; }
+/* 포스터형·리스트형을 같은 칸에 겹쳐 놓고 안 보이는 쪽은 visibility로만 숨김 → 둘 중 더 큰 높이를 늘 유지해서 전환해도 아래 화면이 움직이지 않음 */
+/* 옆 칸 모습(크기·어둡기·위치)을 스크롤 위치에 묶은 CSS 애니메이션 — 크롬 115+·사파리 26+는 메인 스레드와 무관하게 부드럽게, 그 외는 JS(paint)가 대신함 */
+@keyframes pz-poster { 0%, 100% { transform: translateY(calc(var(--a) * 14 / 232)) scale(var(--side)); } 50% { transform: none; } }
+@keyframes pz-info { 0%, 100% { transform: translateY(calc(var(--a) * -14 / 232)); } 50% { transform: none; } }
+@keyframes pz-dim { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes pz-shade { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+@keyframes pz-badge { 0%, 100% { opacity: .4; } 50% { opacity: 1; } }
+.poster, .info { will-change: transform; }
+.dim, .shade-side, .shade-active { will-change: opacity; }
+@supports (animation-timeline: view()) {
+  .rail.sd .slot { view-timeline: --slot inline; }
+  .rail.sd .poster, .rail.sd .info, .rail.sd .dim, .rail.sd .shade-side, .rail.sd .shade-active, .rail.sd .badge { animation-timing-function: linear; animation-fill-mode: both; animation-timeline: --slot; animation-range: cover calc(50% - (var(--a) + var(--gap))) cover calc(50% + (var(--a) + var(--gap))); }
+  .rail.sd .poster { animation-name: pz-poster; } .rail.sd .info { animation-name: pz-info; }
+  .rail.sd .dim, .rail.sd .shade-side { animation-name: pz-dim; } .rail.sd .shade-active { animation-name: pz-shade; } .rail.sd .badge { animation-name: pz-badge; }
+}
+@media (prefers-reduced-motion: reduce) { .rail.sd .poster, .rail.sd .info, .rail.sd .dim, .rail.sd .shade-side, .rail.sd .shade-active, .rail.sd .badge { animation: none; } }
+.views { display: grid; min-height: calc(var(--a) * 329 / 232 + 16px + 99px); }   /* 포스터(329/232)+위 여백+정보 3줄: 글꼴이 늦게 와도·제목이 길어도·탭을 바꿔도 높이가 같음 */
+.views > #posters, .views > #lst { grid-area: 1 / 1; min-width: 0; }
+.views > #posters[hidden] { display: block !important; visibility: hidden; pointer-events: none; }
+.views > #lst[hidden] { display: flex !important; visibility: hidden; pointer-events: none; }
+.stage.is-empty .views > * { display: none !important; }
+.rail { position: relative; display: flex; align-items: flex-start; gap: var(--gap); overflow-x: auto; scroll-snap-type: x mandatory; padding: 16px calc(50% - var(--a) / 2) 0; scrollbar-width: none; overscroll-behavior-x: contain; }
+.rail::-webkit-scrollbar { display: none; }
+.rail:focus-visible { outline-offset: -2px; }
+.slot { flex: 0 0 var(--a); scroll-snap-align: center; scroll-snap-stop: always; display: flex; flex-direction: column; align-items: center; cursor: pointer; }   /* 한 번에 한 장씩 넘어감 */
+.slot.is-active { cursor: default; }
+.slot:not(.is-active) .badge { opacity: .4; }
+/* 포스터 크기는 늘 같고(레이아웃 고정), 옆 칸 모습은 transform으로: JS가 중앙과의 거리에 따라 손가락을 따라 연속으로 바꿈(paint) */
+.poster { position: relative; width: var(--a); aspect-ratio: 232 / 329; border-radius: var(--r12); overflow: hidden; background: #797979; transform-origin: 50% 0; transform: translateY(calc(var(--a) * 14 / 232)) scale(var(--side)); }
+.slot.is-active .poster { transform: none; }
+.poster img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* 영상 포스터: 가운데(활성) 포스터일 때만 소리 없이 반복 재생, 다른 칸은 썸네일(첫 이미지)만 */
+.poster video.pv { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .5s var(--ease); pointer-events: none; }
+.poster video.pv.on { opacity: 1; }
+.dim, .shade-side, .shade-active { position: absolute; inset: 0; pointer-events: none; }
+.dim { background: rgba(0, 0, 0, .6); }
+.shade-side { background: linear-gradient(to bottom, rgba(0, 0, 0, .5), #000); }
+.shade-active { background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 74.77%, #000); opacity: 0; }   /* Figma 홈 - 수정 3717:42783: 포스터 맨 아래 83px(y246~329 / 329)만 투명→검정 */
+.slot.is-active .dim, .slot.is-active .shade-side { opacity: 0; }
+.slot.is-active .shade-active { opacity: 1; }
+.cover { position: absolute; inset: 0; z-index: 2; cursor: pointer; }
+.cover:focus-visible { outline-offset: -3px; border-radius: var(--r12); }
+.slot.is-active .cover:active { background: rgba(255, 255, 255, .06); }
+.info .open { color: inherit; }
+@media (hover: hover) { .slot.is-active .info .open:hover strong { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; } }
+.badge { position: absolute; top: 12px; right: 12px; display: flex; align-items: center; gap: 2px; padding: 4px 9px; background: #000; border-radius: 9999px; font-size: 12px; font-weight: 500; color: var(--text-disable); }
+.badge img, .badge .hi { width: 14px; height: 14px; flex: none; }
+.rank { position: absolute; left: 16px; bottom: 12px; font-size: 36px; line-height: 1.4; font-weight: 700; color: var(--text-teritary); text-shadow: 0 0 20px rgba(0, 0, 0, .25); transition: color .2s ease-out, transform .25s var(--ease); }
+.slot.is-active .rank { color: var(--text-quaternary); transform: translateY(6px); }
+.info { width: var(--a); display: grid; gap: 8px; text-align: center; padding-top: 14px; transform: translateY(calc(var(--a) * -14 / 232)); }
+.slot.is-active .info { transform: none; }
+.info .t { display: grid; gap: 2px; color: var(--text-teritary); transition: color .2s ease-out; }
+.info .t strong { font-size: 16px; font-weight: 600; letter-spacing: -0.03em; }
+.info .t strong, .info .t > span, .meta p span { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }   /* 한 줄 고정 → 칸 높이가 내용에 따라 달라지지 않음 */
+.slot.is-active .info .t { color: var(--text-quaternary); }
+.meta { display: grid; gap: 2px; color: var(--text-teritary); }
+.meta p { display: flex; align-items: center; justify-content: center; gap: 2px; min-width: 0; }
+.meta img { width: 14px; height: 14px; }
+/* 11-09 날짜 글자: Figma `body/md/regular2`(12, 500, 자간 +1%)·`body/lg/regular2`(14, 400, 자간 0) — 숫자가 붙어 보이지 않게 기본 자간(-3%)을 쓰지 않음 */
+.dt12 { font-weight: 500; letter-spacing: 0.01em; }
+.dt14 { font-weight: 400; letter-spacing: 0; }
+.list-link { display: flex; justify-content: flex-end; padding: 4px var(--pad); }
+.list-link .vt { display: inline-flex; align-items: center; gap: 3px; padding: 4px 0; color: var(--text-teritary); font-size: 12px; font-weight: 500; text-decoration: underline; text-underline-offset: 2px; transition: color .2s; }
+@media (hover: hover) { .list-link .vt:hover { color: var(--text-quaternary); } }
+.list-link .vt svg { width: 15px; height: 14px; flex: none; }
+/* 리스트형: 전시 3개씩 세로로 묶어 옆으로 넘김 */
+.lst { --lw: min(340px, calc(100vw - var(--pad) * 2)); display: flex; gap: 12px; align-items: flex-start; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; padding: 16px calc(50% - var(--lw) / 2) 0; }
+@media (min-width: 768px) { .lst { --lw: 360px; } }
+.lst::-webkit-scrollbar { display: none; }
+.lcol { flex: 0 0 var(--lw); display: grid; gap: 12px; scroll-snap-align: center; cursor: pointer; transition: opacity .45s var(--ease); }
+.lcol:not(.is-active) { opacity: .4; }
+.lcol.is-active { cursor: auto; }
+.lcard { position: relative; display: grid; grid-template-columns: 86px minmax(0, 1fr); height: 124px; background: #18181b; border: 1px solid #27272a; border-radius: var(--r12); overflow: hidden; color: var(--text-quaternary); transition: border-color .2s, transform .3s var(--ease); }
+@media (hover: hover) { .lcard:hover { border-color: #3f3f46; } }
+.lcard:active { transform: scale(.99); }
+.lcard .lp { position: relative; background: #797979; }
+.lcard .lp img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.lcard .lp::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, .75)); }
+.lcard .lrank { position: absolute; left: 10px; bottom: -2px; z-index: 1; font-size: 36px; line-height: 1.4; font-weight: 700; color: #fff; }
+.lcard .lt { position: relative; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; padding: 12px; }
+.lcard .lt h3 { font-size: 16px; line-height: 1.4; font-weight: 600; letter-spacing: -0.03em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 56px; }
+.lcard .lt .og { margin-top: 2px; font-size: 12px; font-weight: 500; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lcard .lt .mt { display: grid; gap: 2px; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
+.lcard .lt .mt p { display: flex; align-items: center; gap: 2px; min-width: 0; }
+.lcard .lt .mt p span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lcard .lt .mt img { width: 14px; height: 14px; flex: none; }
+.lcard .lk { position: absolute; right: 12px; top: 12px; display: inline-flex; align-items: center; gap: 2px; height: 25px; padding: 0 9px; border-radius: 9999px; background: rgba(255, 255, 255, .12); color: #d4d4d8; font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.lcard .lk svg { width: 14px; height: 14px; }
+.arrow { display: none; position: absolute; top: 190px; z-index: 2; width: 44px; height: 44px; border-radius: 9999px; border: 1px solid #2d2d30; background: #000; place-items: center; transition: background .2s, transform .2s var(--ease); }
+@media (hover: hover) { .arrow:hover { background: #18181b; } }
+.arrow:active { transform: scale(.96); }
+.arrow img { width: 24px; height: 24px; }
+.arrow.prev { left: var(--pad); } .arrow.prev img { transform: scaleX(-1); }
+.arrow.next { right: var(--pad); }
+@media (min-width: 1100px) { .arrow { display: grid; } .tabs { justify-content: center; } }
+
+.empty { min-height: 280px; display: grid; place-content: center; justify-items: center; gap: 12px; text-align: center; }
+.empty p { font-size: 16px; font-weight: 600; color: var(--text-quaternary); }
+.empty a { color: var(--text-teritary); text-decoration: underline; text-underline-offset: 2px; }
+[hidden] { display: none !important; }
+
+.map { display: block; border-top: 1px solid #2d2d30; margin-top: 16px; }
+.map .inner { display: flex; align-items: center; justify-content: space-between; padding-block: 20px; }
+.map .l { display: flex; align-items: center; gap: 14px; }
+.map .pin { width: 34px; height: 34px; display: grid; place-items: center; }
+.map .pin img { width: 21.56px; height: 27.48px; }
+.map strong { display: block; font-size: 16px; font-weight: 600; color: var(--text-quaternary); letter-spacing: -0.03em; }
+.map span { display: block; padding-top: 2px; color: var(--text-teritary); }
+.map .go { width: 32px; height: 32px; }
+@media (hover: hover) { .map:hover .go { transform: translateX(2px); } }
+.map .go { transition: transform .3s var(--ease); }
+
+/* 흰 영역 */
+.sheet { position: relative; margin-top: -20px; background: var(--bg-white); border-radius: var(--r20) var(--r20) 0 0; }
+.works { padding-block: 20px; }
+.works .hd { display: flex; align-items: center; justify-content: space-between; }
+.works h2 { font-size: 18px; font-weight: 600; letter-spacing: -0.03em; color: var(--text-primary); }
+.works .more { display: inline-flex; align-items: center; color: var(--text-teritary); }
+.works .more img { width: 16px; height: 16px; }
+.works .sub { margin-top: 2px; color: var(--text-teritary); }
+/* 11-08 사용자: 작품 2장이 폭을 꽉 채워 옆으로 넘어간다는 게 안 보였음 → 폰에서는 2장 + 3번째 32px가 보이게(카드 폭 = (화면 폭−76)/2, 175 넘으면 175) */
+.art-row { margin-top: 16px; display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; padding-right: var(--pad); margin-right: calc(var(--pad) * -1); }
+.art-row::-webkit-scrollbar { display: none; }
+.art { flex: 0 0 min(175px, calc((100vw - 76px) / 2)); scroll-snap-align: start; display: block; background: #000; border-radius: var(--r12); overflow: hidden; color: var(--text-quaternary); transition: transform .3s var(--ease); }
+.art:active { transform: scale(.98); }
+.art .im { padding: 7px; }
+.art .im div { aspect-ratio: 161 / 215; border-radius: var(--r12); overflow: hidden; }
+.art .im img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
+@media (hover: hover) { .art:hover .im img { transform: scale(1.03); } }
+.art .tx { padding: 0 12px 10px; }
+.art b { display: block; font-size: 14px; font-weight: 600; letter-spacing: -0.03em; }
+@media (min-width: 768px)  { .art-row { margin-right: 0; padding-right: 0; gap: 16px; } .art { flex: 0 0 200px; } }
+@media (min-width: 1100px) { .art-row { gap: 24px; } .art { flex: 0 0 220px; } }
+.rule { height: 14px; background: var(--line-soft); }
+.reg { border-bottom: 1px solid var(--line-soft); }
+.reg .inner { display: flex; align-items: flex-end; justify-content: space-between; padding-block: 20px; gap: 16px; }
+.reg h2 { font-size: 18px; font-weight: 600; letter-spacing: -0.03em; }
+.reg p { color: var(--text-teritary); }
+.reg a { display: inline-flex; align-items: center; gap: 3px; font-weight: 600; color: var(--text-secondary); text-decoration: underline; text-underline-offset: 2px; white-space: nowrap; }
+.reg a img { width: 12px; height: 12px; }
+.foot .inner { padding-block: 20px; display: grid; gap: 8px; }
+.foot .logo img { width: 99px; height: 22.6px; }
+.foot .links { display: flex; align-items: center; gap: 12px; color: var(--text-teritary); }
+.foot .links i { width: 1px; height: 10px; background: var(--border-primary); }
+@media (hover: hover) { .foot a:hover { color: var(--text-primary); } }
+.foot small { font-size: 10px; font-weight: 400; color: var(--text-teritary); letter-spacing: -0.03em; }
+
+/* 하단 알약 탭 */
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
+</style>
+<script src="assets/byline.js"></script>
+<link rel="stylesheet" href="assets/nav.css">
+<script src="assets/nav.js"></script>
+<!-- 카드 모양 비교용 사본(11-11 home.html 기준, card-compare.html 안에서 씀): ?v=a|b|e|f|c|d, 홈 포스터 모서리 ?pc=0. home.html과 다른 곳은 이 주석 블록, 미리 불러오기(speculationrules) 한 줄 뺀 것, 맨 아래 클릭 막기 한 줄뿐 -->
+<script>(() => { const q = new URLSearchParams(location.search), d = document.documentElement; d.dataset.v = (q.get('v') || 'a').toLowerCase(); if (q.get('pc') === '0') d.dataset.pc = '0'; })();</script>
+<link rel="stylesheet" href="card-compare.css">
+</head>
+<body>
+<a class="skip" href="#main">본문으로 건너뛰기</a>
+
+<header class="head">
+  <div class="inner">
+    <a class="logo" href="#" aria-label="Display U. 홈"><img src="assets/img/logo.svg" width="124" height="28" alt="Display U."></a>
+    <a class="search" href="explore.html" aria-label="검색"><img src="assets/img/search-header.svg" width="28" height="28" alt=""></a>
+  </div>
+</header>
+
+<main id="main">
+  <h1 class="sr">Display U. 홈</h1>
+
+  <section class="dark" aria-label="전시 둘러보기">
+    <div class="tabs-wrap">
+      <div class="tabs" role="tablist" aria-label="전시 분류">
+        <button class="tab" role="tab" id="t-pop"  data-k="pop"  aria-selected="true"  aria-controls="stage">인기 전시</button>
+        <button class="tab" role="tab" id="t-grad" data-k="grad" aria-selected="false" aria-controls="stage" tabindex="-1">졸업전시</button>
+        <button class="tab" role="tab" id="t-live" data-k="live" aria-selected="false" aria-controls="stage" tabindex="-1">전시 중</button>
+        <button class="tab" role="tab" id="t-soon" data-k="soon" aria-selected="false" aria-controls="stage" tabindex="-1">전시 예정</button>
+        <button class="tab" role="tab" id="t-end"  data-k="end"  aria-selected="false" aria-controls="stage" tabindex="-1">마감 임박</button>
+      </div>
+    </div>
+
+    <div class="stage" id="stage" role="tabpanel" aria-labelledby="t-pop">
+      <div class="views">
+      <div id="posters">
+        <button class="arrow prev" id="prev" aria-label="이전 전시"><img src="assets/img/chevron-arrow.svg" width="24" height="24" alt=""></button>
+        <button class="arrow next" id="next" aria-label="다음 전시"><img src="assets/img/chevron-arrow.svg" width="24" height="24" alt=""></button>
+        <div class="rail" id="rail" tabindex="0" role="group" aria-roledescription="카로셀" aria-label="전시 포스터">
+                  </div>
+      </div>
+      <div class="lst" id="lst" role="group" aria-label="전시 리스트" hidden></div>
+      </div>
+      <div class="inner list-link" style="padding-block:4px"><button type="button" id="vt" class="vt" aria-pressed="false"></button></div>
+
+      <div class="empty" id="empty" hidden>
+        <p id="empty-msg"></p>
+        <a href="#">지난 전시 둘러보기</a>
+      </div>
+    </div>
+
+    <a class="map" href="map.html">
+      <span class="inner">
+        <span class="l">
+          <span class="pin"><img src="assets/img/map-pin.svg" alt="" width="22" height="27"></span>
+          <span><strong>가까운 전시 찾기</strong><span>지도에서 전시 위치를 확인해보세요</span></span>
+        </span>
+        <img class="go" src="assets/img/chevron-map.svg" alt="" width="32" height="32">
+      </span>
+    </a>
+  </section>
+
+  <div class="sheet">
+    <section class="works inner" aria-labelledby="works-title">
+      <div class="hd">
+        <h2 id="works-title">ARTWORKS</h2>
+        <a class="more" href="explore.html?tab=works">더보기<img src="assets/img/chevron-more.svg" alt="" width="16" height="16"></a>
+      </div>
+      <p class="sub">전시 속 작품을 만나보세요</p>
+      <div class="art-row" id="art-row"></div>
+    </section>
+
+    <div class="rule" aria-hidden="true"></div>
+
+    <section class="reg" aria-label="전시 등록 안내">
+      <div class="inner">
+        <div><h2>준비 중인 전시가 있나요?</h2><p>디유에 전시와 작품을 소개해보세요</p></div>
+        <a href="exhibition-new.html">전시 등록하기<img src="assets/img/icon-go.svg" alt="" width="12" height="12"></a>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <div class="inner">
+        <a class="logo" href="#" aria-label="Display U. 홈"><img src="assets/img/logo-footer.svg" width="99" height="23" alt="Display U."></a>
+        <div class="links"><a href="#">이용약관</a><i></i><a href="#">개인정보처리방침</a></div>
+        <small>© 2026 displayU. All rights reserved.</small>
+      </div>
+    </footer>
+  </div>
+</main>
+
+<nav class="nav" aria-label="하단 메뉴">
+  <div class="pill" style="--i:0">
+    <span class="cap" aria-hidden="true"><span class="nav-row"><span class="nav-slot"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.847 2.74991C12.3783 2.28128 11.6185 2.28128 11.1499 2.74991L2.74991 11.1499C2.28128 11.6185 2.28128 12.3783 2.74991 12.847C3.21854 13.3156 3.97834 13.3156 4.44697 12.847L4.79844 12.4955V20.3984C4.79844 21.0612 5.3357 21.5984 5.99844 21.5984H8.39844C9.06118 21.5984 9.59844 21.0612 9.59844 20.3984V17.9984C9.59844 17.3357 10.1357 16.7984 10.7984 16.7984H13.1984C13.8612 16.7984 14.3984 17.3357 14.3984 17.9984V20.3984C14.3984 21.0612 14.9357 21.5984 15.5984 21.5984H17.9984C18.6612 21.5984 19.1984 21.0612 19.1984 20.3984V12.4955L19.5499 12.847C20.0185 13.3156 20.7783 13.3156 21.247 12.847C21.7156 12.3783 21.7156 11.6185 21.247 11.1499L12.847 2.74991Z"/></svg></span><span class="nav-slot"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.59844 4.79844C6.94747 4.79844 4.79844 6.94747 4.79844 9.59844C4.79844 12.2494 6.94747 14.3984 9.59844 14.3984C12.2494 14.3984 14.3984 12.2494 14.3984 9.59844C14.3984 6.94747 12.2494 4.79844 9.59844 4.79844ZM2.39844 9.59844C2.39844 5.62199 5.62199 2.39844 9.59844 2.39844C13.5749 2.39844 16.7984 5.62199 16.7984 9.59844C16.7984 11.1534 16.3055 12.5933 15.4673 13.7703L21.247 19.5499C21.7156 20.0185 21.7156 20.7783 21.247 21.247C20.7783 21.7156 20.0185 21.7156 19.5499 21.247L13.7703 15.4673C12.5933 16.3055 11.1534 16.7984 9.59844 16.7984C5.62199 16.7984 2.39844 13.5749 2.39844 9.59844Z"/></svg></span><span class="nav-slot"><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z"/><path d="M12 14C8.13401 14 5 17.134 5 21H19C19 17.134 15.866 14 12 14Z"/></svg></span></span></span>
+    <a href="#" aria-current="page" aria-label="홈"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg></a>
+    <a href="explore.html" aria-label="검색"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></a>
+    <a href="my.html" aria-label="마이"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg></a>
+  </div>
+</nav>
+
+<script src="assets/demo-data.js"></script>
+<script>
+const rail = document.getElementById('rail'); let slots = [];
+const HEART = '<svg class="hi" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.2S4.5 15.6 4.5 9.9A4.2 4.2 0 0 1 12 7.6a4.2 4.2 0 0 1 7.5 2.3c0 5.7-7.5 10.3-7.5 10.3z"/></svg>';
+/* 포스터 칸: 순위(rank)는 인기 전시 탭에서만 표시 */
+function slotHtml(e, rank) {
+  const src = e.v ? 'assets/poster-shore-thumb.jpg' : DEMO.src(e.img);
+  return `<article class="slot" aria-label="${rank ? '순위 ' + rank + ': ' : ''}${e.t}"><div class="poster"><img src="${src}" alt="전시 포스터: ${e.t}" width="232" height="329" decoding="async">${e.v ? '<video class="pv" data-src="assets/poster-shore.mp4" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>' : ''}
+    <span class="dim"></span><span class="shade-side"></span><span class="shade-active"></span><a class="cover" href="exhibition.html?e=${e.i}" aria-label="전시 상세 보기: ${e.t}"></a>
+    ${rank ? `<span class="rank">${rank}</span>` : ''}</div>
+    <div class="info"><div class="t"><a class="open" href="exhibition.html?e=${e.i}"><strong>${e.t}</strong></a><span>${e.s}</span></div>
+    <div class="meta"><p><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14"><span class="dt12">${e.d}</span></p><p><img src="assets/img/icon-location.svg" alt="" width="14" height="14"><span>${e.p}</span></p></div></div></article>`;
+}
+/* 리스트형: 3개씩 세로로 묶은 칸을 옆으로 넘김. 순위는 인기 전시 탭에서만 */
+const lst = document.getElementById('lst'), vt = document.getElementById('vt');
+let view = (new URLSearchParams(location.search).get('view') === 'list' || (() => { try { return localStorage.getItem('du.homeview') === 'list'; } catch (e) { return false; } })()) ? 'list' : 'poster';
+function listHtml(list, ranked) {
+  const cols = []; for (let i = 0; i < list.length; i += 3) cols.push(list.slice(i, i + 3));
+  return cols.map((c, ci) => `<div class="lcol">${c.map((e, k) => { const r = ranked ? ci * 3 + k + 1 : 0, src = e.v ? 'assets/poster-shore-thumb.jpg' : DEMO.src(e.img);
+    return `<a class="lcard" href="exhibition.html?e=${e.i}" aria-label="${r ? '순위 ' + r + ': ' : ''}${e.t}"><span class="lp"><img src="${src}" alt="" loading="lazy">${r ? `<span class="lrank">${r}</span>` : ''}</span><span class="lt"><span><h3>${e.t}</h3><p class="og">${e.s}</p></span><span class="mt"><p><img src="assets/img/icon-calendar.svg" alt="" width="14" height="14"><span class="dt12">${e.d}</span></p><p><img src="assets/img/icon-location.svg" alt="" width="14" height="14"><span>${e.p}</span></p></span></span></a>`; }).join('')}</div>`).join('');
+}
+const ICON_LIST = '<svg viewBox="0 0 15 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true"><path d="M5 3h8M5 7h8M5 11h8M1.5 3h.01M1.5 7h.01M1.5 11h.01"/></svg>';
+/* 리스트형: 화면 가운데에 가장 가까운 열이 선명(is-active), 나머지는 세로로 흐리게. 흐린 열을 누르면 그 열이 가운데로 */
+let colRaf = 0;
+function markCol() {
+  const cols = [...lst.children]; if (!cols.length || lst.hidden) return;
+  const c = lst.getBoundingClientRect(); const mid = c.left + c.width / 2; let best = 0, bd = 1e9;
+  cols.forEach((el, i) => { const r = el.getBoundingClientRect(); const d = Math.abs(r.left + r.width / 2 - mid); if (d < bd) { bd = d; best = i; } });
+  cols.forEach((el, i) => el.classList.toggle('is-active', i === best));
+}
+lst.addEventListener('scroll', () => { cancelAnimationFrame(colRaf); colRaf = requestAnimationFrame(markCol); setTimeout(markCol, 90); }, { passive: true });
+lst.addEventListener('click', (ev) => {
+  const col = ev.target.closest('.lcol'); if (!col || col.classList.contains('is-active')) return;
+  ev.preventDefault();
+  const c = lst.getBoundingClientRect(), r = col.getBoundingClientRect();
+  lst.scrollTo({ left: lst.scrollLeft + (r.left + r.width / 2) - (c.left + c.width / 2), behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+});
+const ICON_SWAP = '<svg viewBox="0 0 15 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6A5 5 0 0 1 11.6 4M12.5 8A5 5 0 0 1 3.4 10"/><path d="M11.8 1.6V4.2H9.2M3.2 12.4V9.8h2.6"/></svg>';
+function applyView(empty) {
+  document.getElementById('stage').classList.toggle('is-empty', !!empty);
+  const l = view === 'list'; posters.hidden = !!empty || l; lst.hidden = !!empty || !l;
+  vt.innerHTML = l ? ICON_SWAP + '포스터형' : ICON_LIST + '리스트형'; vt.setAttribute('aria-pressed', l); vt.setAttribute('aria-label', l ? '포스터형으로 보기' : '리스트형으로 보기');
+  if (!l && !empty && slots.length) requestAnimationFrame(() => go(active, false)); else if (l) { lst.scrollLeft = 0; markCol(); }
+  syncVideos();
+}
+vt.addEventListener('click', () => { view = view === 'list' ? 'poster' : 'list'; try { localStorage.setItem('du.homeview', view); } catch (e) {} applyView(document.getElementById('empty').hidden === false); });
+
+/* ARTWORKS: 전시를 돌아가며 한 점씩 뽑아 최대 10점 */
+(function () {
+  const by = DEMO.EXH.map((e) => DEMO.WORKS.filter((w) => w.e === e.i)).filter((l) => l.length), out = [];
+  for (let r = 0; out.length < 10 && by.some((l) => l[r]); r++) by.forEach((l) => { if (l[r] && out.length < 10) out.push(l[r]); });
+  document.getElementById('art-row').innerHTML = out.map((w) => `<a class="art" href="work.html?w=${w.i}"><div class="im"><div><img src="assets/img/explore/opt/${w.img}.jpg" alt="${w.t} 작품" width="161" height="215" loading="lazy"></div></div><div class="tx"><b>${w.t}</b>${Byline.html(w.a)}</div></a>`).join('');
+})();
+const posters = document.getElementById('posters'), empty = document.getElementById('empty'), msg = document.getElementById('empty-msg');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const emptyText = { pop: '진행 중이거나 예정된 전시가 없어요', grad: '진행 중이거나 예정된 졸업전시가 없어요', live: '진행 중인 전시가 없어요', soon: '예정된 전시가 없어요', end: '곧 끝나는 전시가 없어요' };
+let active = 0;
+
+function offsetOf(i) { const s = slots[i]; return s.offsetLeft + s.offsetWidth / 2 - rail.clientWidth / 2; }
+function setActive(i) { active = i; slots.forEach((s, n) => { s.classList.toggle('is-active', n === i); s.removeAttribute('aria-current'); }); slots[i].setAttribute('aria-current', 'true'); syncVideos(); }
+/* 영상 포스터: 활성 칸이면 재생, 아니면 멈추고 썸네일로. 움직임 줄이기 설정이면 계속 썸네일 */
+let videoTimer = 0;
+function syncVideos() {
+  const vids = rail.querySelectorAll('video.pv');
+  const want = (v) => !reduce && !document.hidden && !posters.hidden && v.closest('.slot').classList.contains('is-active');
+  vids.forEach((v) => { if (!want(v)) { v.classList.remove('on'); v.pause(); } });          // 정지는 바로
+  clearTimeout(videoTimer);
+  videoTimer = setTimeout(() => vids.forEach((v) => {                                         // 시작은 넘기기가 멈춘 뒤(영상 내려받기·디코딩이 넘기는 도중에 끼면 끊겨 보임)
+    if (!want(v)) return; if (!v.src) v.src = v.dataset.src; v.play().then(() => v.classList.add('on')).catch(() => {});
+  }), 500);
+}
+document.addEventListener('visibilitychange', syncVideos);
+function nearest() { const c = rail.scrollLeft + rail.clientWidth / 2; let b = 0, d = 1e9; slots.forEach((s, i) => { const k = Math.abs(s.offsetLeft + s.offsetWidth / 2 - c); if (k < d) { d = k; b = i; } }); return b; }
+/* 넘기는 모습: 칸마다 중앙과의 거리(p: 1=가운데, 0=한 칸 이상 떨어짐)로 크기·어둡기·위치를 손가락을 따라 연속으로 바꿈.
+   transform·opacity만 직접 바꿔서 레이아웃이 흔들리지 않고, 맞춤(snap)은 브라우저에 맡김(JS 보정 이동 없음) */
+let refs = [], geo = { ty: 14, side: .9138, gap: 12, w: 232 };
+let CSSMODE = !!(window.CSS && CSS.supports && CSS.supports('animation-timeline: view()'));
+rail.classList.toggle('sd', CSSMODE);
+/* CSS 스크롤 애니메이션이 실제로 돌아가는지 확인하고, 안 돌아가면(타임라인이 꺼져 있으면) JS 방식으로 바꿈 */
+function verifyCss() {
+  if (!CSSMODE || posters.hidden || !refs.length) return;
+  const an = refs[0].p.getAnimations && refs[0].p.getAnimations()[0];
+  if (!an || an.currentTime == null) { CSSMODE = false; rail.classList.remove('sd'); refs.forEach((r) => { r.last = -1; }); paint(); }
+}
+function cacheRefs() {
+  refs = slots.map((s) => ({ s, ctr: 0, last: -1, b: s.querySelector('.badge'), p: s.querySelector('.poster'), d: s.querySelector('.dim'), sd: s.querySelector('.shade-side'), a: s.querySelector('.shade-active'), i: s.querySelector('.info') }));
+  const a = slots[0] ? slots[0].offsetWidth : 232, root = getComputedStyle(document.documentElement);
+  geo = { ty: a * 14 / 232, side: parseFloat(root.getPropertyValue('--side')) || .9138, gap: parseFloat(getComputedStyle(rail).columnGap) || 12, w: a };
+  for (const r of refs) r.ctr = r.s.offsetLeft + a / 2;   // 칸 가운데 위치는 한 번만 읽어 둠(스크롤 중에는 레이아웃을 다시 읽지 않음)
+}
+/* JS 방식(CSS 스크롤 애니메이션이 없는 브라우저): 스크롤 위치 하나만 읽고, 가운데 근처 칸만 갱신 — transform·opacity만 씀 */
+function paint() {
+  if (CSSMODE || !refs.length || posters.hidden) return;
+  const c = rail.scrollLeft + rail.clientWidth / 2, span = geo.w + geo.gap;
+  for (const r of refs) {
+    let p = Math.max(0, 1 - Math.abs(r.ctr - c) / span);
+    if (reduce) p = p > .5 ? 1 : 0;   // 움직임 줄이기: 크기가 연속으로 변하지 않고 바로 바뀜
+    p = Math.round(p * 200) / 200;
+    if (p === r.last) continue; r.last = p;
+    r.p.style.transform = `translate3d(0, ${((1 - p) * geo.ty).toFixed(2)}px, 0) scale(${(geo.side + (1 - geo.side) * p).toFixed(4)})`;
+    r.i.style.transform = `translate3d(0, ${(-(1 - p) * geo.ty).toFixed(2)}px, 0)`;
+    if (r.b) r.b.style.opacity = (.4 + .6 * p).toFixed(3);   // 좋아요 칩도 옆 칸이면 같이 흐려짐
+    const o = (1 - p).toFixed(3); r.d.style.opacity = o; r.sd.style.opacity = o; r.a.style.opacity = p.toFixed(3);
+  }
+}
+setTimeout(() => verifyCss(), 400);
+function go(i, smooth = true) {
+  if (!slots.length) return;
+  i = Math.max(0, Math.min(slots.length - 1, i));
+  rail.scrollTo({ left: offsetOf(i), behavior: smooth && !reduce ? 'smooth' : 'auto' }); setActive(i);
+  if (!smooth) { cacheRefs(); paint(); }
+}
+let ticking = false;
+const frame = (fn) => { let d = false; const f = () => { if (d) return; d = true; fn(); }; requestAnimationFrame(f); setTimeout(f, 34); };   // 화면이 가려져 rAF가 늦어도 끝까지 반영
+rail.addEventListener('scroll', () => { if (ticking) return; ticking = true; frame(() => { ticking = false; paint(); const n = nearest(); if (n !== active) setActive(n); }); }, { passive: true });
+/* 가운데 포스터는 전시 상세로 이동, 옆 포스터는 먼저 가운데로 */
+rail.addEventListener('click', (e) => { const s = e.target.closest('.slot'); const i = slots.indexOf(s); if (s && i !== active) { e.preventDefault(); go(i); } });
+document.getElementById('prev').addEventListener('click', () => go(active - 1));
+document.getElementById('next').addEventListener('click', () => go(active + 1));
+rail.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') { e.preventDefault(); go(active + 1); } if (e.key === 'ArrowLeft') { e.preventDefault(); go(active - 1); } });
+addEventListener('resize', () => go(active, false));
+
+const tabs = [...document.querySelectorAll('.tab')];
+function pick(tab, focus, silent) {
+  const k = tab.dataset.k;
+  tabs.forEach((t) => { const on = t === tab; t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; });
+  const list = DEMO.TAB[k](), isEmpty = !list.length;
+  rail.innerHTML = list.map((e, i) => slotHtml(e, k === 'pop' ? i + 1 : 0)).join(''); slots = [...rail.children]; active = 0; cacheRefs();
+  lst.innerHTML = listHtml(list, k === 'pop');
+  vt.parentElement.hidden = isEmpty; empty.hidden = !isEmpty; msg.textContent = isEmpty ? emptyText[k] : '';
+  applyView(isEmpty);
+  document.getElementById('stage').setAttribute('aria-labelledby', tab.id);
+  if (!isEmpty) { setActive(0); rail.scrollLeft = 0; frame(() => go(0, false)); }
+  syncVideos();
+  if (focus) tab.focus();
+  if (!silent) { const u = new URL(location.href); k === 'pop' ? u.searchParams.delete('tab') : u.searchParams.set('tab', k); try { history.replaceState(null, '', u); } catch (e) {} }
+}
+tabs.forEach((t, i) => {
+  t.addEventListener('click', () => pick(t));
+  t.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') { e.preventDefault(); pick(tabs[(i + 1) % tabs.length], true); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); pick(tabs[(i + tabs.length - 1) % tabs.length], true); }
+  });
+});
+const first = tabs.find((t) => t.dataset.k === new URLSearchParams(location.search).get('tab')) || tabs[0];
+let booted = false; const boot = () => { if (booted) return; booted = true; pick(first, false, true); };
+requestAnimationFrame(boot); setTimeout(boot, 60);   // 화면이 가려져 있어 rAF가 늦어도 목록이 만들어지도록
+document.fonts && document.fonts.ready.then(() => slots.length && go(active, false));
+</script>
+<script src="assets/auth.js"></script>
+<script src="assets/tap.js"></script>
+<script>/* 비교용: 비교 화면 안에서 다른 페이지로 넘어가지 않게(옆 포스터 누르면 가운데로 오는 동작은 그대로) */ document.addEventListener('click', (e) => { if (e.target.closest('a[href]')) e.preventDefault(); }, true);</script>
+</body>
+</html>

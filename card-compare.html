@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>카드 모양 비교</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; letter-spacing: -0.03em; line-height: 1.4; }
+body { margin: 0; background: #f4f4f5; color: #18181b; font: 500 14px/1.4 "Pretendard Variable", Pretendard, -apple-system, "Apple SD Gothic Neo", sans-serif; -webkit-font-smoothing: antialiased; }
+::selection { background: #18181b; color: #fff; }
+header { padding: 20px 24px 0; max-width: 1040px; }
+h1 { margin: 0; font-size: 20px; font-weight: 700; }
+p.s { margin: 6px 0 0; font-size: 12px; font-weight: 400; color: #52525c; }
+.bar { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; gap: 12px 16px; flex-wrap: wrap; padding: 12px 24px; background: rgba(244, 244, 245, .92); backdrop-filter: blur(8px); }
+.tg { display: inline-flex; gap: 4px; padding: 4px; border-radius: 12px; background: #e4e4e7; }
+.tg button { min-width: 72px; height: 36px; padding: 0 16px; border: 0; border-radius: 8px; background: transparent; color: #52525c; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; transition: background-color .15s ease, color .15s ease; }
+.tg button[aria-pressed="true"] { background: #fff; color: #18181b; }
+.tg button:focus-visible { outline: 2px solid #18181b; outline-offset: 2px; }
+.bar small { font-size: 12px; font-weight: 400; color: #52525c; }
+.row { display: flex; flex-wrap: wrap; gap: 32px 24px; padding: 8px 24px 32px; }   /* 가로 스크롤 상자를 두면 안쪽 화면의 scrollIntoView가 바깥을 밀어서 줄바꿈으로 */
+figure { margin: 0; flex: none; width: var(--fw); }
+figcaption { margin: 0 0 10px; display: grid; gap: 2px; min-height: 58px; }
+figcaption b { font-size: 16px; font-weight: 600; }
+figcaption span { font-size: 12px; font-weight: 400; color: #52525c; }
+figcaption a { justify-self: start; font-size: 12px; color: #18181b; text-decoration: underline; text-underline-offset: 3px; }
+.fr { position: relative; width: var(--fw); height: var(--fh); overflow: hidden; border-radius: 20px; background: #fff; box-shadow: 0 0 0 1px rgba(0, 0, 0, .06); }
+.fr iframe { position: absolute; top: 0; left: 0; width: var(--iw); height: var(--ih); border: 0; transform: scale(var(--sc)); transform-origin: 0 0; }
+body[data-d="phone"] { --iw: 375px; --ih: 760px; --sc: 1; --fw: 375px; --fh: 760px; }
+body[data-d="web"]   { --iw: 1280px; --ih: 860px; --sc: .46875; --fw: 600px; --fh: 403px; }   /* 1280 화면을 600 폭으로 줄여 노트북에서 두 개씩 나란히 */
+/* 홈은 ARTWORKS 줄이 첫 화면 아래에 있어서, 비교하기 쉽게 세로로 길게(ARTWORKS + 전시 등록 줄까지). 실제 폰은 이 중 위쪽만 한 번에 보임 */
+body[data-s="home"][data-d="phone"] { --ih: 1280px; --fh: 1280px; }   /* 잰 값(11-11): ARTWORKS 줄 끝 1010~1156, 전시 등록 줄 끝 1127~1273 → 하단 메뉴가 ARTWORKS를 덮지 않게 1280 */
+body[data-s="home"][data-d="web"]   { --ih: 1420px; --fh: 666px; }      /* 1280 폭: ARTWORKS 끝 1233~1284, 전시 등록 줄 끝 1350~1401 → 1420 × .46875 */
+body[data-s="home"] #tg-tab, body[data-s="explore"] #tg-pc { display: none; }   /* 전시/작품은 탐색에만, 포스터 모서리는 홈에만 */
+@media (max-width: 480px) { header, .bar, .ref { padding-inline: 16px; } .row { padding-inline: 0; justify-content: center; } figcaption { padding-inline: 16px; } }   /* 휴대폰으로 이 비교 페이지를 열어도 375 화면이 옆으로 넘치지 않게 */
+.ref { max-width: 1100px; padding: 0 24px 48px; font-size: 12px; font-weight: 400; color: #52525c; }
+.ref h2 { margin: 0 0 8px; font-size: 14px; font-weight: 600; color: #18181b; }
+.ref table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.ref th, .ref td { padding: 8px 10px 8px 0; border-bottom: 1px solid #e4e4e7; text-align: left; vertical-align: top; }
+.ref th { font-weight: 600; color: #18181b; }
+.ref p { margin: 10px 0 0; }
+</style></head><body data-d="phone" data-s="explore">
+<header>
+  <h1>카드 모양 비교 · 홈 / 탐색</h1>
+  <p class="s">11-11 데모의 홈·탐색 화면 사본에 카드 모양만 바꿔 입힌 비교 페이지예요. 실제 데모 화면은 바뀌지 않아요. 홈은 ARTWORKS 줄에만 입혔어요.</p>
+</header>
+<div class="bar">
+  <div class="tg" role="group" aria-label="화면" id="tg-scr">
+    <button type="button" data-k="home" aria-pressed="false">홈</button>
+    <button type="button" data-k="explore" aria-pressed="true">탐색</button>
+  </div>
+  <div class="tg" role="group" aria-label="탭" id="tg-tab">
+    <button type="button" data-k="exh" aria-pressed="true">전시</button>
+    <button type="button" data-k="works" aria-pressed="false">작품</button>
+  </div>
+  <div class="tg" role="group" aria-label="홈 포스터 모서리" id="tg-pc">
+    <button type="button" data-k="12" aria-pressed="true">포스터 둥글게</button>
+    <button type="button" data-k="0" aria-pressed="false">포스터 각지게</button>
+  </div>
+  <div class="tg" role="group" aria-label="화면 폭" id="tg-dev">
+    <button type="button" data-k="phone" aria-pressed="true">폰 375</button>
+    <button type="button" data-k="web" aria-pressed="false">웹 1280</button>
+  </div>
+  <small id="hint">각 화면 안에서 스크롤돼요</small>
+</div>
+<div class="row" id="row"></div>
+<section class="ref">
+  <h2>참고한 해외 졸업전시 — 폰(375)·웹(1280)에서 직접 잰 값 (11-11)</h2>
+  <table>
+    <thead><tr><th>사이트</th><th>폰 375</th><th>웹 1280</th><th>사진 모서리</th></tr></thead>
+    <tbody>
+      <tr><td>ArtCenter Grad Show</td><td>1열, 좌우 약 28, 사진 위에 이름</td><td>5열, 끝까지(마진 0), 칸 사이 0</td><td>0</td></tr>
+      <tr><td>RCA 2026</td><td>2열, 끝까지, 칸 사이 선</td><td>6열, 끝까지, 칸 사이 2</td><td>0</td></tr>
+      <tr><td>ECAL Diplomas 2025</td><td>가로 넘김 줄, 왼쪽 16, 세로 선</td><td>가로 넘김 줄, 왼쪽 16, 칸 사이 16, 사진 원래 비율</td><td>0</td></tr>
+      <tr><td>Tama IDC 2026</td><td>1열, 끝까지, 점선 칸</td><td>4열, 끝까지, 점선 칸</td><td>0</td></tr>
+      <tr><td>LASALLE Show 2026</td><td>2열, <b>좌우 20</b>, 칸 사이 41 + 세로·가로 선</td><td>4열, 좌우 21, 칸 사이 41 + 선</td><td>0</td></tr>
+    </tbody>
+  </table>
+  <p>모서리는 다섯 곳 모두 0, 색 있는 틀로 감싼 카드는 없음. 마진은 폰에서 3곳(ArtCenter·ECAL·LASALLE)이 두고, 웹에서는 2곳(ECAL·LASALLE)만 둠 — 넓은 화면일수록 끝까지 채우는 쪽이 많았어요. UAL·PolyU는 쿠키 창·첫 화면 그래픽 때문에 목록을 재지 못했어요.</p>
+</section>
+<script>
+/* [키, 제목, 탐색 설명, 홈 설명] */
+const V = [
+  ['a', 'A 현재', '검은 틀 + 안쪽 여백 7 + 사진 모서리 12 + 흰 글자', 'ARTWORKS 검은 틀 + 안쪽 여백 7 + 사진 모서리 12 + 흰 글자'],
+  ['b', 'B 흰 바탕 · 둥근 사진', '검은 틀만 걷어 냄. 사진 모서리 8, 아주 옅은 테두리, 글자는 사진 아래', 'ARTWORKS 검은 틀만 걷어 냄. 사진 모서리 8, 글자는 사진 아래'],
+  ['e', 'E 흰 바탕 · 각진 사진', 'B와 같고 사진 모서리만 0. 마진 20 그대로 (ArtCenter·ECAL·LASALLE)', 'B와 같고 사진 모서리만 0. 카드 폭·3번째 카드 보이는 정도 그대로'],
+  ['f', 'F 선 격자 · 마진 안', '마진 20 안에서 칸 사이에만 1px 선, 모서리 0 (LASALLE)', '위 선 + 카드 사이 세로 1px 선, 모서리 0 (ECAL 폰 줄 방식)'],
+  ['c', 'C 아카이브 격자 · 끝까지', '화면 끝까지 칸, 칸 사이 1px 선, 모서리 0 (RCA·Tama)', '줄만 화면 양 끝까지, 칸 사이 1px 선, 모서리 0 (RCA)'],
+  ['d', 'D 목록', '포스터 72 + 글 한 줄씩(전시 행 · 일정 포함 모양), 훑어보기용', '포스터 72 + 글, 3줄씩 묶어 옆으로 넘김 (홈 리스트형과 같은 방식)']
+];
+const P = new URLSearchParams(location.search);
+let scr = P.get('s') === 'home' ? 'home' : 'explore';
+let tab = P.get('tab') === 'works' ? 'works' : 'exh';
+let dev = P.get('d') === 'web' ? 'web' : 'phone';
+let pc = P.get('pc') === '0' ? '0' : '12';
+const row = document.getElementById('row');
+const url = (v) => scr === 'home'
+  ? `card-compare-home.html?v=${v}${pc === '0' ? '&pc=0' : ''}`
+  : `card-compare-explore.html?v=${v}${tab === 'works' ? '&tab=works' : ''}`;
+V.forEach(([v, t]) => {
+  const f = document.createElement('figure');
+  f.innerHTML = `<figcaption><b>${t}</b><span></span><a target="_blank" rel="noopener">한 장 크게 열기</a></figcaption><div class="fr"><iframe title="${t}"></iframe></div>`;
+  row.appendChild(f);
+});
+const press = (id, k) => document.querySelectorAll(`#${id} button`).forEach((x) => x.setAttribute('aria-pressed', x.dataset.k === k));
+function load() {
+  document.body.dataset.d = dev; document.body.dataset.s = scr;
+  document.getElementById('hint').textContent = (dev === 'web' ? '노트북 폭 1280 화면을 반으로 줄여 보여줘요 · ' : '') + (scr === 'home' ? '홈은 ARTWORKS까지 보이게 세로로 길게 · ' : '') + '각 화면 안에서 스크롤돼요';
+  row.querySelectorAll('figure').forEach((f, i) => {
+    const u = url(V[i][0]);
+    f.querySelector('figcaption span').textContent = scr === 'home' ? V[i][3] : V[i][2];
+    f.querySelector('iframe').src = u; f.querySelector('a').href = u;
+  });
+  press('tg-scr', scr); press('tg-tab', tab); press('tg-dev', dev); press('tg-pc', pc);
+}
+document.querySelectorAll('#tg-scr button').forEach((b) => b.addEventListener('click', () => { scr = b.dataset.k; load(); }));
+document.querySelectorAll('#tg-tab button').forEach((b) => b.addEventListener('click', () => { tab = b.dataset.k; load(); }));
+document.querySelectorAll('#tg-dev button').forEach((b) => b.addEventListener('click', () => { dev = b.dataset.k; load(); }));
+document.querySelectorAll('#tg-pc button').forEach((b) => b.addEventListener('click', () => { pc = b.dataset.k; load(); }));
+load();
+</script>
+</body></html>
