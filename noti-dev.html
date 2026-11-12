@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>알림함 개발 참고 · Display U.</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/* 이 파일 하나로 열리는 전달용 단독 데모(서버·다른 파일 필요 없음). 값은 디유 마이 화면과 같은 토큰을 씀.
+   폰 안의 알림함은 실제 화면을 끼운 게 아니라 같은 모양으로 직접 그린 것이고, 이름·기간·장소는 가상 데이터. */
+:root {
+  --text-primary: #18181b;
+  --text-secondary: #3f3f47;
+  --text-teritary: #71717b;
+  --border-primary: #d4d4d8;
+  --bg-secondary: #f4f4f5;
+  --bg-teritary: #f0f0f3;
+  --notice: #fb2c36;
+  --r12: 12px; --r20: 20px;
+  --ease: cubic-bezier(.23, 1, .32, 1);
+  --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; letter-spacing: -0.03em; line-height: 1.4; }
+html { -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: #fff; color: var(--text-primary); font-family: var(--font); font-size: 14px; font-weight: 400; }
+button { font: inherit; letter-spacing: -0.03em; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-align: left; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+button:focus-visible { outline: 2px solid var(--text-primary); outline-offset: 2px; }
+code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+code { font-size: 12px; }
+h1, h2, p, dl, dd, ul { margin: 0; }
+svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+.wrap { max-width: 1200px; margin: 0 auto; padding: 32px 20px 64px; }
+.top h1 { font-size: 20px; font-weight: 700; text-wrap: balance; }
+.top p { margin-top: 8px; color: var(--text-secondary); text-wrap: pretty; }
+
+.stage { display: grid; grid-template-columns: 240px 402px minmax(0, 1fr); gap: 32px; align-items: start; margin-top: 24px; }
+.pick h2 { margin: 20px 0 4px; font-size: 12px; font-weight: 600; color: var(--text-teritary); }
+.pick h2:first-child { margin-top: 0; }
+.pk { display: flex; align-items: center; width: 100%; min-height: 44px; padding: 8px 12px; border-radius: var(--r12); font-size: 14px; font-weight: 500; transition: background-color .15s var(--ease), transform .15s var(--ease); }
+.pk[aria-current="true"] { background: var(--bg-secondary); font-weight: 600; }
+.pk:active { transform: scale(.96); }
+@media (hover: hover) { .pk:hover { background: var(--bg-secondary); } }
+
+/* 폰 틀 */
+.dev { width: 402px; border: 1px solid var(--border-primary); border-radius: var(--r20); overflow: hidden; background: #fff; }
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; padding: 0 8px 0 16px; border-bottom: 1px solid var(--bg-teritary); }
+#crumb { min-width: 0; font-size: 12px; font-weight: 500; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#crumb code { color: var(--text-teritary); margin-left: 8px; }
+.back { flex: none; min-height: 44px; padding: 0 8px; font-size: 12px; font-weight: 600; transition: transform .15s var(--ease); }
+.back:active { transform: scale(.96); }
+.screen { height: 820px; overflow-y: auto; overscroll-behavior: contain; background: #fff; }
+
+/* 알림함(마이 화면의 알림함 시트와 같은 구조: 머리줄 + 목록) */
+.sh-head { display: flex; align-items: center; gap: 4px; height: 56px; padding: 0 12px; }
+.sh-head h2 { margin-left: 8px; font-size: 18px; font-weight: 600; }
+.sh-x { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 9999px; transition: background-color .2s; }
+@media (hover: hover) { .sh-x:hover { background: var(--bg-secondary); } }
+.sh-body { position: relative; isolation: isolate; padding: 4px 20px 32px; }
+.noti { position: relative; display: grid; grid-template-columns: 8px minmax(0, 1fr); column-gap: 12px; width: 100%; padding: 16px 0; border-bottom: 1px solid var(--bg-teritary); text-align: left; }
+.noti.go { grid-template-columns: 8px minmax(0, 1fr) 16px; }
+.noti.is-focus::before { content: ""; position: absolute; inset: 0 -20px; background: var(--bg-secondary); z-index: -1; }
+.noti > i { width: 8px; height: 8px; margin-top: 7px; border-radius: 9999px; background: transparent; }
+.noti.new > i { background: var(--notice); }
+.noti .nt { display: block; font-size: 14px; font-weight: 600; }
+.noti .nb { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; margin-top: 2px; font-size: 14px; color: var(--text-secondary); }
+.noti.open .nb { display: block; }
+.noti small { display: block; margin-top: 2px; font-size: 12px; color: var(--text-teritary); }
+.noti .ch { align-self: center; width: 16px; height: 16px; color: #a1a1aa; }
+
+/* 이동한 화면(실제 화면 자리에 놓은 자리표시) */
+.dest { padding: 4px 20px 32px; }
+.dest h3 { margin: 8px 0 0; font-size: 20px; font-weight: 700; }
+.dest .meta { margin-top: 8px; color: var(--text-secondary); }
+.dest .sketch { margin-top: 20px; aspect-ratio: 3 / 4; border-radius: var(--r12); background: var(--bg-teritary); }
+.dest .where { margin-top: 20px; padding: 16px; border-radius: var(--r12); background: var(--bg-secondary); }
+.dest .where b { display: block; font-weight: 600; }
+.dest .where code { display: block; margin-top: 4px; color: var(--text-teritary); }
+
+/* 오른쪽 설명 */
+.info h2 { font-size: 20px; font-weight: 700; }
+.info dl { margin-top: 16px; }
+.info dl div { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--bg-teritary); }
+.info dt { font-size: 12px; font-weight: 500; color: var(--text-teritary); padding-top: 2px; }
+.info dd { min-width: 0; overflow-wrap: anywhere; }
+.info dd b { display: block; font-weight: 600; }
+.info dd code { display: block; margin-top: 4px; color: var(--text-teritary); }
+.press { margin-top: 16px; display: grid; place-items: center; min-height: 48px; padding: 0 20px; border-radius: var(--r12); background: var(--text-primary); color: #fafafa; font-size: 14px; font-weight: 600; transition: transform .15s var(--ease), background-color .15s var(--ease); }
+.press:active { transform: scale(.96); }
+@media (hover: hover) { .press:hover { background: var(--text-secondary); } .back:hover { text-decoration: underline; text-underline-offset: 4px; } }
+.common { margin-top: 32px; padding: 16px 20px; border-radius: var(--r12); background: var(--bg-secondary); }
+.common h2 { font-size: 14px; font-weight: 600; }
+.common ul { margin-top: 8px; padding-left: 16px; color: var(--text-secondary); }
+.common li { margin-top: 4px; }
+
+/* 개발 참고(접어 둠) */
+.dev-note { margin-top: 48px; border-top: 1px solid var(--bg-teritary); padding-top: 8px; }
+.dev-note summary { display: flex; align-items: center; min-height: 44px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.dev-note summary:focus-visible { outline: 2px solid var(--text-primary); outline-offset: 2px; }
+.dev-note ul { margin-top: 8px; padding-left: 16px; color: var(--text-secondary); }
+.dev-note li { margin-top: 4px; }
+.dev-note pre { margin-top: 16px; padding: 16px; overflow-x: auto; border-radius: var(--r12); background: var(--bg-secondary); font-size: 12px; line-height: 1.6; letter-spacing: 0; }
+.note { margin-top: 24px; font-size: 12px; color: var(--text-teritary); }
+.note a { color: var(--text-secondary); text-decoration: underline; text-underline-offset: 3px; }
+.note a:focus-visible { outline: 2px solid var(--text-primary); outline-offset: 2px; }
+
+@media (max-width: 1099px) {
+  .stage { grid-template-columns: 240px 402px; }
+  .info { grid-column: 1 / -1; }
+}
+@media (max-width: 759px) {
+  .stage { grid-template-columns: minmax(0, 1fr); }
+  .dev { width: 100%; }
+  .screen { height: 780px; }
+}
+@media (prefers-reduced-motion: reduce) { .pk, .back, .press, .sh-x { transition: none; } }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <h1>알림함 데모</h1>
+    <p>왼쪽에서 알림을 고르면 폰 안의 알림함에서 그 알림이 표시돼요</p>
+  </header>
+
+  <div class="stage">
+    <nav class="pick" id="pick" aria-label="알림 종류"></nav>
+    <div class="dev">
+      <div class="bar"><div id="crumb" aria-live="polite"></div><button class="back" id="back" type="button">알림함으로</button></div>
+      <div class="screen" id="screen"></div>
+    </div>
+    <section class="info">
+      <div id="info" aria-live="polite"></div>
+      <div class="common">
+        <h2>모든 알림 공통</h2>
+        <ul>
+          <li>제목과 내용으로 오고, 내용이 3줄을 넘으면 눌러서 펼쳐요</li>
+          <li>화살표가 있는 알림 2개만 전시로 이동해요</li>
+          <li>알림함을 열면 안 읽음 점이 사라져요</li>
+          <li>푸시와 이메일은 없고, 180일 보관해요</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <details class="dev-note">
+    <summary>개발 참고</summary>
+    <ul>
+      <li>알림은 만드는 시점의 제목과 내용을 문장으로 저장해요. 작품이나 전시가 나중에 삭제돼도 알림이 남아요.</li>
+      <li>이동하는 알림 2개(저장한 작가의 새 전시, 저장한 전시 시작)에만 이동할 전시 정보(<code>target</code>)가 있어요. 이동할 전시가 사라졌으면 이동하지 않아요.</li>
+      <li>읽음은 알림함을 열 때 한꺼번에 바뀌어요. 알림마다 <code>readAt</code>을 두든, 사용자별로 마지막으로 연 시각 하나를 두든 개발에서 정해 주세요.</li>
+      <li>저장한 전시 시작은 시작일 오전 9시에 만들어요. 시작 전에 저장한 사람에게만 보내고, 시작일에 비공개면 보내지 않아요. 예약 작업이 이번 배포에 어려우면 이 알림만 2차로 미뤄요.</li>
+      <li>같은 작품에서 대신 등록과 공동 작가에 동시에 걸리면 "작가로 지정됨" 한 건만 보내요. 저장한 작가의 새 전시는 같은 전시에 대해 같은 사람에게 한 번만 보내요.</li>
+      <li>운영자 알림은 어드민에서 회원을 한 명씩 골라 보내요. 제목 40자, 본문 1000자까지예요.</li>
+    </ul>
+    <pre><code>{
+  "id": "ntf_0001",
+  "type": "work_coauthor_added",
+  "recipientId": "user_0042",
+  "createdAt": "2026-11-08T09:12:00+09:00",
+  "readAt": null,
+  "title": "공동 작가로 추가됨",
+  "body": "“접으면 달라지는 지도” 작품에 공동 작가로 추가됐어요. 작가와 같은 권한으로 수정·삭제할 수 있어요.",
+  "target": null
+}
+
+{
+  "id": "ntf_0002",
+  "type": "exhibition_started",
+  "recipientId": "user_0042",
+  "createdAt": "2026-12-04T09:00:00+09:00",
+  "readAt": null,
+  "title": "저장한 전시 시작",
+  "body": "저장한 “빛이 지나간 자리” 전시가 시작됐어요. 12.04 - 12.06 · 스튜디오 여백 B1",
+  "target": { "type": "exhibition", "id": "exh_0007" }
+}</code></pre>
+    <p class="note">type 후보: request_approved, request_rejected, exhibition_invited, work_coauthor_added, work_proxy_assigned, work_deleted, exhibition_member_removed, exhibition_deleted, artist_new_exhibition, exhibition_started, operator_notice</p>
+  </details>
+
+  <p class="note">전시·작품·작가 이름과 기간·장소는 모두 가상 데이터예요. 문구는 1차 배포 기준이고, Figma 알림함 화면은 아직 없어요.</p>
+  <p class="note">실제 마이 화면 안에서 눌러 보려면 <a href="noti-demo.html">알림함 데모</a>를 열어 보세요.</p>
+</main>
+
+<script>
+(() => {
+  /* 알림 목록. title=제목, body=내용(알림함에 보이는 그대로), w=시간, go=누르면 가는 전시(없으면 이동 없음) */
+  const ITEMS = [
+    { id: 'approved', g: '전시 등록', name: '등록 요청 승인', title: '등록 요청 승인',
+      body: '“빛의 결 | 조용한 흐름” 전시의 등록 요청이 승인됐어요. 승인된 시점에 저장돼 있던 내용이 공개돼요.', w: '3시간 전', go: null,
+      who: '전시 대표자', when: '등록 요청이 승인됐을 때' },
+    { id: 'rejected', g: '전시 등록', name: '등록 요청 반려', title: '등록 요청 반려',
+      body: '“빛의 결 | 조용한 흐름” 전시의 등록 요청이 반려됐어요. 이미지 출처를 확인할 수 없어요 수정한 뒤 다시 요청해 주세요', w: '4일 전', go: null,
+      who: '전시 대표자', when: '등록 요청이 반려됐을 때(반려 사유는 운영자가 쓴 그대로)' },
+    { id: 'invite', g: '내 작품·팀', name: '전시 초대', title: '전시 초대',
+      body: '“펼쳐지는 장면” 전시에 팀원으로 초대받았어요. 초대한 사람: 김도윤(doyoon)', w: '1시간 전', go: null,
+      who: '초대받은 사람', when: '팀원으로 초대받았을 때(수락·거절은 마이의 받은 초대에서)' },
+    { id: 'coauthor', g: '내 작품·팀', name: '공동 작가로 추가됨', title: '공동 작가로 추가됨',
+      body: '“접으면 달라지는 지도” 작품에 공동 작가로 추가됐어요. 작가와 같은 권한으로 수정·삭제할 수 있어요.', w: '어제', go: null,
+      who: '공동 작가로 추가된 사람(본인이 추가한 경우 제외)', when: '작품에 공동 작가로 추가됐을 때' },
+    { id: 'proxy', g: '내 작품·팀', name: '작가로 지정됨', title: '작가로 지정됨',
+      body: '“장면을 넘기는 극장” 작품의 작가로 지정됐어요. 등록한 사람: 김도윤', w: '어제', go: null,
+      who: '대신 등록으로 지정된 팀원', when: '대표자·관리자가 작가로 골라 작품을 대신 등록했을 때' },
+    { id: 'workdel', g: '내 작품·팀', name: '작품 삭제', title: '작품 삭제',
+      body: '“얇은 경계” 작품이 삭제됐어요. 함께 작가로 등록된 계정이 “손끝의 지도” 전시에서 나가거나 내보내져 작품도 함께 삭제됐어요. 복구할 수 없어요.', w: '3일 전', go: null,
+      who: '같은 작품에 남은 작가·등록자', when: '작가 계정이 전시에서 나가거나 내보내져 작품이 삭제됐을 때' },
+    { id: 'removed', g: '내 작품·팀', name: '전시에서 내보내짐', title: '전시에서 내보내짐',
+      body: '“손끝의 지도” 전시에서 내보내졌어요. 작가로 등록돼 있던 작품이 있었다면 함께 삭제됐어요.', w: '5일 전', go: null,
+      who: '내보내진 팀원', when: '대표자·관리자가 팀원을 내보냈을 때' },
+    { id: 'exdel', g: '내 작품·팀', name: '전시 삭제', title: '전시 삭제',
+      body: '“움직임의 기록” 전시가 삭제됐어요.', w: '6일 전', go: null,
+      who: '전시 팀원(삭제한 대표자 제외)', when: '대표자가 전시를 삭제했을 때' },
+    { id: 'followartist', g: '저장한 것', name: '저장한 작가의 새 전시', title: '저장한 작가의 새 전시',
+      body: '송하윤님이 참여한 “재생 중” 전시가 공개됐어요. 12.02 - 12.07 · 미온미디어관 B1', w: '2일 전',
+      go: { page: '전시 상세', url: 'exhibition.html?e=5', name: '재생 중', org: '미온대학교 디지털콘텐츠전공', period: '12.02 - 12.07', place: '미온미디어관 B1' },
+      who: '그 작가를 저장한 사람', when: '저장한 작가가 참여한 전시가 공개됐을 때' },
+    { id: 'started', g: '저장한 것', name: '저장한 전시 시작', title: '저장한 전시 시작',
+      body: '저장한 “빛이 지나간 자리” 전시가 시작됐어요. 12.04 - 12.06 · 스튜디오 여백 B1', w: '어제',
+      go: { page: '전시 상세', url: 'exhibition.html?e=7', name: '빛이 지나간 자리', org: '해온예술대학교 사진미디어학과', period: '12.04 - 12.06', place: '스튜디오 여백 B1' },
+      who: '그 전시를 저장한 사람', when: '전시 시작일 오전 9시' },
+    { id: 'operator', g: '운영', name: '운영자 특별 알림', title: '전시 노출 중단 안내',
+      body: '조치 대상, 사유와 필요한 후속 조치를 작성해 주세요.', w: '방금', go: null,
+      who: '운영자가 고른 회원', when: '운영자가 어드민에서 보냈을 때(제목 40자·본문 1000자, 운영자가 쓴 그대로)' }
+  ];
+  const GROUPS = ['전시 등록', '내 작품·팀', '저장한 것', '운영'];
+  /* 알림함에 보이는 순서(최신순). 맨 위 3개가 안 읽은 상태로 시작 */
+  const ORDER = ['operator', 'invite', 'approved', 'coauthor', 'proxy', 'started', 'followartist', 'workdel', 'rejected', 'removed', 'exdel'];
+  const UNREAD = 3;
+  const CHEV = '<svg class="ch i" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>';
+  const BACK = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>';
+  const $ = (id) => document.getElementById(id);
+  const byId = (id) => ITEMS.find((x) => x.id === id);
+  let cur = 'approved', view = 'list', unread = UNREAD;
+
+  const crumb = (text, url) => { $('crumb').innerHTML = text + (url ? `<code>${url}</code>` : ''); };
+
+  /* ---------- 왼쪽 목록 ---------- */
+  $('pick').innerHTML = GROUPS.map((g) => `<h2>${g}</h2>` + ITEMS.filter((x) => x.g === g).map((x) =>
+    `<button class="pk" type="button" data-id="${x.id}" aria-current="false">${x.name}</button>`).join('')).join('');
+  $('pick').addEventListener('click', (e) => { const b = e.target.closest('.pk'); if (b) choose(b.dataset.id); });
+
+  /* ---------- 오른쪽 설명 ---------- */
+  function renderInfo() {
+    const x = byId(cur);
+    $('info').innerHTML = `<h2>${x.name}</h2>
+      <dl><div><dt>문구</dt><dd><b>${x.title}</b>${x.body}</dd></div>
+      <div><dt>받는 사람</dt><dd>${x.who}</dd></div><div><dt>보내는 때</dt><dd>${x.when}</dd></div>
+      <div><dt>누르면</dt><dd>${x.go ? `${x.go.page}로 이동<code>${x.go.url}</code>` : '이동 없음'}</dd></div></dl>` +
+      (x.go ? '<button class="press" id="press" type="button">알림 눌러 보기</button>' : '');
+    const p = $('press'); if (p) p.addEventListener('click', () => openAlert(cur));
+    document.querySelectorAll('.pk').forEach((b) => b.setAttribute('aria-current', String(b.dataset.id === cur)));
+    history.replaceState(null, '', '#' + cur);
+  }
+
+  /* ---------- 폰 안 ---------- */
+  function renderList() {
+    view = 'list';
+    $('screen').innerHTML = `<div class="sh-head"><h2>알림함</h2></div><div class="sh-body">` + ORDER.map(byId).map((x, i) =>
+      `<button class="noti${i < unread ? ' new' : ''}${x.go ? ' go' : ''}" type="button" data-k="${x.id}"><i></i><span><b class="nt">${x.title}</b><span class="nb">${x.body}</span><small>${x.w}</small></span>${x.go ? CHEV : ''}</button>`).join('') + `</div>`;
+    unread = 0;   // 알림함을 열면 점이 사라짐(이미 그려진 목록에는 열기 전 상태 그대로)
+    crumb('마이 › 알림함');
+    focusRow();
+  }
+  function focusRow() {
+    document.querySelectorAll('.noti.is-focus').forEach((r) => r.classList.remove('is-focus'));
+    const r = document.querySelector(`.noti[data-k="${cur}"]`);
+    if (!r) return;
+    r.classList.add('is-focus');
+    /* 페이지 전체가 아니라 폰 안만 스크롤해서 그 줄이 보이게 함 */
+    const s = $('screen'), sr = s.getBoundingClientRect(), rr = r.getBoundingClientRect();
+    if (rr.top < sr.top) s.scrollTop += rr.top - sr.top - 8;
+    else if (rr.bottom > sr.bottom) s.scrollTop += rr.bottom - sr.bottom + 8;
+  }
+  function renderDest(x) {
+    view = 'dest';
+    $('screen').innerHTML = `<div class="sh-head"><button class="sh-x" id="dback" type="button" aria-label="알림함으로">${BACK}</button><h2>${x.go.page}</h2></div>
+      <div class="dest"><h3>${x.go.name}</h3><p class="meta">${x.go.org}<br>${x.go.period} · ${x.go.place}</p><div class="sketch" aria-hidden="true"></div>
+      <div class="where"><b>이동하는 화면: ${x.go.page}</b><code>${x.go.url}</code></div></div>`;
+    $('dback').addEventListener('click', renderList);
+    $('screen').scrollTop = 0;
+    crumb(`${x.go.page}`, x.go.url);
+  }
+  /* 알림을 누르면: 이동할 곳이 있으면 그 화면으로, 없으면 그 자리에서 내용을 펼침 */
+  function openAlert(id) {
+    cur = id; renderInfo();
+    const x = byId(id);
+    if (x.go) { renderDest(x); return; }
+    if (view !== 'list') renderList();
+    const r = document.querySelector(`.noti[data-k="${id}"]`);
+    if (r) { r.classList.toggle('open'); focusRow(); }
+  }
+  $('screen').addEventListener('click', (e) => { const b = e.target.closest('.noti'); if (b) openAlert(b.dataset.k); });
+
+  function choose(id) {
+    cur = id; renderInfo();
+    if (view !== 'list') renderList(); else focusRow();
+    if (matchMedia('(max-width: 759px)').matches) $('screen').closest('.dev').scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  }
+  $('back').addEventListener('click', () => { if (view !== 'list') renderList(); else { $('screen').scrollTop = 0; focusRow(); } });
+
+  /* 주소 끝 #종류 로 바로 열기: …#rejected */
+  const hashId = location.hash.slice(1);
+  if (byId(hashId)) cur = hashId;
+  renderInfo();
+  renderList();
+})();
+</script>
+</body>
+</html>
