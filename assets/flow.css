@@ -72,22 +72,22 @@ img { display: block; }
 .cnt { font-size: 12px; font-weight: 500; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
 .ul { position: relative; display: flex; align-items: center; height: 47px; margin-top: 4px; border-bottom: 1px solid var(--border-primary); transition: border-color .2s; }
 .ul:focus-within { border-bottom-color: var(--text-primary); }
-.ul input { flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; outline: 0; background: transparent; font-size: 16px; font-weight: 500; }
+.ul input { flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; outline: 0; background: transparent; font-size: 16px; font-weight: 400; } /* 11-13 Figma Field 값·안내 16 Regular */
 .ul input::placeholder, textarea::placeholder { color: var(--text-teritary); }   /* 11-08: Figma Field `text/teritary`(대비 4.8:1). 잠긴 칸(.locked)만 disable 유지 */
 .ul .i { width: 22px; height: 22px; }
 .pick { width: 100%; height: 49px; text-align: left; cursor: pointer; justify-content: space-between; font-size: 16px; font-weight: 400; } /* 11-07 Figma 대조: 선택값 16 Regular · 11-08 `Field / 선택` 입력 줄 49 */
 .pick span.ph { color: var(--text-teritary); }   /* 11-08 Figma Field 안내 글자 text/teritary(이전 disable은 대비 1.5:1) */
 .pick .i { width: 20px; height: 20px; color: var(--text-primary); }
-.ta { display: block; width: 100%; height: 128px; margin-top: 8px; padding: 14px 16px; border: 1px solid var(--border-primary); border-radius: var(--r12); font-size: 16px; font-weight: 500; line-height: 1.4; resize: none; outline: 0; transition: border-color .2s; }
+.ta { display: block; width: 100%; height: 128px; margin-top: 8px; padding: 14px 16px; border: 1px solid var(--border-primary); border-radius: var(--r12); font-size: 16px; font-weight: 400; line-height: 1.4; resize: none; outline: 0; transition: border-color .2s; }
 .ta:focus { border-color: var(--text-primary); }
 .cnt-r { margin-top: 8px; text-align: right; font-size: 12px; font-weight: 500; color: var(--text-teritary); font-variant-numeric: tabular-nums; }
 .help { margin-top: 4px; font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-secondary); }
 .help.e { color: var(--notice); }
 .two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }   /* 11-08 Figma 두 칸 175 + 12 */
 .locked { margin-top: 8px; border: 1px solid var(--border-primary); border-radius: var(--r12); overflow: hidden; }
-.locked .fix { display: flex; align-items: center; justify-content: space-between; height: 54px; padding: 0 16px; background: var(--bg-secondary); font-size: 16px; font-weight: 500; }   /* 11-13 Figma `Field / 소속`: 학교명 줄 54(칸 안쪽 360×54, 글자 22 + 위아래 16) */
+.locked .fix { display: flex; align-items: center; justify-content: space-between; height: 54px; padding: 0 16px; background: var(--bg-secondary); font-size: 16px; font-weight: 400; }   /* 11-13 Figma `Field / 소속`: 학교명 줄 54(칸 안쪽 360×54, 글자 22 + 위아래 16) */
 .locked .fix .i { width: 18px; height: 18px; color: var(--text-teritary); }
-.locked input { display: block; width: 100%; height: 55px; padding: 0 16px; border: 0; border-top: 1px solid var(--border-primary); outline: 0; font-size: 16px; font-weight: 500; }   /* 11-13 입력 줄 55(위 선 1 + 54), 카드 전체 111 */
+.locked input { display: block; width: 100%; height: 55px; padding: 0 16px; border: 0; border-top: 1px solid var(--border-primary); outline: 0; font-size: 16px; font-weight: 400; }   /* 11-13 입력 줄 55(위 선 1 + 54), 카드 전체 111 */
 .locked:focus-within { border-color: var(--text-primary); }
 .locked:focus-within input { border-top-color: var(--border-primary); }
 .locked input::placeholder { color: var(--text-disable); }

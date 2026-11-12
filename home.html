@@ -103,7 +103,7 @@ img { display: block; }
 .slot.is-active { cursor: default; }
 .slot:not(.is-active) .badge { opacity: .4; }
 /* 포스터 크기는 늘 같고(레이아웃 고정), 옆 칸 모습은 transform으로: JS가 중앙과의 거리에 따라 손가락을 따라 연속으로 바꿈(paint) */
-.poster { position: relative; width: var(--a); aspect-ratio: 232 / 329; overflow: hidden; background: #797979; transform-origin: 50% 0; transform: translateY(calc(var(--a) * 14 / 232)) scale(var(--side)); }   /* 11-12 포스터 모서리 0 (이전 12) */
+.poster { position: relative; width: var(--a); aspect-ratio: 402 / 568; overflow: hidden; background: #797979; transform-origin: 50% 0; transform: translateY(calc(var(--a) * 14 / 232)) scale(var(--side)); }   /* 11-12 포스터 모서리 0 (이전 12) */
 .slot.is-active .poster { transform: none; }
 .poster img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 /* 영상 포스터: 가운데(활성) 포스터일 때만 소리 없이 반복 재생, 다른 칸은 썸네일(첫 이미지)만 */
