@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
 /* 개발 전달용 데모 페이지(제품 화면 아님). 값은 마이 화면과 같은 토큰을 씀.
-   왼쪽에서 알림을 고르면 가운데 실제 마이 화면(my.html)에서 알림함이 열린다. 알림은 제목 + 내용으로 오고, 저장한 전시·작가 알림 2개만 누르면 전시로 이동한다.
+   왼쪽에서 알림을 고르면 가운데 실제 마이 화면(my.html)에서 알림함이 열린다. 알림은 제목 + 내용으로 오고, 화살표가 있는 7개는 누르면 해당 화면(받은 초대·전시 작업·내 전시 관리·전시 상세)으로 이동한다.
    my.html 은 고치지 않고, 같은 주소의 iframe 안에서 알림 목록과 줄 모양만 바꿔 끼운다. */
 :root {
   --text-primary: #18181b;
@@ -175,6 +175,7 @@ h1, h2, p, dl, dd, ul { margin: 0; }
   const $ = (id) => document.getElementById(id);
   const ph = $('ph');
   const byId = (id) => ITEMS.find((x) => x.id === id);
+  const jo = (s) => { const f = (s.charCodeAt(s.length - 1) - 0xAC00) % 28; return f === 0 || f === 8 ? '로' : '으로'; };   // 받침에 맞는 조사(로/으로)
   let cur = 'approved', wantOpen = false, pendingPress = false, loading = true;   // loading: 폰 안 화면이 아직 뜨는 중
   const dev = document.querySelector('.dev');
   let wd = 0, poll = 0, target = null;   // target: 지금 열려는 화면 주소
@@ -213,7 +214,7 @@ h1, h2, p, dl, dd, ul { margin: 0; }
     $('info').innerHTML = `<h2>${x.name}</h2>
       <dl><div><dt>문구</dt><dd><b>${x.title}</b>${x.body}</dd></div>
       <div><dt>받는 사람</dt><dd>${x.who}</dd></div><div><dt>보내는 때</dt><dd>${x.when}</dd></div>
-      <div><dt>누르면</dt><dd>${x.go ? `${x.go.page}로 이동<code>${x.go.show || x.go.url}</code>` : '이동 없음'}</dd></div></dl>` +
+      <div><dt>누르면</dt><dd>${x.go ? `${x.go.page}${jo(x.go.page)} 이동<code>${x.go.show || x.go.url}</code>` : '이동 없음'}</dd></div></dl>` +
       (x.go ? '<button class="press" id="press" type="button">알림 눌러 보기</button>' : '');
     const p = $('press'); if (p) p.addEventListener('click', () => { const r = loading ? null : rowOf(cur); if (r) r.click(); else pendingPress = true; });
     document.querySelectorAll('.pk').forEach((b) => b.setAttribute('aria-current', String(b.dataset.id === cur)));

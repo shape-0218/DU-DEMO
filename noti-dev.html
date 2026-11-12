@@ -250,6 +250,7 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
   const BACK = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>';
   const $ = (id) => document.getElementById(id);
   const byId = (id) => ITEMS.find((x) => x.id === id);
+  const jo = (s) => { const f = (s.charCodeAt(s.length - 1) - 0xAC00) % 28; return f === 0 || f === 8 ? '로' : '으로'; };   // 받침에 맞는 조사(로/으로)
   let cur = 'approved', view = 'list', unread = UNREAD;
 
   const crumb = (text, url) => { $('crumb').innerHTML = text + (url ? `<code>${url}</code>` : ''); };
@@ -265,7 +266,7 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
     $('info').innerHTML = `<h2>${x.name}</h2>
       <dl><div><dt>문구</dt><dd><b>${x.title}</b>${x.body}</dd></div>
       <div><dt>받는 사람</dt><dd>${x.who}</dd></div><div><dt>보내는 때</dt><dd>${x.when}</dd></div>
-      <div><dt>누르면</dt><dd>${x.go ? `${x.go.page}로 이동<code>${x.go.url}</code>` : '이동 없음'}</dd></div></dl>` +
+      <div><dt>누르면</dt><dd>${x.go ? `${x.go.page}${jo(x.go.page)} 이동<code>${x.go.url}</code>` : '이동 없음'}</dd></div></dl>` +
       (x.go ? '<button class="press" id="press" type="button">알림 눌러 보기</button>' : '');
     const p = $('press'); if (p) p.addEventListener('click', () => openAlert(cur));
     document.querySelectorAll('.pk').forEach((b) => b.setAttribute('aria-current', String(b.dataset.id === cur)));
