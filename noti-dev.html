@@ -59,14 +59,14 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
 .sh-x { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 9999px; transition: background-color .2s; }
 @media (hover: hover) { .sh-x:hover { background: var(--bg-secondary); } }
 .sh-body { position: relative; isolation: isolate; padding: 4px 20px 32px; }
-.noti { position: relative; display: grid; grid-template-columns: 8px minmax(0, 1fr); column-gap: 12px; width: 100%; padding: 16px 0; border-bottom: 1px solid var(--bg-teritary); text-align: left; }
-.noti.go { grid-template-columns: 8px minmax(0, 1fr) 16px; }
+.noti { position: relative; display: grid; grid-template-columns: 8px minmax(0, 1fr); column-gap: 12px; width: 100%; padding: 16px 0; border-bottom: 1px solid var(--bg-teritary); text-align: left; cursor: default; }
+.noti.go { grid-template-columns: 8px minmax(0, 1fr) 16px; cursor: pointer; }
 .noti.is-focus::before { content: ""; position: absolute; inset: 0 -20px; background: var(--bg-secondary); z-index: -1; }
 .noti > i { width: 8px; height: 8px; margin-top: 7px; border-radius: 9999px; background: transparent; }
 .noti.new > i { background: var(--notice); }
 .noti .nt { display: block; font-size: 14px; font-weight: 600; }
-.noti .nb { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; margin-top: 2px; font-size: 14px; color: var(--text-secondary); }
-.noti.open .nb { display: block; }
+.noti .nb { display: block; margin-top: 2px; font-size: 14px; color: var(--text-secondary); overflow-wrap: anywhere; }
+.noti .nb b, .info dd b { font-weight: 600; color: var(--text-primary); }
 .noti small { display: block; margin-top: 2px; font-size: 12px; color: var(--text-teritary); }
 .noti .ch { align-self: center; width: 16px; height: 16px; color: #a1a1aa; }
 
@@ -85,16 +85,30 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
 .info dl div { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--bg-teritary); }
 .info dt { font-size: 12px; font-weight: 500; color: var(--text-teritary); padding-top: 2px; }
 .info dd { min-width: 0; overflow-wrap: anywhere; }
-.info dd b { display: block; font-weight: 600; }
+.info dd .ttl { display: block; font-weight: 600; }
 .info dd code { display: block; margin-top: 4px; color: var(--text-teritary); }
 .press { margin-top: 16px; display: grid; place-items: center; min-height: 48px; padding: 0 20px; border-radius: var(--r12); background: var(--text-primary); color: #fafafa; font-size: 14px; font-weight: 600; transition: transform .15s var(--ease), background-color .15s var(--ease); }
 .press:active { transform: scale(.96); }
 @media (hover: hover) { .press:hover { background: var(--text-secondary); } .back:hover { text-decoration: underline; text-underline-offset: 4px; } }
 .common { margin-top: 32px; padding: 16px 20px; border-radius: var(--r12); background: var(--bg-secondary); }
+.common + .common { margin-top: 16px; }
 .common h2 { font-size: 14px; font-weight: 600; }
 .common ul { margin-top: 8px; padding-left: 16px; color: var(--text-secondary); }
 .common li { margin-top: 4px; }
-.common + .common { margin-top: 16px; }
+
+/* 개발자가 읽는 규칙·표 */
+.sec { margin-top: 56px; }
+.sec h2 { font-size: 18px; font-weight: 600; }
+.sec > p { margin-top: 8px; color: var(--text-secondary); text-wrap: pretty; }
+.sec ul { margin-top: 12px; padding-left: 16px; color: var(--text-secondary); }
+.sec li { margin-top: 6px; }
+.sec li b, .sc td b { font-weight: 600; color: var(--text-primary); }
+.sc { margin-top: 16px; overflow-x: auto; border: 1px solid var(--bg-teritary); border-radius: var(--r12); }
+table { width: 100%; min-width: 720px; border-collapse: collapse; }
+th, td { padding: 12px 16px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--bg-teritary); }
+th { font-size: 12px; font-weight: 500; color: var(--text-teritary); background: var(--bg-secondary); }
+tr:last-child td { border-bottom: 0; }
+td p + p { margin-top: 8px; }
 
 /* 개발 참고(접어 둠) */
 .dev-note { margin-top: 48px; border-top: 1px solid var(--bg-teritary); padding-top: 8px; }
@@ -123,7 +137,7 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
 <main class="wrap">
   <header class="top">
     <h1>알림함 데모</h1>
-    <p>왼쪽에서 알림을 고르면 폰 안의 알림함에서 그 알림이 표시돼요</p>
+    <p>왼쪽에서 알림을 고르면 폰 안의 알림함에서 그 알림이 표시돼요. 알림은 11종이고, 작품 삭제만 사유가 둘이라 목록에서는 12줄이에요</p>
   </header>
 
   <div class="stage">
@@ -137,9 +151,11 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
       <div class="common">
         <h2>모든 알림 공통</h2>
         <ul>
-          <li>제목과 내용으로 오고, 내용이 3줄을 넘으면 눌러서 펼쳐요</li>
+          <li>제목과 내용으로 오고, 내용은 길어도 줄이지 않고 전부 보여 줘요</li>
+          <li>이름·작품명·전시명·숫자는 굵게 강조해요</li>
           <li>화살표가 있는 알림 7개는 누르면 해당 화면으로 이동해요</li>
           <li>한 사건에 받는 사람당 알림은 한 건이에요. 전시가 삭제돼 작품이 여러 개 사라져도 전시 삭제 알림 하나만 가요</li>
+          <li>내가 직접 한 일에는 알림을 받지 않아요</li>
           <li>푸시와 이메일은 없어요</li>
         </ul>
       </div>
@@ -158,6 +174,36 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
     </section>
   </div>
 
+  <section class="sec">
+    <h2>알림 문구 규칙</h2>
+    <ul>
+      <li><b>강조</b>: 내용 안의 사람 이름, 작품명, 전시명, 숫자는 굵게(SemiBold, 600)로 보여 주고 나머지 글자는 보통 굵기예요. 강조할 글자는 알림을 만들 때 <code>highlights</code>로 함께 저장해요.</li>
+      <li><b>길이</b>: 내용은 길어도 줄이지 않고 전부 보여 줘요.</li>
+      <li><b>사람 이름</b>: 전시 안에서 일어난 일(삭제한 사람, 등록한 사람)은 그 전시의 전시 작가명을 써요. 전시 초대는 초대 화면처럼 "이름(아이디)"로 써요.</li>
+      <li><b>삭제된 작품</b>: 1점이면 “작품명” 작품, 2점 이상이면 "작품 N점(“이름”, “이름”)"처럼 이름을 모두 적어요. 전시 삭제와 내보내짐 알림은 이름 없이 "작품 N점"으로 개수만 적어요.</li>
+      <li><b>개수 0</b>: 삭제된 작품이 없으면 작품 문장을 빼요. 알림 자체는 그대로 가요.</li>
+      <li><b>시간</b>: 방금, N분 전, N시간 전, 어제, N일 전(6일까지)으로 보이고, 7일이 지나면 월.일(예: 11.28)로, 다른 해는 연.월.일로 보여요.</li>
+    </ul>
+  </section>
+
+  <section class="sec">
+    <h2>삭제 알림 한눈에</h2>
+    <p>팀원 관리(초대·내보내기)와 전시 삭제는 대표자만 할 수 있어요. 관리자는 작품 수정·삭제와 대신 등록을 할 수 있어요. 한 사건에 받는 사람당 알림은 한 건이에요.</p>
+    <div class="sc"><table>
+      <thead><tr><th>사건</th><th>받는 사람 → 받는 알림</th></tr></thead>
+      <tbody>
+        <tr><td><b>작가·관리자·대표자가 작품을 직접 삭제</b></td><td>그 작품의 다른 작가·등록자 → 작품 삭제 · 직접 삭제 (삭제한 사람의 전시 작가명이 들어가요)</td></tr>
+        <tr><td><b>작가가 전시에서 나감</b></td><td><p>같은 작품에 남은 작가·등록자 → 작품 삭제 · 작가가 나감</p><p>나간 본인은 알림이 없어요</p></td></tr>
+        <tr><td><b>대표자가 팀원을 내보냄</b></td><td><p>내보내진 팀원 → 전시에서 내보내짐</p><p>같은 작품에 남은 작가·등록자 → 작품 삭제 · 작가가 나감</p><p>내보낸 대표자 본인은 알림이 없어요</p></td></tr>
+        <tr><td><b>대표자가 전시를 삭제</b></td><td>팀원 전원(대표자 제외) → 전시 삭제. 전시의 작품도 함께 삭제되지만 작품 삭제 알림은 따로 보내지 않아요</td></tr>
+      </tbody>
+    </table></div>
+    <ul>
+      <li>받는 사람이 없으면 알림도 없어요. 예를 들어 혼자 등록한 작품을 그 작가가 삭제하면 아무도 받지 않아요.</li>
+      <li>계정이 없는(이름만 입력한) 작가는 받지 않아요. 행동을 한 본인도 받지 않아요.</li>
+    </ul>
+  </section>
+
   <details class="dev-note">
     <summary>개발 참고</summary>
     <ul>
@@ -166,9 +212,6 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
       <li>읽음은 알림함을 열 때 한꺼번에 바뀌어요. 알림마다 <code>readAt</code>을 두든, 사용자별로 마지막으로 연 시각 하나를 두든 개발에서 정해 주세요. 읽음은 서버에 저장해서 다른 기기에서도 같아요.</li>
       <li>저장한 전시 시작은 시작일 오전 9시에 만들어요. 시작 전에 저장한 사람에게만 보내고, 시작일에 비공개면 보내지 않아요. 예약 작업이 이번 배포에 어려우면 이 알림만 2차로 미뤄요.</li>
       <li>같은 작품에서 대신 등록과 공동 작가에 동시에 걸리면 "작가로 지정됨" 한 건만 보내요. 저장한 작가의 새 전시는 같은 전시에 대해 같은 사람에게 한 번만 보내요.</li>
-      <li>작품 삭제 알림은 사유가 둘이에요. 누군가 직접 삭제하면 삭제한 사람의 전시 작가명을 넣고(받는 사람은 그 작품의 다른 작가·등록자), 작가가 전시에서 나가거나 내보내져 삭제되면 이름 없이 사유만 적어요.</li>
-      <li>삭제는 한 사건에 받는 사람당 알림 한 건이에요. 전시를 삭제하면 그 전시의 작품도 함께 삭제되는데, 이때는 작품 삭제 알림 없이 전시 삭제 알림 하나만 보내요. 팀원을 내보낼 때 내보내진 본인은 "내보내짐"만, 남은 작가는 "작품 삭제"만 받아서 겹치지 않아요.</li>
-      <li>"작품 N점"은 그 사람이 작가로 연결돼 있던 삭제된 작품 수예요. 0이면 그 문장을 빼요. 작가가 나가서 작품이 여러 점 삭제되면 "“작품명” 외 N점"으로 줄여요.</li>
       <li>운영자 알림은 어드민에서 회원을 한 명씩 골라 보내요. 제목 40자, 본문 1000자까지예요.</li>
     </ul>
     <pre><code>{
@@ -179,19 +222,35 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
   "readAt": null,
   "title": "공동 작가로 추가됨",
   "body": "“접으면 달라지는 지도” 작품에 공동 작가로 추가됐어요. 작가와 같은 권한으로 수정·삭제할 수 있어요.",
+  "highlights": ["접으면 달라지는 지도"],
   "target": { "type": "exhibition_works", "id": "exh_0001" }
 }
 
 {
   "id": "ntf_0002",
+  "type": "work_deleted",
+  "recipientId": "user_0042",
+  "createdAt": "2026-12-01T18:20:00+09:00",
+  "readAt": null,
+  "title": "작품 삭제",
+  "body": "작품 3점(“얇은 경계”, “되감는 계단”, “비가 지난 가방”)이 삭제됐어요. 함께 작가로 등록된 계정이 “손끝의 지도” 전시에서 나가거나 내보내져 작품도 함께 삭제됐어요. 복구할 수 없어요.",
+  "highlights": ["3점", "얇은 경계", "되감는 계단", "비가 지난 가방", "손끝의 지도"],
+  "reason": "author_left_or_removed",
+  "target": null
+}
+
+{
+  "id": "ntf_0003",
   "type": "exhibition_started",
   "recipientId": "user_0042",
   "createdAt": "2026-12-04T09:00:00+09:00",
   "readAt": null,
   "title": "저장한 전시 시작",
   "body": "저장한 “빛이 지나간 자리” 전시가 시작됐어요. 12.04 - 12.06 · 스튜디오 여백 B1",
+  "highlights": ["빛이 지나간 자리"],
   "target": { "type": "exhibition", "id": "exh_0007" }
 }</code></pre>
+    <p class="note">작품 삭제의 <code>reason</code>은 <code>deleted_by_member</code>(직접 삭제)와 <code>author_left_or_removed</code>(작가가 나가거나 내보내짐) 두 가지예요.</p>
     <p class="note">type 후보: request_approved, request_rejected, exhibition_invited, work_coauthor_added, work_proxy_assigned, work_deleted, exhibition_member_removed, exhibition_deleted, artist_new_exhibition, exhibition_started, operator_notice</p>
   </details>
 
@@ -201,46 +260,20 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
 
 <script>
 (() => {
-  /* 알림 목록. title=제목, body=내용(알림함에 보이는 그대로), w=시간, go=누르면 가는 전시(없으면 이동 없음) */
+  /* 알림 목록. title=제목, body=내용(알림함에 보이는 그대로, <b>=굵게 강조), w=시간, go=누르면 가는 화면(없으면 이동 없음), alts=경우에 따라 달라지는 문구 */
   const ITEMS = [
-    { id: 'approved', g: '전시 등록', name: '등록 요청 승인', title: '등록 요청 승인',
-      body: '“빛의 결 | 조용한 흐름” 전시의 등록 요청이 승인됐어요. 승인된 시점에 저장돼 있던 내용이 공개돼요.', w: '3시간 전', go: { page: '내 전시 관리', url: 'manage.html', name: '빛의 결 | 조용한 흐름', lines: ['한결대학교 사진동아리', '상태: 공개 중'] },
-      who: '전시 대표자', when: '등록 요청이 승인됐을 때' },
-    { id: 'rejected', g: '전시 등록', name: '등록 요청 반려', title: '등록 요청 반려',
-      body: '“빛의 결 | 조용한 흐름” 전시의 등록 요청이 반려됐어요. 이미지 출처를 확인할 수 없어요 수정한 뒤 다시 요청해 주세요', w: '5일 전', go: { page: '내 전시 관리', url: 'manage.html', name: '빛의 결 | 조용한 흐름', lines: ['한결대학교 사진동아리', '상태: 반려'] },
-      who: '전시 대표자', when: '등록 요청이 반려됐을 때(반려 사유는 운영자가 쓴 그대로)' },
-    { id: 'invite', g: '내 작품·팀', name: '전시 초대', title: '전시 초대',
-      body: '“펼쳐지는 장면” 전시에 팀원으로 초대받았어요. 초대한 사람: 김도윤(doyoon)', w: '1시간 전', go: { page: '받은 초대', url: '마이 › 받은 초대', name: '펼쳐지는 장면', lines: ['모아디자인대학교 시각디자인학과', '초대한 사람: 김도윤(doyoon)'] },
-      who: '초대받은 사람', when: '팀원으로 초대받았을 때' },
-    { id: 'coauthor', g: '내 작품·팀', name: '공동 작가로 추가됨', title: '공동 작가로 추가됨',
-      body: '“접으면 달라지는 지도” 작품에 공동 작가로 추가됐어요. 작가와 같은 권한으로 수정·삭제할 수 있어요.', w: '어제', go: { page: '전시 작업', url: 'works.html?id=e1', name: '빛의 결 | 조용한 흐름', lines: ['작품: “접으면 달라지는 지도”'] },
-      who: '공동 작가로 추가된 사람(본인이 추가한 경우 제외)', when: '작품에 공동 작가로 추가됐을 때' },
-    { id: 'proxy', g: '내 작품·팀', name: '작가로 지정됨', title: '작가로 지정됨',
-      body: '“장면을 넘기는 극장” 작품의 작가로 지정됐어요. 등록한 사람: 김도윤', w: '어제', go: { page: '전시 작업', url: 'works.html?id=e2', name: '손끝의 지도', lines: ['작품: “장면을 넘기는 극장”'] },
-      who: '대신 등록으로 지정된 팀원', when: '대표자·관리자가 작가로 골라 작품을 대신 등록했을 때' },
-    { id: 'workdeldirect', g: '내 작품·팀', name: '작품 삭제 · 직접 삭제', title: '작품 삭제',
-      body: '“얇은 경계” 작품이 삭제됐어요. 삭제한 사람: 서유진. 복구할 수 없어요.', w: '3일 전', go: null,
-      who: '같은 작품의 다른 작가·등록자(삭제한 본인 제외)', when: '작가·대표자·관리자가 작품을 삭제했을 때(삭제한 사람은 전시 작가명)' },
-    { id: 'workdel', g: '내 작품·팀', name: '작품 삭제 · 작가가 나감', title: '작품 삭제',
-      body: '“얇은 경계” 외 2점이 삭제됐어요. 함께 작가로 등록된 계정이 “손끝의 지도” 전시에서 나가거나 내보내져 작품도 함께 삭제됐어요. 복구할 수 없어요.', w: '4일 전', go: null,
-      who: '같은 작품에 남은 작가·등록자(받는 사람당 1건)', when: '작가 계정이 전시에서 나가거나 내보내져 작품이 삭제됐을 때' },
-    { id: 'removed', g: '내 작품·팀', name: '전시에서 내보내짐', title: '전시에서 내보내짐',
-      body: '“손끝의 지도” 전시에서 내보내졌어요. 작가로 등록돼 있던 작품 2점이 함께 삭제됐어요.', w: '6일 전', go: null,
-      who: '내보내진 팀원', when: '대표자·관리자가 팀원을 내보냈을 때(삭제된 작품이 없으면 작품 문장은 빠져요)' },
-    { id: 'exdel', g: '내 작품·팀', name: '전시 삭제', title: '전시 삭제',
-      body: '“움직임의 기록” 전시가 삭제됐어요. 작가로 등록돼 있던 작품 5점이 함께 삭제됐어요.', w: '7일 전', go: null,
-      who: '전시 팀원(삭제한 대표자 제외)', when: '대표자가 전시를 삭제했을 때(전시의 작품도 함께 삭제되고, 작품 삭제 알림은 따로 가지 않아요. 작품이 없으면 작품 문장은 빠져요)' },
-    { id: 'followartist', g: '저장한 것', name: '저장한 작가의 새 전시', title: '저장한 작가의 새 전시',
-      body: '송하윤님이 참여한 “재생 중” 전시가 공개됐어요. 12.02 - 12.07 · 미온미디어관 B1', w: '2일 전',
-      go: { page: '전시 상세', url: 'exhibition.html?e=5', name: '재생 중', lines: ['미온대학교 디지털콘텐츠전공', '12.02 - 12.07 · 미온미디어관 B1'], sketch: true },
-      who: '그 작가를 저장한 사람', when: '저장한 작가가 참여한 전시가 공개됐을 때' },
-    { id: 'started', g: '저장한 것', name: '저장한 전시 시작', title: '저장한 전시 시작',
-      body: '저장한 “빛이 지나간 자리” 전시가 시작됐어요. 12.04 - 12.06 · 스튜디오 여백 B1', w: '어제',
-      go: { page: '전시 상세', url: 'exhibition.html?e=7', name: '빛이 지나간 자리', lines: ['해온예술대학교 사진미디어학과', '12.04 - 12.06 · 스튜디오 여백 B1'], sketch: true },
-      who: '그 전시를 저장한 사람', when: '전시 시작일 오전 9시' },
-    { id: 'operator', g: '운영', name: '운영자 특별 알림', title: '전시 노출 중단 안내',
-      body: '조치 대상, 사유와 필요한 후속 조치를 작성해 주세요.', w: '방금', go: null,
-      who: '운영자가 고른 회원', when: '운영자가 어드민에서 보냈을 때(제목 40자·본문 1000자, 운영자가 쓴 그대로)' }
+    {"id": "approved", "g": "전시 등록", "name": "등록 요청 승인", "title": "등록 요청 승인", "body": "“<b>빛의 결 | 조용한 흐름</b>” 전시의 등록 요청이 승인됐어요. 승인된 시점에 저장돼 있던 내용이 공개돼요.", "w": "3시간 전", "go": {"page": "내 전시 관리", "url": "manage.html", "name": "빛의 결 | 조용한 흐름", "lines": ["한결대학교 사진동아리", "상태: 공개 중"]}, "who": "전시 대표자", "when": "등록 요청이 승인됐을 때"},
+    {"id": "rejected", "g": "전시 등록", "name": "등록 요청 반려", "title": "등록 요청 반려", "body": "“<b>빛의 결 | 조용한 흐름</b>” 전시의 등록 요청이 반려됐어요. 이미지 출처를 확인할 수 없어요 수정한 뒤 다시 요청해 주세요", "w": "5일 전", "go": {"page": "내 전시 관리", "url": "manage.html", "name": "빛의 결 | 조용한 흐름", "lines": ["한결대학교 사진동아리", "상태: 반려"]}, "who": "전시 대표자", "when": "등록 요청이 반려됐을 때(반려 사유는 운영자가 쓴 그대로)"},
+    {"id": "invite", "g": "내 작품·팀", "name": "전시 초대", "title": "전시 초대", "body": "“<b>펼쳐지는 장면</b>” 전시에 팀원으로 초대받았어요. 초대한 사람: <b>김도윤(doyoon)</b>", "w": "1시간 전", "go": {"page": "받은 초대", "url": "마이 › 받은 초대", "name": "펼쳐지는 장면", "lines": ["모아디자인대학교 시각디자인학과", "초대한 사람: 김도윤(doyoon)"]}, "who": "초대받은 사람", "when": "대표자가 팀원으로 초대했을 때"},
+    {"id": "coauthor", "g": "내 작품·팀", "name": "공동 작가로 추가됨", "title": "공동 작가로 추가됨", "body": "“<b>접으면 달라지는 지도</b>” 작품에 공동 작가로 추가됐어요. 작가와 같은 권한으로 수정·삭제할 수 있어요.", "w": "어제", "go": {"page": "전시 작업", "url": "works.html?id=e1", "name": "빛의 결 | 조용한 흐름", "lines": ["작품: “접으면 달라지는 지도”"]}, "who": "공동 작가로 추가된 사람(본인이 추가한 경우, 계정이 없는 작가는 제외)", "when": "작품에 공동 작가로 추가됐을 때"},
+    {"id": "proxy", "g": "내 작품·팀", "name": "작가로 지정됨", "title": "작가로 지정됨", "body": "“<b>장면을 넘기는 극장</b>” 작품의 작가로 지정됐어요. 등록한 사람: <b>김도윤</b>", "w": "어제", "go": {"page": "전시 작업", "url": "works.html?id=e2", "name": "손끝의 지도", "lines": ["작품: “장면을 넘기는 극장”"]}, "who": "대신 등록으로 지정된 팀원(이름을 직접 입력한 작가는 제외)", "when": "대표자·관리자가 팀원을 작가로 골라 작품을 대신 등록했을 때"},
+    {"id": "workdeldirect", "g": "내 작품·팀", "name": "작품 삭제 · 직접 삭제", "title": "작품 삭제", "body": "“<b>얇은 경계</b>” 작품이 삭제됐어요. 삭제한 사람: <b>서유진</b>. 복구할 수 없어요.", "w": "3일 전", "go": null, "who": "같은 작품의 다른 작가·등록자(삭제한 본인 제외)", "when": "작가·관리자·대표자가 작품을 삭제했을 때(삭제한 사람은 그 전시의 전시 작가명)"},
+    {"id": "workdel", "g": "내 작품·팀", "name": "작품 삭제 · 작가가 나감", "title": "작품 삭제", "body": "작품 <b>3점</b>(“<b>얇은 경계</b>”, “<b>되감는 계단</b>”, “<b>비가 지난 가방</b>”)이 삭제됐어요. 함께 작가로 등록된 계정이 “<b>손끝의 지도</b>” 전시에서 나가거나 내보내져 작품도 함께 삭제됐어요. 복구할 수 없어요.", "w": "4일 전", "go": null, "alts": [["작품이 1점일 때", "“<b>얇은 경계</b>” 작품이 삭제됐어요. 함께 작가로 등록된 계정이 “<b>손끝의 지도</b>” 전시에서 나가거나 내보내져 작품도 함께 삭제됐어요. 복구할 수 없어요."]], "who": "같은 작품에 남은 작가·등록자(받는 사람당 1건, 나간 본인은 제외)", "when": "작가가 전시에서 나가거나 대표자가 내보내서 그 작가의 작품이 삭제됐을 때"},
+    {"id": "removed", "g": "내 작품·팀", "name": "전시에서 내보내짐", "title": "전시에서 내보내짐", "body": "“<b>손끝의 지도</b>” 전시에서 내보내졌어요. 작가로 등록돼 있던 작품 <b>2점</b>이 함께 삭제됐어요.", "w": "6일 전", "go": null, "alts": [["삭제된 작품이 없을 때", "“<b>손끝의 지도</b>” 전시에서 내보내졌어요."]], "who": "내보내진 팀원", "when": "대표자가 팀원을 내보냈을 때(관리자는 팀원 관리를 할 수 없어요)"},
+    {"id": "exdel", "g": "내 작품·팀", "name": "전시 삭제", "title": "전시 삭제", "body": "“<b>움직임의 기록</b>” 전시가 삭제됐어요. 작가로 등록돼 있던 작품 <b>5점</b>이 함께 삭제됐어요.", "w": "11.28", "go": null, "alts": [["작품이 없을 때", "“<b>움직임의 기록</b>” 전시가 삭제됐어요."]], "who": "전시 팀원(삭제한 대표자 제외, 작품 삭제 알림은 따로 없음)", "when": "대표자가 전시를 삭제했을 때(전시의 작품도 함께 삭제돼요)"},
+    {"id": "followartist", "g": "저장한 것", "name": "저장한 작가의 새 전시", "title": "저장한 작가의 새 전시", "body": "<b>송하윤</b>님이 참여한 “<b>재생 중</b>” 전시가 공개됐어요. 12.02 - 12.07 · 미온미디어관 B1", "w": "2일 전", "go": {"page": "전시 상세", "url": "exhibition.html?e=5", "name": "재생 중", "lines": ["미온대학교 디지털콘텐츠전공", "12.02 - 12.07 · 미온미디어관 B1"], "sketch": true}, "who": "그 작가를 저장한 사람", "when": "저장한 작가가 참여한 전시가 공개됐을 때"},
+    {"id": "started", "g": "저장한 것", "name": "저장한 전시 시작", "title": "저장한 전시 시작", "body": "저장한 “<b>빛이 지나간 자리</b>” 전시가 시작됐어요. 12.04 - 12.06 · 스튜디오 여백 B1", "w": "어제", "go": {"page": "전시 상세", "url": "exhibition.html?e=7", "name": "빛이 지나간 자리", "lines": ["해온예술대학교 사진미디어학과", "12.04 - 12.06 · 스튜디오 여백 B1"], "sketch": true}, "who": "그 전시를 저장한 사람", "when": "전시 시작일 오전 9시(시작 전에 저장한 사람만, 시작일에 비공개면 제외)"},
+    {"id": "operator", "g": "운영", "name": "운영자 특별 알림", "title": "전시 노출 중단 안내", "body": "조치 대상, 사유와 필요한 후속 조치를 작성해 주세요.", "w": "방금", "go": null, "who": "운영자가 고른 회원", "when": "운영자가 어드민에서 보냈을 때(제목 40자·본문 1000자, 운영자가 쓴 그대로)"}
   ];
   const GROUPS = ['전시 등록', '내 작품·팀', '저장한 것', '운영'];
   /* 알림함에 보이는 순서(최신순). 맨 위 3개가 안 읽은 상태로 시작 */
@@ -264,8 +297,9 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
   function renderInfo() {
     const x = byId(cur);
     $('info').innerHTML = `<h2>${x.name}</h2>
-      <dl><div><dt>문구</dt><dd><b>${x.title}</b>${x.body}</dd></div>
-      <div><dt>받는 사람</dt><dd>${x.who}</dd></div><div><dt>보내는 때</dt><dd>${x.when}</dd></div>
+      <dl><div><dt>문구</dt><dd><span class="ttl">${x.title}</span>${x.body}</dd></div>` +
+      (x.alts || []).map((a) => `<div><dt>${a[0]}</dt><dd>${a[1]}</dd></div>`).join('') +
+      `<div><dt>받는 사람</dt><dd>${x.who}</dd></div><div><dt>보내는 때</dt><dd>${x.when}</dd></div>
       <div><dt>누르면</dt><dd>${x.go ? `${x.go.page}${jo(x.go.page)} 이동<code>${x.go.url}</code>` : '이동 없음'}</dd></div></dl>` +
       (x.go ? '<button class="press" id="press" type="button">알림 눌러 보기</button>' : '');
     const p = $('press'); if (p) p.addEventListener('click', () => openAlert(cur));
@@ -301,14 +335,12 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
     $('screen').scrollTop = 0;
     crumb(`${x.go.page}`, x.go.url);
   }
-  /* 알림을 누르면: 이동할 곳이 있으면 그 화면으로, 없으면 그 자리에서 내용을 펼침 */
+  /* 알림을 누르면: 이동할 곳이 있으면 그 화면으로. 없으면 이동하지 않고 오른쪽 설명만 그 알림으로 바뀜 */
   function openAlert(id) {
     cur = id; renderInfo();
     const x = byId(id);
     if (x.go) { renderDest(x); return; }
-    if (view !== 'list') renderList();
-    const r = document.querySelector(`.noti[data-k="${id}"]`);
-    if (r) { r.classList.toggle('open'); focusRow(); }
+    if (view !== 'list') renderList(); else focusRow();
   }
   $('screen').addEventListener('click', (e) => { const b = e.target.closest('.noti'); if (b) openAlert(b.dataset.k); });
 
