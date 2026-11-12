@@ -66,7 +66,8 @@ form { flex: 1; display: flex; flex-direction: column; }
 .ul:focus-within { border-bottom-color: var(--text-primary); }
 .field.err .ul { border-bottom-color: var(--notice); }
 .ul input { flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; outline: 0; background: transparent; font-size: 16px; font-weight: 500; }
-.ul input::placeholder { color: var(--text-teritary); }   /* 11-08: Figma Field과 같은 text/teritary */
+.ul input::placeholder { color: var(--text-teritary); }
+.ul input:disabled { cursor: default; }   /* 11-13 학교 선택 전 이메일 칸 */   /* 11-08: Figma Field과 같은 text/teritary */
 .ul input[readonly] { color: var(--text-primary); }
 .ul .i { width: 22px; height: 22px; color: var(--text-primary); }
 .ul .tm { margin-left: 8px; font-size: 16px; font-weight: 500; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
@@ -173,10 +174,10 @@ dialog.modal::backdrop { background: rgba(0, 0, 0, .42); }
         </div>
 
         <!-- 학교 이메일 -->
-        <div class="field" id="f-email" hidden>
+        <div class="field" id="f-email">   <!-- 11-13 Figma 01 · 입력 전: 학교를 고르기 전에도 보이고 입력 칸·메일발송은 비활성 -->
           <label for="email"><span>학교 이메일<span class="req" aria-hidden="true">*</span></span></label>
           <div class="line">
-            <div class="ul"><input id="email" type="email" inputmode="email" autocapitalize="off" placeholder="school@univ.ac.kr" aria-describedby="h-email"></div>
+            <div class="ul"><input id="email" type="email" inputmode="email" autocapitalize="off" disabled placeholder="school@univ.ac.kr" aria-describedby="h-email"></div>
             <button type="button" class="act" id="send" disabled>메일발송</button>
           </div>
           <p class="help" id="h-email" aria-live="polite"></p>
@@ -275,7 +276,7 @@ function openList() {
 function closeList() { pop.hidden = true; input.setAttribute('aria-expanded', 'false'); input.removeAttribute('aria-activedescendant'); }
 function pick(s) {
   st.school = s; input.value = s.n; closeList();
-  if ($('f-email').hidden) { $('f-email').hidden = false; }
+  email.disabled = false;
   $('email').focus(); update();
 }
 input.addEventListener('input', () => {
@@ -307,7 +308,7 @@ function resetMail(hideAll) {
   $('f-code').hidden = true; code.value = ''; $('h-code').hidden = true; $('f-code').classList.remove('err');
   $('f-name').hidden = $('f-field').hidden = true;
   email.readOnly = false; $('send').hidden = false; $('send').textContent = '메일발송'; setMailHelp('');
-  if (hideAll) { $('f-email').hidden = true; email.value = ''; }
+  if (hideAll) { email.value = ''; }   // 11-13 학교를 바꿔도 이메일 칸은 계속 보임(비활성으로 돌아감)
 }
 email.addEventListener('input', () => {
   if (st.sent && !st.verified) { resetMail(false); }
@@ -366,6 +367,7 @@ $('pname').addEventListener('input', update);
 
 /* ---------- 상태 갱신 ---------- */
 function update() {
+  if (!st.school) email.disabled = true;   // 학교를 고르기 전에는 이메일 칸 비활성
   $('send').disabled = !(st.school && validMail(email.value.trim()));
   $('check').disabled = !(st.sent && !st.verified && code.value.length === 6 && st.left > 0);
   $('fcnt').textContent = `${st.fields.size} / ${MAX}`;

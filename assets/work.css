@@ -176,8 +176,8 @@
 .av[data-r="pend"].p2 { background: #fee2e2; }
 .mrow { display: flex; align-items: center; gap: 11px; padding: 11.5px 0; }   /* 11-09 Figma MemberRow: 아바타 46 + 글자 시작 x77(간격 11), 행 높이 69 */
 .mrow .nm { flex: 1; min-width: 0; }
-.mrow .nm b { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; line-height: 21px; }
-.badge { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 4px; font-size: 10px; font-weight: 600; }
+.mrow .nm b { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; line-height: 1.4; }   /* 11-13 행간 140% 규칙(이전 21px=150%) */
+.badge { display: inline-flex; align-items: center; height: 20px; padding: 0 8px; border-radius: 4px; font-size: 10px; font-weight: 600; line-height: 1.4; }   /* 11-13 부모 21px을 물려받아 2.1이던 것 */
 .badge[data-r="owner"] { background: #dbeafe; color: #2563eb; } .badge[data-r="manager"] { background: #dcfce7; color: #00a846; } .badge[data-r="member"] { background: #f0f0f3; color: var(--text-secondary); }
 .mrow .nm small { display: block; margin-top: 3px; font-size: 12px; font-weight: 500; line-height: 17px; color: var(--text-secondary); }
 .mrow .dots { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 9999px; transition: background .2s; }

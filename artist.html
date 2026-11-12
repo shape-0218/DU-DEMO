@@ -114,7 +114,7 @@ img { display: block; }
 .exh-list { gap: 0; }
 .exh { display: grid; grid-template-columns: 72px minmax(0, 1fr) 20px; align-items: center; column-gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--bg-teritary); animation: rise .6s var(--ease) backwards; animation-delay: calc(var(--n, 0) * 60ms); }   /* 카드 테두리 없이 얇은 구분선만 */
 .exh:first-child { padding-top: 16px; } .exh:last-child { border-bottom: 0; } .exh + .exh { margin-top: 12px; }   /* 11-07 Figma 위치 대조: 전시 행 위 16·행 사이 12 */
-.exh img { width: 72px; height: 96px; object-fit: cover; background: #000; box-shadow: 0 0 0 1px rgba(0, 0, 0, .06); }
+.exh img { width: 72px; height: 96px; object-fit: cover; background: var(--bg-secondary); }   /* 11-13 Figma `Card / 전시 행 · 일정 포함` 포스터: 모서리 0·외곽선 없음(이전: 1px 옅은 선 + 검정 배경) */
 .exh .meta { display: flex; flex-wrap: wrap; gap: 2px 12px; margin-top: 4px; }
 .exh .meta .sub { margin-top: 0; }
 /* 11-09 날짜 글자: Figma `body/md/regular2`(12, 500, 자간 +1%)·`body/lg/regular2`(14, 400, 자간 0) — 숫자가 붙어 보이지 않게 기본 자간(-3%)을 쓰지 않음 */
@@ -137,8 +137,8 @@ img { display: block; }
 .works { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 16px; padding-inline: 4px; }   /* 11-08 Figma 작가 프로필 작품 카드: 안쪽 4 + 사이 16 → 카드 폭 169(글자 x24·x209) */
 @media (min-width: 900px) { .works { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 20px; padding-inline: 0; } }
 .w { display: block; animation: rise .6s var(--ease) backwards; animation-delay: calc(var(--n, 0) * 60ms); }
-.w .im { aspect-ratio: 3 / 4; overflow: hidden; background: #000; box-shadow: 0 0 0 1px rgba(0, 0, 0, .06); }
-.w .im img { width: 100%; height: 100%; object-fit: contain; transition: transform .7s var(--ease); }   /* 작품 정책: 어떤 비율이든 전체가 보이고 남는 곳은 검정 */
+.w .im { aspect-ratio: 3 / 4; overflow: hidden; background: var(--bg-secondary); }   /* 11-13 사진 외곽선 없음(카드 E, Figma `card / 참여 작품` 사진에 선·효과 없음) */
+.w .im img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }   /* 11-13 카드 정책: 카드는 꽉 채워 자름(cover), 검정 띠 없음 — 탐색·홈 카드와 같음(이전: contain + 검정) */
 @media (hover: hover) { .w:hover .im img { transform: scale(1.03); } }
 .w b { display: block; margin-top: 10px; font-weight: 600; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .w span { display: block; font-size: 12px; font-weight: 500; color: var(--text-teritary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
