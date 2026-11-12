@@ -165,6 +165,12 @@ img { display: block; }
 
 /* 시트(알림함·받은 초대·드로어)·모달 */
 .scrim { position: fixed; inset: 0; z-index: 70; background: rgba(0, 0, 0, .42); animation: fade .25s ease; }
+.scrim.out { animation: fadeOut .22s ease forwards; pointer-events: none; }   /* 11-13 닫힘 */
+@keyframes fadeOut { to { opacity: 0; } }
+@keyframes sheetOutY { to { transform: translateY(24px); opacity: 0; } }   /* 열릴 때(slideUp)의 반대 */
+@keyframes sheetOutX { to { transform: translateX(32px); opacity: 0; } }   /* 열릴 때(slideIn)의 반대 */
+.sheet.out { animation: sheetOutY .22s var(--ease) forwards; pointer-events: none; }
+.sheet.right.out { animation-name: sheetOutX; }
 @keyframes fade { from { opacity: 0; } }
 .sheet { position: fixed; z-index: 71; background: #fff; display: flex; flex-direction: column; animation: slideUp .35s var(--ease); }
 @keyframes slideUp { from { transform: translateY(24px); opacity: 0; } }
@@ -237,7 +243,9 @@ img { display: block; }
 .btn-red { background: var(--notice); color: #fff; } .btn-red:hover { background: #d63c41; }
 
 .dr { padding: 28px 20px 0; display: flex; flex-direction: column; height: 100%; }
+.dr .logo { align-self: flex-start; }   /* 11-13 로고 링크가 드로어 폭 전체로 늘어나 닫기 X를 덮어서, X를 눌러도 홈으로 이동하던 문제 — 로고 글자 폭만큼만 눌리게 */
 .dr .logo img { width: 124px; height: 28px; }
+.dr > .sh-x { z-index: 1; }
 .dr .prof { display: flex; align-items: center; gap: 12px; margin-top: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--bg-teritary); width: 100%; text-align: left; }
 .dr .prof .avatar { width: 40px; height: 40px; color: #fff; }   /* 11-10: 48 → 40 (마이 헤더 36과 가깝게, 사용자 확인) */
 .dr .prof b { display: block; font-size: 18px; font-weight: 600; color: var(--text-primary); }   /* 11-10 위계: 이름 18 > 메뉴 행 16 > 보조 12 (Figma body/xxl/semibold) */ .dr .prof span { display: block; font-size: 12px; color: var(--text-teritary); }
@@ -428,9 +436,16 @@ document.addEventListener('click', (e) => { const a = e.target.closest('[data-to
 
 /* ============ 시트 · 모달 도우미 ============ */
 let lastFocus = null, openSheet = null;
-function closeSheet() { if (!openSheet) return; openSheet.sheet.remove(); openSheet.scrim.remove(); document.body.classList.remove('lock'); openSheet = null; if (lastFocus) lastFocus.focus(); }
+/* 11-13 닫을 때도 바로 사라지지 않고 열릴 때의 반대로 .22s 동안 부드럽게 사라짐(transform·opacity만, 움직임 줄이기면 바로). 시트를 다른 시트로 바꿀 땐 바로(now=true) */
+function closeSheet(now) {
+  if (!openSheet) return;
+  const { sheet, scrim } = openSheet; openSheet = null;
+  const done = () => { sheet.remove(); scrim.remove(); if (!openSheet) document.body.classList.remove('lock'); };
+  if (now === true || matchMedia('(prefers-reduced-motion: reduce)').matches) done(); else { sheet.classList.add('out'); scrim.classList.add('out'); setTimeout(done, 230); }
+  if (lastFocus) lastFocus.focus();
+}
 function showSheet(cls, html, label) {
-  closeSheet(); lastFocus = document.activeElement;
+  closeSheet(true); lastFocus = document.activeElement;
   const scrim = document.createElement('div'); scrim.className = 'scrim'; scrim.addEventListener('click', closeSheet);
   const sheet = document.createElement('div'); sheet.className = 'sheet ' + cls; sheet.setAttribute('role', 'dialog'); sheet.setAttribute('aria-modal', 'true'); sheet.setAttribute('aria-label', label); sheet.innerHTML = html;
   document.body.append(scrim, sheet); document.body.classList.add('lock'); openSheet = { sheet, scrim };
