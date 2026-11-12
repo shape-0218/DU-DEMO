@@ -155,7 +155,7 @@ html.kb .search input:focus-visible { outline: 2px solid var(--text-primary); ou
 .lcard:active { transform: scale(.99); }
 .lcard.on { border-color: #fff; border-width: 2px; }
 .lcard .lp { position: relative; background: #797979; }
-.lcard .lp img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; outline: 1px solid rgba(255, 255, 255, .1); outline-offset: -1px; }
+.lcard .lp img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }   /* 11-13 흰 외곽선 삭제(Figma 지도 시트 `card` 포스터에 선 없음) */
 .lcard .lt { position: relative; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; padding: 12px 12px 25px; }   /* 11-08 Figma 시트 카드: 학교 줄→날짜 줄 25(이전 38), 아래 여백 25 */
 .lcard .lt h3 { margin: 0; font-size: 16px; line-height: 1.4; font-weight: 600; letter-spacing: -0.03em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 56px; color: #fff; }
 .lcard .lt .og { margin-top: 2px; font-size: 12px; font-weight: 500; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

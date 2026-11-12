@@ -159,7 +159,6 @@ img { display: block; }
 .rc a:active { transform: scale(.97); }
 .rc .im { position: relative; aspect-ratio: 3 / 4; overflow: hidden; background: var(--bg-teritary); }
 .rc .im img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.rc .im::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08); pointer-events: none; }
 .rc b { display: block; margin-top: 8px; font-size: 14px; font-weight: 600; line-height: 1.4; letter-spacing: -0.03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .rc small { display: block; font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-teritary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
@@ -230,7 +229,7 @@ img { display: block; }
 .invite { padding: 16px 0; border-bottom: 1px solid var(--bg-teritary); }
 .invite .by { display: block; font-size: 12px; font-weight: 500; color: var(--text-secondary); }
 .invite .row { display: grid; grid-template-columns: 72px minmax(0, 1fr); column-gap: 16px; margin-top: 12px; }
-.invite img.po { width: 72px; height: 96px; object-fit: cover; background: #000; box-shadow: 0 0 0 1px rgba(0, 0, 0, .06); }
+.invite img.po { width: 72px; height: 96px; object-fit: cover; background: var(--bg-secondary); }   /* 11-13 외곽선·검정 바탕 삭제(Figma `Card / 초대 요청` 포스터에 선 없음) */
 .invite .tx { min-width: 0; display: grid; align-content: start; gap: 2px; }
 .invite b { display: block; font-size: 16px; font-weight: 600; line-height: 1.4; }
 .invite .sub { display: block; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
