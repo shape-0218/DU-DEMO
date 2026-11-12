@@ -70,6 +70,7 @@ h1, h2, p, dl, dd, ul { margin: 0; }
 .common h2 { font-size: 14px; font-weight: 600; }
 .common ul { margin-top: 8px; padding-left: 16px; color: var(--text-secondary); }
 .common li { margin-top: 4px; }
+.common + .common { margin-top: 16px; }
 
 @media (max-width: 1099px) {
   .stage { grid-template-columns: 240px 402px; }
@@ -103,9 +104,21 @@ h1, h2, p, dl, dd, ul { margin: 0; }
         <h2>모든 알림 공통</h2>
         <ul>
           <li>제목과 내용으로 오고, 내용이 3줄을 넘으면 눌러서 펼쳐요</li>
-          <li>화살표가 있는 알림 2개만 전시로 이동해요</li>
-          <li>알림함을 열면 안 읽음 점이 사라져요</li>
-          <li>푸시와 이메일은 없고, 180일 보관해요</li>
+          <li>화살표가 있는 알림 7개는 누르면 해당 화면으로 이동해요</li>
+          <li>한 사건에 받는 사람당 알림은 한 건이에요. 전시가 삭제돼 작품이 여러 개 사라져도 전시 삭제 알림 하나만 가요</li>
+          <li>푸시와 이메일은 없어요</li>
+        </ul>
+      </div>
+      <div class="common">
+        <h2>빨간 점과 보관</h2>
+        <ul>
+          <li>마이의 알림함 아이콘에는 안 읽은 알림이 하나라도 있으면 빨간 점이 보여요</li>
+          <li>알림함을 열면 모든 알림이 읽음이 되고 아이콘의 점이 사라져요</li>
+          <li>열려 있는 목록에서는 열기 전의 줄별 점을 그대로 보여 주고, 닫았다 다시 열면 점이 없어요</li>
+          <li>알림을 눌러도, 이동한 곳에서 일을 마쳐도(초대 수락 등) 알림은 목록에 남아요</li>
+          <li>알림을 직접 지우는 기능은 없어요. 180일이 지나거나 100개를 넘으면 오래된 것부터 자동으로 지워요</li>
+          <li>알림함이 열려 있는 동안 새로 온 알림은 다음에 열 때 보여요. 읽음은 서버에 저장해서 다른 기기에서도 같아요</li>
+          <li>알림이 하나도 없으면 목록은 비어 있고, 안내 문구는 없어요</li>
         </ul>
       </div>
     </section>
@@ -118,29 +131,32 @@ h1, h2, p, dl, dd, ul { margin: 0; }
      이름은 데모 데이터(demo-data.js·flow.js)에 있는 것을 씀. */
   const ITEMS = [
     { id: 'approved', g: '전시 등록', name: '등록 요청 승인', title: '등록 요청 승인',
-      body: '“빛의 결 | 조용한 흐름” 전시의 등록 요청이 승인됐어요. 승인된 시점에 저장돼 있던 내용이 공개돼요.', w: '3시간 전', go: null,
+      body: '“빛의 결 | 조용한 흐름” 전시의 등록 요청이 승인됐어요. 승인된 시점에 저장돼 있던 내용이 공개돼요.', w: '3시간 전', go: { page: '내 전시 관리', url: 'manage.html' },
       who: '전시 대표자', when: '등록 요청이 승인됐을 때' },
     { id: 'rejected', g: '전시 등록', name: '등록 요청 반려', title: '등록 요청 반려',
-      body: '“빛의 결 | 조용한 흐름” 전시의 등록 요청이 반려됐어요. 이미지 출처를 확인할 수 없어요 수정한 뒤 다시 요청해 주세요', w: '4일 전', go: null,
+      body: '“빛의 결 | 조용한 흐름” 전시의 등록 요청이 반려됐어요. 이미지 출처를 확인할 수 없어요 수정한 뒤 다시 요청해 주세요', w: '5일 전', go: { page: '내 전시 관리', url: 'manage.html' },
       who: '전시 대표자', when: '등록 요청이 반려됐을 때(반려 사유는 운영자가 쓴 그대로)' },
     { id: 'invite', g: '내 작품·팀', name: '전시 초대', title: '전시 초대',
-      body: '“펼쳐지는 장면” 전시에 팀원으로 초대받았어요. 초대한 사람: 김도윤(doyoon)', w: '1시간 전', go: null,
-      who: '초대받은 사람', when: '팀원으로 초대받았을 때(수락·거절은 마이의 받은 초대에서)' },
+      body: '“펼쳐지는 장면” 전시에 팀원으로 초대받았어요. 초대한 사람: 김도윤(doyoon)', w: '1시간 전', go: { page: '받은 초대', url: 'my.html', show: 'my.html · 받은 초대 시트', sheet: true },
+      who: '초대받은 사람', when: '팀원으로 초대받았을 때' },
     { id: 'coauthor', g: '내 작품·팀', name: '공동 작가로 추가됨', title: '공동 작가로 추가됨',
-      body: '“접으면 달라지는 지도” 작품에 공동 작가로 추가됐어요. 작가와 같은 권한으로 수정·삭제할 수 있어요.', w: '어제', go: null,
+      body: '“접으면 달라지는 지도” 작품에 공동 작가로 추가됐어요. 작가와 같은 권한으로 수정·삭제할 수 있어요.', w: '어제', go: { page: '전시 작업', url: 'works.html?id=e1' },
       who: '공동 작가로 추가된 사람(본인이 추가한 경우 제외)', when: '작품에 공동 작가로 추가됐을 때' },
     { id: 'proxy', g: '내 작품·팀', name: '작가로 지정됨', title: '작가로 지정됨',
-      body: '“장면을 넘기는 극장” 작품의 작가로 지정됐어요. 등록한 사람: 김도윤', w: '어제', go: null,
+      body: '“장면을 넘기는 극장” 작품의 작가로 지정됐어요. 등록한 사람: 김도윤', w: '어제', go: { page: '전시 작업', url: 'works.html?id=e2' },
       who: '대신 등록으로 지정된 팀원', when: '대표자·관리자가 작가로 골라 작품을 대신 등록했을 때' },
-    { id: 'workdel', g: '내 작품·팀', name: '작품 삭제', title: '작품 삭제',
-      body: '“얇은 경계” 작품이 삭제됐어요. 함께 작가로 등록된 계정이 “손끝의 지도” 전시에서 나가거나 내보내져 작품도 함께 삭제됐어요. 복구할 수 없어요.', w: '3일 전', go: null,
-      who: '같은 작품에 남은 작가·등록자', when: '작가 계정이 전시에서 나가거나 내보내져 작품이 삭제됐을 때' },
+    { id: 'workdeldirect', g: '내 작품·팀', name: '작품 삭제 · 직접 삭제', title: '작품 삭제',
+      body: '“얇은 경계” 작품이 삭제됐어요. 삭제한 사람: 서유진. 복구할 수 없어요.', w: '3일 전', go: null,
+      who: '같은 작품의 다른 작가·등록자(삭제한 본인 제외)', when: '작가·대표자·관리자가 작품을 삭제했을 때(삭제한 사람은 전시 작가명)' },
+    { id: 'workdel', g: '내 작품·팀', name: '작품 삭제 · 작가가 나감', title: '작품 삭제',
+      body: '“얇은 경계” 외 2점이 삭제됐어요. 함께 작가로 등록된 계정이 “손끝의 지도” 전시에서 나가거나 내보내져 작품도 함께 삭제됐어요. 복구할 수 없어요.', w: '4일 전', go: null,
+      who: '같은 작품에 남은 작가·등록자(받는 사람당 1건)', when: '작가 계정이 전시에서 나가거나 내보내져 작품이 삭제됐을 때' },
     { id: 'removed', g: '내 작품·팀', name: '전시에서 내보내짐', title: '전시에서 내보내짐',
-      body: '“손끝의 지도” 전시에서 내보내졌어요. 작가로 등록돼 있던 작품이 있었다면 함께 삭제됐어요.', w: '5일 전', go: null,
-      who: '내보내진 팀원', when: '대표자·관리자가 팀원을 내보냈을 때' },
+      body: '“손끝의 지도” 전시에서 내보내졌어요. 작가로 등록돼 있던 작품 2점이 함께 삭제됐어요.', w: '6일 전', go: null,
+      who: '내보내진 팀원', when: '대표자·관리자가 팀원을 내보냈을 때(삭제된 작품이 없으면 작품 문장은 빠져요)' },
     { id: 'exdel', g: '내 작품·팀', name: '전시 삭제', title: '전시 삭제',
-      body: '“움직임의 기록” 전시가 삭제됐어요.', w: '6일 전', go: null,
-      who: '전시 팀원(삭제한 대표자 제외)', when: '대표자가 전시를 삭제했을 때' },
+      body: '“움직임의 기록” 전시가 삭제됐어요. 작가로 등록돼 있던 작품 5점이 함께 삭제됐어요.', w: '7일 전', go: null,
+      who: '전시 팀원(삭제한 대표자 제외)', when: '대표자가 전시를 삭제했을 때(전시의 작품도 함께 삭제되고, 작품 삭제 알림은 따로 가지 않아요. 작품이 없으면 작품 문장은 빠져요)' },
     { id: 'followartist', g: '저장한 것', name: '저장한 작가의 새 전시', title: '저장한 작가의 새 전시',
       body: '송하윤님이 참여한 “재생 중” 전시가 공개됐어요. 12.02 - 12.07 · 미온미디어관 B1', w: '2일 전', go: { page: '전시 상세', url: 'exhibition.html?e=5' },
       who: '그 작가를 저장한 사람', when: '저장한 작가가 참여한 전시가 공개됐을 때' },
@@ -153,7 +169,7 @@ h1, h2, p, dl, dd, ul { margin: 0; }
   ];
   const GROUPS = ['전시 등록', '내 작품·팀', '저장한 것', '운영'];
   /* 알림함에 보이는 순서(최신순) */
-  const ORDER = ['operator', 'invite', 'approved', 'coauthor', 'proxy', 'started', 'followartist', 'workdel', 'rejected', 'removed', 'exdel'];
+  const ORDER = ['operator', 'invite', 'approved', 'coauthor', 'proxy', 'started', 'followartist', 'workdeldirect', 'workdel', 'rejected', 'removed', 'exdel'];
   const PAGE = { 'my.html': '마이', 'hub.html': '전시 관리 허브', 'work.html': '작품 상세', 'exhibition.html': '전시 상세', 'artist.html': '작가 프로필', 'manage.html': '내 전시 관리', 'home.html': '홈', 'explore.html': '탐색', 'team.html': '팀원 관리', 'works.html': '전시 작업', 'verify.html': '작가 인증' };
   const START = 'my.html?noti=3';   // 위 3개가 안 읽은 상태로 시작
   const $ = (id) => document.getElementById(id);
@@ -197,7 +213,7 @@ h1, h2, p, dl, dd, ul { margin: 0; }
     $('info').innerHTML = `<h2>${x.name}</h2>
       <dl><div><dt>문구</dt><dd><b>${x.title}</b>${x.body}</dd></div>
       <div><dt>받는 사람</dt><dd>${x.who}</dd></div><div><dt>보내는 때</dt><dd>${x.when}</dd></div>
-      <div><dt>누르면</dt><dd>${x.go ? `${x.go.page}로 이동<code>${x.go.url}</code>` : '이동 없음'}</dd></div></dl>` +
+      <div><dt>누르면</dt><dd>${x.go ? `${x.go.page}로 이동<code>${x.go.show || x.go.url}</code>` : '이동 없음'}</dd></div></dl>` +
       (x.go ? '<button class="press" id="press" type="button">알림 눌러 보기</button>' : '');
     const p = $('press'); if (p) p.addEventListener('click', () => { const r = loading ? null : rowOf(cur); if (r) r.click(); else pendingPress = true; });
     document.querySelectorAll('.pk').forEach((b) => b.setAttribute('aria-current', String(b.dataset.id === cur)));
@@ -220,6 +236,7 @@ h1, h2, p, dl, dd, ul { margin: 0; }
     const list = w.eval('NOTIS'); list.length = 0;
     ORDER.map(byId).forEach((x) => list.push({ t: `<b class="nt">${x.title}</b><span class="nb">${x.body}</span>`, w: x.w, k: x.id }));
     const st = d.createElement('style');
+    const goSel = ITEMS.filter((x) => x.go).map((x) => `.noti[data-k="${x.id}"]`).join(', ');   // 화살표가 있는(이동하는) 알림
     const chev = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m9 6 6 6-6 6'/%3E%3C/svg%3E\")";
     st.textContent = `.noti { position: relative; }
       .noti.demo-focus::before { content: ""; position: absolute; inset: 0 -20px; background: #f4f4f5; z-index: -1; }
@@ -227,15 +244,16 @@ h1, h2, p, dl, dd, ul { margin: 0; }
       .noti .nt { display: block; font-size: 14px; font-weight: 600; line-height: 1.4; }
       .noti .nb { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; margin-top: 2px; font-size: 14px; font-weight: 400; line-height: 1.4; color: #3f3f47; }
       .noti.open .nb { display: block; }
-      .noti[data-k="started"], .noti[data-k="followartist"] { grid-template-columns: 8px minmax(0, 1fr) 16px; }
-      .noti[data-k="started"]::after, .noti[data-k="followartist"]::after { content: ""; width: 16px; height: 16px; align-self: center; background: ${chev} center / 16px no-repeat; }`;
+      ${goSel} { grid-template-columns: 8px minmax(0, 1fr) 16px; }
+      ${goSel.split(', ').map((s) => s + '::after').join(', ')} { content: ""; width: 16px; height: 16px; align-self: center; background: ${chev} center / 16px no-repeat; }`;
     d.head.appendChild(st);
     /* 알림을 누르면: 이동할 곳이 있으면 그 화면으로, 없으면 그 자리에서 내용을 펼침 */
     d.addEventListener('click', (ev) => {
       const b = ev.target.closest && ev.target.closest('.noti'); if (!b) return;
       const x = byId(b.dataset.k); if (!x) return;
       cur = x.id; renderInfo(); wantOpen = true; history.replaceState(null, '', '#' + x.id);
-      if (x.go) { go(x.go.url); } else { b.classList.toggle('open'); focusRow(); }
+      if (x.go && x.go.sheet) { w.closeSheet(); w.openInvites(); crumb('마이 › 받은 초대', 'my.html'); }
+      else if (x.go) { go(x.go.url); } else { b.classList.toggle('open'); focusRow(); }
     });
     if (wantOpen) { w.openNoti(); focusRow(); crumb('마이 › 알림함'); } else crumb('마이', START);
     /* 화면이 뜨기 전에 "알림 눌러 보기"를 눌렀다면 준비되자마자 이어서 누름 */

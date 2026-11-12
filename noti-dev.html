@@ -94,6 +94,7 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
 .common h2 { font-size: 14px; font-weight: 600; }
 .common ul { margin-top: 8px; padding-left: 16px; color: var(--text-secondary); }
 .common li { margin-top: 4px; }
+.common + .common { margin-top: 16px; }
 
 /* 개발 참고(접어 둠) */
 .dev-note { margin-top: 48px; border-top: 1px solid var(--bg-teritary); padding-top: 8px; }
@@ -137,9 +138,21 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
         <h2>모든 알림 공통</h2>
         <ul>
           <li>제목과 내용으로 오고, 내용이 3줄을 넘으면 눌러서 펼쳐요</li>
-          <li>화살표가 있는 알림 2개만 전시로 이동해요</li>
-          <li>알림함을 열면 안 읽음 점이 사라져요</li>
-          <li>푸시와 이메일은 없고, 180일 보관해요</li>
+          <li>화살표가 있는 알림 7개는 누르면 해당 화면으로 이동해요</li>
+          <li>한 사건에 받는 사람당 알림은 한 건이에요. 전시가 삭제돼 작품이 여러 개 사라져도 전시 삭제 알림 하나만 가요</li>
+          <li>푸시와 이메일은 없어요</li>
+        </ul>
+      </div>
+      <div class="common">
+        <h2>빨간 점과 보관</h2>
+        <ul>
+          <li>마이의 알림함 아이콘에는 안 읽은 알림이 하나라도 있으면 빨간 점이 보여요</li>
+          <li>알림함을 열면 모든 알림이 읽음이 되고 아이콘의 점이 사라져요</li>
+          <li>열려 있는 목록에서는 열기 전의 줄별 점을 그대로 보여 주고, 닫았다 다시 열면 점이 없어요</li>
+          <li>알림을 눌러도, 이동한 곳에서 일을 마쳐도(초대 수락 등) 알림은 목록에 남아요</li>
+          <li>알림을 직접 지우는 기능은 없어요. 180일이 지나거나 100개를 넘으면 오래된 것부터 자동으로 지워요</li>
+          <li>알림함이 열려 있는 동안 새로 온 알림은 다음에 열 때 보여요. 읽음은 서버에 저장해서 다른 기기에서도 같아요</li>
+          <li>알림이 하나도 없으면 목록은 비어 있고, 안내 문구는 없어요</li>
         </ul>
       </div>
     </section>
@@ -149,10 +162,13 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
     <summary>개발 참고</summary>
     <ul>
       <li>알림은 만드는 시점의 제목과 내용을 문장으로 저장해요. 작품이나 전시가 나중에 삭제돼도 알림이 남아요.</li>
-      <li>이동하는 알림 2개(저장한 작가의 새 전시, 저장한 전시 시작)에만 이동할 전시 정보(<code>target</code>)가 있어요. 이동할 전시가 사라졌으면 이동하지 않아요.</li>
-      <li>읽음은 알림함을 열 때 한꺼번에 바뀌어요. 알림마다 <code>readAt</code>을 두든, 사용자별로 마지막으로 연 시각 하나를 두든 개발에서 정해 주세요.</li>
+      <li>이동하는 알림 7개에는 이동할 곳(<code>target</code>)이 있어요. 전시 초대는 받은 초대, 공동 작가·작가 지정은 그 전시의 전시 작업, 등록 요청 승인·반려는 내 전시 관리, 저장한 작가의 새 전시와 저장한 전시 시작은 전시 상세예요. 이동할 곳이 사라졌으면 이동하지 않아요.</li>
+      <li>읽음은 알림함을 열 때 한꺼번에 바뀌어요. 알림마다 <code>readAt</code>을 두든, 사용자별로 마지막으로 연 시각 하나를 두든 개발에서 정해 주세요. 읽음은 서버에 저장해서 다른 기기에서도 같아요.</li>
       <li>저장한 전시 시작은 시작일 오전 9시에 만들어요. 시작 전에 저장한 사람에게만 보내고, 시작일에 비공개면 보내지 않아요. 예약 작업이 이번 배포에 어려우면 이 알림만 2차로 미뤄요.</li>
       <li>같은 작품에서 대신 등록과 공동 작가에 동시에 걸리면 "작가로 지정됨" 한 건만 보내요. 저장한 작가의 새 전시는 같은 전시에 대해 같은 사람에게 한 번만 보내요.</li>
+      <li>작품 삭제 알림은 사유가 둘이에요. 누군가 직접 삭제하면 삭제한 사람의 전시 작가명을 넣고(받는 사람은 그 작품의 다른 작가·등록자), 작가가 전시에서 나가거나 내보내져 삭제되면 이름 없이 사유만 적어요.</li>
+      <li>삭제는 한 사건에 받는 사람당 알림 한 건이에요. 전시를 삭제하면 그 전시의 작품도 함께 삭제되는데, 이때는 작품 삭제 알림 없이 전시 삭제 알림 하나만 보내요. 팀원을 내보낼 때 내보내진 본인은 "내보내짐"만, 남은 작가는 "작품 삭제"만 받아서 겹치지 않아요.</li>
+      <li>"작품 N점"은 그 사람이 작가로 연결돼 있던 삭제된 작품 수예요. 0이면 그 문장을 빼요. 작가가 나가서 작품이 여러 점 삭제되면 "“작품명” 외 N점"으로 줄여요.</li>
       <li>운영자 알림은 어드민에서 회원을 한 명씩 골라 보내요. 제목 40자, 본문 1000자까지예요.</li>
     </ul>
     <pre><code>{
@@ -163,7 +179,7 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
   "readAt": null,
   "title": "공동 작가로 추가됨",
   "body": "“접으면 달라지는 지도” 작품에 공동 작가로 추가됐어요. 작가와 같은 권한으로 수정·삭제할 수 있어요.",
-  "target": null
+  "target": { "type": "exhibition_works", "id": "exh_0001" }
 }
 
 {
@@ -188,36 +204,39 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
   /* 알림 목록. title=제목, body=내용(알림함에 보이는 그대로), w=시간, go=누르면 가는 전시(없으면 이동 없음) */
   const ITEMS = [
     { id: 'approved', g: '전시 등록', name: '등록 요청 승인', title: '등록 요청 승인',
-      body: '“빛의 결 | 조용한 흐름” 전시의 등록 요청이 승인됐어요. 승인된 시점에 저장돼 있던 내용이 공개돼요.', w: '3시간 전', go: null,
+      body: '“빛의 결 | 조용한 흐름” 전시의 등록 요청이 승인됐어요. 승인된 시점에 저장돼 있던 내용이 공개돼요.', w: '3시간 전', go: { page: '내 전시 관리', url: 'manage.html', name: '빛의 결 | 조용한 흐름', lines: ['한결대학교 사진동아리', '상태: 공개 중'] },
       who: '전시 대표자', when: '등록 요청이 승인됐을 때' },
     { id: 'rejected', g: '전시 등록', name: '등록 요청 반려', title: '등록 요청 반려',
-      body: '“빛의 결 | 조용한 흐름” 전시의 등록 요청이 반려됐어요. 이미지 출처를 확인할 수 없어요 수정한 뒤 다시 요청해 주세요', w: '4일 전', go: null,
+      body: '“빛의 결 | 조용한 흐름” 전시의 등록 요청이 반려됐어요. 이미지 출처를 확인할 수 없어요 수정한 뒤 다시 요청해 주세요', w: '5일 전', go: { page: '내 전시 관리', url: 'manage.html', name: '빛의 결 | 조용한 흐름', lines: ['한결대학교 사진동아리', '상태: 반려'] },
       who: '전시 대표자', when: '등록 요청이 반려됐을 때(반려 사유는 운영자가 쓴 그대로)' },
     { id: 'invite', g: '내 작품·팀', name: '전시 초대', title: '전시 초대',
-      body: '“펼쳐지는 장면” 전시에 팀원으로 초대받았어요. 초대한 사람: 김도윤(doyoon)', w: '1시간 전', go: null,
-      who: '초대받은 사람', when: '팀원으로 초대받았을 때(수락·거절은 마이의 받은 초대에서)' },
+      body: '“펼쳐지는 장면” 전시에 팀원으로 초대받았어요. 초대한 사람: 김도윤(doyoon)', w: '1시간 전', go: { page: '받은 초대', url: '마이 › 받은 초대', name: '펼쳐지는 장면', lines: ['모아디자인대학교 시각디자인학과', '초대한 사람: 김도윤(doyoon)'] },
+      who: '초대받은 사람', when: '팀원으로 초대받았을 때' },
     { id: 'coauthor', g: '내 작품·팀', name: '공동 작가로 추가됨', title: '공동 작가로 추가됨',
-      body: '“접으면 달라지는 지도” 작품에 공동 작가로 추가됐어요. 작가와 같은 권한으로 수정·삭제할 수 있어요.', w: '어제', go: null,
+      body: '“접으면 달라지는 지도” 작품에 공동 작가로 추가됐어요. 작가와 같은 권한으로 수정·삭제할 수 있어요.', w: '어제', go: { page: '전시 작업', url: 'works.html?id=e1', name: '빛의 결 | 조용한 흐름', lines: ['작품: “접으면 달라지는 지도”'] },
       who: '공동 작가로 추가된 사람(본인이 추가한 경우 제외)', when: '작품에 공동 작가로 추가됐을 때' },
     { id: 'proxy', g: '내 작품·팀', name: '작가로 지정됨', title: '작가로 지정됨',
-      body: '“장면을 넘기는 극장” 작품의 작가로 지정됐어요. 등록한 사람: 김도윤', w: '어제', go: null,
+      body: '“장면을 넘기는 극장” 작품의 작가로 지정됐어요. 등록한 사람: 김도윤', w: '어제', go: { page: '전시 작업', url: 'works.html?id=e2', name: '손끝의 지도', lines: ['작품: “장면을 넘기는 극장”'] },
       who: '대신 등록으로 지정된 팀원', when: '대표자·관리자가 작가로 골라 작품을 대신 등록했을 때' },
-    { id: 'workdel', g: '내 작품·팀', name: '작품 삭제', title: '작품 삭제',
-      body: '“얇은 경계” 작품이 삭제됐어요. 함께 작가로 등록된 계정이 “손끝의 지도” 전시에서 나가거나 내보내져 작품도 함께 삭제됐어요. 복구할 수 없어요.', w: '3일 전', go: null,
-      who: '같은 작품에 남은 작가·등록자', when: '작가 계정이 전시에서 나가거나 내보내져 작품이 삭제됐을 때' },
+    { id: 'workdeldirect', g: '내 작품·팀', name: '작품 삭제 · 직접 삭제', title: '작품 삭제',
+      body: '“얇은 경계” 작품이 삭제됐어요. 삭제한 사람: 서유진. 복구할 수 없어요.', w: '3일 전', go: null,
+      who: '같은 작품의 다른 작가·등록자(삭제한 본인 제외)', when: '작가·대표자·관리자가 작품을 삭제했을 때(삭제한 사람은 전시 작가명)' },
+    { id: 'workdel', g: '내 작품·팀', name: '작품 삭제 · 작가가 나감', title: '작품 삭제',
+      body: '“얇은 경계” 외 2점이 삭제됐어요. 함께 작가로 등록된 계정이 “손끝의 지도” 전시에서 나가거나 내보내져 작품도 함께 삭제됐어요. 복구할 수 없어요.', w: '4일 전', go: null,
+      who: '같은 작품에 남은 작가·등록자(받는 사람당 1건)', when: '작가 계정이 전시에서 나가거나 내보내져 작품이 삭제됐을 때' },
     { id: 'removed', g: '내 작품·팀', name: '전시에서 내보내짐', title: '전시에서 내보내짐',
-      body: '“손끝의 지도” 전시에서 내보내졌어요. 작가로 등록돼 있던 작품이 있었다면 함께 삭제됐어요.', w: '5일 전', go: null,
-      who: '내보내진 팀원', when: '대표자·관리자가 팀원을 내보냈을 때' },
+      body: '“손끝의 지도” 전시에서 내보내졌어요. 작가로 등록돼 있던 작품 2점이 함께 삭제됐어요.', w: '6일 전', go: null,
+      who: '내보내진 팀원', when: '대표자·관리자가 팀원을 내보냈을 때(삭제된 작품이 없으면 작품 문장은 빠져요)' },
     { id: 'exdel', g: '내 작품·팀', name: '전시 삭제', title: '전시 삭제',
-      body: '“움직임의 기록” 전시가 삭제됐어요.', w: '6일 전', go: null,
-      who: '전시 팀원(삭제한 대표자 제외)', when: '대표자가 전시를 삭제했을 때' },
+      body: '“움직임의 기록” 전시가 삭제됐어요. 작가로 등록돼 있던 작품 5점이 함께 삭제됐어요.', w: '7일 전', go: null,
+      who: '전시 팀원(삭제한 대표자 제외)', when: '대표자가 전시를 삭제했을 때(전시의 작품도 함께 삭제되고, 작품 삭제 알림은 따로 가지 않아요. 작품이 없으면 작품 문장은 빠져요)' },
     { id: 'followartist', g: '저장한 것', name: '저장한 작가의 새 전시', title: '저장한 작가의 새 전시',
       body: '송하윤님이 참여한 “재생 중” 전시가 공개됐어요. 12.02 - 12.07 · 미온미디어관 B1', w: '2일 전',
-      go: { page: '전시 상세', url: 'exhibition.html?e=5', name: '재생 중', org: '미온대학교 디지털콘텐츠전공', period: '12.02 - 12.07', place: '미온미디어관 B1' },
+      go: { page: '전시 상세', url: 'exhibition.html?e=5', name: '재생 중', lines: ['미온대학교 디지털콘텐츠전공', '12.02 - 12.07 · 미온미디어관 B1'], sketch: true },
       who: '그 작가를 저장한 사람', when: '저장한 작가가 참여한 전시가 공개됐을 때' },
     { id: 'started', g: '저장한 것', name: '저장한 전시 시작', title: '저장한 전시 시작',
       body: '저장한 “빛이 지나간 자리” 전시가 시작됐어요. 12.04 - 12.06 · 스튜디오 여백 B1', w: '어제',
-      go: { page: '전시 상세', url: 'exhibition.html?e=7', name: '빛이 지나간 자리', org: '해온예술대학교 사진미디어학과', period: '12.04 - 12.06', place: '스튜디오 여백 B1' },
+      go: { page: '전시 상세', url: 'exhibition.html?e=7', name: '빛이 지나간 자리', lines: ['해온예술대학교 사진미디어학과', '12.04 - 12.06 · 스튜디오 여백 B1'], sketch: true },
       who: '그 전시를 저장한 사람', when: '전시 시작일 오전 9시' },
     { id: 'operator', g: '운영', name: '운영자 특별 알림', title: '전시 노출 중단 안내',
       body: '조치 대상, 사유와 필요한 후속 조치를 작성해 주세요.', w: '방금', go: null,
@@ -225,7 +244,7 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
   ];
   const GROUPS = ['전시 등록', '내 작품·팀', '저장한 것', '운영'];
   /* 알림함에 보이는 순서(최신순). 맨 위 3개가 안 읽은 상태로 시작 */
-  const ORDER = ['operator', 'invite', 'approved', 'coauthor', 'proxy', 'started', 'followartist', 'workdel', 'rejected', 'removed', 'exdel'];
+  const ORDER = ['operator', 'invite', 'approved', 'coauthor', 'proxy', 'started', 'followartist', 'workdeldirect', 'workdel', 'rejected', 'removed', 'exdel'];
   const UNREAD = 3;
   const CHEV = '<svg class="ch i" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>';
   const BACK = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>';
@@ -275,7 +294,7 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
   function renderDest(x) {
     view = 'dest';
     $('screen').innerHTML = `<div class="sh-head"><button class="sh-x" id="dback" type="button" aria-label="알림함으로">${BACK}</button><h2>${x.go.page}</h2></div>
-      <div class="dest"><h3>${x.go.name}</h3><p class="meta">${x.go.org}<br>${x.go.period} · ${x.go.place}</p><div class="sketch" aria-hidden="true"></div>
+      <div class="dest"><h3>${x.go.name}</h3><p class="meta">${x.go.lines.join('<br>')}</p>${x.go.sketch ? '<div class="sketch" aria-hidden="true"></div>' : ''}
       <div class="where"><b>이동하는 화면: ${x.go.page}</b><code>${x.go.url}</code></div></div>`;
     $('dback').addEventListener('click', renderList);
     $('screen').scrollTop = 0;
