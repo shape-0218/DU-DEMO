@@ -11,6 +11,7 @@
 <style>
 /* 전시 관리 허브 v3(1727:13447): 요약 카드 → 상태 배너 → 전시 작업 → 팀원·기본 정보 → 공개 시점 → 하단 버튼 */
 .sumc { display: grid; grid-template-columns: 82px minmax(0, 1fr); column-gap: 14px; margin-top: 8px; padding: 12px; border: 1px solid var(--border-primary); border-radius: var(--r12); }
+.sumc .poster { aspect-ratio: 402 / 568; }   /* 11-13 포스터 정식 규격 402:568 (flow.css `.poster`는 3:4, 이 카드만 규격으로) */
 .sumc .tx { display: grid; gap: 2px; align-content: start; min-width: 0; }
 .sumc .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .sumc .prev { display: inline-flex; align-items: center; gap: 2px; font-size: 12px; font-weight: 600; white-space: nowrap; }

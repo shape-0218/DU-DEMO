@@ -4,7 +4,7 @@
 /* 전시 요약 카드(허브와 같은 모양) */
 .sumc { display: grid; grid-template-columns: 82px minmax(0, 1fr); column-gap: 14px; margin-top: 8px; padding: 12px; border: 1px solid var(--border-primary); border-radius: var(--r12); }
 .sumc .poster { position: relative; }
-.sumc .poster img { width: 82px; height: 108px; object-fit: cover; background: var(--bg-secondary); }
+.sumc .poster img { width: 82px; height: auto; aspect-ratio: 402 / 568; object-fit: cover; background: var(--bg-secondary); }
 .sumc .tx { display: grid; gap: 2px; align-content: start; min-width: 0; }
 .sumc .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .sumc .st { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; }

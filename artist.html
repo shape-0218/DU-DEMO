@@ -114,7 +114,7 @@ img { display: block; }
 .exh-list { gap: 0; }
 .exh { display: grid; grid-template-columns: 72px minmax(0, 1fr) 20px; align-items: center; column-gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--bg-teritary); animation: rise .6s var(--ease) backwards; animation-delay: calc(var(--n, 0) * 60ms); }   /* 카드 테두리 없이 얇은 구분선만 */
 .exh:first-child { padding-top: 16px; } .exh:last-child { border-bottom: 0; } .exh + .exh { margin-top: 12px; }   /* 11-07 Figma 위치 대조: 전시 행 위 16·행 사이 12 */
-.exh img { width: 72px; height: 96px; object-fit: cover; background: var(--bg-secondary); }   /* 11-13 Figma `Card / 전시 행 · 일정 포함` 포스터: 모서리 0·외곽선 없음(이전: 1px 옅은 선 + 검정 배경) */
+.exh img { width: 72px; height: auto; aspect-ratio: 402 / 568; object-fit: cover; background: var(--bg-secondary); }   /* 11-13 Figma `Card / 전시 행 · 일정 포함` 포스터: 모서리 0·외곽선 없음(이전: 1px 옅은 선 + 검정 배경) */
 .exh .meta { display: flex; flex-wrap: wrap; gap: 2px 12px; margin-top: 4px; }
 .exh .meta .sub { margin-top: 0; }
 /* 11-09 날짜 글자: Figma `body/md/regular2`(12, 500, 자간 +1%)·`body/lg/regular2`(14, 400, 자간 0) — 숫자가 붙어 보이지 않게 기본 자간(-3%)을 쓰지 않음 */

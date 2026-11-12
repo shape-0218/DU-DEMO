@@ -160,7 +160,7 @@ img { display: block; }
 @media (min-width: 900px) { .artist { font-size: 16px; } }
 .spec { font-size: 14px; font-weight: 500; color: var(--text-secondary); }
 .exh { margin-top: 20px; display: grid; grid-template-columns: 40px minmax(0, 1fr) 20px; align-items: center; column-gap: 12px; padding: 16px 0; border-block: 1px solid var(--bg-teritary); transition: background .2s; }
-.exh img { width: 40px; height: 50px; object-fit: cover; background: var(--bg-secondary); }
+.exh img { width: 40px; height: auto; aspect-ratio: 402 / 568; object-fit: cover; background: var(--bg-secondary); }
 .exh .state { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
 .dot { width: 7px; height: 7px; border-radius: 9999px; background: var(--text-primary); }
 .dot.soon { background: transparent; box-shadow: inset 0 0 0 1.5px var(--text-primary); }   /* 전시 예정: 속이 빈 점 */
