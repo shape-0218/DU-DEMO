@@ -217,21 +217,32 @@ img { display: block; }
 @media (hover: hover) { .cc:hover .cv img { transform: scale(1.04); } }
 .cc strong { display: block; margin-top: 8px; font-weight: 600; font-size: 14px; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 @media (min-width: 900px) { .cc { flex: none; } }
-/* 콘텐츠 보기(카드를 누르면, 11-06 변경): 흰 화면에서 사진들이 위에서 아래로 쭉 이어짐(참고: design-seoul.com 모바일 photography). 위쪽에 뒤로가기·제목이 붙어 있고, 사진은 폭 가득(좌우 20), 사이 12 */
-.cv { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: #fff; color: var(--text-primary); overflow: hidden; }
-.cv::backdrop { background: #fff; }
-.cv[open] { display: flex; flex-direction: column; }
-.cv .tp { flex: none; display: flex; align-items: center; gap: 4px; min-height: 56px; padding: max(6px, env(safe-area-inset-top)) var(--pad) 6px 8px; background: #fff; border-bottom: 1px solid var(--bg-teritary); }
-.cv .xb { flex: none; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 9999px; transition: background .2s, transform .2s var(--ease); }
-@media (hover: hover) { .cv .xb:hover { background: var(--bg-secondary); } }
-.cv .xb:active { transform: scale(.94); }
-.cv .xb .i { width: 24px; height: 24px; }
-.cv .tt { min-width: 0; display: grid; }
-.cv .tt b { font-size: 16px; font-weight: 600; line-height: 1.4; letter-spacing: -0.03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.cv .tt span { font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-teritary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.cv .st { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 20px var(--pad) max(40px, env(safe-area-inset-bottom)); display: grid; align-content: start; gap: 12px; }
-.cv .st img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover; background: var(--bg-teritary); -webkit-user-drag: none; user-select: none; }
-@media (min-width: 768px) { .cv .st { padding-inline: calc((100% - 560px) / 2); } .cv .tp { padding-inline: max(8px, calc((100% - 560px) / 2 - 12px)); } }
+/* 콘텐츠 보기(카드를 누르면) — 11-15 U-146 A안(review/back-v2 콘텐츠 보기): 맨 위 흰 띠 56에 화살표만(상세 뒤로가기와 같음, 제목·선 없음),
+   제목은 본문 맨 위에 한 번, 사진은 폭 끝까지·원래 비율(자르지 않음)·사이 4, 띠 가운데 장수(사진을 보는 동안만), 끝에 다음 섹션 줄.
+   이전(11-06): 띠 안에 제목·부제·아래 선, 사진 좌우 20·사이 12·3:4로 잘라 보임 — 롤백은 review/_bak-backbar-1115/exhibition.html */
+dialog.cv { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: #fff; color: var(--text-primary); overflow: hidden; }
+dialog.cv::backdrop { background: #fff; }
+dialog.cv[open] { display: flex; flex-direction: column; }
+dialog.cv .tp { position: relative; flex: none; display: flex; align-items: center; height: calc(56px + env(safe-area-inset-top)); padding: env(safe-area-inset-top) var(--pad) 0 10px; background: #fff; }
+dialog.cv .xb { flex: none; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 9999px; transition: background .2s, transform .16s var(--ease); }
+@media (hover: hover) { dialog.cv .xb:hover { background: var(--bg-secondary); } }
+dialog.cv .xb:active { transform: scale(.96); }
+dialog.cv .xb .i { width: 24px; height: 24px; }
+dialog.cv .cn { position: absolute; left: 50%; top: calc(28px + env(safe-area-inset-top)); translate: -50% -50%; font-size: 12px; font-weight: 500; color: var(--text-secondary); font-variant-numeric: tabular-nums; opacity: 0; transition: opacity .2s ease-out; pointer-events: none; }
+dialog.cv .cn.on { opacity: 1; }
+dialog.cv .st { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding-bottom: max(40px, env(safe-area-inset-bottom)); }
+dialog.cv .hd { padding: 4px var(--pad) 20px; }
+dialog.cv .hd h2 { font-size: 20px; font-weight: 700; line-height: 1.4; }
+dialog.cv .hd p { margin-top: 4px; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
+dialog.cv .feed { display: grid; gap: 4px; }
+dialog.cv .feed img { display: block; width: 100%; height: auto; background: var(--bg-secondary); -webkit-user-drag: none; user-select: none; }
+dialog.cv .nx { display: flex; align-items: center; gap: 12px; margin: 32px var(--pad) 0; padding-top: 20px; border-top: 1px solid var(--bg-teritary); color: var(--text-primary); }
+dialog.cv .nx img { flex: none; width: 48px; height: 64px; object-fit: cover; background: var(--bg-secondary); }
+dialog.cv .nx b { flex: 1; min-width: 0; font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+dialog.cv .nx .i { flex: none; width: 20px; height: 20px; color: var(--text-teritary); }
+@media (hover: hover) { dialog.cv .nx:hover b { text-decoration: underline; text-underline-offset: 3px; } }
+@media (min-width: 768px) { dialog.cv .st > * { width: min(560px, 100%); margin-inline: auto; } dialog.cv .hd { padding-inline: 0; } dialog.cv .nx { margin-inline: auto; } dialog.cv .tp { padding-left: max(10px, calc((100% - 560px) / 2 - 10px)); } }   /* 넓은 화면은 가운데 560 한 줄(여러 열 보기는 따로 결정) */
+@media (prefers-reduced-motion: reduce) { dialog.cv .cn { transition: none; } }
 
 /* 11-12 위치 영역 삭제 — 장소는 위 정보 줄(일정·운영·장소)에서 카카오 지도로 바로 연결 */
 
@@ -377,6 +388,7 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
 .sec[aria-labelledby="h-intro"] { padding-top: 20px; }   /* 11-09 Figma: 탭 줄 아래 소개글까지 20(제목 글자 삭제) */
 </style>
 <script src="assets/byline.js"></script>
+<link rel="stylesheet" href="assets/backbar.css">   <!-- 11-15 U-146 폰 뒤로가기 = 맨 위 흰 띠(페이지 스타일보다 뒤에 둬야 이김) -->
 </head>
 <body>
 <a class="skip" href="#main">본문으로 건너뛰기</a>
@@ -502,7 +514,7 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
 </main>
 
 <dialog class="cv" id="cv" aria-label="전시 콘텐츠 보기">
-  <div class="tp"><button type="button" class="xb" id="cv-x" aria-label="뒤로가기"><svg class="i" aria-hidden="true"><use href="#i-back"/></svg></button><div class="tt"><b id="cv-h"></b><span id="cv-s"></span></div></div>
+  <div class="tp"><button type="button" class="xb" id="cv-x" aria-label="뒤로가기"><svg class="i" aria-hidden="true"><use href="#i-back"/></svg></button><span class="cn" id="cv-n" aria-hidden="true"></span></div>
   <div class="st" id="cv-t" tabindex="0" aria-label="콘텐츠 사진"></div>
 </dialog>
 
@@ -550,7 +562,7 @@ function pick(tab, focus, silent) {
   if (!silent) {
     const u = new URL(location.href); tab.dataset.k === 'intro' ? u.searchParams.delete('tab') : u.searchParams.set('tab', tab.dataset.k);
     try { history.replaceState(null, '', u); } catch (e) {}
-    const top = document.querySelector('.tabs').getBoundingClientRect().top + scrollY - (matchMedia('(min-width:768px)').matches ? 64 : 0);
+    const top = document.querySelector('.tabs').getBoundingClientRect().top + scrollY - (matchMedia('(min-width:768px)').matches ? 64 : 56);
     if (scrollY > top) scrollTo({ top, behavior: 'auto' });
   }
 }
@@ -715,7 +727,7 @@ const GBC = `<form class="gbc" novalidate>
 </form>`;
 function postFresh(text, imgs) {   // 글+사진 보내기, 그림 보내기 모두 여기로
   comments.unshift({ id: ++nextCid, name: '민재', date: '방금', imgs, text, likes: 0, mine: true, fresh: true }); renderComments();
-  const tb = document.querySelector('.tabs'); const top = tb.getBoundingClientRect().top + scrollY - (matchMedia('(min-width:768px)').matches ? 64 : 0); if (scrollY > top) scrollTo({ top, behavior: 'smooth' });
+  const tb = document.querySelector('.tabs'); const top = tb.getBoundingClientRect().top + scrollY - (matchMedia('(min-width:768px)').matches ? 64 : 56); if (scrollY > top) scrollTo({ top, behavior: 'smooth' });
 }
 function initGbc(host) {
   host.insertAdjacentHTML('beforeend', GBC);
@@ -836,12 +848,26 @@ if (DX) {
   /* 콘텐츠 보기: 카드를 누르면 흰 화면에서 사진들이 쭉 이어짐 */
   const cv = document.getElementById('cv'), cst = document.getElementById('cv-t');
   let cvFrom = null;
+  /* 11-15 U-146: 제목은 본문 맨 위, 사진은 원래 비율로 쭉, 띠 가운데 장수(사진을 보는 동안만), 끝에 다음 섹션(누르면 같은 화면에서 이어 봄) */
+  const cvn = document.getElementById('cv-n');
+  function openSec(k) {
+    const ph = photosOf(k), t = DX.cts[k], nk = k + 1 < DX.cts.length ? k + 1 : -1;
+    cst.innerHTML = `<div class="hd"><h2 id="cv-h">${t}</h2><p>${ph.length > 1 ? `${DX.t} · 사진 ${ph.length}장` : DX.t}</p></div>` +
+      `<div class="feed">${ph.map((u, i) => `<img src="${u}" alt="${t} ${i + 1}/${ph.length}" width="600" height="800" ${i > 1 ? 'loading="lazy"' : ''}>`).join('')}</div>` +
+      (nk >= 0 ? `<a class="nx" href="#" data-k="${nk}"><img src="${DEMO.cover(DX, nk)}" alt="" loading="lazy"><b>${DX.cts[nk]}</b><svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></a>` : '');
+    cv.setAttribute('aria-labelledby', 'cv-h'); cst.scrollTop = 0; cvn.classList.remove('on'); cvn.dataset.n = ph.length;
+  }
+  cst.addEventListener('click', (e) => { const n = e.target.closest('.nx'); if (!n) return; e.preventDefault(); openSec(+n.dataset.k); cst.focus({ preventScroll: true }); });
+  cst.addEventListener('scroll', () => {
+    const imgs = cst.querySelectorAll('.feed img'), n = imgs.length; if (n < 2) return;
+    const top = cst.getBoundingClientRect().top, mid = top + cst.clientHeight * .5; let k = -1;
+    imgs.forEach((im, i) => { if (im.getBoundingClientRect().top < mid) k = i; });
+    const last = imgs[n - 1].getBoundingClientRect().bottom < top;   // 사진을 다 지나면 숨김
+    cvn.classList.toggle('on', k >= 0 && !last); if (k >= 0) cvn.textContent = `${k + 1} / ${n}`;
+  }, { passive: true });
   document.getElementById('x-cards').addEventListener('click', (e) => {
     const a = e.target.closest('.cc'); if (!a) return; e.preventDefault(); cvFrom = a;
-    const k = [...a.parentElement.children].indexOf(a), ph = photosOf(k);
-    document.getElementById('cv-h').textContent = DX.cts[k]; document.getElementById('cv-s').textContent = ph.length > 1 ? `${DX.t} · 사진 ${ph.length}장` : DX.t;
-    cst.innerHTML = ph.map((u, i) => `<img src="${u}" alt="${DX.cts[k]} ${i + 1}/${ph.length}" width="600" height="800" ${i > 1 ? 'loading="lazy"' : ''}>`).join('');
-    cst.scrollTop = 0; cv.showModal(); document.getElementById('cv-x').focus();
+    openSec([...a.parentElement.children].indexOf(a)); cv.showModal(); document.getElementById('cv-x').focus();
   });
   document.getElementById('cv-x').addEventListener('click', () => cv.close());
   cv.addEventListener('close', () => { if (cvFrom) cvFrom.focus(); });

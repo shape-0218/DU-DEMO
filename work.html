@@ -320,6 +320,7 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
 @media (min-width: 900px) { .bar { display: none; } .actions { display: flex; } .gb-compose { display: block; } }   /* 기본 규칙 뒤에 둬야 데스크톱에서 보임(11-07 순서 오류 수정) */
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
 </style>
+<link rel="stylesheet" href="assets/backbar.css">   <!-- 11-15 U-146 폰 뒤로가기 = 맨 위 흰 띠(페이지 스타일보다 뒤에 둬야 이김) -->
 </head>
 <body>
 <a class="skip" href="#main">본문으로 건너뛰기</a>
@@ -496,7 +497,7 @@ const viewer = document.querySelector('.viewer'), vmode = document.getElementByI
 stackv.innerHTML = imgs.map(([f], i) => `<img src="${f}" alt="${TT} ${i + 1}/${photos}" loading="lazy" style="aspect-ratio:4/5" onload="this.style.aspectRatio=''">`).join('');
 vmode.hidden = photos < 2;
 let mode = 'one'; try { if (photos > 1 && localStorage.getItem('du.view') === 'stack') mode = 'stack'; } catch (e) {}
-const headH = () => (matchMedia('(min-width:768px)').matches ? 64 : 0);
+const headH = () => (matchMedia('(min-width:768px)').matches ? 64 : 56);
 function scrollToImg(i) { const el = stackv.children[i]; if (el) scrollTo({ top: el.getBoundingClientRect().top + scrollY - headH(), behavior: reduce ? 'auto' : 'smooth' }); }
 function setMode(m, byUser) {
   mode = m; viewer.classList.toggle('stack', m === 'stack');
@@ -514,6 +515,13 @@ addEventListener('resize', () => track.scrollTo({ left: cur * track.clientWidth,
 show(0); if (mode === 'stack') setMode('stack', false);
 viewer.addEventListener('dragstart', (e) => e.preventDefault());   // 이미지 끌기 방지(스크롤·넘기기만 동작)
 /* 뒤로가기·스위치·N/5 칩이 작품을 가리지 않게: 가만히 있으면 서서히 사라지고, 건드리면 나타남 */
+/* 11-15 U-146: 폰(767 이하)에서는 보기 전환·장수를 맨 위 흰 띠로 옮김(assets/backbar.css). 장수는 사진이 화면에서 벗어나면 숨김 */
+(() => {
+  const band = document.querySelector('.backa'), ovl = document.querySelector('.ovl'), mq = matchMedia('(max-width: 767px)');
+  const place = () => { if (mq.matches) band.append(vmode, pager); else { ovl.prepend(vmode); vmode.after(pager); } };
+  place(); mq.addEventListener('change', place);
+  if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => pager.classList.toggle('away', !e.isIntersecting), { rootMargin: '-56px 0px 0px 0px' }).observe(viewer);
+})();
 fade = ChromeFade.init({ stage: document.querySelector('.stage'), root: document.querySelector('.ovl'), controls: [vmode], chip: pager, scrim: false, stackActive: () => mode === 'stack' });   // 11-08 무대가 흰색이라 사진 위를 어둡게 깔던 위쪽 그림자 제거(흰 여백에 회색 얼룩처럼 보였음). 뒤로가기·보기 전환은 자체 반투명 바탕이라 그대로 보임
 
 /* ---------- 탭 (주소 ?tab=guest 연동) ---------- */
@@ -531,7 +539,7 @@ function pick(tab, focus, silent) {
   if (!silent) {
     const u = new URL(location.href); tab.dataset.k === 'intro' ? u.searchParams.delete('tab') : u.searchParams.set('tab', tab.dataset.k);
     try { history.replaceState(null, '', u); } catch (e) {}
-    const top = document.querySelector('.tabs').getBoundingClientRect().top + scrollY - (matchMedia('(min-width:768px)').matches ? 64 : 0);
+    const top = document.querySelector('.tabs').getBoundingClientRect().top + scrollY - (matchMedia('(min-width:768px)').matches ? 64 : 56);
     if (scrollY > top) scrollTo({ top, behavior: 'auto' });
   }
 }
@@ -715,7 +723,7 @@ const GBC = `<form class="gbc" novalidate>
 </form>`;
 function postFresh(text, imgs) {   // 글+사진 보내기, 그림 보내기 모두 여기로
   comments.unshift({ id: ++nextCid, name: 'User name', date: '방금', imgs, text, likes: 0, mine: true, fresh: true }); renderComments();
-  const tb = document.querySelector('.tabs'); const top = tb.getBoundingClientRect().top + scrollY - (matchMedia('(min-width:768px)').matches ? 64 : 0); if (scrollY > top) scrollTo({ top, behavior: 'smooth' });
+  const tb = document.querySelector('.tabs'); const top = tb.getBoundingClientRect().top + scrollY - (matchMedia('(min-width:768px)').matches ? 64 : 56); if (scrollY > top) scrollTo({ top, behavior: 'smooth' });
 }
 function initGbc(host) {
   host.insertAdjacentHTML('beforeend', GBC);
