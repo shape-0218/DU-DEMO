@@ -43,7 +43,7 @@
 .add .i { width: 24px; height: 24px; stroke-width: 1.6; color: var(--text-primary); }
 .tile { position: relative; overflow: hidden; background: var(--bg-secondary); animation: rise .35s var(--ease) backwards; }   /* 11-08 상세 무대(연한 회색 bg/secondary)와 같게 */
 .tile img { width: 100%; height: 100%; object-fit: contain; }
-/* 카드에서 보이는 모습 미리보기 + 사진별 위치 조정 */
+/* 썸네일 미리보기(목록 | 상세) + 사진별 위치 조정 */
 .cprev { display: flex; align-items: center; gap: 14px; margin-top: 14px; padding: 14px; border-radius: var(--r12); background: var(--bg-secondary); }
 .cprev[hidden] { display: none; }
 .cp-im { position: relative; flex: none; width: 72px; aspect-ratio: 3 / 4; overflow: hidden; background: var(--bg-secondary); }
@@ -52,6 +52,16 @@
 .cp-tx b { font-size: 14px; font-weight: 600; color: var(--text-primary); }
 .cp-btn { justify-self: start; margin-top: 8px; min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid var(--border-primary); background: #fff; font-size: 12px; font-weight: 600; transition: transform .2s var(--ease); }
 .cp-btn:active { transform: scale(.96); }
+/* 11-15 U-160: 사진 아래 미리보기 = 목록(잘린 모습) | 상세(사진 전체) 두 칸 — "카드" 대신 썸네일, 상세에서는 전체가 보인다는 걸 그림으로 */
+.cprev { align-items: flex-start; }
+.cp-pair { flex: none; display: flex; gap: 10px; }
+.cp-pair figure { margin: 0; display: grid; justify-items: center; align-content: start; gap: 4px; }
+.cp-pair .cp-im { width: 60px; }
+.cp-dt { height: 80px; aspect-ratio: 402 / 554; display: grid; place-items: center; overflow: hidden; background: var(--bg-teritary); }
+.cp-dt img { display: block; max-width: 100%; max-height: 100%; object-fit: contain; pointer-events: none; }
+.cp-ln { display: block; width: 100%; height: 4px; border-radius: 2px; background: var(--text-disable); }
+.cp-ln.s { width: 60%; justify-self: start; }
+.cp-pair figcaption { margin-top: 2px; font-size: 10px; font-weight: 500; color: var(--text-secondary); }
 .adjrow { display: flex; justify-content: center; align-items: flex-end; gap: 16px; margin-top: 12px; }
 .adjf { margin: 0; display: grid; gap: 8px; justify-items: center; }
 .adjf figcaption { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
@@ -132,8 +142,11 @@
           <div id="m-err"></div>
           <div class="row" id="m-row" role="list" aria-labelledby="m-l"></div>
           <div class="cprev" id="cprev" hidden>
-            <div class="cp-im"><img id="cp-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="></div>
-            <div class="cp-tx"><b>카드에서는 이렇게 보여요</b><span id="cp-note">사진 가운데가 카드에 보여요</span><button type="button" class="cp-btn" id="cp-adj">보이는 부분 조정</button></div>
+            <div class="cp-pair" aria-hidden="true">
+              <figure><div class="cp-im"><img id="cp-img" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="></div><i class="cp-ln"></i><i class="cp-ln s"></i><figcaption>목록</figcaption></figure>
+              <figure><div class="cp-dt"><img id="cp-full" alt=""></div><i class="cp-ln" style="visibility:hidden"></i><i class="cp-ln s" style="visibility:hidden"></i><figcaption>상세</figcaption></figure>
+            </div>
+            <div class="cp-tx"><b>썸네일은 이렇게 보여요</b><span>작품 상세에서는 사진 전체가 보여요</span><button type="button" class="cp-btn" id="cp-adj">썸네일 조정</button></div>
           </div>
         </div>
 
@@ -199,7 +212,7 @@
 </div>
 
 <script src="assets/flow.js"></script>
-<script src="assets/cropbox.js"></script>
+<script src="assets/cropbox.js?v=u160"></script>
 <script src="assets/media.js"></script>
 <script src="assets/exdata.js"></script>
 <script src="assets/reorder.js"></script>
@@ -265,7 +278,7 @@ function coSheet() {
 
 /* ---------- 사진·영상 올리기 ---------- */
 function tileHtml(m, i, allowVideo) {
-  return `<div class="tile ${m.video ? 'v' : ''}" role="listitem"><img src="${m.video ? m.thumb : m.url}" alt="${m.video ? '영상 썸네일' : '사진'} ${i + 1}">${!m.video && m.url && i === 0 ? `<button type="button" class="chg" data-a="adj" data-i="${i}" aria-label="대표 사진 카드에서 보이는 부분 조정">조정</button>` : ''}${m.video ? `<span class="vbadge"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg>${mmss(m.duration)}</span><button type="button" class="chg" data-a="chg" data-i="${i}" aria-label="영상 썸네일 변경">썸네일</button>` : ''}${i === 0 && allowVideo ? '<span class="rep">대표 사진</span>' : ''}${i === 0 && !allowVideo ? '<span class="rep">대표 사진</span>' : ''}<button type="button" class="x" data-a="rm" data-i="${i}" aria-label="${i + 1}번째 삭제"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button></div>`;
+  return `<div class="tile ${m.video ? 'v' : ''}" role="listitem"><img src="${m.video ? m.thumb : m.url}" alt="${m.video ? '영상 썸네일' : '사진'} ${i + 1}">${!m.video && m.url && i === 0 ? `<button type="button" class="chg" data-a="adj" data-i="${i}" aria-label="대표 사진 썸네일 조정">조정</button>` : ''}${m.video ? `<span class="vbadge"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg>${mmss(m.duration)}</span><button type="button" class="chg" data-a="chg" data-i="${i}" aria-label="영상 썸네일 변경">썸네일</button>` : ''}${i === 0 && allowVideo ? '<span class="rep">대표 사진</span>' : ''}${i === 0 && !allowVideo ? '<span class="rep">대표 사진</span>' : ''}<button type="button" class="x" data-a="rm" data-i="${i}" aria-label="${i + 1}번째 삭제"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button></div>`;
 }
 /* 카드에 보이는 부분 = 노출 범위 상자(CropBox). 사진마다 crop({x,y,w,h}, 사진 전체가 1)을 저장하고, 없으면 사진 가운데를 3:4로 가장 크게 자른 모습 */
 const CARD_R = 3 / 4;
@@ -274,12 +287,12 @@ function refreshPrev(row) {
   if (!first || first.video || !first.url) { box.hidden = true; return; }
   const ci = $('cp-img'); if (ci.getAttribute('src') !== first.url) ci.src = first.url;
   ci.style.cssText = first.crop ? CropBox.style(first.crop) : '';
-  $('cp-note').textContent = first.crop ? '고른 부분이 카드에 보여요' : '사진 가운데가 카드에 보여요';   // ❓ 임시 문구
+  const fu = $('cp-full'); if (fu.getAttribute('src') !== first.url) fu.src = first.url;   // U-160 상세 칸 = 사진 전체
   box.hidden = false;
 }
 function openAdjust(i) {
   const m = st.media[i]; if (!m || m.video || !m.url) return;
-  CropBox.open({ url: m.url, ratio: CARD_R, title: '카드에 보이는 부분', sub: '카드에는 상자 안이 보여요', preview: '카드에서는 이렇게 보여요', rect: m.crop, onDone: (rect) => { m.crop = rect || null; renderRow('media'); } });   // ❓ 임시 문구
+  CropBox.open({ url: m.url, ratio: CARD_R, detail: 402 / 554, title: '썸네일 조정', sub: '탐색·전시 목록에는 상자 안만 보여요', rect: m.crop, onDone: (rect) => { m.crop = rect || null; renderRow('media'); } });   // U-160(11-15 사용자 B안) — 이전 "카드에 보이는 부分" 
 }
 $('cp-adj').addEventListener('click', () => openAdjust(0));
 function renderRow(key) {

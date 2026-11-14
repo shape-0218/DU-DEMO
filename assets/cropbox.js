@@ -2,7 +2,8 @@
    - 상자는 정해진 비율(작품 카드 3:4, 전시 포스터 402:568)로 고정. 사진 밖으로 나가지 않음. 기본 = 사진 가운데를 가장 크게 자른 상자(= 카드가 원래 보여주던 모습)
    - 값은 사진 전체를 1로 본 비율 {x, y, w, h}. 카드·포스터 칸에서는 CropBox.style(rect)를 <img>에 붙이면 그 부분만 칸을 채움(칸은 position:relative; overflow:hidden)
    - 사용: CropBox.open({ url, ratio, title, sub, preview, rect, onDone(rect|null) })  (flow.js의 showSheet 사용). onDone(null) = 처음대로(기본 상자)
-   - 조작: 상자를 끌어 옮김 / 네 모서리를 끌어 크기 변경(비율 유지) / 키보드: 방향키 이동, + − 크기 */
+   - 조작: 상자를 끌어 옮김 / 네 모서리를 끌어 크기 변경(비율 유지) / 키보드: 방향키 이동, + − 크기
+   - 11-15 U-160: o.detail(상세 칸 비율)을 주면 아래 미리보기가 "목록(잘린 모습 + 제목 자리 회색 줄) | 상세(사진 전체)" 두 칸 — 목록에서만 잘린다는 걸 그림으로 */
 const CropBox = (() => {
   const css = `
 .cbx { position: relative; margin: 16px auto 0; overflow: hidden; border-radius: 8px; background: #f4f4f5; touch-action: none; user-select: none; -webkit-user-select: none; }   /* 11-08 상세 무대(연한 회색)에 맞춰 조정 무대도 같은 색 */
@@ -21,7 +22,15 @@ const CropBox = (() => {
 .cbx-th { position: relative; flex: none; width: 72px; border-radius: 8px; overflow: hidden; background: #f4f4f5; }
 .cbx-th img { position: absolute; max-width: none; pointer-events: none; }
 .cbx-tx { display: grid; gap: 2px; font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-secondary); }
-.cbx-tx b { font-size: 14px; font-weight: 600; color: var(--text-primary); }`;
+.cbx-tx b { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.cbx-pv2 { display: flex; align-items: flex-start; justify-content: center; gap: 24px; margin-top: 16px; }
+.cbx-f { margin: 0; display: grid; justify-items: center; gap: 6px; }
+.cbx-f .cbx-th { width: auto; height: 96px; border-radius: 0; }
+.cbx-dt { height: 96px; display: grid; place-items: center; background: #f4f4f5; overflow: hidden; }
+.cbx-dt img { display: block; max-width: 100%; max-height: 100%; object-fit: contain; pointer-events: none; }
+.cbx-ln { display: block; width: 100%; height: 6px; border-radius: 2px; background: #e4e4e7; }
+.cbx-ln.s { width: 60%; justify-self: start; margin-top: -2px; }
+.cbx-f figcaption { margin-top: 2px; font-size: 12px; font-weight: 500; color: var(--text-secondary); }`;
   const st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   /* 사진 가운데를 비율 R로 가장 크게 자른 상자 */
@@ -35,7 +44,7 @@ const CropBox = (() => {
     showSheet(`<h2>${esc(o.title)}</h2><p class="sub">${esc(o.sub)}</p>
       <div class="cbx" id="cbx"><img id="cbx-i" src="${esc(o.url)}" alt="" draggable="false">
         <div class="cbx-box" id="cbx-b" tabindex="0" role="group" aria-label="${esc(o.title)} (끌어서 이동, 모서리를 끌어서 크기 변경, 방향키로 이동, + − 로 크기 변경)"><span class="cbx-h" data-h="tl"></span><span class="cbx-h" data-h="tr"></span><span class="cbx-h" data-h="bl"></span><span class="cbx-h" data-h="br"></span></div></div>
-      <div class="cbx-pv"><div class="cbx-th" id="cbx-t" style="aspect-ratio:${R}"><img id="cbx-p" src="${esc(o.url)}" alt=""></div><div class="cbx-tx"><b>${esc(o.preview || '이렇게 보여요')}</b><span id="cbx-n"></span></div></div>
+      ${o.detail ? `<div class="cbx-pv2" aria-hidden="true"><figure class="cbx-f"><div class="cbx-th" id="cbx-t" style="aspect-ratio:${R}"><img id="cbx-p" src="${esc(o.url)}" alt=""></div><i class="cbx-ln"></i><i class="cbx-ln s"></i><figcaption>목록</figcaption></figure><figure class="cbx-f"><div class="cbx-dt" style="aspect-ratio:${o.detail}"><img src="${esc(o.url)}" alt=""></div><i class="cbx-ln" style="visibility:hidden"></i><i class="cbx-ln s" style="visibility:hidden"></i><figcaption>상세</figcaption></figure><span id="cbx-n" hidden></span></div>` : `<div class="cbx-pv"><div class="cbx-th" id="cbx-t" style="aspect-ratio:${R}"><img id="cbx-p" src="${esc(o.url)}" alt=""></div><div class="cbx-tx"><b>${esc(o.preview || '이렇게 보여요')}</b><span id="cbx-n"></span></div></div>`}
       <div class="trow"><button type="button" class="btn btn-soft" id="cbx-0">처음대로</button><button type="button" class="btn btn-dark" id="cbx-ok">완료</button></div>`, o.title, (sh) => {
       const stage = sh.querySelector('#cbx'), im = sh.querySelector('#cbx-i'), box = sh.querySelector('#cbx-b'), pv = sh.querySelector('#cbx-p'), note = sh.querySelector('#cbx-n');
       let nw = 1, nh = 1, iw = 1, ih = 1, r = null, drag = null;
@@ -47,7 +56,7 @@ const CropBox = (() => {
       };
       const layout = () => {
         nw = im.naturalWidth || 1; nh = im.naturalHeight || 1;
-        const W = Math.min(stage.parentElement.clientWidth || 322, 420), maxH = Math.min(340, Math.round(innerHeight * 0.4));
+        const pc = stage.parentElement, pcs = getComputedStyle(pc), W = Math.min((pc.clientWidth - parseFloat(pcs.paddingLeft) - parseFloat(pcs.paddingRight)) || 322, 420)   /* U-160 고침: 시트 좌우 여백(20)을 빼야 가로 사진이 시트 밖으로 삐져나가지 않음 */, maxH = Math.min(340, Math.round(innerHeight * 0.4));
         iw = Math.min(W, Math.round(maxH * nw / nh)); ih = Math.round(iw * nh / nw);
         stage.style.width = iw + 'px'; stage.style.height = ih + 'px';
         if (!r) r = clean(o.rect) || fit(nw, nh, R);

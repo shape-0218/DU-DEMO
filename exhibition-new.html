@@ -249,7 +249,7 @@
 </div>
 
 <script src="assets/flow.js"></script>
-<script src="assets/cropbox.js"></script>
+<script src="assets/cropbox.js?v=u160"></script>
 <script src="assets/blobdb.js"></script>
 <script src="assets/media.js"></script>
 <script src="assets/reorder.js"></script>
@@ -288,14 +288,14 @@ function renderPosters() {
   if (!n) {
     pf.innerHTML = `<div class="pf-empty">${addBtn('포스터 업로드')}<div class="tx"><span class="lb" style="display:block;font-size:14px;font-weight:600">전시 포스터<span class="req" aria-hidden="true">*</span></span><p class="fhelp">${help}</p></div></div>${err}`;
   } else {
-    pf.innerHTML = `<div class="lb" style="display:flex;justify-content:space-between;font-size:14px;font-weight:600"><span>전시 포스터<span class="req" aria-hidden="true">*</span></span><span class="cnt">${n} / ${MAXP}</span></div><p class="fhelp">${help}</p>${err}<div class="thumbs">${addBtn('추가')}${st.posters.map((p, i) => `<div class="th"><img src="${p.video ? p.thumb : p.url}" alt="${p.video ? `포스터 ${i + 1} 영상 썸네일` : `포스터 ${i + 1}`}">${p.video ? `<span class="vbadge"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg>${mmss(p.duration)}</span>${i === 0 ? `<button type="button" class="chg" data-i="${i}" aria-label="영상 썸네일 변경">썸네일</button>` : ''}` : (i === 0 ? `<button type="button" class="chg" data-i="${i}" aria-label="대표 포스터 카드에 보이는 부분 조정">조정</button>` : '')}${i === 0 ? '<span class="rep">대표</span>' : ''}<button type="button" class="x" data-i="${i}" aria-label="포스터 ${i + 1} 삭제"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button></div>`).join('')}</div>`;
+    pf.innerHTML = `<div class="lb" style="display:flex;justify-content:space-between;font-size:14px;font-weight:600"><span>전시 포스터<span class="req" aria-hidden="true">*</span></span><span class="cnt">${n} / ${MAXP}</span></div><p class="fhelp">${help}</p>${err}<div class="thumbs">${addBtn('추가')}${st.posters.map((p, i) => `<div class="th"><img src="${p.video ? p.thumb : p.url}" alt="${p.video ? `포스터 ${i + 1} 영상 썸네일` : `포스터 ${i + 1}`}">${p.video ? `<span class="vbadge"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg>${mmss(p.duration)}</span>${i === 0 ? `<button type="button" class="chg" data-i="${i}" aria-label="영상 썸네일 변경">썸네일</button>` : ''}` : (i === 0 ? `<button type="button" class="chg" data-i="${i}" aria-label="대표 포스터 썸네일 조정">조정</button>` : '')}${i === 0 ? '<span class="rep">대표</span>' : ''}<button type="button" class="x" data-i="${i}" aria-label="포스터 ${i + 1} 삭제"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button></div>`).join('')}</div>`;
   }
   const a = $('add'); if (a) a.addEventListener('click', () => $('file').click());
   const r = $('retry'); if (r) r.addEventListener('click', () => { st.err = false; renderPosters(); $('file').click(); });
   pf.querySelectorAll('.chg').forEach((b) => b.addEventListener('click', () => {
     const p = st.posters[+b.dataset.i];
     if (p.video) { thumbSheet(p, (t) => { p.thumb = t; renderPosters(); }); return; }
-    CropBox.open({ url: p.url, ratio: POSTER_R, title: '카드에 보이는 부분', sub: '카드와 홈에는 상자 안이 보여요', preview: '카드에서는 이렇게 보여요', rect: p.crop, onDone: (r) => { p.crop = r || null; renderPosters(); } });   // ❓ 임시 문구
+    CropBox.open({ url: p.url, ratio: POSTER_R, detail: 402 / 568, title: '썸네일 조정', sub: '탐색 목록과 홈에는 상자 안만 보여요', rect: p.crop, onDone: (r) => { p.crop = r || null; renderPosters(); } });   // U-160(11-15 사용자 B안) — 이전 "카드에 보이는 부분" 
   }));
   pf.querySelectorAll('.x').forEach((b) => b.addEventListener('click', () => { URL.revokeObjectURL(st.posters[+b.dataset.i].url); st.posters.splice(+b.dataset.i, 1); renderPosters(); validate(); }));
 }
