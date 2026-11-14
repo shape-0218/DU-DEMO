@@ -223,8 +223,10 @@ const dirty = () => !!(st.media.length || st.proc.length || st.fields.size || st
 
 /* ---------- 작가 ---------- */
 const AV = '<span class="av" aria-hidden="true"><svg><use href="#i-avatar"/></svg></span>';
+/* 11-15(U-148): 작가명 아래 줄 = 기본 닉네임(Figma 작품 등록 01·05·06과 같게 "작가 ·" 없이). 나 = 내 닉네임, 대신 등록 = 그 팀원 닉네임 / "직접 입력" */
+const myNick = ((exd.team && exd.team.members) || []).find((m) => m.me)?.nick || 'sangjun';
 function renderAuthors() {
-  $('authors').innerHTML = `<div class="ar">${AV}<div class="nm"><b>${esc(author)}</b><small>${PROXY ? '작가 · ' + esc(PROXY.h) : '작가 · 나'}</small></div></div>` +
+  $('authors').innerHTML = `<div class="ar">${AV}<div class="nm"><b>${esc(author)}</b><small>${esc(PROXY ? PROXY.h : myNick)}</small></div></div>` +
     st.co.map((c, i) => `<div class="ar">${AV}<div class="nm"><b>${esc(c.n)}</b><small>${esc(c.h)}</small></div><button type="button" class="rm" data-i="${i}" aria-label="${esc(c.n)} 제외"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button></div>`).join('') +
     (PROXY ? `<p class="help" style="margin:4px 0 0">등록자 · ${esc(myName)} (나)</p>` : '') +
     `<button type="button" class="addco" id="addco"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg>공동 작가 추가<small>· 선택</small></button>`;
