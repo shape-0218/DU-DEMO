@@ -318,6 +318,38 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
 .actions .btn-icon { border: 1px solid var(--border-primary); }
 .gb-compose { display: none; margin-top: 12px; }
 @media (min-width: 900px) { .bar { display: none; } .actions { display: flex; } .gb-compose { display: block; } }   /* 기본 규칙 뒤에 둬야 데스크톱에서 보임(11-07 순서 오류 수정) */
+/* 11-15 U-157 웹(900 이상) 작품 상세 — 사용자 확정(시안 review/work-web-v1 4차, 되돌리기 review/_bak-u155-1115/work.html)
+   ① 왼쪽 사진 열·오른쪽 정보가 각자 스크롤(정보가 늘 옆에 보임), 두 열 모두 머리 바로 아래부터 창 끝까지 — 시작 위 32, 끝까지 내렸을 때만 아래 64
+   ② 사진 칸 높이 H = 창 − 머리 − 위 32 − 아래 32 − 넘김 줄 44, 폭 W = min(H×3/4, 615, 남는 폭)
+      한 장씩 = W × 3:4 칸 / 이어서 보기 = 같은 W·같은 윗선, 3:4보다 세로로 긴 사진도 W×4/3까지 → 보기를 바꿔도 사진 크기 그대로
+   ③ 사진 열은 사진 폭만큼, 사진–정보 사이 72(왼쪽 끝 = 로고, 오른쪽 끝 = 검색), 제목 윗선 = 사진 윗선
+   ④ 넘김은 사진 밖 아래 줄 ‹ 1 / 6 ›(사진 위 화살표·장수 칩 없음, 이어서 보기에선 숨김 — 위치는 왼쪽 썸네일) */
+.vbar { display: none; }
+@media (min-width: 900px) {
+  body { overflow: hidden; }
+  .layout { --hd: 64px; grid-template-columns: auto minmax(380px, 1fr); height: calc(100vh - var(--hd)); padding-top: 0; padding-bottom: 0; }
+  .is-pv .layout { --hd: 104px; }   /* 미리보기 띠 40 */
+  .viewer { --H: calc(100vh - var(--hd) - 108px); --W: min(calc(var(--H) * .75), 615px, calc(min(100vw, 1240px) - 2 * var(--pad) - 512px)); position: relative; top: auto; height: calc(100vh - var(--hd)); padding: 32px 0 64px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }   /* 108 = 위 32 + 아래 32 + 넘김 줄 44 · 512 = 사이 72 + 정보 최소 380 + 썸네일 60 */
+  .viewer::-webkit-scrollbar { display: none; }
+  .viewer:not(.stack) { padding-bottom: 32px; }   /* 한 장씩: 한 화면에 딱 맞아 왼쪽은 스크롤 없음 */
+  .viewer .thumbs, .viewer.stack .thumbs { position: sticky; top: 0; left: auto; bottom: auto; max-height: var(--H); }   /* left: auto 필수 — 폰용 left 50%가 sticky에선 오른쪽으로 밀어냄 */
+  .vcol { position: relative; flex: none; width: var(--W); min-width: 0; }
+  .viewer > .vcol > .stage { width: 100%; height: auto; aspect-ratio: 3 / 4; }
+  .viewer.stack > .vcol > .stage { aspect-ratio: auto; }
+  .viewer.stack .stackv img { max-height: calc(var(--W) * 4 / 3); object-fit: contain; }
+  .viewer.stack .ovl { top: 0; }
+  .ovl .pager { display: none; }
+  .vbar { display: flex; justify-content: flex-end; align-items: center; height: 44px; margin-right: -10px; }   /* 오른쪽 꺾쇠가 사진 오른쪽 선에 맞게 */
+  .vbar[hidden], .viewer.stack .vbar { display: none; }
+  .vbar .nav-btn { position: relative; inset: auto; display: grid; width: 40px; height: 44px; margin: 0; border-radius: 0; background: none; -webkit-backdrop-filter: none; backdrop-filter: none; color: var(--text-primary); transition: color .15s ease-out; }   /* relative 필수: static이면 누르는 영역(tap.js ::after)이 사진 칸을 덮어 휠이 막힘 */
+  .vbar .nav-btn .i { width: 20px; height: 20px; stroke-width: 1.5; }
+  .vbar .nav-btn:hover { transform: none; }
+  .vbar .nav-btn[disabled] { opacity: 1; color: var(--text-disable); }
+  .vb-n { min-width: 40px; color: var(--text-secondary); font-size: 12px; text-align: center; font-variant-numeric: tabular-nums; }
+  .info { height: calc(100vh - var(--hd)); padding: 32px 0 64px; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+  .info > .wrap.label { padding-top: 0; }
+  .tabs, .is-pv .tabs { top: -32px; }   /* 오른쪽 칸 위 32 안쪽 여백만큼 올려 머리 바로 아래에 붙음 */
+}
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; scroll-behavior: auto !important; } }
 </style>
 </head>
@@ -354,6 +386,7 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
   <div class="layout">
     <div class="backa"><a class="back" id="back" href="exhibition.html?tab=works" aria-label="뒤로가기"><svg class="i" aria-hidden="true"><use href="#i-back"/></svg></a></div>
     <section class="viewer" aria-label="작품 이미지">
+      <div class="vcol">
       <div class="stage">
         <div class="ovl">
           <div class="vmode" id="vmode" role="group" aria-label="감상 방식">
@@ -364,8 +397,13 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
         </div>
         <div class="track" id="track" tabindex="0" role="group" aria-roledescription="이미지 슬라이더" aria-label="작품 이미지"></div>
         <div class="stackv" id="stackv" aria-label="작품 이미지 이어보기"></div>
-                <button class="nav-btn prev" id="prev" aria-label="이전 이미지"><svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></button>
+      </div>
+      <!-- 11-15 U-157: 웹(900 이상) 넘김 줄 — 사진 밖 아래 오른쪽 ‹ 1 / 6 › (사진 위엔 아무것도 없음). 폰·태블릿은 숨김 -->
+      <div class="vbar" id="vbar">
+        <button class="nav-btn prev" id="prev" aria-label="이전 이미지"><svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></button>
+        <span class="vb-n" id="vb-n" aria-hidden="true"></span>
         <button class="nav-btn next" id="next" aria-label="다음 이미지"><svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></button>
+      </div>
       </div>
       <div class="thumbs" id="thumbs" role="list" aria-label="이미지 목록"></div>
     </section>
@@ -480,9 +518,10 @@ thumbs.innerHTML = imgs.map(([, t], i) => `<button class="thumb" role="listitem"
   src.src = imgs[0][0];
 })();
 let cur = 0, settle;
-thumbs.hidden = photos < 2; pager.hidden = photos < 2;
+thumbs.hidden = photos < 2; pager.hidden = photos < 2; document.getElementById('vbar').hidden = photos < 2;
+const vbn = document.getElementById('vb-n');   // U-157 웹 넘김 줄 장수
 let fade = null, shown = -1;
-function show(i) { cur = i; if (fade && i !== shown) fade.peekChip(); shown = i; pager.textContent = `${i + 1} / ${photos}`; [...thumbs.children].forEach((t, n) => t.setAttribute('aria-current', n === i)); prev.disabled = i === 0; next.disabled = i === photos - 1; }
+function show(i) { cur = i; if (fade && i !== shown) fade.peekChip(); shown = i; pager.textContent = vbn.textContent = `${i + 1} / ${photos}`; [...thumbs.children].forEach((t, n) => t.setAttribute('aria-current', n === i)); prev.disabled = i === 0; next.disabled = i === photos - 1; }
 function go(i) {
   i = Math.max(0, Math.min(photos - 1, i)); const left = i * track.clientWidth;
   track.scrollTo({ left, behavior: reduce ? 'auto' : 'smooth' }); show(i);
@@ -497,14 +536,19 @@ stackv.innerHTML = imgs.map(([f], i) => `<img src="${f}" alt="${TT} ${i + 1}/${p
 vmode.hidden = photos < 2;
 let mode = 'one'; try { if (photos > 1 && localStorage.getItem('du.view') === 'stack') mode = 'stack'; } catch (e) {}
 const headH = () => (matchMedia('(min-width:768px)').matches ? 64 : 0);
-function scrollToImg(i) { const el = stackv.children[i]; if (el) scrollTo({ top: el.getBoundingClientRect().top + scrollY - headH(), behavior: reduce ? 'auto' : 'smooth' }); }
+/* U-157: 웹(900 이상)은 왼쪽 사진 열(.viewer)이 따로 스크롤 — 페이지가 아니라 그 안을 움직임 */
+const paneEl = () => (matchMedia('(min-width:900px)').matches ? viewer : null);
+function scrollToImg(i) { const el = stackv.children[i]; if (!el) return; const p = paneEl(); if (p) { p.scrollTo({ top: el.getBoundingClientRect().top - p.getBoundingClientRect().top + p.scrollTop - parseFloat(getComputedStyle(p).paddingTop), behavior: reduce ? 'auto' : 'smooth' }); return; } scrollTo({ top: el.getBoundingClientRect().top + scrollY - headH(), behavior: reduce ? 'auto' : 'smooth' }); }
+viewer.addEventListener('scroll', () => { const p = paneEl(); if (mode !== 'stack' || !p) return; const line = p.getBoundingClientRect().top + p.clientHeight * 0.4; let k = 0; [...stackv.children].forEach((el, i) => { if (el.getBoundingClientRect().top <= line) k = i; }); if (k !== cur) show(k); }, { passive: true });
 function setMode(m, byUser) {
   mode = m; viewer.classList.toggle('stack', m === 'stack');
   vmode.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.m === m)));
   try { localStorage.setItem('du.view', m); } catch (e) {}
   if (m === 'stack') { if (byUser) requestAnimationFrame(() => scrollToImg(cur)); }
-  else { track.scrollLeft = cur * track.clientWidth; if (byUser) scrollTo({ top: Math.max(0, viewer.getBoundingClientRect().top + scrollY - headH()), behavior: 'auto' }); }
+  else { const p = paneEl(); if (p) p.scrollTop = 0; track.scrollLeft = cur * track.clientWidth; if (byUser && !p) scrollTo({ top: Math.max(0, viewer.getBoundingClientRect().top + scrollY - headH()), behavior: 'auto' }); }
 }
+/* U-157: 웹은 오른쪽 정보 칸이 따로 스크롤 — 탭을 바꾸거나 글을 올리면 그 칸을 탭 줄 위치로 */
+function infoToTabs(smooth) { if (!matchMedia('(min-width:900px)').matches) return false; const inf = document.querySelector('.info'), tb = document.querySelector('.tabs'); const ty = tb.previousElementSibling.getBoundingClientRect().bottom - inf.getBoundingClientRect().top + inf.scrollTop + 12;   /* 탭 줄 margin-top 12 */ if (inf.scrollTop > ty) inf.scrollTo({ top: ty, behavior: smooth && !reduce ? 'smooth' : 'auto' }); return true; }
 vmode.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b && b.dataset.m !== mode) setMode(b.dataset.m, true); });
 let stk = false;
 addEventListener('scroll', () => { if (mode !== 'stack' || stk) return; stk = true; requestAnimationFrame(() => { stk = false; const line = innerHeight * 0.4; let k = 0; [...stackv.children].forEach((el, i) => { if (el.getBoundingClientRect().top <= line) k = i; }); if (k !== cur) show(k); }); }, { passive: true });
@@ -531,8 +575,10 @@ function pick(tab, focus, silent) {
   if (!silent) {
     const u = new URL(location.href); tab.dataset.k === 'intro' ? u.searchParams.delete('tab') : u.searchParams.set('tab', tab.dataset.k);
     try { history.replaceState(null, '', u); } catch (e) {}
-    const top = document.querySelector('.tabs').getBoundingClientRect().top + scrollY - (matchMedia('(min-width:768px)').matches ? 64 : 0);
-    if (scrollY > top) scrollTo({ top, behavior: 'auto' });
+    if (!infoToTabs(false)) {
+      const top = document.querySelector('.tabs').getBoundingClientRect().top + scrollY - (matchMedia('(min-width:768px)').matches ? 64 : 0);
+      if (scrollY > top) scrollTo({ top, behavior: 'auto' });
+    }
   }
 }
 tabs.forEach((t, i) => {
@@ -715,7 +761,7 @@ const GBC = `<form class="gbc" novalidate>
 </form>`;
 function postFresh(text, imgs) {   // 글+사진 보내기, 그림 보내기 모두 여기로
   comments.unshift({ id: ++nextCid, name: 'User name', date: '방금', imgs, text, likes: 0, mine: true, fresh: true }); renderComments();
-  const tb = document.querySelector('.tabs'); const top = tb.getBoundingClientRect().top + scrollY - (matchMedia('(min-width:768px)').matches ? 64 : 0); if (scrollY > top) scrollTo({ top, behavior: 'smooth' });
+  if (!infoToTabs(true)) { const tb = document.querySelector('.tabs'); const top = tb.getBoundingClientRect().top + scrollY - (matchMedia('(min-width:768px)').matches ? 64 : 0); if (scrollY > top) scrollTo({ top, behavior: 'smooth' }); }
 }
 function initGbc(host) {
   host.insertAdjacentHTML('beforeend', GBC);
