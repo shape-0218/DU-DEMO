@@ -1,0 +1,40 @@
+/* 디유 스플래시 (assets/splash.js와 함께). 값은 web/handoff/loading-1114/SPEC.md */
+/* 스플래시가 도는 동안: 홈은 안 보이고(흰 화면), 스크롤 잠금 */
+html.sp-pre { overflow: hidden; background: #fff; }
+html.sp-pre:not(.sp-go) body > :not(#du-splash) { visibility: hidden !important; }
+html.sp-go:not(.sp-landed) .head { visibility: hidden; }   /* 올라오는 동안 헤더 로고는 스플래시 로고가 대신함 */
+
+#du-splash { position: fixed; inset: 0; z-index: 1000; background: #fff; overflow: hidden; --sp-dx: 0px; --sp-dy: 0px; }
+#du-splash .sp-logo { position: absolute; left: calc(50% - 62px); top: calc(50% - 14.15px); width: 124px; height: 28.3059px; overflow: visible; fill: #18181b; }
+
+/* 1) 글자 조각: 조각마다 --dy(시작 거리)·--d(지연)·--t(길이)가 다름 */
+#du-splash.run .sp-p { animation: spRise var(--t) linear var(--d) both; }
+@keyframes spRise {
+  0%   { transform: translateY(var(--dy)); animation-timing-function: cubic-bezier(.16, 1, .3, 1); }
+  76%  { transform: translateY(var(--ov)); animation-timing-function: cubic-bezier(.45, 0, .2, 1); }
+  100% { transform: translateY(0); }
+}
+#du-splash.run .sp-p.sp-dot { transform-box: fill-box; transform-origin: 50% 100%; animation-name: spDrop; }
+@keyframes spDrop {
+  0%   { opacity: 0; transform: translateY(var(--dy)); animation-timing-function: cubic-bezier(.55, 0, 1, .45); }
+  16%  { opacity: 1; }
+  62%  { opacity: 1; transform: translateY(0) scale(1, 1); animation-timing-function: cubic-bezier(.2, .8, .3, 1); }
+  76%  { transform: translateY(0) scale(1.12, .66); animation-timing-function: cubic-bezier(.3, 0, .2, 1); }
+  100% { transform: translateY(0) scale(1, 1); }
+}
+
+/* 2) 연결: 흰 바탕은 투명해지고, 로고는 헤더 자리로, 홈의 검은 영역+흰 시트는 아래에서 올라옴 — 같은 곡선·720ms */
+html.sp-go #du-splash { background: transparent; }
+html.sp-go #du-splash .sp-logo { animation: spLogoMove 720ms cubic-bezier(.65, 0, .2, 1) both; }
+html.sp-go .dark, html.sp-go .sheet { animation: spSheetUp 720ms cubic-bezier(.65, 0, .2, 1) both; }
+html.sp-go .nav { animation: spNavIn 720ms cubic-bezier(.65, 0, .2, 1) both; }
+@keyframes spLogoMove { to { transform: translate(var(--sp-dx), var(--sp-dy)); } }
+@keyframes spSheetUp { from { transform: translateY(var(--sp-H, 100vh)); } to { transform: none; } }
+@keyframes spNavIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* 움직임 줄이기: 조각 이동·연결 이동 없이 투명도만 */
+@media (prefers-reduced-motion: reduce) {
+  #du-splash.run .sp-p, #du-splash.run .sp-p.sp-dot { animation: spFade .3s linear both; }
+  html.sp-go #du-splash .sp-logo, html.sp-go .dark, html.sp-go .sheet, html.sp-go .nav { animation: none; }
+  @keyframes spFade { from { opacity: 0; } to { opacity: 1; } }
+}
