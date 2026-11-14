@@ -189,13 +189,17 @@ const PIECES = ["<path d=\"M0 22.2812V2.29672H7.05864C14.0867 2.29672 17.7536 6.
     const enableSensors = () => { if (sensors) return; sensors = true; addEventListener('deviceorientation', onTilt); addEventListener('devicemotion', onShake); };
     const needAsk = (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function');
     if (!needAsk) enableSensors();
-    else addEventListener('pointerdown', async () => {
-      try {
-        const m = await DeviceMotionEvent.requestPermission();
-        const o = typeof DeviceOrientationEvent.requestPermission === 'function' ? await DeviceOrientationEvent.requestPermission() : 'granted';
-        if (m === 'granted' || o === 'granted') enableSensors();
-      } catch (e) {}
-    }, { once: true });
+    else {
+      /* 아이폰은 손가락을 뗄 때(touchend·click)만 권한을 물을 수 있음 — 누르는 순간(pointerdown)에 물으면 창 없이 거절됨(11-15 시뮬레이터로 확인) */
+      let asked = false;
+      const ask = () => {
+        if (asked) return; asked = true;
+        const reqs = [DeviceMotionEvent.requestPermission()];   /* 두 권한 모두 같은 터치 안에서 바로 요청 */
+        if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') reqs.push(DeviceOrientationEvent.requestPermission());
+        Promise.allSettled(reqs).then((r) => { if (r.some((x) => x.status === 'fulfilled' && x.value === 'granted')) enableSensors(); else asked = false; });
+      };
+      addEventListener('touchend', ask); addEventListener('click', ask);
+    }
     addEventListener('resize', buildWalls);
   }
   setTimeout(start, 500);   /* 0.5초 정돈된 모습을 보여 준 뒤 와르르 */
