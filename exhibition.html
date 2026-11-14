@@ -116,7 +116,7 @@ img { display: block; }
 .is-pv .backa { top: calc(var(--top) + 40px - var(--bk)); }   /* 미리보기 배너(40) 밑 */
 .is-pv .tabs { top: calc(var(--top) + 40px); }   /* 탭 줄도 배너 밑에 붙게 — 안 그러면 배너 뒤로 숨음 */
 .tabs { transition: padding-left .2s var(--ease); }
-@media (max-width: 899px) { .tabs.stuck { padding-left: 68px; } }   /* 뒤로가기(20+44)가 탭 줄 왼쪽에 앉는 동안 첫 탭을 오른쪽으로 비켜 줌 */
+.backa { display: none; }   /* 11-15 U-149 사용자 "전시 상세·작품 상세에서 백키만 빼기"(다른 웹앱 플랫폼처럼 브라우저 뒤로가기에 맡김). 링크·스크립트는 그대로 두고 숨김만 — 되돌리려면 이 줄 삭제 + 아래 탭 줄 비켜 주기(68) 복원 */
 @media (prefers-reduced-motion: reduce) { .tabs { transition: none; } }
 .tsent { display: block; height: 1px; margin-bottom: -1px; visibility: hidden; pointer-events: none; }
 .back .i { width: 28px; height: 28px; }
@@ -217,21 +217,20 @@ img { display: block; }
 @media (hover: hover) { .cc:hover .cv img { transform: scale(1.04); } }
 .cc strong { display: block; margin-top: 8px; font-weight: 600; font-size: 14px; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 @media (min-width: 900px) { .cc { flex: none; } }
-/* 콘텐츠 보기(카드를 누르면) — 11-15 U-146 A안(review/back-v2 콘텐츠 보기): 맨 위 흰 띠 56에 화살표만(상세 뒤로가기와 같음, 제목·선 없음),
-   제목은 본문 맨 위에 한 번, 사진은 폭 끝까지·원래 비율(자르지 않음)·사이 4, 띠 가운데 장수(사진을 보는 동안만), 끝에 다음 섹션 줄.
+/* 콘텐츠 보기(카드를 누르면) — 11-15 U-146 → U-149: 뒤로가기는 떠 있는 검정 원(`Btn / back` 44·검정 45%·블러·흰 화살표 28, 누르면 전시 상세로) — 흰 띠는 "답답하다"로 폐기.
+   제목은 본문 맨 위에 한 번, 사진은 폭 끝까지·원래 비율(자르지 않음)·사이 4, 오른쪽 아래 장수 칩(사진을 보는 동안만), 끝에 다음 섹션 줄.
    이전(11-06): 띠 안에 제목·부제·아래 선, 사진 좌우 20·사이 12·3:4로 잘라 보임 — 롤백은 review/_bak-backbar-1115/exhibition.html */
 dialog.cv { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: #fff; color: var(--text-primary); overflow: hidden; }
 dialog.cv::backdrop { background: #fff; }
 dialog.cv[open] { display: flex; flex-direction: column; }
-dialog.cv .tp { position: relative; flex: none; display: flex; align-items: center; height: calc(56px + env(safe-area-inset-top)); padding: env(safe-area-inset-top) var(--pad) 0 10px; background: #fff; }
-dialog.cv .xb { flex: none; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 9999px; transition: background .2s, transform .16s var(--ease); }
-@media (hover: hover) { dialog.cv .xb:hover { background: var(--bg-secondary); } }
+dialog.cv .tp { position: absolute; z-index: 5; left: 20px; top: max(12px, env(safe-area-inset-top)); }
+dialog.cv .xb { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 9999px; background: rgba(0, 0, 0, .45); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); color: #fafafa; transition: transform .16s var(--ease); }
 dialog.cv .xb:active { transform: scale(.96); }
-dialog.cv .xb .i { width: 24px; height: 24px; }
-dialog.cv .cn { position: absolute; left: 50%; top: calc(28px + env(safe-area-inset-top)); translate: -50% -50%; font-size: 12px; font-weight: 500; color: var(--text-secondary); font-variant-numeric: tabular-nums; opacity: 0; transition: opacity .2s ease-out; pointer-events: none; }
+dialog.cv .xb .i { width: 28px; height: 28px; }
+dialog.cv .cn { position: fixed; z-index: 5; right: 20px; bottom: max(20px, env(safe-area-inset-bottom)); height: 24px; padding: 0 8px; display: inline-flex; align-items: center; border-radius: 9999px; background: rgba(0, 0, 0, .45); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); color: #fff; font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; opacity: 0; transition: opacity .2s ease-out; pointer-events: none; }
 dialog.cv .cn.on { opacity: 1; }
 dialog.cv .st { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding-bottom: max(40px, env(safe-area-inset-bottom)); }
-dialog.cv .hd { padding: 4px var(--pad) 20px; }
+dialog.cv .hd { padding: calc(max(12px, env(safe-area-inset-top)) + 60px) var(--pad) 20px; }   /* 떠 있는 뒤로가기(위 12 + 44) 아래 16 */
 dialog.cv .hd h2 { font-size: 20px; font-weight: 700; line-height: 1.4; }
 dialog.cv .hd p { margin-top: 4px; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
 dialog.cv .feed { display: grid; gap: 4px; }
@@ -241,7 +240,7 @@ dialog.cv .nx img { flex: none; width: 48px; height: 64px; object-fit: cover; ba
 dialog.cv .nx b { flex: 1; min-width: 0; font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 dialog.cv .nx .i { flex: none; width: 20px; height: 20px; color: var(--text-teritary); }
 @media (hover: hover) { dialog.cv .nx:hover b { text-decoration: underline; text-underline-offset: 3px; } }
-@media (min-width: 768px) { dialog.cv .st > * { width: min(560px, 100%); margin-inline: auto; } dialog.cv .hd { padding-inline: 0; } dialog.cv .nx { margin-inline: auto; } dialog.cv .tp { padding-left: max(10px, calc((100% - 560px) / 2 - 10px)); } }   /* 넓은 화면은 가운데 560 한 줄(여러 열 보기는 따로 결정) */
+@media (min-width: 768px) { dialog.cv .st > * { width: min(560px, 100%); margin-inline: auto; } dialog.cv .hd { padding-inline: 0; } dialog.cv .nx { margin-inline: auto; } dialog.cv .tp { left: max(20px, calc((100% - 560px) / 2 - 64px)); } }   /* 넓은 화면은 가운데 560 한 줄(여러 열 보기는 따로 결정) */
 @media (prefers-reduced-motion: reduce) { dialog.cv .cn { transition: none; } }
 
 /* 11-12 위치 영역 삭제 — 장소는 위 정보 줄(일정·운영·장소)에서 카카오 지도로 바로 연결 */
@@ -388,7 +387,6 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
 .sec[aria-labelledby="h-intro"] { padding-top: 20px; }   /* 11-09 Figma: 탭 줄 아래 소개글까지 20(제목 글자 삭제) */
 </style>
 <script src="assets/byline.js"></script>
-<link rel="stylesheet" href="assets/backbar.css">   <!-- 11-15 U-146 폰 뒤로가기 = 맨 위 흰 띠(페이지 스타일보다 뒤에 둬야 이김) -->
 </head>
 <body>
 <a class="skip" href="#main">본문으로 건너뛰기</a>
@@ -562,7 +560,7 @@ function pick(tab, focus, silent) {
   if (!silent) {
     const u = new URL(location.href); tab.dataset.k === 'intro' ? u.searchParams.delete('tab') : u.searchParams.set('tab', tab.dataset.k);
     try { history.replaceState(null, '', u); } catch (e) {}
-    const top = document.querySelector('.tabs').getBoundingClientRect().top + scrollY - (matchMedia('(min-width:768px)').matches ? 64 : 56);
+    const top = document.querySelector('.tabs').getBoundingClientRect().top + scrollY - (matchMedia('(min-width:768px)').matches ? 64 : 0);
     if (scrollY > top) scrollTo({ top, behavior: 'auto' });
   }
 }
@@ -727,7 +725,7 @@ const GBC = `<form class="gbc" novalidate>
 </form>`;
 function postFresh(text, imgs) {   // 글+사진 보내기, 그림 보내기 모두 여기로
   comments.unshift({ id: ++nextCid, name: '민재', date: '방금', imgs, text, likes: 0, mine: true, fresh: true }); renderComments();
-  const tb = document.querySelector('.tabs'); const top = tb.getBoundingClientRect().top + scrollY - (matchMedia('(min-width:768px)').matches ? 64 : 56); if (scrollY > top) scrollTo({ top, behavior: 'smooth' });
+  const tb = document.querySelector('.tabs'); const top = tb.getBoundingClientRect().top + scrollY - (matchMedia('(min-width:768px)').matches ? 64 : 0); if (scrollY > top) scrollTo({ top, behavior: 'smooth' });
 }
 function initGbc(host) {
   host.insertAdjacentHTML('beforeend', GBC);
