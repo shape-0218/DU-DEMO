@@ -750,12 +750,12 @@ document.querySelectorAll('[data-gbc]').forEach(initGbc);
   document.body.classList.add('is-pv'); document.getElementById('pvb').hidden = false;
   try {
     const d = JSON.parse(localStorage.getItem('du.d.' + P.get('ex')) || 'null'), w = d && d.works.find((x) => x.id === P.get('w'));
-    if (w) { document.querySelector('.head h1').textContent = w.title; document.title = `${w.title} · 미리보기 · Display U.`; if (/^data:/.test(w.img)) { const im = document.querySelector('#track .slide img'); if (im) { im.src = w.img; if (w.z > 1) im.style.transform = `translate(${(w.tx || 0) * 100}%, ${(w.ty || 0) * 100}%) scale(${w.z})`; } const si = document.querySelector('#stackv img'); if (si) si.src = w.img; } }
+    if (w) { document.querySelector('.head h1').textContent = w.title; document.title = `${w.title} · 미리보기 · Display U.`; if (w.img) {   /* 11-15(U-153): 올린 사진(data:)뿐 아니라 데모 작품 사진도 그 작품 것으로 */ const im = document.querySelector('#track .slide img'); if (im) { im.src = w.img; if (w.z > 1) im.style.transform = `translate(${(w.tx || 0) * 100}%, ${(w.ty || 0) * 100}%) scale(${w.z})`; } const si = document.querySelector('#stackv img'); if (si) si.src = w.img; } }
   } catch (e) {}
   document.getElementById('like').disabled = true;
   document.querySelectorAll('.save, .share').forEach((b) => { b.disabled = true; b.title = '공개 전에는 사용할 수 없어요'; });
   document.querySelectorAll('.gbc textarea, .gbc button').forEach((i) => { i.disabled = true; });
-  const back = document.getElementById('back'); if (back && P.get('ex')) back.href = 'works.html?id=' + P.get('ex');
+  const back = document.getElementById('back'); if (back && P.get('ex')) back.href = P.get('from') === 'ex' ? `exhibition.html?id=${encodeURIComponent(P.get('ex'))}&tab=works` : 'works.html?id=' + P.get('ex');   /* U-153: 전시 미리보기에서 왔으면 거기로 */
 })();
 </script>
 <script src="assets/report.js"></script>

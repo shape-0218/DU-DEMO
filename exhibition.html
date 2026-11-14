@@ -801,6 +801,15 @@ if (PV) {
   document.querySelectorAll('.gbc textarea, .gbc button').forEach((i) => { i.disabled = true; });
   /* 작품·후기 */
   if (!PV.works) document.getElementById('works').innerHTML = '<p class="pv-empty">아직 등록한 작품이 없어요<br>전시에 작품을 올리면 여기에 보여요</p>';
+  else {
+    /* 11-15(U-153) 미리보기에서 작품을 누르면 작품도 미리보기(배너·저장/좋아요 막힘)로. 전시 작업에 올린 작품(du.d.<전시id>)이 있으면 그걸 보여 주고 그 작품의 미리보기로,
+       없으면(전시 작업을 아직 안 열어 본 데모) 지금 샘플 카드를 두고 링크만 미리보기로 */
+    let pvd = null; try { pvd = JSON.parse(localStorage.getItem('du.d.' + PVID) || 'null'); } catch (e) {}
+    const pvHref = (w) => `work.html?preview=1&ex=${encodeURIComponent(PVID)}${w ? '&w=' + encodeURIComponent(w) : ''}&from=ex`;
+    if (pvd && pvd.works && pvd.works.length) {
+      document.getElementById('works').innerHTML = pvd.works.map((w, i) => `<a class="w" href="${pvHref(w.id)}" style="--n:${i}"><div class="im"><div><img src="${escT(w.img)}" alt="${escT(w.title)}" loading="lazy"></div></div><div class="tx"><b>${escT(w.title)}</b><span>${Byline.html([w.author])}</span></div></a>`).join('');
+    } else document.querySelectorAll('#works a.w:not([data-video])').forEach((a) => { a.href = pvHref(); });
+  }
   document.getElementById('cm-list').innerHTML = '<li class="pv-empty">공개 전이라 후기가 없어요</li>';
   /* 포스터 칸 만들기: 사진은 먼저 작은 그림으로 보여주고, 원본이 읽히면 바꿔 끼움 */
   const sl = pvSlides(), n = sl.length; let vdone = false;
