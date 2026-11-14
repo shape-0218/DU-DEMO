@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#ffffff">
+<!-- 공용 404 (11-15 U-154): Vercel이 없는 주소에 이 파일을 보여 줌. base="/" = 깊은 주소(/a/b)에서도 그림·스크립트 경로 유지.
+     로고 9조각(스플래시와 같은 글자)·문구·버튼이 0.5초 뒤 떨어져 넷바 위에 쌓임 — 잡아 던지기 · 빈 곳 톡 · 기울이기 · 흔들기(아이폰은 첫 터치 때 센서 권한). 물리: Matter.js 0.19.0(MIT) -->
+<base href="/">
+<title>페이지를 찾을 수 없어요 · Display U.</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root {
+  --text-primary: #18181b; --zinc-800: #27272a; --r12: 12px; --ease-out: cubic-bezier(.23, 1, .32, 1);
+  --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  color-scheme: light;
+}
+*, *::before, *::after { box-sizing: border-box; letter-spacing: -0.03em; line-height: 1.4; }
+html, body { height: 100%; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: #fff; color: var(--text-primary); font: 500 14px/1.4 var(--font); -webkit-font-smoothing: antialiased; overflow: hidden; }
+html.g, html.g body { touch-action: none; overscroll-behavior: none; -webkit-user-select: none; user-select: none; }   /* 중력이 켜지면 끌기가 화면 스크롤·글자 선택과 안 부딪히게 */
+::selection { background: var(--text-primary); color: #fff; }
+a { color: inherit; text-decoration: none; }
+h1 { margin: 0; }
+:focus-visible { outline: 2px solid var(--text-primary); outline-offset: 3px; border-radius: 8px; }
+a { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+
+/* 처음 모습: 가운데 로고 + 문구 + 버튼 (움직임 줄이기·라이브러리 실패 때는 이 모습 그대로) */
+main { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 20px 112px; }
+.logo { position: relative; }
+.glyph { position: absolute; }
+.glyph svg { display: block; width: 100%; height: 100%; overflow: visible; fill: var(--text-primary); }
+h1 { margin-top: 40px; font-size: 20px; font-weight: 700; white-space: nowrap; }
+.btn { margin-top: 24px; display: inline-flex; align-items: center; justify-content: center; height: 44px; padding: 0 24px; border-radius: var(--r12); background: var(--text-primary); color: #fff; font-size: 14px; font-weight: 600; white-space: nowrap; transition: background-color .2s; }
+@media (hover: hover) { .btn:hover { background: var(--zinc-800); } }
+
+/* 중력이 켜진 뒤: 각 조각은 화면 위 한 층에서 물리 몸체의 위치·각도만 따라감(transform만) */
+.phys { position: fixed !important; left: 0 !important; top: 0 !important; margin: 0 !important; will-change: transform; cursor: grab; }
+.phys.held { cursor: grabbing; }
+.btn.phys { cursor: pointer; }
+
+/* 넷바: 404는 어느 탭도 아님 → 선택 알약 숨김  */
+.nav .cap { display: none; }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>   <!-- 2D 물리(Matter.js 0.19.0, MIT) — 못 받으면 정돈된 모습 그대로 -->
+<link rel="stylesheet" href="assets/nav.css">
+<script src="assets/nav.js"></script>
+</head>
+<body>
+<main>
+  <div class="logo" id="logo" role="img" aria-label="Display U."></div>
+  <h1 id="msg">페이지를 찾을 수 없어요</h1>
+  <a class="btn" id="home" href="home.html">홈으로</a>
+</main>
+
+<nav class="nav" aria-label="하단 메뉴">
+  <div class="pill" style="--i:1">
+    <span class="cap" aria-hidden="true"><span class="nav-row"><span class="nav-slot"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.847 2.74991C12.3783 2.28128 11.6185 2.28128 11.1499 2.74991L2.74991 11.1499C2.28128 11.6185 2.28128 12.3783 2.74991 12.847C3.21854 13.3156 3.97834 13.3156 4.44697 12.847L4.79844 12.4955V20.3984C4.79844 21.0612 5.3357 21.5984 5.99844 21.5984H8.39844C9.06118 21.5984 9.59844 21.0612 9.59844 20.3984V17.9984C9.59844 17.3357 10.1357 16.7984 10.7984 16.7984H13.1984C13.8612 16.7984 14.3984 17.3357 14.3984 17.9984V20.3984C14.3984 21.0612 14.9357 21.5984 15.5984 21.5984H17.9984C18.6612 21.5984 19.1984 21.0612 19.1984 20.3984V12.4955L19.5499 12.847C20.0185 13.3156 20.7783 13.3156 21.247 12.847C21.7156 12.3783 21.7156 11.6185 21.247 11.1499L12.847 2.74991Z"/></svg></span><span class="nav-slot"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.59844 4.79844C6.94747 4.79844 4.79844 6.94747 4.79844 9.59844C4.79844 12.2494 6.94747 14.3984 9.59844 14.3984C12.2494 14.3984 14.3984 12.2494 14.3984 9.59844C14.3984 6.94747 12.2494 4.79844 9.59844 4.79844ZM2.39844 9.59844C2.39844 5.62199 5.62199 2.39844 9.59844 2.39844C13.5749 2.39844 16.7984 5.62199 16.7984 9.59844C16.7984 11.1534 16.3055 12.5933 15.4673 13.7703L21.247 19.5499C21.7156 20.0185 21.7156 20.7783 21.247 21.247C20.7783 21.7156 20.0185 21.7156 19.5499 21.247L13.7703 15.4673C12.5933 16.3055 11.1534 16.7984 9.59844 16.7984C5.62199 16.7984 2.39844 13.5749 2.39844 9.59844Z"/></svg></span><span class="nav-slot"><svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z"/><path d="M12 14C8.13401 14 5 17.134 5 21H19C19 17.134 15.866 14 12 14Z"/></svg></span></span></span>
+    <a href="home.html" aria-label="홈"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg></a>
+    <a href="explore.html" aria-label="검색"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></a>
+    <a href="my.html" aria-label="마이"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg></a>
+  </div>
+</nav>
+
+<script>
+/* 로고 조각 9개(D · 가운데 6 · U · 마침표) — assets/splash.js 와 같은 글자 모양 */
+const PIECES = ["<path d=\"M0 22.2812V2.29672H7.05864C14.0867 2.29672 17.7536 6.29972 17.7536 12.2889C17.7536 18.2782 14.0867 22.2812 7.05864 22.2812H0ZM4.95022 17.6976H7.05864C11.0616 17.6976 12.7422 15.6197 12.7422 12.2889C12.7422 8.9582 11.0616 6.88031 7.05864 6.88031H4.95022V17.6976Z\"/>", "<path d=\"M20.6211 5.867C18.9405 5.867 17.6876 4.61415 17.6876 2.9335C17.6876 1.25285 18.9405 0 20.6211 0C22.3017 0 23.5546 1.25285 23.5546 2.9335C23.5546 4.61415 22.3017 5.867 20.6211 5.867ZM18.3293 22.3374V7.24208H22.9129V22.3374H18.3293Z\"/>", "<path d=\"M29.8644 22.2556C25.9837 22.2556 23.478 20.1777 23.4169 17.2748H27.9393C27.9699 18.0693 28.5505 18.4665 29.8033 18.4665C31.2089 18.4665 31.6673 17.9776 31.6673 17.3359C31.6673 16.3275 30.5672 16.2358 29.1616 16.0219C27.0837 15.7163 23.6614 15.1969 23.6614 11.5606C23.6614 8.50482 26.0754 6.36581 29.8339 6.36581C33.5924 6.36581 35.9147 8.53538 36.0063 11.255H31.545C31.4228 10.5522 30.8117 10.1549 29.895 10.1549C28.7644 10.1549 28.306 10.7355 28.306 11.3467C28.306 12.2634 29.4061 12.3856 30.8117 12.5995C32.9812 12.9051 36.3119 13.4857 36.3119 17.0609C36.3119 20.1777 33.7451 22.2556 29.8644 22.2556Z\"/>", "<path d=\"M37.4223 28.3059V14.4635C37.4223 9.39098 40.8446 6.36581 45.4587 6.36581C50.2562 6.36581 53.6174 9.63544 53.6174 14.4941C53.6174 19.7499 49.7062 22.2556 46.2838 22.2556C44.4809 22.2556 42.9531 21.5528 42.0058 20.2083V28.3059H37.4223ZM45.4893 17.9776C47.5672 17.9776 48.9728 16.4803 48.9728 14.3107C48.9728 12.1411 47.5672 10.6438 45.4893 10.6438C43.4114 10.6438 42.0058 12.1411 42.0058 14.3107C42.0058 16.4803 43.4114 17.9776 45.4893 17.9776Z\"/>", "<path d=\"M54.61 22.3322V0.636485H59.1936V22.3322H54.61Z\"/>", "<path d=\"M67.6424 22.2556C64.2811 22.2556 60.3393 19.7499 60.3393 14.4941C60.3393 9.63544 63.7006 6.36581 68.498 6.36581C73.2343 6.36581 76.5345 9.51321 76.5345 14.4635V21.8584H72.3176V19.3527C71.5231 21.2167 69.8119 22.2556 67.6424 22.2556ZM68.4674 17.9776C70.5453 17.9776 71.9509 16.4803 71.9509 14.3107C71.9509 12.1411 70.5453 10.6438 68.4674 10.6438C66.3896 10.6438 64.9839 12.1411 64.9839 14.3107C64.9839 16.4803 66.3896 17.9776 68.4674 17.9776Z\"/>", "<path d=\"M85.0018 28.049C81.4266 28.049 78.4626 26.399 77.6987 22.671H82.2822C82.7405 23.6794 83.535 24.0766 85.0018 24.0766C87.0185 24.0766 87.9047 23.1293 87.9047 20.8375V19.3402C87.0491 20.6542 85.7351 21.357 84.1462 21.357C80.9682 21.357 77.5764 19.218 77.5764 13.6871V6.10892H82.16V13.6871C82.16 16.0706 83.3211 17.079 85.0323 17.079C86.6824 17.079 87.9047 16.0095 87.9047 13.6871V6.10892H92.4882V20.6847C92.4882 25.9406 89.1269 28.049 85.0018 28.049Z\"/>", "<path d=\"M109.001 22.6094C103.501 22.6094 100.446 19.3703 100.446 14.2062V2.2277H105.396V14.2062C105.396 16.6507 106.526 18.0258 108.971 18.0258C111.477 18.0258 112.607 16.6813 112.607 14.2062V2.2277H117.435V14.2062C117.435 19.3398 114.41 22.6094 109.001 22.6094Z\"/>", "<path d=\"M118.907 17.5072H124V22.6H118.907Z\"/>"];
+(() => {
+  const D = document.documentElement, logo = document.getElementById('logo');
+  const W = () => D.clientWidth || innerWidth, H = () => D.clientHeight || innerHeight;
+  const L = Math.min(W() * 0.72, 440) / 124;
+  /* 조각마다 글자 상자를 재서(SVG 단위) 그 크기의 칸으로 만듦 → 물리 몸체도 글자 크기 */
+  const probe = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  probe.setAttribute('viewBox', '0 0 124 28.3059'); probe.style.cssText = 'position:absolute;visibility:hidden;width:124px;height:28.3px';
+  document.body.appendChild(probe);
+  logo.style.width = 124 * L + 'px'; logo.style.height = 28.3059 * L + 'px';
+  const glyphs = PIECES.map((inner) => {
+    probe.innerHTML = inner; const b = probe.getBBox();
+    const el = document.createElement('div'); el.className = 'glyph';
+    el.style.cssText = `left:${b.x * L}px;top:${b.y * L}px;width:${b.width * L}px;height:${b.height * L}px`;
+    el.innerHTML = `<svg viewBox="${b.x} ${b.y} ${b.width} ${b.height}" preserveAspectRatio="none" aria-hidden="true">${inner}</svg>`;
+    logo.appendChild(el); return el;
+  });
+  probe.remove();
+
+  const rm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (rm || !window.Matter) return;   /* 움직임 줄이기 · 라이브러리를 못 받으면 가운데 정돈된 모습 그대로 */
+  const { Engine, Bodies, Body, Composite, Constraint, Query, Vector } = Matter;
+  const msg = document.getElementById('msg'), home = document.getElementById('home');
+
+  async function start() {
+    try { await document.fonts.ready; } catch (e) {}
+    const engine = Engine.create({ enableSleeping: false }); engine.gravity.y = 1;
+    const world = engine.world;
+    /* 바닥(넷바 위)·벽·천장(던져도 결국 돌아옴) */
+    const T = 200; let walls = [];
+    function buildWalls() {
+      walls.forEach((w) => Composite.remove(world, w));
+      const w = W(), h = H(), pill = document.querySelector('.nav .pill');
+      const floor = pill ? pill.getBoundingClientRect().top - 12 : h;   /* 바닥 = 넷바 알약 위 12 — 쌓인 글자가 넷바를 가리지 않게 */
+      walls = [
+        Bodies.rectangle(w / 2, floor + T / 2, w * 3, T, { isStatic: true }),
+        Bodies.rectangle(-T / 2, h / 2, T, h * 4, { isStatic: true }),
+        Bodies.rectangle(w + T / 2, h / 2, T, h * 4, { isStatic: true }),
+        Bodies.rectangle(w / 2, -h - T / 2, w * 3, T, { isStatic: true }),
+      ];
+      Composite.add(world, walls);
+    }
+    buildWalls();
+    /* DOM 조각 → 몸체(글자 칸 크기, 버튼은 모서리 12) */
+    const items = [...glyphs, msg, home].map((el) => {
+      const r = el.getBoundingClientRect();
+      const body = Bodies.rectangle(r.left + r.width / 2, r.top + r.height / 2, r.width, r.height, {
+        restitution: 0.32, friction: 0.35, frictionAir: 0.012, density: 0.002,
+        chamfer: el === home ? { radius: 12 } : { radius: Math.min(r.width, r.height) * 0.12 },
+      });
+      el.style.width = r.width + 'px'; el.style.height = r.height + 'px';
+      return { el, body, w: r.width, h: r.height };
+    });
+    items.forEach((it) => { it.el.classList.add('phys'); document.body.appendChild(it.el); place(it); });
+    Composite.add(world, items.map((i) => i.body));
+    D.classList.add('g');
+    /* 처음 한 번: 아주 살짝 흔들려서 제각각 떨어지게 */
+    items.forEach((it, i) => Body.setAngularVelocity(it.body, ((i * 37) % 11 - 5) * 0.004));
+
+    function place(it) { const p = it.body.position; it.el.style.transform = `translate(${p.x - it.w / 2}px, ${p.y - it.h / 2}px) rotate(${it.body.angle}rad)`; }
+    let last = performance.now();
+    (function loop(now) {
+      const dt = Math.min(32, now - last); last = now;
+      Engine.update(engine, dt);
+      items.forEach(place);
+      requestAnimationFrame(loop);
+    })(last);
+
+    /* 잡아서 던지기: 누른 곳 아래 몸체를 스프링으로 끌고, 놓으면 그 속도로 날아감. 버튼은 안 끌고 누르면 홈 */
+    let drag = null, moved = 0, downAt = null;
+    const pt = (e) => ({ x: e.clientX, y: e.clientY });
+    addEventListener('pointerdown', (e) => {
+      const p = pt(e), hit = Query.point(items.map((i) => i.body), p).pop();
+      if (!hit) { kick(p); return; }   /* 빈 곳을 누르면 그 자리에서 둥 튕겨 오름 */
+      const it = items.find((i) => i.body === hit);
+      e.preventDefault(); moved = 0; downAt = p;
+      const local = Vector.rotate(Vector.sub(p, hit.position), -hit.angle);
+      drag = { it, c: Constraint.create({ pointA: p, bodyB: hit, pointB: local, stiffness: 0.12, damping: 0.08, length: 0 }) };
+      Composite.add(world, drag.c); it.el.classList.add('held');
+    }, { passive: false });
+    addEventListener('pointermove', (e) => {
+      if (!drag) return; const p = pt(e); moved = Math.max(moved, Math.hypot(p.x - downAt.x, p.y - downAt.y)); drag.c.pointA = p;
+    });
+    const up = () => {
+      if (!drag) return; const { it, c } = drag; Composite.remove(world, c); it.el.classList.remove('held');
+      if (it.el === home && moved < 8) location.href = home.getAttribute('href');   /* 거의 안 끌었으면 = 누른 것 */
+      drag = null;
+    };
+    addEventListener('pointerup', up); addEventListener('pointercancel', up);
+    home.addEventListener('click', (e) => e.preventDefault());   /* 이동은 위 pointerup에서(끌다 놓았을 때 이동하지 않게) */
+    home.addEventListener('keydown', (e) => { if (e.key === 'Enter') location.href = home.getAttribute('href'); });
+    function kick(p) {
+      items.forEach((it) => {
+        const d = Vector.sub(it.body.position, p), dist = Math.max(60, Vector.magnitude(d));
+        const f = 0.032 * it.body.mass * Math.min(1, 220 / dist);   /* 화면 위로 너무 멀리 날아가지 않을 만큼 */
+        Body.applyForce(it.body, it.body.position, { x: (d.x / dist) * f * 0.6, y: -f });
+      });
+    }
+    /* 휴대폰 센서: 기울이면 중력 방향이 바뀌고, 흔들면 흔든 방향으로 조각들이 출렁임.
+       아이폰(iOS 13+)은 센서 권한이 필요 → 처음 화면을 누를 때 한 번 묻고(시스템 창), 허락하면 켬. https에서만 됨 */
+    const onTilt = (e) => {
+      if (e.gamma == null || e.beta == null) return;
+      engine.gravity.x = Math.max(-1, Math.min(1, e.gamma / 35));
+      engine.gravity.y = Math.max(-0.4, Math.min(1, e.beta / 35));
+    };
+    let lastShake = 0;
+    const onShake = (e) => {
+      const a = e.acceleration; if (!a || a.x == null) return;   /* 중력 뺀 가속도(m/s²) */
+      const mag = Math.hypot(a.x, a.y || 0); const now = performance.now();
+      if (mag < 4 || now - lastShake < 40) return; lastShake = now;   /* 살짝 움직인 건 무시, 너무 잦은 신호는 솎음 */
+      const k = Math.min(mag, 30) / mag;                               /* 너무 세게 흔들어도 상한 30 */
+      items.forEach((it, i) => {
+        const m = it.body.mass * 0.0024;
+        Body.applyForce(it.body, it.body.position, { x: a.x * k * m * (0.8 + (i % 3) * 0.2), y: -(a.y || 0) * k * m - m * 2 });   /* 화면 좌표: 위쪽이 음수, 조금씩 다르게 + 살짝 띄움 */
+        Body.setAngularVelocity(it.body, it.body.angularVelocity + ((i % 2 ? 1 : -1) * mag * 0.0025));
+      });
+    };
+    let sensors = false;
+    const enableSensors = () => { if (sensors) return; sensors = true; addEventListener('deviceorientation', onTilt); addEventListener('devicemotion', onShake); };
+    const needAsk = (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function');
+    if (!needAsk) enableSensors();
+    else addEventListener('pointerdown', async () => {
+      try {
+        const m = await DeviceMotionEvent.requestPermission();
+        const o = typeof DeviceOrientationEvent.requestPermission === 'function' ? await DeviceOrientationEvent.requestPermission() : 'granted';
+        if (m === 'granted' || o === 'granted') enableSensors();
+      } catch (e) {}
+    }, { once: true });
+    addEventListener('resize', buildWalls);
+  }
+  setTimeout(start, 500);   /* 0.5초 정돈된 모습을 보여 준 뒤 와르르 */
+})();
+</script>
+<script src="assets/tap.js"></script>
+</body>
+</html>
