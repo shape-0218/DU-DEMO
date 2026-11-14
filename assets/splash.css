@@ -5,7 +5,16 @@ html.sp-pre:not(.sp-go) body > :not(#du-splash) { visibility: hidden !important;
 html.sp-go:not(.sp-landed) .head { visibility: hidden; }   /* 올라오는 동안 헤더 로고는 스플래시 로고가 대신함 */
 
 #du-splash { position: fixed; inset: 0; z-index: 1000; background: #fff; overflow: hidden; --sp-dx: 0px; --sp-dy: 0px; }
-#du-splash .sp-logo { position: absolute; left: calc(50% - 62px); top: calc(50% - 14.15px); width: 124px; height: 28.3059px; overflow: visible; fill: #18181b; }
+#du-splash .sp-logo { position: absolute; left: calc(50% - 62px); top: calc(50% - 14.15px); width: 124px; height: 28.3059px; }
+/* 로고 조각: 글자마다 [창(span, overflow:hidden) > 그 글자만 든 SVG]. 움직이는 것은 SVG 요소(HTML 층)라 transform·opacity가 합성 단계에서 돌아 페이지가 바빠도 안 끊김.
+   (이전: 한 SVG 안의 path를 clip-path와 함께 움직임 → 프레임마다 다시 그려 로딩 중에 버벅임) */
+#du-splash .sp-zoom, #du-splash .sp-mv { position: absolute; inset: 0; }
+#du-splash .sp-win { position: absolute; left: -60px; width: 244px; overflow: hidden; }
+#du-splash .sp-win.b { top: -4px; height: 27.2px; }     /* 올라오는 글자: 기준선 아래는 안 보임 */
+#du-splash .sp-win.f { top: -0.2px; height: 29px; }     /* 내려오는 글자 p·y: 윗부분만 자름 */
+#du-splash .sp-win.n { top: -40px; height: 80px; }      /* 마침표: 자르지 않음 */
+#du-splash .sp-p { position: absolute; left: 60px; width: 124px; height: 28.3059px; overflow: visible; fill: #18181b; will-change: transform, opacity; }
+#du-splash .sp-win.b .sp-p { top: 4px; } #du-splash .sp-win.f .sp-p { top: 0.2px; } #du-splash .sp-win.n .sp-p { top: 40px; }
 
 /* 1) 큰 "DU"에서 Display U.로
    ① D와 U만 붙어서(간격 1.6) 1.7배 크기로 기준선에서 올라옴  ② 520ms에 벌어지기 시작: D는 왼쪽·U는 오른쪽으로, 크기는 제 크기로(480ms)
@@ -17,7 +26,7 @@ html.sp-go:not(.sp-landed) .head { visibility: hidden; }   /* 올라오는 동�
 #du-splash .sp-mid, #du-splash .sp-dot { opacity: 0; }   /* 차례가 오기 전에는 안 보임 */
 #du-splash.run .sp-du { animation: spRise var(--t) linear var(--d) both; }
 #du-splash.spread .sp-mid { animation: spRise var(--t) linear var(--d) both, spOn 1ms linear var(--d) both; }
-#du-splash.spread .sp-dot { opacity: 1; transform-box: fill-box; transform-origin: 50% 100%; animation: spDrop var(--t) linear var(--d) both; }
+#du-splash.spread .sp-dot { opacity: 1; transform-origin: 121.45px 22.6px; animation: spDrop var(--t) linear var(--d) both; }   /* 기준점 = 마침표 아래 가운데 */
 @keyframes spOn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes spRise {
   0%   { transform: translateY(var(--dy)); animation-timing-function: cubic-bezier(.16, 1, .3, 1); }
