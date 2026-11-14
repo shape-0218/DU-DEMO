@@ -866,8 +866,15 @@ if (DX) {
   document.getElementById('x-cards').addEventListener('click', (e) => {
     const a = e.target.closest('.cc'); if (!a) return; e.preventDefault(); cvFrom = a;
     openSec([...a.parentElement.children].indexOf(a)); cv.showModal(); document.getElementById('cv-x').focus();
+    if (!(history.state && history.state.du === 'cv')) history.pushState({ du: 'cv' }, '');   // 11-15 U-150: 방문 기록 하나 → 브라우저 뒤로가기·밀기로 이 창만 닫힘(주소는 그대로)
   });
-  document.getElementById('cv-x').addEventListener('click', () => cv.close());
+  /* 닫기는 모두 기록을 거쳐서: 뒤로 버튼·Esc → 남겨 둔 기록을 한 칸 되돌림 → popstate에서 창 닫음. 브라우저 뒤로가기(밀기)도 같은 popstate로 닫힘.
+     (close 이벤트에 기대지 않음 — 일부 환경에서 안 옴) 기록이 없으면(새로고침 등) 바로 닫음 */
+  const cvClose = () => { if (history.state && history.state.du === 'cv') history.back(); else cv.close(); };
+  addEventListener('popstate', () => { if (cv.open) cv.close(); });
+  cv.addEventListener('cancel', (e) => { e.preventDefault(); cvClose(); });
+  if (history.state && history.state.du === 'cv') history.replaceState(null, '');   // 창이 열린 채 새로고침했을 때 남은 기록 정리
+  document.getElementById('cv-x').addEventListener('click', cvClose);
   cv.addEventListener('close', () => { if (cvFrom) cvFrom.focus(); });
   /* 작품: 이 전시에 올라온 작품 */
   const mine = DEMO.WORKS.filter((w) => w.e === DX.i);
