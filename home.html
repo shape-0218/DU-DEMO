@@ -148,7 +148,6 @@ img { display: block; }
 .list-link .vt svg { width: 15px; height: 14px; flex: none; }
 /* 리스트형: 전시 3개씩 세로로 묶어 옆으로 넘김 */
 .lst { --lw: min(340px, calc(100vw - var(--pad) * 2)); display: flex; gap: 12px; align-items: flex-start; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; padding: 16px calc(50% - var(--lw) / 2) 0; }
-@media (min-width: 768px) { .lst { --lw: 360px; } }
 .lst::-webkit-scrollbar { display: none; }
 .lcol { flex: 0 0 var(--lw); display: grid; gap: 12px; scroll-snap-align: center; cursor: pointer; transition: opacity .45s var(--ease); }
 .lcol:not(.is-active) { opacity: .4; }
@@ -168,6 +167,27 @@ img { display: block; }
 .lcard .lt .mt p span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .lcard .lk { position: absolute; right: 12px; top: 12px; display: inline-flex; align-items: center; gap: 2px; height: 25px; padding: 0 9px; border-radius: 9999px; background: rgba(255, 255, 255, .12); color: #d4d4d8; font-size: 12px; font-weight: 500; font-variant-numeric: tabular-nums; }
 .lcard .lk svg { width: 14px; height: 14px; }
+/* 11-15 웹(768+) 리스트형 비율 키우기 — 사용자 C안 확정(U-147, 시안 review/home-list-v1).
+   전에는 카드 124 고정이라 리스트 아래가 768 77 · 1280 157 비었음 → 카드 3장이 포스터형 칸(.views) 높이를 채우게 높이 148 / 172,
+   폭은 지금 비율 360:124, 썸네일은 포스터 규격 402:568. 글자는 3단계 위계: 제목 18 · 학교 12(768)/14(1100+) 연회색 · 날짜·장소 12. 폰(<768)은 그대로 */
+@media (min-width: 768px) {
+  .lst { --lh: 148px; --lg: 12px; --lw: calc(var(--lh) * 360 / 124); gap: var(--lg); }
+  .lcol { gap: var(--lg); }
+  .lcard { height: var(--lh); grid-template-columns: calc(var(--lh) * 402 / 568) minmax(0, 1fr); }
+  .lcard .lrank { left: 12px; }
+  .lcard .lt { padding: 16px; }
+  .lcard .lt h3 { font-size: 18px; padding-right: 64px; }
+  .lcard .lt .og { margin-top: 4px; color: var(--text-disable); }
+  .lcard .lt .mt { gap: 4px; }
+  .lcard .lk { right: 16px; top: 16px; }
+}
+@media (min-width: 1100px) {
+  .lst { --lh: 172px; --lg: 16px; }
+  .lcard .lrank { left: 14px; }
+  .lcard .lt { padding: 20px; }
+  .lcard .lt .og { font-size: 14px; }
+  .lcard .lk { right: 20px; top: 20px; }
+}
 .arrow { display: none; position: absolute; top: 190px; z-index: 2; width: 44px; height: 44px; border-radius: 9999px; border: 1px solid #2d2d30; background: #000; place-items: center; transition: background .2s, transform .2s var(--ease); }
 @media (hover: hover) { .arrow:hover { background: #18181b; } }
 .arrow:active { transform: scale(.96); }

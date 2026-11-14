@@ -36,7 +36,7 @@
 /* 11-06: 추가 버튼이 위아래 요소에 붙어 보여서 간격을 넉넉히 (도구 줄과 12, 아래 카드와 20) */
 .tool + .addbtn { margin-top: 12px; }
 .addbtn + .wgrid { margin-top: 20px; }
-.addbtn + .slist { margin-top: 4px; }   /* 11-15 섹션 추가를 목록 위로(U-144): 행 안쪽 위 16과 합쳐 사진까지 20 — 전시작과 같은 간격 */
+.addbtn + .slist { margin-top: 4px; }   /* 11-15 섹션 추가를 목록 위로(U-146): 행 안쪽 위 16과 합쳐 사진까지 20 — 전시작과 같은 간격 */
 .emptyt { display: grid; justify-items: center; gap: 4px; margin-top: 16px; padding: 36px 20px; border-radius: var(--r12); background: var(--bg-secondary); transition: background .2s; width: 100%; }
 @media (hover: hover) { .emptyt:hover { background: #ececef; } }
 .emptyt .i { width: 24px; height: 24px; }
@@ -215,7 +215,7 @@
 .dg-cta { width: 100%; margin-top: 40px; }
 .dg-note { margin-top: 12px; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
 
-/* 노트북: 전시 작업 2단(11-15 사용자 A안 확정, U-144) — 허브(hub.html .hubgrid)와 같은 틀.
+/* 노트북: 전시 작업 2단(11-15 사용자 A안 확정, U-146) — 허브(hub.html .hubgrid)와 같은 틀.
    왼쪽 전시 요약 380 · 사이 56 · 오른쪽에 탭·도구 줄·추가 버튼·목록이 한 폭(이전: 탭 480·콘텐츠 720·나머지 1080으로 폭이 셋) */
 @media (min-width: 900px) {
   .page.wide .body.split { display: grid; grid-template-columns: 380px minmax(0, 1fr); column-gap: 56px; align-items: start; }
