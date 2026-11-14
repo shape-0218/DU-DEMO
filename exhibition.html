@@ -791,8 +791,10 @@ if (PV) {
   pvText('x-place', PV.place || '장소 미정');
   /* 소개 */
   if (PV.intro) { pvText('x-intro', PV.intro); } else pvHide('s-intro');
-  /* 전시콘텐츠는 등록 후 따로 만들기 때문에 아직 없으면 숨김 */
-  if (!PV.sections) pvHide('s-content');
+  /* 전시 콘텐츠: 전시 작업에서 만든 내 섹션(사진 1장 이상)을 관람객과 같은 카드·보기 화면으로(11-15 U-154). 없으면 숨김 */
+  let pvSecs = [];
+  try { pvSecs = ((JSON.parse(localStorage.getItem('du.d.' + PV.id)) || {}).secs || []).filter((x) => x.photos && x.photos.length); } catch (e) {}
+  if (pvSecs.length) setupContent(pvSecs.map((x) => ({ t: x.title, photos: x.photos }))); else pvHide('s-content');
   /* 위치 */
   placeLink(PV.addr || PV.place || '');
   /* 좋아요·저장·후기는 공개 뒤에 쓰는 기능이라 막음 */
@@ -828,40 +830,23 @@ if (PV) {
     if (v) v.src = url; else if (im) { im.src = url; }
   });
 }
-/* ---------- 데모 전시(?e=): 카드에서 들어온 전시의 값으로 채움 ---------- */
-if (DX) {
-  const lines = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-  document.title = `${DX.t} · Display U.`;
-  lines('x-title', DX.t); lines('x-org', DX.s);
-  lines('x-date', dateRange(DX.start, DX.end));
-  lines('x-time', DX.time); lines('x-place', DX.p); placeLink(DX.p);
-  lines('x-intro', DX.intro);
-  const SLUG = ['unfold', 'growing_elsewhere', 'pixel_garden', 'in_the_making', 'worlds_in_progress', 'playback', 'after_use', 'passage_of_light', 'beyond_the_panel', 'ways_of_knotting', 'measuring_between'][DXI];
-  renderLinks(SLUG + '_2026', 'https://' + SLUG.replace(/_/g, '-') + '.kr/', SLUG.replace(/_/g, '-') + '.kr', true);   // 가상 계정·주소라서 눌러도 이동하지 않고 안내만
-  /* 포스터: 한 장 */
-  document.getElementById('pr').innerHTML = `<div class="ps" aria-label="포스터 1 / 1"><img src="${DEMO.src(DX.img)}" alt="${DX.t} 포스터" fetchpriority="high"></div>`;
-  /* 전시 콘텐츠: 인스타 게시물 첫 표지(3:4) 3장 */
-  /* 섹션별 사진 목록: 데이터(DX.cph)가 없는 데모는 표지 + 다른 전시 표지로 채움(섹션당 6·4·3장 — 임시). 1장이면 묶음 아이콘 없음 */
-  const CPH_N = [6, 4, 3];
-  const photosOf = (k) => {
-    if (DX.cph && DX.cph[k]) return DX.cph[k];
-    const out = [DEMO.cover(DX, k)];
-    for (let i = 1; i < (CPH_N[k] || 1); i++) out.push(`assets/img/content/opt/c${String(((DX.c - 1 + k + i * 3) % 11) + 1).padStart(2, '0')}_${(i % 3) + 1}.jpg`);
-    return out;
-  };
+/* ---------- 전시 콘텐츠: 카드 + 보기 화면(공용, 11-15 U-154) — 데모 전시와 '전시 미리보기'(내 전시, ?id=)가 같은 화면을 씀
+   L = [{ t: 섹션명, photos: [사진 주소…] }], 첫 사진 = 카드 표지(3:4 가운데 자름) ---------- */
+function setupContent(L) {
+  const esc = (v) => String(v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const ICON_MULTI = '<svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.27 15.85h5.43c2 0 3.25-1.25 3.25-3.25V7" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><path d="M12.2 3.1H5.45a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25h6.75a2.25 2.25 0 0 0 2.25-2.25V5.35A2.25 2.25 0 0 0 12.2 3.1Z" fill="#fff"/></svg>';
-  document.getElementById('x-cards').innerHTML = DX.cts.map((t, k) => { const n = photosOf(k).length; return `<a class="cc" href="#" aria-label="${t}${n > 1 ? ', 사진 ' + n + '장' : ''}"><div class="cv"><img src="${DEMO.cover(DX, k)}" alt="" width="600" height="800" loading="lazy">${n > 1 ? `<span class="mi">${ICON_MULTI}</span>` : ''}</div><strong>${t}</strong></a>`; }).join('');
+  document.getElementById('x-cards').innerHTML = L.map(({ t, photos }) => { const n = photos.length; return `<a class="cc" href="#" aria-label="${esc(t)}${n > 1 ? ', 사진 ' + n + '장' : ''}"><div class="cv"><img src="${photos[0]}" alt="" width="600" height="800" loading="lazy">${n > 1 ? `<span class="mi">${ICON_MULTI}</span>` : ''}</div><strong>${esc(t)}</strong></a>`; }).join('');
   /* 콘텐츠 보기: 카드를 누르면 흰 화면에서 사진들이 쭉 이어짐 */
   const cv = document.getElementById('cv'), cst = document.getElementById('cv-t');
   let cvFrom = null;
   /* 11-15 U-146: 제목은 본문 맨 위, 사진은 원래 비율로 쭉, 띠 가운데 장수(사진을 보는 동안만), 끝에 다음 섹션(누르면 같은 화면에서 이어 봄) */
   const cvn = document.getElementById('cv-n');
   function openSec(k) {
-    const ph = photosOf(k), t = DX.cts[k], nk = k + 1 < DX.cts.length ? k + 1 : -1;
+    const ph = L[k].photos, t = L[k].t, nk = k + 1 < L.length ? k + 1 : -1;
     document.getElementById('cv-h').textContent = t;   // 머리 띠엔 섹션명만(11-15 U-152)
     cst.innerHTML =
-      `<div class="feed">${ph.map((u, i) => `<img src="${u}" alt="${t} ${i + 1}/${ph.length}" width="600" height="800" ${i > 1 ? 'loading="lazy"' : ''}>`).join('')}</div>` +
-      (nk >= 0 ? `<a class="nx" href="#" data-k="${nk}"><img src="${DEMO.cover(DX, nk)}" alt="" loading="lazy"><b>${DX.cts[nk]}</b><svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></a>` : '');
+      `<div class="feed">${ph.map((u, i) => `<img src="${u}" alt="${esc(t)} ${i + 1}/${ph.length}" width="600" height="800" ${i > 1 ? 'loading="lazy"' : ''}>`).join('')}</div>` +
+      (nk >= 0 ? `<a class="nx" href="#" data-k="${nk}"><img src="${L[nk].photos[0]}" alt="" loading="lazy"><b>${esc(L[nk].t)}</b><svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></a>` : '');
     cv.setAttribute('aria-labelledby', 'cv-h'); cst.scrollTop = 0; cvn.classList.remove('on'); cvn.dataset.n = ph.length;
   }
   cst.addEventListener('click', (e) => { const n = e.target.closest('.nx'); if (!n) return; e.preventDefault(); openSec(+n.dataset.k); cst.focus({ preventScroll: true }); });
@@ -885,6 +870,29 @@ if (DX) {
   if (history.state && history.state.du === 'cv') history.replaceState(null, '');   // 창이 열린 채 새로고침했을 때 남은 기록 정리
   document.getElementById('cv-x').addEventListener('click', cvClose);
   cv.addEventListener('close', () => { if (cvFrom) cvFrom.focus(); });
+}
+/* ---------- 데모 전시(?e=): 카드에서 들어온 전시의 값으로 채움 ---------- */
+if (DX) {
+  const lines = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  document.title = `${DX.t} · Display U.`;
+  lines('x-title', DX.t); lines('x-org', DX.s);
+  lines('x-date', dateRange(DX.start, DX.end));
+  lines('x-time', DX.time); lines('x-place', DX.p); placeLink(DX.p);
+  lines('x-intro', DX.intro);
+  const SLUG = ['unfold', 'growing_elsewhere', 'pixel_garden', 'in_the_making', 'worlds_in_progress', 'playback', 'after_use', 'passage_of_light', 'beyond_the_panel', 'ways_of_knotting', 'measuring_between'][DXI];
+  renderLinks(SLUG + '_2026', 'https://' + SLUG.replace(/_/g, '-') + '.kr/', SLUG.replace(/_/g, '-') + '.kr', true);   // 가상 계정·주소라서 눌러도 이동하지 않고 안내만
+  /* 포스터: 한 장 */
+  document.getElementById('pr').innerHTML = `<div class="ps" aria-label="포스터 1 / 1"><img src="${DEMO.src(DX.img)}" alt="${DX.t} 포스터" fetchpriority="high"></div>`;
+  /* 전시 콘텐츠: 인스타 게시물 첫 표지(3:4) 3장 */
+  /* 섹션별 사진 목록: 데이터(DX.cph)가 없는 데모는 표지 + 다른 전시 표지로 채움(섹션당 6·4·3장 — 임시). 1장이면 묶음 아이콘 없음 */
+  const CPH_N = [6, 4, 3];
+  const photosOf = (k) => {
+    if (DX.cph && DX.cph[k]) return DX.cph[k];
+    const out = [DEMO.cover(DX, k)];
+    for (let i = 1; i < (CPH_N[k] || 1); i++) out.push(`assets/img/content/opt/c${String(((DX.c - 1 + k + i * 3) % 11) + 1).padStart(2, '0')}_${(i % 3) + 1}.jpg`);
+    return out;
+  };
+  setupContent(DX.cts.map((t, k) => ({ t, photos: photosOf(k) })));   // 11-15 U-154 카드·보기 화면은 공용(setupContent)
   /* 작품: 이 전시에 올라온 작품 */
   const mine = DEMO.WORKS.filter((w) => w.e === DX.i);
   document.getElementById('works').innerHTML = mine.length ? mine.map((w, i) => `<a class="w" href="work.html?w=${w.i}" style="--n:${i}"><div class="im"><div><img src="assets/img/explore/opt/${w.img}.jpg" alt="${w.t}" loading="lazy"></div></div><div class="tx"><b>${w.t}</b><span>${Byline.html(w.a)}</span></div></a>`).join('') : '<p class="pv-empty">아직 올라온 작품이 없어요</p>';
