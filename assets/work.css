@@ -35,7 +35,8 @@
 .addbtn .i { width: 20px; height: 20px; stroke-width: 2.2; }   /* 11-08 Figma `Button / 추가`: 아이콘 20 + 간격 8 */
 /* 11-06: 추가 버튼이 위아래 요소에 붙어 보여서 간격을 넉넉히 (도구 줄과 12, 아래 카드와 20) */
 .tool + .addbtn { margin-top: 12px; }
-.addbtn + .wgrid, .addbtn + .slist { margin-top: 20px; }
+.addbtn + .wgrid { margin-top: 20px; }
+.addbtn + .slist { margin-top: 4px; }   /* 11-15 섹션 추가를 목록 위로(U-144): 행 안쪽 위 16과 합쳐 사진까지 20 — 전시작과 같은 간격 */
 .emptyt { display: grid; justify-items: center; gap: 4px; margin-top: 16px; padding: 36px 20px; border-radius: var(--r12); background: var(--bg-secondary); transition: background .2s; width: 100%; }
 @media (hover: hover) { .emptyt:hover { background: #ececef; } }
 .emptyt .i { width: 24px; height: 24px; }
@@ -72,7 +73,7 @@
 .pop .del { color: var(--notice); }
 
 /* 전시 콘텐츠: 섹션 행 */
-.slist { margin-top: 0; }
+.slist { margin-top: 0; padding-bottom: 32px; }
 .srow { position: relative; display: grid; grid-template-columns: 72px minmax(0, 1fr) 20px; column-gap: 16px; align-items: stretch; padding: 16px 0; border-bottom: 1px solid var(--bg-teritary); text-align: left; width: 100%; cursor: pointer; }
 /* 11-08 Figma `Card / 콘텐츠 섹션`: 대표 이미지 96×96 · 반경 12 · 글자 x112 */
 .srow .th { width: 72px; height: 96px; overflow: hidden; background: var(--bg-secondary); display: grid; place-items: center; color: var(--text-primary); }
@@ -94,7 +95,6 @@
 @media (hover: hover) { .srow .ed .tr:hover { background: var(--bg-secondary); } }
 .srow .ed .gr { width: 32px; height: 32px; display: grid; place-items: center; color: var(--text-primary); }
 .srow.drag { opacity: .6; background: var(--bg-secondary); }
-.slist + .addbtn { margin-top: 20px; margin-bottom: 32px; }
 
 /* 섹션 편집 */
 /* 11-08 Figma `섹션 · 편집` 2149:37115 대조: 제목→첫 라벨 52 · 입력 줄 47(라벨과 4) · 입력 사이 24 · 설명 칸 128 · 글자 수 위 8 · 사진 영역은 입력 아래 12, 도구 줄 44, 타일 114 간격 10. 입력 칸 공통 값(24·4·47·128·8)은 11-08 밤에 flow.css로 올려서 여기엔 이 화면만의 값만 둠 */
@@ -215,9 +215,12 @@
 .dg-cta { width: 100%; margin-top: 40px; }
 .dg-note { margin-top: 12px; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
 
-/* 노트북 */
+/* 노트북: 전시 작업 2단(11-15 사용자 A안 확정, U-144) — 허브(hub.html .hubgrid)와 같은 틀.
+   왼쪽 전시 요약 380 · 사이 56 · 오른쪽에 탭·도구 줄·추가 버튼·목록이 한 폭(이전: 탭 480·콘텐츠 720·나머지 1080으로 폭이 셋) */
 @media (min-width: 900px) {
-  .page.wide .wtabs { max-width: 480px; }
-  .page.wide #p-c { max-width: 720px; }
+  .page.wide .body.split { display: grid; grid-template-columns: 380px minmax(0, 1fr); column-gap: 56px; align-items: start; }
+  .page.wide .split .wtabs { margin-top: 8px; }                                   /* 요약 카드 윗선(8)과 나란히 */
+  .page.wide .split .wtabs.one + #p-w > .tool:first-child { margin-top: 8px; }    /* 팀원(탭 없음)도 같은 윗선 */
+  .page.wide .split .wgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }  /* 오른쪽 644 → 3열 */
 }
 @media (prefers-reduced-motion: reduce) { .wc, .srow .ch, .tcard .sw::after { transition: none; } }

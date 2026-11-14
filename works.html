@@ -47,14 +47,16 @@
     <a class="back" id="back" href="manage.html" aria-label="뒤로"><svg class="i"><use href="#i-back"/></svg></a>
     <h1>전시 작업</h1>
   </header>
-  <main id="main" class="body">
+  <main id="main" class="body split">
     <div id="sumc"></div>
-    <div class="wtabs" id="tabs" role="tablist" aria-label="전시 작업">
-      <button type="button" role="tab" id="t-w" aria-selected="true" aria-controls="p-w">전시작</button>
-      <button type="button" role="tab" id="t-c" aria-selected="false" aria-controls="p-c" tabindex="-1">전시 콘텐츠</button>
+    <div id="rcol">
+      <div class="wtabs" id="tabs" role="tablist" aria-label="전시 작업">
+        <button type="button" role="tab" id="t-w" aria-selected="true" aria-controls="p-w">전시작</button>
+        <button type="button" role="tab" id="t-c" aria-selected="false" aria-controls="p-c" tabindex="-1">전시 콘텐츠</button>
+      </div>
+      <div id="p-w" role="tabpanel" aria-labelledby="t-w"></div>
+      <div id="p-c" role="tabpanel" aria-labelledby="t-c" hidden></div>
     </div>
-    <div id="p-w" role="tabpanel" aria-labelledby="t-w"></div>
-    <div id="p-c" role="tabpanel" aria-labelledby="t-c" hidden></div>
   </main>
 </div>
 
@@ -187,8 +189,8 @@ function drawC() {
   const tool = secMode
     ? `<div class="tool"><span class="note">순서 변경과 삭제는 자동으로 저장돼요</span><button type="button" class="lnk" id="sdone">완료</button></div>`
     : `<div class="tool"><b>섹션 ${L.length}/${MAXS}</b><button type="button" class="lnk" id="sedit">편집</button></div>`;
-  box.innerHTML = tool + `<div class="slist${secMode ? ' edit' : ''}" id="sl">${L.map((s) => `<div class="srow" role="${secMode ? 'listitem' : 'link'}" ${secMode ? '' : 'tabindex="0"'} data-id="${s.id}"><div class="th">${s.photos.length ? `<img src="${esc(s.photos[0])}" alt="" loading="lazy">` : '<svg class="i" aria-hidden="true"><use href="#i-image"/></svg>'}</div><div class="tx"><h3>${esc(s.title)}</h3>${s.desc ? `<p class="ds">${esc(s.desc)}</p>` : ''}<span class="ct">사진 ${s.photos.length}/20</span></div>${secMode ? `<div class="ed"><button type="button" class="tr" data-a="del" data-id="${s.id}" aria-label="${esc(s.title)} 삭제"><svg class="i" aria-hidden="true"><use href="#i-trash"/></svg></button><span class="gr" aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><use href="#i-grip"/></svg></span></div>` : '<svg class="i ch" aria-hidden="true"><use href="#i-chev"/></svg>'}</div>`).join('')}</div>` +
-    (!secMode && L.length < MAXS ? '<button type="button" class="addbtn" id="sadd"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg>섹션 추가</button>' : '');
+  const sadd = !secMode && L.length < MAXS ? '<button type="button" class="addbtn" id="sadd"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg>섹션 추가</button>' : '';   /* 11-15: 전시작 추가처럼 목록 위(U-144) */
+  box.innerHTML = tool + sadd + `<div class="slist${secMode ? ' edit' : ''}" id="sl">${L.map((s) => `<div class="srow" role="${secMode ? 'listitem' : 'link'}" ${secMode ? '' : 'tabindex="0"'} data-id="${s.id}"><div class="th">${s.photos.length ? `<img src="${esc(s.photos[0])}" alt="" loading="lazy">` : '<svg class="i" aria-hidden="true"><use href="#i-image"/></svg>'}</div><div class="tx"><h3>${esc(s.title)}</h3>${s.desc ? `<p class="ds">${esc(s.desc)}</p>` : ''}<span class="ct">사진 ${s.photos.length}/20</span></div>${secMode ? `<div class="ed"><button type="button" class="tr" data-a="del" data-id="${s.id}" aria-label="${esc(s.title)} 삭제"><svg class="i" aria-hidden="true"><use href="#i-trash"/></svg></button><span class="gr" aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><use href="#i-grip"/></svg></span></div>` : '<svg class="i ch" aria-hidden="true"><use href="#i-chev"/></svg>'}</div>`).join('')}</div>`;
   const a = $('sadd'); if (a) a.addEventListener('click', addSec);
   const ed = $('sedit'); if (ed) ed.addEventListener('click', () => { secMode = true; drawC(); });
   const dn = $('sdone'); if (dn) dn.addEventListener('click', () => { secMode = false; drawC(); });
