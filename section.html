@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
-<title>섹션 편집 · Display U.</title>
+<title>섹션 · Display U.</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -22,7 +22,7 @@
 <div class="page">
   <header class="bar">
     <a class="back" id="back" href="works.html" aria-label="전시 작업으로 돌아가기"><svg class="i"><use href="#i-back"/></svg></a>
-    <h1>섹션 편집</h1>
+    <h1 id="h1">섹션 편집</h1>
   </header>
   <main id="main" class="body">
     <form class="sec-f" id="sf" novalidate autocomplete="off" onsubmit="return false">
@@ -30,16 +30,12 @@
         <label for="st"><span>섹션 제목<span class="req" aria-hidden="true">*</span></span></label>
         <div class="ul"><input id="st" type="text" maxlength="30" placeholder="섹션 제목을 입력해주세요"></div>
       </div>
-      <div class="field">
-        <label for="sd"><span>섹션 설명<small style="margin-left:6px;font-size:12px;font-weight:500;color:var(--text-secondary)">· 선택</small></span></label>
-        <textarea class="ta" id="sd" maxlength="100" placeholder="섹션 설명을 입력해주세요" style="height:128px"></textarea>
-        <p class="cnt-r" id="sd-n">0 / 100</p>
-      </div>
       <div class="ptool" id="pt"></div>
       <div id="up"></div>
       <div class="pgrid" id="pg"></div>
     </form>
   </main>
+  <div class="cta" id="cta" hidden><button type="button" class="big" id="ok" disabled>추가하기</button></div>   <!-- 11-15 U-151 새 섹션일 때만(편집은 자동 저장) -->
 </div>
 
 <script src="assets/flow.js"></script>
@@ -49,26 +45,44 @@
 const all = exhibitions();
 const e = all.find((x) => x.id === q.get('ex')) || all[0];
 const d = ExData.get(e);
-const sec = d.secs.find((s) => s.id === q.get('s')) || d.secs[0];
-const MAXP = 20;
+/* 11-15 U-151: ?new=1 = 섹션 추가(전체 화면, 시트 대신). 제목 + 사진 1장 이상이어야 '추가하기', 누르기 전엔 저장 안 함.
+   섹션 설명은 입력·표시 모두 삭제(보여 주는 곳이 없어서, 사용자 확정). 이전: 시트에서 제목·설명 → 사진 0장인 채로 이 화면 */
+const isNew = q.get('new') === '1';
+const MAXP = 20, MAXS = 5;
 const BACK = 'works.html?id=' + e.id + '&tab=content';
-if (!sec) { location.replace(BACK); }
+const sec = isNew ? { id: 's' + Date.now().toString(36), title: '', photos: [] } : (d.secs.find((s) => s.id === q.get('s')) || d.secs[0]);
+if (!sec || (isNew && d.secs.length >= MAXS)) { location.replace(BACK); }
 $('back').href = BACK;
-const persist = () => ExData.save(e, d);
-$('st').value = sec.title; $('sd').value = sec.desc; $('sd-n').textContent = `${sec.desc.length} / 100`;
-document.title = `섹션 편집 · ${sec.title}`;
+const persist = () => { if (!isNew) ExData.save(e, d); };
+$('st').value = sec.title;
+$('h1').textContent = isNew ? '섹션 추가' : '섹션 편집';
+document.title = isNew ? '섹션 추가 · Display U.' : `섹션 편집 · ${sec.title}`;
+$('cta').hidden = !isNew;
+const ready = () => !!($('st').value.trim() && sec.photos.length);
+const validate = () => { if (isNew) $('ok').disabled = !ready(); };
 
-/* 자동 저장: 제목·설명은 입력칸을 벗어나거나 화면을 나갈 때, 사진은 바로. 제목을 비운 채 나가면 직전 제목으로 복원 */
+/* 편집: 자동 저장(제목은 입력칸을 벗어나거나 화면을 나갈 때, 사진은 바로). 제목을 비운 채 나가면 직전 제목으로 복원 */
 function saveText() {
+  if (isNew) return;
   const t = $('st').value.trim();
   if (!t) $('st').value = sec.title; else sec.title = t;
-  sec.desc = $('sd').value.trim(); persist();
+  persist();
 }
-$('st').addEventListener('change', saveText); $('sd').addEventListener('change', saveText);
-$('st').addEventListener('blur', saveText); $('sd').addEventListener('blur', saveText);
-$('sd').addEventListener('input', () => { $('sd-n').textContent = `${$('sd').value.length} / 100`; });
-$('back').addEventListener('click', saveText);
+$('st').addEventListener('change', saveText); $('st').addEventListener('blur', saveText);
+$('st').addEventListener('input', validate);
 addEventListener('pagehide', saveText);
+/* 새 섹션: 뒤로 — 입력한 게 있으면 나갈지 묻기(작품·전시 등록과 같은 모달) */
+$('back').addEventListener('click', (ev) => {
+  if (!isNew) { saveText(); return; }
+  if (!$('st').value.trim() && !sec.photos.length) return;
+  ev.preventDefault();
+  modal({ title: '섹션 추가를 나갈까요?', body: '입력한 내용은 저장되지 않아요', acts: [{ label: '계속 작성', cls: 'btn-soft' }, { label: '나가기', cls: 'btn-dark', fn: () => { location.href = BACK; } }] });
+});
+$('ok').addEventListener('click', () => {
+  if (!ready()) return;
+  sec.title = $('st').value.trim(); d.secs.push(sec); ExData.save(e, d);
+  sessionStorage.setItem('du.toast', '섹션을 추가했어요'); location.href = BACK;
+});
 
 /* ---------- 사진 ---------- */
 let editing = false;
@@ -77,17 +91,18 @@ function draw() {
   const P = sec.photos;
   $('pt').innerHTML = editing
     ? '<span class="note">순서 변경과 삭제는 자동으로 저장돼요</span><button type="button" class="lnk" id="pdone">완료</button>'
-    : `<b>사진 ${P.length}/${MAXP}</b>${P.length ? '<button type="button" class="lnk" id="pedit">편집</button>' : ''}`;
+    : `<b>사진<span class="req" aria-hidden="true">*</span> ${P.length}/${MAXP}</b>${P.length > 1 ? '<button type="button" class="lnk" id="pedit">편집</button>' : ''}`;   /* 11-15: 사진 1장 이상 필수 — 한 장뿐이면 편집(순서·삭제)할 것이 없음 */
   $('up').innerHTML = notes.n ? `<div class="upnote" role="status"><svg class="i" aria-hidden="true"><use href="#i-info"/></svg><p><b>${notes.n}장은 올리지 못했어요</b>지원하지 않는 형식이거나 20MB를 넘는 파일이에요</p></div>` : '';
   $('pg').className = 'pgrid' + (editing ? ' edit' : '');
   $('pg').innerHTML = (!editing && P.length < MAXP ? '<button type="button" class="addp" id="addp"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg>사진 추가</button>' : '') +
-    P.map((src, i) => `<div class="ph" data-id="${i}"><img src="${esc(src)}" alt="사진 ${i + 1}" draggable="false"><span class="no">${i + 1}</span><button type="button" class="x" data-i="${i}" aria-label="사진 ${i + 1} 삭제"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button></div>`).join('');
+    P.map((src, i) => `<div class="ph" data-id="${i}"><img src="${esc(src)}" alt="사진 ${i + 1}" draggable="false"><span class="no">${i + 1}</span>${P.length > 1 ? `<button type="button" class="x" data-i="${i}" aria-label="사진 ${i + 1} 삭제"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button>` : ''}</div>`).join('');   /* 마지막 한 장은 지울 수 없음 */
   const a = $('addp'); if (a) a.addEventListener('click', () => picker.click());
   const ed = $('pedit'); if (ed) ed.addEventListener('click', () => { editing = true; draw(); });
   const dn = $('pdone'); if (dn) dn.addEventListener('click', () => { editing = false; draw(); });
+  validate();
 }
 /* 사진 삭제는 확인·되돌리기 없이 즉시 */
-$('pg').addEventListener('click', (ev) => { const x = ev.target.closest('.x'); if (!x) return; sec.photos.splice(+x.dataset.i, 1); persist(); if (!sec.photos.length) editing = false; draw(); });
+$('pg').addEventListener('click', (ev) => { const x = ev.target.closest('.x'); if (!x || sec.photos.length < 2) return; sec.photos.splice(+x.dataset.i, 1); persist(); if (sec.photos.length < 2) editing = false; draw(); });
 /* 끌어서 순서 변경(편집 모드) */
 $('pg').addEventListener('pointerdown', (ev) => {
   if (!editing || ev.button || ev.target.closest('.x')) return;

@@ -190,7 +190,7 @@ function drawC() {
     ? `<div class="tool"><span class="note">순서 변경과 삭제는 자동으로 저장돼요</span><button type="button" class="lnk" id="sdone">완료</button></div>`
     : `<div class="tool"><b>섹션 ${L.length}/${MAXS}</b><button type="button" class="lnk" id="sedit">편집</button></div>`;
   const sadd = !secMode && L.length < MAXS ? '<button type="button" class="addbtn" id="sadd"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg>섹션 추가</button>' : '';   /* 11-15: 전시작 추가처럼 목록 위(U-146) */
-  box.innerHTML = tool + sadd + `<div class="slist${secMode ? ' edit' : ''}" id="sl">${L.map((s) => `<div class="srow" role="${secMode ? 'listitem' : 'link'}" ${secMode ? '' : 'tabindex="0"'} data-id="${s.id}"><div class="th">${s.photos.length ? `<img src="${esc(s.photos[0])}" alt="" loading="lazy">` : '<svg class="i" aria-hidden="true"><use href="#i-image"/></svg>'}</div><div class="tx"><h3>${esc(s.title)}</h3>${s.desc ? `<p class="ds">${esc(s.desc)}</p>` : ''}<span class="ct">사진 ${s.photos.length}/20</span></div>${secMode ? `<div class="ed"><button type="button" class="tr" data-a="del" data-id="${s.id}" aria-label="${esc(s.title)} 삭제"><svg class="i" aria-hidden="true"><use href="#i-trash"/></svg></button><span class="gr" aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><use href="#i-grip"/></svg></span></div>` : '<svg class="i ch" aria-hidden="true"><use href="#i-chev"/></svg>'}</div>`).join('')}</div>`;
+  box.innerHTML = tool + sadd + `<div class="slist${secMode ? ' edit' : ''}" id="sl">${L.map((s) => `<div class="srow" role="${secMode ? 'listitem' : 'link'}" ${secMode ? '' : 'tabindex="0"'} data-id="${s.id}"><div class="th">${s.photos.length ? `<img src="${esc(s.photos[0])}" alt="" loading="lazy">` : '<svg class="i" aria-hidden="true"><use href="#i-image"/></svg>'}</div><div class="tx"><h3>${esc(s.title)}</h3><span class="ct">사진 ${s.photos.length}/20</span></div>${secMode ? `<div class="ed"><button type="button" class="tr" data-a="del" data-id="${s.id}" aria-label="${esc(s.title)} 삭제"><svg class="i" aria-hidden="true"><use href="#i-trash"/></svg></button><span class="gr" aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><use href="#i-grip"/></svg></span></div>` : '<svg class="i ch" aria-hidden="true"><use href="#i-chev"/></svg>'}</div>`).join('')}</div>`;
   const a = $('sadd'); if (a) a.addEventListener('click', addSec);
   const ed = $('sedit'); if (ed) ed.addEventListener('click', () => { secMode = true; drawC(); });
   const dn = $('sdone'); if (dn) dn.addEventListener('click', () => { secMode = false; drawC(); });
@@ -203,18 +203,8 @@ $('p-c').addEventListener('click', (ev) => {
 });
 $('p-c').addEventListener('keydown', (ev) => { if (ev.key === 'Enter' && ev.target.matches('.srow') && !secMode) location.href = `section.html?ex=${e.id}&s=${ev.target.dataset.id}`; });
 
-/* 섹션 추가는 바텀시트: 제목(필수)·설명(선택)을 먼저 받아서 제목 없는 섹션이 생기지 않게 */
-function addSec() {
-  showSheet(`<h2>섹션 추가</h2>
-    <div class="field" style="margin-top:20px"><label for="sn-t"><span>섹션 제목<span class="req" aria-hidden="true">*</span></span></label><div class="ul"><input id="sn-t" type="text" maxlength="30" placeholder="섹션 제목을 입력해주세요" autocomplete="off"></div></div>
-    <div class="field"><label for="sn-d"><span>섹션 설명<small style="margin-left:6px;font-size:12px;font-weight:500;color:var(--text-secondary)">· 선택</small></span></label><textarea class="ta" id="sn-d" maxlength="100" placeholder="섹션 설명을 입력해주세요" style="height:100px"></textarea><p class="cnt-r" id="sn-n">0 / 100</p></div>
-    <button type="button" class="big" id="sn-ok" disabled>추가하기</button>`, '섹션 추가', (s) => {
-    const t = s.querySelector('#sn-t'), dd = s.querySelector('#sn-d'), ok = s.querySelector('#sn-ok');
-    t.addEventListener('input', () => { ok.disabled = !t.value.trim(); });
-    dd.addEventListener('input', () => { s.querySelector('#sn-n').textContent = `${dd.value.length} / 100`; });
-    ok.addEventListener('click', () => { const title = t.value.trim(); if (!title) return; const sec = { id: 's' + Date.now().toString(36), title, desc: dd.value.trim(), photos: [] }; d.secs.push(sec); persist(); location.href = `section.html?ex=${e.id}&s=${sec.id}`; });
-  });
-}
+/* 11-15 U-151: 섹션 추가 = 전체 화면(section.html?new=1) — 제목 + 사진 1장 이상을 받아야 생김. 이전: 바텀시트(제목·설명) → 사진 0장 섹션이 생길 수 있었음 */
+function addSec() { location.href = `section.html?ex=${e.id}&new=1`; }
 
 drawW(); drawC(); pick(tab);
 </script>
