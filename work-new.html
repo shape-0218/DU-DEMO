@@ -35,7 +35,7 @@
 .mh .opt { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
 .mh .ct { margin-left: auto; font-size: 12px; font-weight: 500; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
 .mhelp { margin-top: 4px; font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-secondary); }
-.row { display: flex; gap: 8px; margin: 12px calc(var(--gx) * -1) 0; padding: 0 var(--gx); overflow-x: auto; scroll-snap-type: x proximity; scroll-padding-inline: var(--gx); scrollbar-width: none; }
+.row { display: flex; gap: 8px; margin: 0 calc(var(--gx) * -1) -12px; padding: 12px var(--gx); overflow-x: auto; scroll-snap-type: x proximity; scroll-padding-inline: var(--gx); scrollbar-width: none; }
 .row::-webkit-scrollbar { display: none; }
 .tile, .add { flex: none; width: 96px; height: 120px; scroll-snap-align: start; }   /* 11-12 사진 칸·추가 칸 모서리 0 (이전 12) */
 .add { display: grid; place-content: center; justify-items: center; gap: 4px; border: 1px solid var(--border-primary); font-size: 12px; font-weight: 500; color: var(--text-secondary); transition: background .2s; }
@@ -202,6 +202,7 @@
 <script src="assets/cropbox.js"></script>
 <script src="assets/media.js"></script>
 <script src="assets/exdata.js"></script>
+<script src="assets/reorder.js"></script>
 <script>
 const FIELDS = ['회화', '조소', '사진', '그래픽', '브랜딩', '제품', '영상', '공간', '건축', 'UXUI', '공예', '기타'];
 const MAXM = 10, MAXP = 10, MAXF = 3;
@@ -314,6 +315,9 @@ picker.addEventListener('change', async () => {
   else if (b.dataset.a === 'chg') { const m = st[key][+b.dataset.i]; thumbSheet(m, (t) => { m.thumb = t; renderRow(key); }); }
   else if (b.dataset.a === 'adj') openAdjust(+b.dataset.i);
 }));
+
+/* 끌어서 순서 바꾸기(11-15, U-143): 첫 칸이 대표라 순서만 바꾸면 '대표 사진'·'조정' 표시가 새 첫 칸으로 따라감 */
+[['media', 'm-row', '작품 이미지'], ['proc', 'p-row', '작업 과정 사진']].forEach(([key, id, noun]) => Reorder.attach($(id), { item: '.tile', noun, onMove: (a, b) => { const l = st[key]; l.splice(b, 0, l.splice(a, 1)[0]); renderRow(key); } }));
 
 /* ---------- 입력칸 ---------- */
 $('chips').innerHTML = FIELDS.map((f) => `<button type="button" class="chip" aria-pressed="false" data-f="${f}">${f}</button>`).join('');

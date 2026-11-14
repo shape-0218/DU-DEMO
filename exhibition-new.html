@@ -27,7 +27,7 @@
 .add .i { width: 28px; height: 28px; stroke-width: 1.6; }
 .pf-empty .tx { padding-top: 2px; }
 .fhelp { margin-top: 4px; font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-secondary); }
-.thumbs { display: flex; gap: 8px; margin: 12px calc(var(--gx) * -1) 0; padding: 0 var(--gx); overflow-x: auto; scroll-snap-type: x proximity; scroll-padding-inline: var(--gx); scrollbar-width: none; }
+.thumbs { display: flex; gap: 8px; margin: 0 calc(var(--gx) * -1) -12px; padding: 12px var(--gx); overflow-x: auto; scroll-snap-type: x proximity; scroll-padding-inline: var(--gx); scrollbar-width: none; }
 .thumbs::-webkit-scrollbar { display: none; }
 .thumbs .add { width: 84px; height: 105px; scroll-snap-align: start; }
 .thumbs .add .i { width: 24px; height: 24px; }
@@ -252,6 +252,7 @@
 <script src="assets/cropbox.js"></script>
 <script src="assets/blobdb.js"></script>
 <script src="assets/media.js"></script>
+<script src="assets/reorder.js"></script>
 <script>
 const TYPES = ['졸업 전시', '과제 전시', '학과·학회 전시', '연합 전시', '소모임·동아리 전시', '기타 단체 전시'];
 const FIELDS = ['회화', '조소', '사진', '그래픽', '브랜딩', '제품', '영상', '공간', '건축', 'UXUI', '공예', '기타'];
@@ -298,6 +299,8 @@ function renderPosters() {
   }));
   pf.querySelectorAll('.x').forEach((b) => b.addEventListener('click', () => { URL.revokeObjectURL(st.posters[+b.dataset.i].url); st.posters.splice(+b.dataset.i, 1); renderPosters(); validate(); }));
 }
+/* 끌어서 순서 바꾸기(11-15, U-143): 첫 번째가 대표(확정)라 순서만 바꾸면 '대표'·'조정' 표시가 새 첫 칸으로 따라감 */
+Reorder.attach($('pf'), { row: '.thumbs', item: '.th', noun: '포스터', onMove: (a, b) => { st.posters.splice(b, 0, st.posters.splice(a, 1)[0]); renderPosters(); } });
 const POSTER_R = 402 / 568;   // 전시 상세 포스터 칸 비율
 function thumbData(url, crop, full) { /* 포스터를 작게 줄여서 목록·허브 카드에 쓰기(저장소 용량 절약). 고른 부분(crop, 없으면 가운데)만 잘라 저장. full이면 자르지 않고 원래 비율 그대로(전시 상세에서 원본이 읽히기 전 자리 채움용) */
   return new Promise((res) => { const im = new Image(); im.onload = () => { const r = full ? { x: 0, y: 0, w: 1, h: 1 } : (crop || CropBox.fit(im.width, im.height, POSTER_R)), w = 240, h = full ? Math.round(240 * im.height / im.width) : Math.round(240 / POSTER_R), c = document.createElement('canvas'); c.width = w; c.height = h; c.getContext('2d').drawImage(im, r.x * im.width, r.y * im.height, r.w * im.width, r.h * im.height, 0, 0, w, h); try { res(c.toDataURL('image/jpeg', .7)); } catch (e) { res(null); } }; im.onerror = () => res(null); im.src = url; });
