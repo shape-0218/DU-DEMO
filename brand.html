@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<!-- 브랜드 홍보 페이지 · 포스터 벽 (11-15 U-161, 웹 전용 — Figma 없음)
+     디유에 걸린 전시 포스터가 한 벽이 되어 천천히 흐르고, 한 장에 손을 대면 그 전시만 불이 켜진다. 전시는 데모 데이터(assets/demo-data.js), 문구는 ❓임시 -->
+<title>Display U. — 대학생 전시를 발견하는 곳</title>
+<meta name="description" content="대학생 전시와 작품을 발견하고, 감상하고, 기록하는 곳. Display U.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/* 디유 색·글자(무채색 · Pretendard · 각진 사진). 앱 화면이 아니라 홍보용 페이지라 큰 글자를 씀 */
+:root {
+  --ink: #18181b; --paper: #ffffff; --black: #000000; --z8: #27272a; --z6: #52525c; --z5: #71717b; --z3: #d4d4d8; --bg2: #f4f4f5; --fa: #fafafa;
+  --m: clamp(20px, 3.2vw, 48px);
+  --ease: cubic-bezier(.23, 1, .32, 1);
+  --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; letter-spacing: -0.03em; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 500 16px/1.5 var(--font); -webkit-font-smoothing: antialiased; }
+h1, h2, h3, p, ul, ol { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+img, svg { display: block; }
+a { color: inherit; text-decoration: none; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+::selection { background: var(--ink); color: var(--paper); }
+.dark ::selection { background: var(--fa); color: var(--black); }
+:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.wm, .lt { fill: currentColor; width: 100%; height: auto; overflow: visible; }
+/* 글자 링크: 화살표가 붙은 한 줄, 누르는 영역 44 */
+.go { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: 16px; font-weight: 600; white-space: nowrap; }
+.go svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .25s var(--ease); }
+.go:active { transform: scale(.96); }
+@media (hover: hover) { .go:hover svg { transform: translateX(4px); } }
+@media (prefers-reduced-motion: reduce) { .go svg { transition: none; } }
+
+body { background: var(--black); color: var(--fa); }
+
+/* 첫 화면: 벽이 화면 전체, 그 위에 로고(반전), 아래 검은 띠에 한 문장 + 지금 불 켜진 전시 */
+.hero { position: relative; height: 100svh; min-height: 600px; display: flex; flex-direction: column; overflow: hidden; }
+.wall { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(var(--cols, 3), 1fr); gap: var(--g); padding: 0 var(--m); --g: clamp(8px, 1.1vw, 16px); }
+.col { display: flex; flex-direction: column; gap: var(--g); will-change: transform; }
+.card { position: relative; flex: none; aspect-ratio: 402 / 568; background: var(--z8); overflow: hidden; cursor: pointer; }
+.card img { width: 100%; height: 100%; object-fit: cover; opacity: .34; transition: opacity .3s var(--ease); }
+.wall.has .card img { opacity: .16; }
+.wall .card.on img { opacity: 1; }
+.brand { position: relative; z-index: 2; padding: var(--m) var(--m) 0; color: #fff; mix-blend-mode: difference; pointer-events: none; }
+.bar { position: relative; z-index: 2; margin-top: auto; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 16px 32px; padding: 24px var(--m) max(24px, env(safe-area-inset-bottom)); background: var(--black); }
+h1 { font-size: clamp(24px, 2.8vw, 40px); font-weight: 600; line-height: 1.25; text-wrap: balance; }
+.now { grid-column: 1; min-height: 72px; display: grid; align-content: end; gap: 2px; color: var(--z3); font-size: 14px; }
+.now strong { color: var(--fa); font-size: clamp(18px, 1.6vw, 24px); font-weight: 600; line-height: 1.3; }
+.now span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.now .dt { font-variant-numeric: tabular-nums; letter-spacing: 0; color: var(--z5); }
+.bar .go { grid-column: 2; grid-row: 1 / span 2; align-self: end; }
+.swap { animation: swap .28s var(--ease); }
+@keyframes swap { from { opacity: 0; transform: translateY(8px); } }
+@media (max-width: 699px) { .bar { grid-template-columns: 1fr; } .bar .go { grid-column: 1; grid-row: auto; } .now { min-height: 68px; } }
+
+/* 둘째 화면: 흰 바탕, 전시 11개를 큰 글자 줄로. 마우스를 올리면 그 전시 포스터가 커서를 따라옴 */
+.index { background: var(--paper); color: var(--ink); padding: clamp(96px, 12vw, 200px) var(--m) clamp(96px, 12vw, 200px); }
+.index h2 { font-size: clamp(24px, 2.8vw, 40px); font-weight: 600; line-height: 1.25; margin-bottom: clamp(40px, 5vw, 80px); }
+.rows { display: grid; }
+.rows a { display: grid; grid-template-columns: 96px minmax(0, 1.5fr) minmax(0, 1fr) auto; align-items: baseline; gap: 0 24px; padding: clamp(10px, 1.2vw, 18px) 0; transition: opacity .25s var(--ease); }
+.rows .st { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: var(--z5); white-space: nowrap; }
+.rows .st i { width: 8px; height: 8px; border-radius: 50%; background: var(--z3); }
+.rows [data-st="전시 중"] .st { color: var(--ink); } .rows [data-st="전시 중"] .st i { background: var(--ink); }
+.rows [data-st="전시 예정"] .st i { background: none; box-shadow: inset 0 0 0 2px var(--z5); }
+.rows strong { font-size: clamp(28px, 4.4vw, 64px); font-weight: 600; line-height: 1.15; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rows .s { font-size: 16px; color: var(--z6); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rows .d { font-size: 16px; font-variant-numeric: tabular-nums; letter-spacing: 0; color: var(--z5); white-space: nowrap; }
+.rows .th { display: none; }
+@media (hover: hover) { .rows:hover a { opacity: .28; } .rows a:hover { opacity: 1; } }
+.rows a:active strong { transform: translateX(4px); }
+.rows strong { transition: transform .2s var(--ease); }
+@media (max-width: 899px) {
+  .rows a { grid-template-columns: minmax(0, 1fr) 48px; gap: 2px 16px; padding: 14px 0; align-items: center; }
+  .rows .st, .rows strong, .rows .s, .rows .d { grid-column: 1; }
+  .rows strong { font-size: 28px; }
+  .rows .s, .rows .d { font-size: 14px; }
+  .rows .th { display: block; grid-column: 2; grid-row: 1 / span 4; width: 48px; aspect-ratio: 402 / 568; object-fit: cover; background: var(--bg2); }
+}
+.peek { position: fixed; left: 0; top: 0; z-index: 5; width: clamp(180px, 16vw, 240px); aspect-ratio: 402 / 568; margin: -40px 0 0 24px; pointer-events: none; opacity: 0; background: var(--bg2); overflow: hidden; transition: opacity .2s var(--ease); will-change: transform; }
+.peek.on { opacity: 1; }
+.peek img { width: 100%; height: 100%; object-fit: cover; }
+@media (hover: none), (max-width: 899px) { .peek { display: none; } }
+.rise { opacity: 0; transform: translateY(24px); }
+.rise.in { opacity: 1; transform: none; transition: opacity .6s var(--ease), transform .6s var(--ease); transition-delay: calc(var(--i, 0) * 60ms); }
+
+/* 맺음: 검은 바탕에 큰 한 줄 링크 */
+.end { padding: clamp(96px, 12vw, 200px) var(--m) max(var(--m), env(safe-area-inset-bottom)); display: grid; gap: clamp(64px, 8vw, 120px); }
+.end .big { display: inline-flex; align-items: center; gap: .25em; font-size: clamp(40px, 9vw, 136px); font-weight: 600; line-height: 1.05; }
+.end .big svg { width: .8em; height: .8em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .3s var(--ease); }
+@media (hover: hover) { .end .big:hover svg { transform: translateX(.12em); } }
+.end .big:active { transform: scale(.98); }
+.end .foot { display: flex; justify-content: space-between; align-items: end; gap: 24px; color: var(--z5); font-size: 14px; }
+.end .foot .wm { width: 124px; color: var(--fa); }
+@media (prefers-reduced-motion: reduce) { .card img, .rows a, .rows strong, .peek, .end .big svg { transition: none; } .swap { animation: none; } .rise { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+<main>
+  <section class="hero" aria-labelledby="h">
+    <div class="wall" id="wall" aria-hidden="true"></div>
+    <div class="brand" id="brand" role="img" aria-label="Display U."></div>
+    <div class="bar">
+      <h1 id="h">대학생 전시를 발견하는 곳</h1>
+      <div class="now" id="now" aria-live="polite"></div>
+      <a class="go" href="home.html">전시 둘러보기<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+  </section>
+
+  <section class="index" aria-labelledby="ix">
+    <h2 id="ix">지금 디유에 걸린 전시</h2>
+    <ol class="rows" id="rows"></ol>
+  </section>
+  <div class="peek" id="peek" aria-hidden="true"><img id="peek-img" alt=""></div>
+</main>
+
+<footer class="end">
+  <a class="big" href="home.html">전시 둘러보기<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  <div class="foot"><span id="fwm"></span><span>대학생 전시 · 작품 아카이브</span></div>
+</footer>
+
+<script src="assets/demo-data.js"></script>
+<script>
+/* 로고 글자 9조각(스플래시·404와 같은 모양) + 작은 도구 */
+const BRAND = (() => {
+  const P = ["M0 22.2812V2.29672H7.05864C14.0867 2.29672 17.7536 6.29972 17.7536 12.2889C17.7536 18.2782 14.0867 22.2812 7.05864 22.2812H0ZM4.95022 17.6976H7.05864C11.0616 17.6976 12.7422 15.6197 12.7422 12.2889C12.7422 8.9582 11.0616 6.88031 7.05864 6.88031H4.95022V17.6976Z", "M20.6211 5.867C18.9405 5.867 17.6876 4.61415 17.6876 2.9335C17.6876 1.25285 18.9405 0 20.6211 0C22.3017 0 23.5546 1.25285 23.5546 2.9335C23.5546 4.61415 22.3017 5.867 20.6211 5.867ZM18.3293 22.3374V7.24208H22.9129V22.3374H18.3293Z", "M29.8644 22.2556C25.9837 22.2556 23.478 20.1777 23.4169 17.2748H27.9393C27.9699 18.0693 28.5505 18.4665 29.8033 18.4665C31.2089 18.4665 31.6673 17.9776 31.6673 17.3359C31.6673 16.3275 30.5672 16.2358 29.1616 16.0219C27.0837 15.7163 23.6614 15.1969 23.6614 11.5606C23.6614 8.50482 26.0754 6.36581 29.8339 6.36581C33.5924 6.36581 35.9147 8.53538 36.0063 11.255H31.545C31.4228 10.5522 30.8117 10.1549 29.895 10.1549C28.7644 10.1549 28.306 10.7355 28.306 11.3467C28.306 12.2634 29.4061 12.3856 30.8117 12.5995C32.9812 12.9051 36.3119 13.4857 36.3119 17.0609C36.3119 20.1777 33.7451 22.2556 29.8644 22.2556Z", "M37.4223 28.3059V14.4635C37.4223 9.39098 40.8446 6.36581 45.4587 6.36581C50.2562 6.36581 53.6174 9.63544 53.6174 14.4941C53.6174 19.7499 49.7062 22.2556 46.2838 22.2556C44.4809 22.2556 42.9531 21.5528 42.0058 20.2083V28.3059H37.4223ZM45.4893 17.9776C47.5672 17.9776 48.9728 16.4803 48.9728 14.3107C48.9728 12.1411 47.5672 10.6438 45.4893 10.6438C43.4114 10.6438 42.0058 12.1411 42.0058 14.3107C42.0058 16.4803 43.4114 17.9776 45.4893 17.9776Z", "M54.61 22.3322V0.636485H59.1936V22.3322H54.61Z", "M67.6424 22.2556C64.2811 22.2556 60.3393 19.7499 60.3393 14.4941C60.3393 9.63544 63.7006 6.36581 68.498 6.36581C73.2343 6.36581 76.5345 9.51321 76.5345 14.4635V21.8584H72.3176V19.3527C71.5231 21.2167 69.8119 22.2556 67.6424 22.2556ZM68.4674 17.9776C70.5453 17.9776 71.9509 16.4803 71.9509 14.3107C71.9509 12.1411 70.5453 10.6438 68.4674 10.6438C66.3896 10.6438 64.9839 12.1411 64.9839 14.3107C64.9839 16.4803 66.3896 17.9776 68.4674 17.9776Z", "M85.0018 28.049C81.4266 28.049 78.4626 26.399 77.6987 22.671H82.2822C82.7405 23.6794 83.535 24.0766 85.0018 24.0766C87.0185 24.0766 87.9047 23.1293 87.9047 20.8375V19.3402C87.0491 20.6542 85.7351 21.357 84.1462 21.357C80.9682 21.357 77.5764 19.218 77.5764 13.6871V6.10892H82.16V13.6871C82.16 16.0706 83.3211 17.079 85.0323 17.079C86.6824 17.079 87.9047 16.0095 87.9047 13.6871V6.10892H92.4882V20.6847C92.4882 25.9406 89.1269 28.049 85.0018 28.049Z", "M109.001 22.6094C103.501 22.6094 100.446 19.3703 100.446 14.2062V2.2277H105.396V14.2062C105.396 16.6507 106.526 18.0258 108.971 18.0258C111.477 18.0258 112.607 16.6813 112.607 14.2062V2.2277H117.435V14.2062C117.435 19.3398 114.41 22.6094 109.001 22.6094Z", "M118.907 17.5072H124V22.6H118.907Z"];
+  const wordmark = (cls = 'wm') => `<svg class="${cls}" viewBox="0 0 124 28.3059" aria-hidden="true">${P.map((d) => `<path d="${d}"/>`).join('')}</svg>`;
+  const img = (n) => `assets/img/brand/${n}.jpg`;
+  const rm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const loop = (fn) => { let last = performance.now(); (function f(now) { const dt = Math.min(0.05, Math.max(0, (now - last) / 1000)); last = now; fn(dt); requestAnimationFrame(f); })(last); };
+  return { wordmark, img, rm, loop };
+})();
+(() => {
+  const $ = (id) => document.getElementById(id), E = DEMO.EXH, esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const pimg = (e) => BRAND.img('p' + String(e.i + 1).padStart(2, '0'));
+  $('brand').innerHTML = BRAND.wordmark(); $('fwm').innerHTML = BRAND.wordmark();
+
+  /* ── 벽: 칸마다 포스터 6장을 두 번 이어 붙여 끝없이 흐름(홀수 칸은 위로, 짝수 칸은 아래로). 페이지를 스크롤하면 그만큼 빨라짐 ── */
+  const wall = $('wall'), now = $('now'); let cols = [];
+  const colCount = () => innerWidth < 700 ? 3 : innerWidth < 1100 ? 4 : 6;
+  function build() {
+    const n = colCount(); wall.style.setProperty('--cols', n); wall.innerHTML = '';
+    cols = Array.from({ length: n }, (_, c) => {
+      const el = document.createElement('div'); el.className = 'col';
+      const list = Array.from({ length: 6 }, (_, k) => E[(c * 3 + k) % E.length]);
+      el.innerHTML = [...list, ...list].map((e) => `<div class="card" data-i="${e.i}"><img src="${pimg(e)}" alt="" decoding="async"></div>`).join('');
+      wall.appendChild(el);
+      return { el, y: c * 137, dir: c % 2 ? 1 : -1, sp: 14 + ((c * 7) % 5) * 3, period: 1 };
+    });
+    measure();
+  }
+  function measure() { const g = parseFloat(getComputedStyle(wall).gap) || 0; cols.forEach((c) => { c.period = (c.el.scrollHeight + g) / 2; }); }
+  build(); addEventListener('load', measure);
+  let rw = innerWidth; addEventListener('resize', () => { if (colCount() !== cols.length) build(); else measure(); rw = innerWidth; });
+  const place = () => cols.forEach((c) => { const y = ((c.y % c.period) + c.period) % c.period; c.el.style.transform = `translate3d(0, ${-y.toFixed(1)}px, 0)`; });
+  place();
+
+  /* 불 켜기: 마우스는 올리면, 손가락은 한 번 누르면 켜지고 한 번 더 누르면 그 전시로. 아무도 안 만지면 2.6초마다 한 장씩 저절로 켜짐 */
+  let cur = -1, manual = 0;
+  function light(i, by) {
+    if (i === cur) return; cur = i; if (by) manual = performance.now();
+    wall.classList.toggle('has', i >= 0);
+    wall.querySelectorAll('.card').forEach((c) => c.classList.toggle('on', +c.dataset.i === i));
+    if (i < 0) { now.innerHTML = ''; return; }
+    const e = E[i];
+    now.innerHTML = `<strong class="swap">${esc(e.t)}</strong><span class="swap">${esc(e.s)}</span><span class="dt swap">${esc(e.d)} · ${esc(e.st)}</span>`;
+  }
+  wall.addEventListener('pointerover', (ev) => { if (ev.pointerType !== 'mouse') return; const c = ev.target.closest('.card'); if (c) light(+c.dataset.i, true); });
+  wall.addEventListener('click', (ev) => { const c = ev.target.closest('.card'); if (!c) return; const i = +c.dataset.i; if (i === cur && performance.now() - manual > 250) location.href = 'exhibition.html?e=' + i; else light(i, true); });
+  let auto = 0; const pickAuto = () => { let i; do { i = Math.floor(Math.random() * E.length); } while (i === cur); light(i, false); };
+  if (BRAND.rm) { light(0, false); return rows(); }
+  pickAuto();
+
+  let ly = scrollY, sv = 0;
+  BRAND.loop((dt) => {
+    const y = scrollY; sv += ((y - ly) / Math.max(dt, 0.001) - sv) * Math.min(1, dt * 8); ly = y;
+    const boost = Math.min(900, Math.abs(sv) * 0.6);
+    cols.forEach((c) => { c.y += c.dir * (c.sp + boost) * dt; });
+    if (y < innerHeight) place();
+    auto += dt; if (auto > 2.6 && performance.now() - manual > 5000) { auto = 0; pickAuto(); }
+  });
+  rows();
+
+  /* ── 전시 줄: 전시 중 → 전시 예정 → 종료 순(작가 프로필 정렬과 같음), 같은 상태 안은 데이터 순서 ── */
+  function rows() {
+    const ord = { '전시 중': 0, '전시 예정': 1, '종료': 2 }, list = [...E].sort((a, b) => ord[a.st] - ord[b.st] || a.i - b.i);
+    $('rows').innerHTML = list.map((e, k) => `<li class="rise" style="--i:${k % 6}"><a href="exhibition.html?e=${e.i}" data-st="${e.st}" data-img="${pimg(e)}"><span class="st"><i></i>${e.st}</span><strong>${esc(e.t)}</strong><span class="s">${esc(e.s)}</span><span class="d">${esc(e.d)}</span><img class="th" src="${pimg(e)}" alt="" loading="lazy"></a></li>`).join('');
+    const rise = [...document.querySelectorAll('.rise')];
+    if (BRAND.rm || !('IntersectionObserver' in window)) rise.forEach((r) => r.classList.add('in'));
+    else { const io = new IntersectionObserver((en) => en.forEach((x) => { if (x.isIntersecting) { x.target.classList.add('in'); io.unobserve(x.target); } }), { rootMargin: '0px 0px -8% 0px' }); rise.forEach((r) => io.observe(r)); }
+    /* 커서를 따라오는 포스터(마우스만) */
+    const peek = $('peek'), pim = $('peek-img'); let px = 0, py = 0, tx = 0, ty = 0, on = false;
+    $('rows').addEventListener('pointermove', (ev) => { if (ev.pointerType !== 'mouse') return; const a = ev.target.closest('a'); tx = ev.clientX; ty = ev.clientY; if (a) { if (pim.getAttribute('src') !== a.dataset.img) pim.src = a.dataset.img; if (!on) { px = tx; py = ty; on = true; peek.classList.add('on'); } } });
+    $('rows').addEventListener('pointerleave', () => { on = false; peek.classList.remove('on'); });
+    if (!BRAND.rm) BRAND.loop((dt) => { if (!on) return; const k = 1 - Math.exp(-dt * 12); px += (tx - px) * k; py += (ty - py) * k; peek.style.transform = `translate3d(${px.toFixed(1)}px, ${py.toFixed(1)}px, 0) rotate(${((tx - px) * 0.04).toFixed(2)}deg)`; });
+    else $('rows').addEventListener('pointermove', (ev) => { peek.style.transform = `translate3d(${ev.clientX}px, ${ev.clientY}px, 0)`; });
+  }
+})();
+</script>
+</body>
+</html>
