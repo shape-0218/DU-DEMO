@@ -448,7 +448,7 @@ const WQ = new URLSearchParams(location.search), WI = (() => { const n = +WQ.get
 const W = DEMO.WORKS[WI], WE = DEMO.EXH[W.e], X = (typeof WORK_EXTRA !== 'undefined' && WORK_EXTRA[WI]) || null;   // X: 작품별 소개·세부 사진·작업과정(없으면 간결형)
 const TT = W.t;
 document.querySelector('h1').textContent = TT;
-document.querySelector('.spec').textContent = `${W.f} · 2026 · ${W.m}`;
+document.querySelector('.spec').textContent = [W.f, '2026', W.m].filter(Boolean).join(' · ');   // 11-14 재료/매체가 선택이 되어 비어 있으면 줄에서 뺌
 document.getElementById('like-n').textContent = W.l;
 { const a = document.querySelector('a.exh'); a.href = 'exhibition.html?e=' + WE.i; a.setAttribute('aria-label', '소속 전시 보기: ' + WE.t); a.querySelector('img').src = DEMO.src(WE.img); a.querySelector('strong').textContent = WE.t; a.querySelector('.sub').textContent = WE.s; a.querySelector('.state').lastChild.textContent = WE.st; const dt = a.querySelector('.dot'); dt.classList.toggle('soon', WE.st === '전시 예정'); dt.classList.toggle('end', WE.st === '종료'); }
 document.getElementById('back').href = 'exhibition.html?e=' + WE.i + '&tab=works';
