@@ -54,9 +54,11 @@
 .wc .im img { width: 100%; height: 100%; object-fit: cover; }
 .wc h3 { margin-top: 8px; font-size: 14px; font-weight: 600; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .wc p { margin-top: 0; font-size: 12px; font-weight: 500; color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.wc .more { position: absolute; right: 8px; top: 8px; z-index: 2; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 9999px; background: rgba(255,255,255,.4); color: #fff; backdrop-filter: blur(6px); transition: background .2s; }
-@media (hover: hover) { .wc .more:hover { background: rgba(255,255,255,.6); } }
-.wc .more .i { width: 18px; height: 18px; }
+/* ⋯ = Figma `Card / 작품` 2081:32999 `더보기`: 검정 40% 원 32 · 흰 아이콘 16(선 2) · 위·오른쪽 8, 블러 없음(11-15 — 흰 40%+블러는 밝은 사진에서 안 보였음). 누르는 영역 44는 tap.js */
+.wc .more { position: absolute; right: 8px; top: 8px; z-index: 2; width: 32px; height: 32px; display: grid; place-items: center; border-radius: 9999px; background: rgba(0,0,0,.4); color: #fff; transition: background-color .2s, transform .16s var(--ease); }
+.wc .more:active { transform: scale(.96); }
+@media (hover: hover) { .wc .more:hover { background: rgba(0,0,0,.55); } }
+.wc .more .i { width: 20px; height: 20px; }   /* 11-15 A안: 점 지름 3 (works.html `#i-more-card`) — Figma 16·점 2는 "너무 작다"로 키움 */
 .wc .mine { position: absolute; left: 8px; bottom: 8px; height: 24px; padding: 0 10px; display: inline-flex; align-items: center; border-radius: 9999px; background: rgba(0,0,0,.5); color: #fff; font-size: 12px; font-weight: 600; backdrop-filter: blur(6px); }
 .wc .no { display: none; }
 .wgrid.edit .wc { cursor: grab; touch-action: none; user-select: none; }
