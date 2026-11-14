@@ -24,6 +24,7 @@ html.sp-go:not(.sp-landed) .head { visibility: hidden; }   /* 올라오는 동�
 #du-splash .sp-mv-u { transform: translateX(-37.246px); }
 #du-splash.spread .sp-zoom, #du-splash.spread .sp-mv-d, #du-splash.spread .sp-mv-u { transform: none; transition: transform 480ms cubic-bezier(.65, 0, .2, 1); }
 #du-splash .sp-mid, #du-splash .sp-dot { opacity: 0; }   /* 차례가 오기 전에는 안 보임 */
+#du-splash:not(.run) .sp-du { opacity: 0; }   /* 움직임이 시작되기 전(흰 화면으로 기다리는 동안)에는 DU도 안 보임 — 안 숨기면 DU가 떠 있다가 사라지고 다시 올라와 덜컥거림(11-14 모바일) */
 #du-splash.run .sp-du { animation: spRise var(--t) linear var(--d) both; }
 #du-splash.spread .sp-mid { animation: spRise var(--t) linear var(--d) both, spOn 1ms linear var(--d) both; }
 #du-splash.spread .sp-dot { opacity: 1; transform-origin: 121.45px 22.6px; animation: spDrop var(--t) linear var(--d) both; }   /* 기준점 = 마침표 아래 가운데 */
