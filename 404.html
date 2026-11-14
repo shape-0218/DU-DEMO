@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#ffffff">
 <!-- 공용 404 (11-15 U-154): Vercel이 없는 주소에 이 파일을 보여 줌. base="/" = 깊은 주소(/a/b)에서도 그림·스크립트 경로 유지.
-     로고 9조각(스플래시와 같은 글자)·문구·버튼이 0.5초 뒤 떨어져 넷바 위에 쌓임 — 잡아 던지기 · 빈 곳 톡 · 기울이기 · 흔들기(아이폰은 첫 터치 때 센서 권한). 물리: Matter.js 0.19.0(MIT) -->
+     로고 9조각(스플래시와 같은 글자)·문구·버튼이 0.5초 뒤 떨어져 넷바 위에 쌓임 — 잡아 던지기 · 빈 곳 톡 · 기울이기(권한 없이 되는 기기만). 물리: Matter.js 0.19.0(MIT) -->
 <base href="/">
 <title>페이지를 찾을 수 없어요 · Display U.</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -166,40 +166,13 @@ const PIECES = ["<path d=\"M0 22.2812V2.29672H7.05864C14.0867 2.29672 17.7536 6.
         Body.applyForce(it.body, it.body.position, { x: (d.x / dist) * f * 0.6, y: -f });
       });
     }
-    /* 휴대폰 센서: 기울이면 중력 방향이 바뀌고, 흔들면 흔든 방향으로 조각들이 출렁임.
-       아이폰(iOS 13+)은 센서 권한이 필요 → 처음 화면을 누를 때 한 번 묻고(시스템 창), 허락하면 켬. https에서만 됨 */
-    const onTilt = (e) => {
+    /* 기울이기: 폰을 기울이면 중력 방향이 바뀜 — 권한 없이 되는 기기(안드로이드 등)만. 아이폰은 권한 창이 떠서 뺌 */
+    const needAsk = (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function');
+    if (!needAsk) addEventListener('deviceorientation', (e) => {
       if (e.gamma == null || e.beta == null) return;
       engine.gravity.x = Math.max(-1, Math.min(1, e.gamma / 35));
       engine.gravity.y = Math.max(-0.4, Math.min(1, e.beta / 35));
-    };
-    let lastShake = 0;
-    const onShake = (e) => {
-      const a = e.acceleration; if (!a || a.x == null) return;   /* 중력 뺀 가속도(m/s²) */
-      const mag = Math.hypot(a.x, a.y || 0); const now = performance.now();
-      if (mag < 4 || now - lastShake < 40) return; lastShake = now;   /* 살짝 움직인 건 무시, 너무 잦은 신호는 솎음 */
-      const k = Math.min(mag, 30) / mag;                               /* 너무 세게 흔들어도 상한 30 */
-      items.forEach((it, i) => {
-        const m = it.body.mass * 0.0024;
-        Body.applyForce(it.body, it.body.position, { x: a.x * k * m * (0.8 + (i % 3) * 0.2), y: -(a.y || 0) * k * m - m * 2 });   /* 화면 좌표: 위쪽이 음수, 조금씩 다르게 + 살짝 띄움 */
-        Body.setAngularVelocity(it.body, it.body.angularVelocity + ((i % 2 ? 1 : -1) * mag * 0.0025));
-      });
-    };
-    let sensors = false;
-    const enableSensors = () => { if (sensors) return; sensors = true; addEventListener('deviceorientation', onTilt); addEventListener('devicemotion', onShake); };
-    const needAsk = (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function');
-    if (!needAsk) enableSensors();
-    else {
-      /* 아이폰은 손가락을 뗄 때(touchend·click)만 권한을 물을 수 있음 — 누르는 순간(pointerdown)에 물으면 창 없이 거절됨(11-15 시뮬레이터로 확인) */
-      let asked = false;
-      const ask = () => {
-        if (asked) return; asked = true;
-        const reqs = [DeviceMotionEvent.requestPermission()];   /* 두 권한 모두 같은 터치 안에서 바로 요청 */
-        if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') reqs.push(DeviceOrientationEvent.requestPermission());
-        Promise.allSettled(reqs).then((r) => { if (r.some((x) => x.status === 'fulfilled' && x.value === 'granted')) enableSensors(); else asked = false; });
-      };
-      addEventListener('touchend', ask); addEventListener('click', ask);
-    }
+    });
     addEventListener('resize', buildWalls);
   }
   setTimeout(start, 500);   /* 0.5초 정돈된 모습을 보여 준 뒤 와르르 */
