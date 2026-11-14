@@ -117,7 +117,9 @@ img { display: block; }
 .dim, .shade-side, .shade-active { position: absolute; inset: 0; pointer-events: none; }
 .dim { background: rgba(0, 0, 0, .6); }
 .shade-side { background: linear-gradient(to bottom, rgba(0, 0, 0, .5), #000); }
-.shade-active { background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 74.77%, #000); opacity: 0; }   /* Figma 홈 - 수정 3717:42783: 포스터 맨 아래 83px(y246~329 / 329)만 투명→검정 */
+/* 11-14 D안(사용자 확정): 포스터 60%부터 아주 옅게 시작해 맨 아래까지 계속 어두워지는 곡선(사인 ease-in, 점 11개). 맨 아래 거의 검정 폭은 이전과 같음(약 13px)
+   이전 값: linear-gradient(to bottom, rgba(0, 0, 0, 0) 74.77%, #000) — 시작하는 곳에 가로 줄이 보여 밝은 포스터에서 회색 띠가 생겼음. Figma 홈 - 수정 3717:42783(포스터 그림 레이어 두 번째 채움) */
+.shade-active { background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, .012) 64%, rgba(0, 0, 0, .049) 68%, rgba(0, 0, 0, .109) 72%, rgba(0, 0, 0, .191) 76%, rgba(0, 0, 0, .293) 80%, rgba(0, 0, 0, .412) 84%, rgba(0, 0, 0, .546) 88%, rgba(0, 0, 0, .691) 92%, rgba(0, 0, 0, .844) 96%, #000); opacity: 0; }
 .slot.is-active .dim, .slot.is-active .shade-side { opacity: 0; }
 .slot.is-active .shade-active { opacity: 1; }
 .cover { position: absolute; inset: 0; z-index: 2; cursor: pointer; }
