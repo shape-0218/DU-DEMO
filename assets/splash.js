@@ -11,7 +11,8 @@
 
   var root = document.documentElement, body = document.body;
   var rm = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var SPREAD_AT = 520, ANIM_END = rm ? 300 : 1270, HOLD = 150, MOVE = rm ? 0 : 720;     /* 벌어지기 시작 · 로고 완성 · 머묾 · 연결 */
+  var PRIME = rm ? 0 : 150;   /* 준비 시간: DU가 안 보이는 채로 머무는 앞 150ms(splash.css spRiseDU와 같은 값). 아이폰 Safari가 시작 직후 첫 장면을 건너뛰는 것을 이 구간에서 흡수 */
+  var SPREAD_AT = 520 + PRIME, ANIM_END = rm ? 300 : 1270 + PRIME, HOLD = 150, MOVE = rm ? 0 : 720;     /* 벌어지기 시작 · 로고 완성 · 머묾 · 연결 */
   var meta = document.querySelector('meta[name="theme-color"]'), themeOld = meta && meta.getAttribute('content');
   var finished = false;
 
