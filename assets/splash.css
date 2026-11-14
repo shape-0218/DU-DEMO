@@ -1,4 +1,4 @@
-/* 디유 스플래시 (assets/splash.js와 함께). 값은 web/handoff/loading-1114/SPEC.md */
+/* 디유 스플래시 (assets/splash.js와 함께) — 큰 DU에서 Display U.로(11-14 확정). 값은 web/handoff/loading-1114/SPEC.md */
 /* 스플래시가 도는 동안: 홈은 안 보이고(흰 화면), 스크롤 잠금 */
 html.sp-pre { overflow: hidden; background: #fff; }
 html.sp-pre:not(.sp-go) body > :not(#du-splash) { visibility: hidden !important; }
@@ -7,14 +7,23 @@ html.sp-go:not(.sp-landed) .head { visibility: hidden; }   /* 올라오는 동�
 #du-splash { position: fixed; inset: 0; z-index: 1000; background: #fff; overflow: hidden; --sp-dx: 0px; --sp-dy: 0px; }
 #du-splash .sp-logo { position: absolute; left: calc(50% - 62px); top: calc(50% - 14.15px); width: 124px; height: 28.3059px; overflow: visible; fill: #18181b; }
 
-/* 1) 글자 조각: 조각마다 --dy(시작 거리)·--d(지연)·--t(길이)가 다름 */
-#du-splash.run .sp-p { animation: spRise var(--t) linear var(--d) both; }
+/* 1) 큰 "DU"에서 Display U.로
+   ① D와 U만 붙어서(간격 1.6) 1.7배 크기로 기준선에서 올라옴  ② 520ms에 벌어지기 시작: D는 왼쪽·U는 오른쪽으로, 크기는 제 크기로(480ms)
+   ③ D·U가 지나간 자리에서 l·a·p·y·s·i가 기준선에서 솟고  ④ 마침표가 떨어져 눌렸다 펴짐. 조각마다 --dy(시작 거리)·--d(지연)·--t(길이) */
+#du-splash .sp-zoom { transform: scale(1.7); transform-origin: 62px 14.15px; }
+#du-splash .sp-mv-d { transform: translateX(43.8px); }
+#du-splash .sp-mv-u { transform: translateX(-37.246px); }
+#du-splash.spread .sp-zoom, #du-splash.spread .sp-mv-d, #du-splash.spread .sp-mv-u { transform: none; transition: transform 480ms cubic-bezier(.65, 0, .2, 1); }
+#du-splash .sp-mid, #du-splash .sp-dot { opacity: 0; }   /* 차례가 오기 전에는 안 보임 */
+#du-splash.run .sp-du { animation: spRise var(--t) linear var(--d) both; }
+#du-splash.spread .sp-mid { animation: spRise var(--t) linear var(--d) both, spOn 1ms linear var(--d) both; }
+#du-splash.spread .sp-dot { opacity: 1; transform-box: fill-box; transform-origin: 50% 100%; animation: spDrop var(--t) linear var(--d) both; }
+@keyframes spOn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes spRise {
   0%   { transform: translateY(var(--dy)); animation-timing-function: cubic-bezier(.16, 1, .3, 1); }
   76%  { transform: translateY(var(--ov)); animation-timing-function: cubic-bezier(.45, 0, .2, 1); }
   100% { transform: translateY(0); }
 }
-#du-splash.run .sp-p.sp-dot { transform-box: fill-box; transform-origin: 50% 100%; animation-name: spDrop; }
 @keyframes spDrop {
   0%   { opacity: 0; transform: translateY(var(--dy)); animation-timing-function: cubic-bezier(.55, 0, 1, .45); }
   16%  { opacity: 1; }
@@ -32,9 +41,10 @@ html.sp-go .nav { animation: spNavIn 720ms cubic-bezier(.65, 0, .2, 1) both; }
 @keyframes spSheetUp { from { transform: translateY(var(--sp-H, 100vh)); } to { transform: none; } }
 @keyframes spNavIn { from { opacity: 0; } to { opacity: 1; } }
 
-/* 움직임 줄이기: 조각 이동·연결 이동 없이 투명도만 */
+/* 움직임 줄이기: DU 장면·벌어짐·연결 이동 없이 완성된 로고가 투명도만으로 나타남 */
 @media (prefers-reduced-motion: reduce) {
-  #du-splash.run .sp-p, #du-splash.run .sp-p.sp-dot { animation: spFade .3s linear both; }
+  #du-splash .sp-zoom, #du-splash .sp-mv-d, #du-splash .sp-mv-u { transform: none; transition: none; }
+  #du-splash.run .sp-p { opacity: 1; animation: spFade .3s linear both; }
   html.sp-go #du-splash .sp-logo, html.sp-go .dark, html.sp-go .sheet, html.sp-go .nav { animation: none; }
   @keyframes spFade { from { opacity: 0; } to { opacity: 1; } }
 }
