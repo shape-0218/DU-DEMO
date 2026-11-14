@@ -1,0 +1,64 @@
+/* 디유 로딩 공용 (assets/loading.js와 함께) — 값은 web/handoff/loading-1114/LOADING-SPEC.md
+   스켈레톤(물결 숨쉬기) · 사진이 켜질 때 · 로더(말줄임표). 페이지 <style> 뒤에 불러올 것. */
+:root { --du-sk: #f4f4f5; --du-ease: cubic-bezier(.23, 1, .32, 1); }   /* 회색 칸·막대 = bg/secondary */
+
+/* ── 스켈레톤 막대: 실제 글자 줄과 같은 높이의 줄 안에 높이 10 막대 ── */
+.du-bars i { display: block; position: relative; font-style: normal; }
+.du-bars i::before { content: ""; position: absolute; left: 0; top: 50%; width: var(--w); height: 10px; margin-top: -5px; background: var(--du-sk); }
+.du-bars.c i::before { left: 50%; transform: translateX(-50%); }
+.du-bars .h22 { height: 22.4px; } .du-bars .h20 { height: 19.6px; } .du-bars .h17 { height: 16.8px; }
+.du-bars .mt2 { margin-top: 2px; } .du-bars .mt4 { margin-top: 4px; }
+.du-ph { background: var(--du-sk) !important; }
+
+/* 물결 숨쉬기: 투명도 100 → 35 → 100%, 1.6초. 칸마다 --wave(열+행) × 200ms 늦게. 나타날 때 120ms */
+[data-load="loading"] .du-sk-item.du-sk-item .du-ph,
+[data-load="loading"] .du-sk-item.du-sk-item .du-bars { animation: du-in .12s ease-out both, du-breathe 1.6s ease-in-out calc(.12s + var(--wave, 0) * .2s) infinite; }
+@keyframes du-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes du-breathe { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+
+/* ── 사진이 켜질 때: 투명도 0→1 + 흐림 2px→0, 200ms. 이미 받아 둔 사진은 클래스가 안 붙어 바로 보임 ── */
+img.du-img { opacity: 0; filter: blur(2px); }
+img.du-img.du-on { opacity: 1; filter: blur(0); transition: opacity .2s var(--du-ease), filter .2s var(--du-ease) !important; transition-delay: calc(min(var(--du-i, 0), 5) * 30ms) !important; }
+img.du-fail { visibility: hidden; }   /* 실패: 회색 칸 그대로 */
+
+/* ── 로더(말줄임표): 5px 네모 점 3개가 하나씩 떨어져 눌렸다 펴지고, 머문 뒤 같이 사라짐. 1.9초 ── */
+.du-loader { display: inline-flex; align-items: flex-end; gap: 5px; height: 24px; color: inherit; }
+.du-loader i { display: block; width: 5px; height: 5px; background: currentColor; transform-origin: 50% 100%; opacity: 0; }
+.du-loader i:nth-child(1) { animation: du-ell-1 1.9s linear infinite; }
+.du-loader i:nth-child(2) { animation: du-ell-2 1.9s linear infinite; }
+.du-loader i:nth-child(3) { animation: du-ell-3 1.9s linear infinite; }
+@keyframes du-ell-1 {
+  0% { opacity: 0; transform: translateY(-14px); animation-timing-function: cubic-bezier(.55, 0, 1, .45); }
+  3% { opacity: 1; }
+  13% { opacity: 1; transform: translateY(0) scale(1, 1); animation-timing-function: cubic-bezier(.2, .8, .3, 1); }
+  18% { transform: translateY(0) scale(1.25, .6); animation-timing-function: cubic-bezier(.3, 0, .2, 1); }
+  26%, 80% { transform: translateY(0) scale(1, 1); opacity: 1; }
+  92%, 100% { transform: translateY(0) scale(1, 1); opacity: 0; }
+}
+@keyframes du-ell-2 {
+  0%, 12% { opacity: 0; transform: translateY(-14px); }
+  12.01% { opacity: 0; transform: translateY(-14px); animation-timing-function: cubic-bezier(.55, 0, 1, .45); }
+  15% { opacity: 1; }
+  25% { opacity: 1; transform: translateY(0) scale(1, 1); animation-timing-function: cubic-bezier(.2, .8, .3, 1); }
+  30% { transform: translateY(0) scale(1.25, .6); animation-timing-function: cubic-bezier(.3, 0, .2, 1); }
+  38%, 80% { transform: translateY(0) scale(1, 1); opacity: 1; }
+  92%, 100% { transform: translateY(0) scale(1, 1); opacity: 0; }
+}
+@keyframes du-ell-3 {
+  0%, 24% { opacity: 0; transform: translateY(-14px); }
+  24.01% { opacity: 0; transform: translateY(-14px); animation-timing-function: cubic-bezier(.55, 0, 1, .45); }
+  27% { opacity: 1; }
+  37% { opacity: 1; transform: translateY(0) scale(1, 1); animation-timing-function: cubic-bezier(.2, .8, .3, 1); }
+  42% { transform: translateY(0) scale(1.25, .6); animation-timing-function: cubic-bezier(.3, 0, .2, 1); }
+  50%, 80% { transform: translateY(0) scale(1, 1); opacity: 1; }
+  92%, 100% { transform: translateY(0) scale(1, 1); opacity: 0; }
+}
+.du-loading { display: grid; justify-items: center; gap: 12px; }
+.du-loading .du-hint { font-size: 12px; font-weight: 500; line-height: 1.4; color: #71717b; opacity: 0; animation: du-in .3s ease-out 2.5s both; }   /* 2.5초 넘으면 "불러오는 중" */
+
+@media (prefers-reduced-motion: reduce) {
+  [data-load="loading"] .du-sk-item.du-sk-item .du-ph, [data-load="loading"] .du-sk-item.du-sk-item .du-bars { animation: du-in .12s linear both !important; }
+  img.du-img.du-on { filter: none; transition: opacity .2s linear !important; transition-delay: 0s !important; }
+  .du-loader i { animation: du-blink 1.2s ease-in-out infinite !important; transform: none; }
+  @keyframes du-blink { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+}

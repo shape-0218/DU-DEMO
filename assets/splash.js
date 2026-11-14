@@ -22,13 +22,13 @@
   sp.className = 'run' + (rm ? ' rm' : '');
 
   function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
-  /* 앱 틀이 준비됐는지: 첫 포스터가 그려지고 사진이 도착(최대 2.5초). 데이터는 기다리지 않음 */
+  /* 앱 틀이 준비됐는지: 스켈레톤이 떠 있거나, 첫 포스터 사진이 도착(최대 2.5초). 데이터는 기다리지 않음 */
   function ready() {
     return new Promise(function (res) {
       var t = 0;
       (function tick() {
-        var im = document.querySelector('#rail .slot img');
-        if ((im && im.complete && im.naturalWidth) || t >= 2500) return res();
+        var im = document.querySelector('#rail .slot img'), sk = document.querySelector('#rail .du-sk-item');
+        if (sk || (im && im.complete && im.naturalWidth) || t >= 2500) return res();   /* 스켈레톤이 떠 있으면 데이터를 기다리지 않고 바로 이어짐 */
         t += 50; setTimeout(tick, 50);
       })();
     });

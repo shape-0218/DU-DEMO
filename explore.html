@@ -116,6 +116,9 @@ html.kb .search input:focus-visible { box-shadow: 0 0 0 2px var(--text-primary);
 @media (min-width: 1280px) { .grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
 .card { display: block; color: var(--text-primary); animation: rise .55s var(--ease) backwards; animation-delay: calc(var(--n, 0) * 35ms); transition: transform .3s var(--ease); }
 .card:active { transform: scale(.98); }
+/* 11-14 로딩: 스켈레톤 칸은 올라오는 등장 없이, 스켈레톤 뒤의 실제 카드는 글자만 200ms로 나타남(칸마다 30ms, 앞 6칸) */
+.card.du-sk-item, .grid.from-sk .card { animation: none; }
+.grid.from-sk .card .tx { animation: du-in .2s var(--du-ease) both; animation-delay: calc(min(var(--n, 0), 5) * 30ms); }
 @keyframes rise { from { opacity: 0; transform: translateY(12px); } }
 .card .im div { position: relative; overflow: hidden; background: var(--bg-secondary); }   /* 11-12 카드 E: 검은 틀·사진 여백 7·모서리 12 없음, 사진 외곽선 없음 */
 .card.ex .im div { aspect-ratio: 402 / 568; }   /* 11-13 포스터 정식 규격 402:568(등록 자르기 틀과 같음, 이전 161/241) */
@@ -139,7 +142,9 @@ html.kb .search input:focus-visible { box-shadow: 0 0 0 2px var(--text-primary);
 </style>
 <script src="assets/byline.js"></script>
 <link rel="stylesheet" href="assets/nav.css">
+<link rel="stylesheet" href="assets/loading.css">
 <script src="assets/nav.js"></script>
+<script src="assets/loading.js"></script>
 <script type="speculationrules">{"prerender":[{"source":"list","urls":["home.html","my.html"],"eagerness":"eager"}]}</script>
 </head>
 <body>
@@ -239,7 +244,19 @@ function filtered() {
   }
   return state.sort === '인기순' ? items.sort((a, b) => b.l - a.l || a.i - b.i) : items.sort((a, b) => a.i - b.i);
 }
+/* 11-14 로딩: 데모 데이터는 바로 뜨므로 평소엔 스켈레톤이 안 보임(150ms 규칙). 주소에 ?slow 를 붙이면 느린 응답을 흉내 내 스켈레톤이 보임 */
+const SK_EX = [['h20', 70], ['h17', 50], ['h17', 60, 'mt4'], ['h17', 40, 'mt2']], SK_WK = [['h20', 70], ['h17', 50]], SK_VARY = [0, -12, 6, -6, 2, -10];
+function skeletonHtml() {
+  const ex = state.tab === 'exh';
+  return '<div class="grid" aria-hidden="true">' + SK_VARY.map((v) => `<div class="card ${ex ? 'ex' : 'wk'} du-sk-item"><div class="im"><div class="du-ph"></div></div><div class="tx du-bars">${DULoad.bars((ex ? SK_EX : SK_WK).map((b) => [b[0], b[1] + v, b[2]]))}</div></div>`).join('') + '</div>';
+}
+let loadSeq = 0;
 function renderList() {
+  const el = $('list'), seq = ++loadSeq;
+  if (!DULoad.slow) { paintList(); DULoad.images(el, false); return; }
+  DULoad.swap([el], DULoad.wait(DULoad.slow), () => { $('count').textContent = ''; el.innerHTML = skeletonHtml(); }, () => { paintList(); const g = el.querySelector('.grid'); if (g && DULoad._seen) g.classList.add('from-sk'); }, () => seq === loadSeq);
+}
+function paintList() {
   const items = filtered(), q = norm(state.q), el = $('list');
   $('count').textContent = q ? `${state.tab === 'exh' ? '전시' : '작품'} ${items.length}개` : '';
   if (!items.length) { el.innerHTML = `<div class="empty"><strong>검색 결과가 없어요</strong><p>다른 검색어나 필터로 찾아보세요</p></div>`; return; }

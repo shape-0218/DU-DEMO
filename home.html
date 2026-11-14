@@ -58,7 +58,9 @@ img { display: block; }
 @media (min-width: 768px) { .head .inner { height: 64px; } }
 
 /* 검정 영역 */
-.dark { position: relative; background: var(--bg-black); color: var(--text-quaternary); padding-bottom: 26px; }
+.dark { position: relative; background: var(--bg-black); color: var(--text-quaternary); padding-bottom: 26px; --du-sk: #27272a; }   /* 11-14 검은 영역의 회색 칸·막대 = color/zinc/800 (이전 포스터 칸 #797979는 너무 밝아 폐기) */
+/* 11-14 로딩: 스켈레톤 뒤의 실제 화면은 글자만 200ms로 나타남(사진은 loading.css) */
+#rail[data-load="done"] .info .t, #rail[data-load="done"] .info .meta, #art-row[data-load="done"] .tx { animation: du-in .2s var(--du-ease) both; }
 .tabs { position: relative; display: flex; justify-content: safe center; padding-top: 6px; overflow-x: auto; scrollbar-width: none; }
 .tabs::-webkit-scrollbar { display: none; }
 .tab { flex: none; padding: 8px 12px; font-size: 14px; font-weight: 600; color: var(--text-teritary); border-bottom: 2px solid transparent; transition: color .2s, transform .16s var(--ease); }
@@ -103,7 +105,7 @@ img { display: block; }
 .slot.is-active { cursor: default; }
 .slot:not(.is-active) .badge { opacity: .4; }
 /* 포스터 크기는 늘 같고(레이아웃 고정), 옆 칸 모습은 transform으로: JS가 중앙과의 거리에 따라 손가락을 따라 연속으로 바꿈(paint) */
-.poster { position: relative; width: var(--a); aspect-ratio: 402 / 568; overflow: hidden; background: #797979; transform-origin: 50% 0; transform: translateY(calc(var(--a) * 14 / 232)) scale(var(--side)); }   /* 11-12 포스터 모서리 0 (이전 12) */
+.poster { position: relative; width: var(--a); aspect-ratio: 402 / 568; overflow: hidden; background: #27272a; transform-origin: 50% 0; transform: translateY(calc(var(--a) * 14 / 232)) scale(var(--side)); }   /* 11-12 포스터 모서리 0 (이전 12) */
 .slot.is-active .poster { transform: none; }
 .poster img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 /* 영상 포스터: 가운데(활성) 포스터일 때만 소리 없이 반복 재생, 다른 칸은 썸네일(첫 이미지)만 */
@@ -149,7 +151,7 @@ img { display: block; }
 .lcard { position: relative; display: grid; grid-template-columns: 86px minmax(0, 1fr); height: 124px; background: #18181b; border: 1px solid #27272a; overflow: hidden; color: var(--text-quaternary); transition: border-color .2s, transform .3s var(--ease); }
 @media (hover: hover) { .lcard:hover { border-color: #3f3f46; } }
 .lcard:active { transform: scale(.99); }
-.lcard .lp { position: relative; background: #797979; }
+.lcard .lp { position: relative; background: #27272a; }
 .lcard .lp img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .lcard .lp::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, .75)); }
 .lcard .lrank { position: absolute; left: 10px; bottom: -2px; z-index: 1; font-size: 36px; line-height: 1.4; font-weight: 700; color: #fff; }
@@ -229,7 +231,9 @@ img { display: block; }
 <script src="assets/byline.js"></script>
 <link rel="stylesheet" href="assets/nav.css">
 <link rel="stylesheet" href="assets/splash.css">
+<link rel="stylesheet" href="assets/loading.css">
 <script src="assets/nav.js"></script>
+<script src="assets/loading.js"></script>
 <script type="speculationrules">{"prerender":[{"source":"list","urls":["explore.html","my.html"],"eagerness":"eager"}]}</script>
 </head>
 <body>
@@ -373,11 +377,12 @@ function applyView(empty) {
 vt.addEventListener('click', () => { view = view === 'list' ? 'poster' : 'list'; try { localStorage.setItem('du.homeview', view); } catch (e) {} applyView(document.getElementById('empty').hidden === false); });
 
 /* ARTWORKS: 전시를 돌아가며 한 점씩 뽑아 최대 10점 */
-(function () {
+const artRow = document.getElementById('art-row');
+function renderArts() {
   const by = DEMO.EXH.map((e) => DEMO.WORKS.filter((w) => w.e === e.i)).filter((l) => l.length), out = [];
   for (let r = 0; out.length < 10 && by.some((l) => l[r]); r++) by.forEach((l) => { if (l[r] && out.length < 10) out.push(l[r]); });
   document.getElementById('art-row').innerHTML = out.map((w) => `<a class="art" href="work.html?w=${w.i}"><div class="im"><div><img src="assets/img/explore/opt/${w.img}.jpg" alt="${w.t} 작품" width="161" height="215" loading="lazy"></div></div><div class="tx"><b>${w.t}</b>${Byline.html(w.a)}</div></a>`).join('');
-})();
+}
 const posters = document.getElementById('posters'), empty = document.getElementById('empty'), msg = document.getElementById('empty-msg');
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const emptyText = { pop: '진행 중이거나 예정된 전시가 없어요', grad: '진행 중이거나 예정된 졸업전시가 없어요', live: '진행 중인 전시가 없어요', soon: '예정된 전시가 없어요', end: '곧 끝나는 전시가 없어요' };
@@ -471,6 +476,7 @@ function pick(tab, focus, silent) {
   document.getElementById('stage').setAttribute('aria-labelledby', tab.id);
   if (!isEmpty) { setActive(0); rail.scrollLeft = 0; frame(() => go(0, false)); }
   syncVideos();
+  DULoad.images(rail); DULoad.images(lst);   // 11-14 새로 받는 사진은 흐림이 걷히며 켜짐(이미 받아 둔 사진은 바로)
   if (focus) tab.focus();
   if (!silent) { const u = new URL(location.href); k === 'pop' ? u.searchParams.delete('tab') : u.searchParams.set('tab', k); try { history.replaceState(null, '', u); } catch (e) {} }
 }
@@ -483,7 +489,17 @@ tabs.forEach((t, i) => {
 });
 const first = tabs.find((t) => t.dataset.k === new URLSearchParams(location.search).get('tab')) || tabs[0];
 let booted = false; const boot = () => { if (booted) return; booted = true; pick(first, false, true); setTimeout(() => tabsEl.classList.add('ready'), 80); };   // 처음 자리 잡은 뒤부터 밑줄이 미끄러짐
-requestAnimationFrame(boot); setTimeout(boot, 60);   // 화면이 가려져 있어 rAF가 늦어도 목록이 만들어지도록
+/* 11-14 로딩: 데모 데이터는 바로 뜨므로 평소엔 스켈레톤이 안 보임(150ms 규칙). 주소에 ?slow 를 붙이면 느린 응답을 흉내 내 스켈레톤(물결 숨쉬기)이 보임 */
+function homeSkeleton() {
+  rail.innerHTML = [0, 1, 2].map((i) => `<article class="slot du-sk-item${i ? '' : ' is-active'}" aria-hidden="true"><div class="poster du-ph"></div><div class="info"><div class="t du-bars c">${DULoad.bars([['h22', 62], ['h17', 46]])}</div><div class="meta du-bars c">${DULoad.bars([['h17', 40], ['h17', 28]])}</div></div></article>`).join('');
+  artRow.innerHTML = [0, -8, 6].map((v) => `<div class="art du-sk-item" aria-hidden="true"><div class="im"><div class="du-ph"></div></div><div class="tx du-bars">${DULoad.bars([['h20', 70 + v], ['h17', 48 + v]])}</div></div>`).join('');
+}
+if (DULoad.slow) {
+  DULoad.swap([rail, artRow], DULoad.wait(DULoad.slow), homeSkeleton, () => { boot(); renderArts(); });
+} else {
+  renderArts(); DULoad.images(artRow, false);
+  requestAnimationFrame(boot); setTimeout(boot, 60);   // 화면이 가려져 있어 rAF가 늦어도 목록이 만들어지도록
+}
 document.fonts && document.fonts.ready.then(() => slots.length && go(active, false));
 </script>
 <script src="assets/auth.js"></script>
