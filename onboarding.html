@@ -94,7 +94,7 @@ ul { list-style: none; }
 
 /* 하단 버튼 */
 .cta { position: sticky; bottom: 0; margin-top: auto; padding: 20px 0 max(16px, env(safe-area-inset-bottom)); background: linear-gradient(to bottom, rgba(255,255,255,0), #fff 28%); }
-.big { display: grid; place-items: center; width: 100%; height: 48px; border-radius: var(--r12); background: var(--text-primary); color: #fff; font-size: 16px; font-weight: 600; text-align: center; transition: background .2s, color .2s, transform .2s var(--ease); }
+.big { display: grid; place-items: center; width: 100%; height: 44px; border-radius: var(--r12); background: var(--text-primary); color: #fff; font-size: 16px; font-weight: 600; text-align: center; transition: background .2s, color .2s, transform .2s var(--ease); }
 @media (hover: hover) { .big:hover:not(:disabled) { background: #2f2f35; } }
 .big:active:not(:disabled) { transform: scale(.99); }
 .big:disabled { background: var(--bg-secondary); color: var(--text-disable); cursor: default; }
@@ -129,7 +129,7 @@ ul { list-style: none; }
   <!-- 1. 약관 -->
   <section class="step" id="s-terms" aria-labelledby="t-terms">
     <div class="bar"><button type="button" class="back" aria-label="뒤로"><svg class="i"><use href="#i-back"/></svg></button></div>
-    <h1 class="lead" id="t-terms" tabindex="-1">서비스 이용을 위해<br>이용약관 동의가 필요합니다</h1>
+    <h1 class="lead" id="t-terms" tabindex="-1">서비스 이용을 위해<br>이용약관 동의가 필요해요</h1>
     <div class="terms">
       <ul id="rows"></ul>
       <a class="doclink" id="privacy" href="terms.html?doc=privacy-notice">개인정보 수집·이용 안내</a>
@@ -145,7 +145,7 @@ ul { list-style: none; }
     <form id="form" novalidate autocomplete="off" style="flex:1;display:flex;flex-direction:column">
       <div class="nick">
         <div class="line">
-          <div class="ul" id="nul"><input id="nick" type="text" maxlength="15" placeholder="닉네임" autocomplete="off" autocapitalize="none" spellcheck="false" enterkeyhint="done" aria-label="닉네임" aria-describedby="nhelp"></div>
+          <div class="ul" id="nul"><input id="nick" type="text" maxlength="15" placeholder="닉네임을 입력해주세요" autocomplete="off" autocapitalize="none" spellcheck="false" enterkeyhint="done" aria-label="닉네임" aria-describedby="nhelp"></div>
           <button type="button" class="act" id="ck" disabled>중복 확인</button>
         </div>
         <p class="help" id="nhelp" aria-live="polite">한글, 영문, 숫자로 2~15자</p>
