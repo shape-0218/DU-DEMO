@@ -1,0 +1,99 @@
+/* 홈 새 구조 시안 공용(11-15, 검토용 · promo/home) — 무드(검정·흰색·zinc, Pretendard, 각진 포스터 402:568, 상태 말, 넷바 알약)는 지금 홈과 같고 구조만 새로 짬
+   글자 크기·굵기는 TYPE-RULES 표 안(10~36, SemiBold까지). 웹 큰 제목 48·64는 ❓제안(Figma 스타일에 없음) */
+:root {
+  --ink: #18181b; --black: #000; --white: #fff;
+  --z8: #27272a; --z7: #3f3f47; --z6: #52525c; --z5: #71717b; --z4: #9f9fa9; --z3: #d4d4d8; --z2: #e4e4e7; --z1: #f4f4f5; --z0: #fafafa;
+  --line-soft: #f0f0f0;
+  --ease: cubic-bezier(.16, 1, .3, 1); --out: cubic-bezier(.23, 1, .32, 1); --io: cubic-bezier(.77, 0, .175, 1);
+  --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  --pad: 20px; --r20: 20px;
+  --bg-white: #fff; --bg-black: #000; --text-teritary: #71717b; --text-quaternary: #fafafa; --text-primary: #18181b;   /* nav.css가 읽는 이름 */
+  color-scheme: dark;
+}
+@media (min-width: 768px)  { :root { --pad: 32px; } }
+@media (min-width: 1100px) { :root { --pad: 48px; } }
+*, *::before, *::after { box-sizing: border-box; letter-spacing: -0.03em; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--black); color: var(--z0); font: 500 14px/1.4 var(--font); -webkit-font-smoothing: antialiased; }
+::selection { background: var(--z0); color: var(--black); }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; letter-spacing: -0.03em; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+a, button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+h1, h2, h3, p { margin: 0; }
+img { display: block; }
+:focus-visible { outline: 2px solid var(--z0); outline-offset: 2px; border-radius: 4px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.dt12 { font-weight: 500; letter-spacing: 0.01em; }   /* 일정 날짜(Figma body/md/regular2) */
+.tnum { font-variant-numeric: tabular-nums; }
+
+/* 머리: 로고 + 검색 (지금 홈과 같은 크기 124×28.3, 위아래 16) */
+.hd { position: relative; z-index: 20; display: flex; align-items: center; justify-content: space-between; height: 60px; padding: 0 var(--pad); }
+.hd .wm { width: 124px; height: 28.3px; fill: currentColor; display: block; }
+.hd .sch { width: 44px; height: 44px; margin-right: -8px; display: grid; place-items: center; }
+.hd .sch svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+
+/* 분류 글자 탭(지금 홈 탭과 같은 14/600 · 밑줄 한 줄이 미끄러짐) */
+.cats { position: relative; display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; padding: 0 calc(var(--pad) - 12px); }
+.cats::-webkit-scrollbar { display: none; }
+.cats button { flex: none; position: relative; height: 44px; padding: 0 12px; font-size: 14px; font-weight: 600; color: var(--z5); transition: color .2s, transform .16s var(--ease); }
+.cats button[aria-selected="true"] { color: var(--z0); }
+.cats button:active { transform: scale(.96); }
+@media (hover: hover) { .cats button:hover { color: var(--z0); } }
+.cats .ind { position: absolute; left: 0; bottom: 6px; width: 1px; height: 2px; background: currentColor; color: var(--z0); transform-origin: 0 0; pointer-events: none; transition: transform .26s var(--ease); }
+.cats:not(.ready) .ind { transition: none; }
+
+/* 흰 시트(작품 · 지도 띠 · 등록 · 바닥글) — 지금 홈과 같은 흰 영역, 모서리 20 */
+.sheet { position: relative; z-index: 5; background: var(--white); color: var(--ink); border-radius: var(--r20) var(--r20) 0 0; padding-bottom: 132px; color-scheme: light; }
+.sheet :focus-visible { outline-color: var(--ink); }
+.inner { width: 100%; max-width: 1416px; margin-inline: auto; padding-inline: var(--pad); }
+.works { padding-block: 24px 32px; }
+.works .wh { display: flex; align-items: center; justify-content: space-between; }
+.works h2 { font-size: 18px; font-weight: 600; }
+.works .more { display: inline-flex; align-items: center; gap: 2px; min-height: 44px; color: var(--z5); font-size: 12px; }
+.works .more svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.works .sub { color: var(--z5); font-size: 12px; margin-top: -8px; }
+/* 작품 카드 E(11-12 확정): 흰 바탕 · 사진 3:4 모서리 0 · 아래 글자 8 */
+.wcard { display: block; min-width: 0; color: var(--ink); transition: transform .16s var(--ease); }
+.wcard:active { transform: scale(.98); }
+.wcard .ph { aspect-ratio: 3 / 4; overflow: hidden; background: var(--z1); }
+.wcard .ph img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
+@media (hover: hover) { .wcard:hover .ph img { transform: scale(1.03); } }
+.wcard .tx { padding-top: 8px; display: grid; gap: 2px; font-size: 12px; }
+.wcard b { font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wcard .by { color: var(--z7); }
+
+/* 지도 띠(U-163 확정 모양 그대로) */
+.mband { display: block; position: relative; height: 140px; overflow: hidden; color: var(--ink); }
+.mband:focus-visible { outline-offset: -3px; border-radius: 0; }
+.mm { position: absolute; inset: 0; overflow: hidden; background: #ebebe8; }
+.mm canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.mpins { position: absolute; inset: 0; z-index: 1; }
+.mpin { position: absolute; left: 0; top: 0; width: 0; height: 0; z-index: var(--z, 1); }
+.mpin .pc { position: absolute; left: -17px; top: -52px; width: 34px; height: 46px; padding: 2px; border-radius: 8px; background: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, .14), 0 4px 10px rgba(0, 0, 0, .16); transform-origin: 50% 52px; transition: transform .28s var(--out), background-color .2s, box-shadow .2s, opacity .2s; }
+.mpin .pc::after { content: ""; position: absolute; left: 50%; bottom: -10px; margin-left: -6px; border: 6px solid transparent; border-top-color: #fff; border-bottom: 0; transition: border-top-color .2s; }
+.mpin .pc img { width: 100%; height: 100%; border-radius: 6px; object-fit: cover; background: #797979; }
+.mpin .dt { position: absolute; right: -4px; top: -4px; width: 10px; height: 10px; border-radius: 50%; background: var(--ink); box-shadow: 0 0 0 2px #fff; }
+.mpin.soon .dt { background: #fff; box-shadow: inset 0 0 0 2.5px var(--ink), 0 0 0 2px #fff; }
+.mpin.hid .pc { opacity: 0; }
+.mpin.on { z-index: 9999; }
+.mpin.on .pc { transform: scale(1.3); background: #000; box-shadow: 0 6px 16px rgba(0, 0, 0, .3); }
+.mpin.on .pc::after { border-top-color: #000; }
+.mpin.on .dt { display: none; }
+.mband .mchip { position: absolute; left: var(--pad); top: 12px; z-index: 2; display: inline-flex; align-items: center; gap: 2px; height: 36px; padding: 0 10px 0 14px; border-radius: 18px; background: #fff; font-size: 14px; font-weight: 600; box-shadow: 0 1px 2px rgba(0, 0, 0, .2), 0 2px 6px rgba(0, 0, 0, .14); transition: transform .16s var(--ease); }
+.mband:active .mchip { transform: scale(.96); }
+.mband .mchip svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+@media (min-width: 768px)  { .mband { height: 180px; } }
+@media (min-width: 1100px) { .mband { height: 200px; } }
+
+/* 전시 등록 · 바닥글(지금 홈 문구 그대로) */
+.reg .inner { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; padding-block: 24px; }
+.reg h2 { font-size: 18px; font-weight: 600; }
+.reg p { color: var(--z5); font-size: 12px; }
+.reg a { display: inline-flex; align-items: center; gap: 2px; min-height: 44px; font-size: 12px; font-weight: 600; color: var(--z7); text-decoration: underline; text-underline-offset: 2px; white-space: nowrap; }
+.foot .inner { display: grid; gap: 8px; padding-block: 24px; font-size: 12px; color: var(--z5); }
+.foot .wm { width: 99px; height: 22.6px; fill: var(--z3); }
+.foot .links { display: flex; align-items: center; gap: 12px; }
+.foot .links i { width: 1px; height: 10px; background: var(--z3); }
+.foot small { font-size: 10px; }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; scroll-behavior: auto !important; } }

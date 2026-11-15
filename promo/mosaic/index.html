@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#ffffff">
+<!-- 브랜드 사이트 시안 7 · 모자이크(11-15, 검토용 · 푸시 대상 아님)
+     생각: 디유 로고는 전시로 이루어져 있다 → 로고 글자를 전시 포스터 타일 수백 장으로 짜고, 스크롤하면 그 안으로 파고들어 한 전시에 닿는다.
+     참고: Codrops 튜토리얼 '모양을 아는 렌더러' · '마우스를 따라오는 네모 렌즈' · 무한 격자. 문구는 모두 ❓임시 -->
+<base href="../../">
+<title>Display U. — 전시가 모여 디유가 돼요</title>
+<meta name="description" content="대학생 전시와 작품을 발견하고, 감상하고, 기록하는 곳. Display U.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="promo/shared.css">
+<style>
+body { background: var(--black); }
+.top { position: fixed; left: 0; right: 0; top: 0; z-index: 10; display: flex; align-items: center; justify-content: flex-end; padding: max(12px, env(safe-area-inset-top)) var(--m) 12px; color: #fff; mix-blend-mode: difference; }
+
+.scene { height: 460vh; }
+.view { position: sticky; top: 0; height: 100svh; min-height: 560px; overflow: hidden; background: var(--paper); }
+canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+h1 { position: absolute; z-index: 2; left: var(--m); bottom: max(var(--m), env(safe-area-inset-bottom)); font-size: clamp(36px, 6.2vw, 96px); font-weight: 600; line-height: 1.08; will-change: opacity, transform; }
+
+/* 끝: 닿은 전시의 정보(릴·브랜드 페이지와 같은 짜임) — 글자가 포스터 위에 얹히지 않게 검은 띠 위에 */
+.info { position: absolute; z-index: 3; left: 0; right: 0; bottom: 0; padding: 24px var(--m) max(24px, env(safe-area-inset-bottom)); background: var(--black); display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 12px 32px; color: var(--fa); opacity: 0; visibility: hidden; will-change: opacity, transform; }
+.info .tx { display: grid; gap: 4px; min-width: 0; }
+.info .st { font-size: 14px; font-weight: 600; color: var(--z3); }
+.info .st i { display: inline-block; width: 8px; height: 8px; margin-right: 8px; vertical-align: 1px; border-radius: 50%; background: var(--fa); }
+.info .st[data-st="전시 예정"] i { background: none; box-shadow: inset 0 0 0 2px var(--z3); }
+.info .st[data-st="종료"] { color: var(--z5); } .info .st[data-st="종료"] i { background: var(--z5); }
+.info strong { font-size: clamp(40px, 6vw, 96px); font-weight: 600; line-height: 1.08; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-bottom: .04em; }
+.info .s { font-size: 16px; color: var(--z3); }
+.info .dt { font-size: 16px; font-variant-numeric: tabular-nums; letter-spacing: 0; color: var(--z5); }
+@media (max-width: 699px) { .info { grid-template-columns: 1fr; } .info strong { font-size: clamp(32px, 9.6vw, 44px); } .info .s, .info .dt { font-size: 14px; } }
+
+.end { background: var(--black); color: var(--fa); padding: clamp(96px, 12vw, 200px) var(--m) max(var(--m), env(safe-area-inset-bottom)); display: grid; gap: clamp(64px, 8vw, 120px); }
+.end .big { display: inline-flex; align-items: center; gap: .25em; font-size: clamp(40px, 9vw, 136px); font-weight: 600; line-height: 1.05; }
+.end .big svg { width: .8em; height: .8em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .3s var(--ease); }
+@media (hover: hover) { .end .big:hover svg { transform: translateX(.12em); } }
+.end .big:active { transform: scale(.98); }
+.end .foot { display: flex; justify-content: space-between; align-items: end; gap: 24px; color: var(--z5); font-size: 14px; }
+.end .foot .wm { width: 124px; color: var(--fa); }
+.still .scene { height: 100svh; }
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="go" href="home.html">전시 둘러보기<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+</header>
+<main>
+  <section class="scene" id="scene" aria-labelledby="h">
+    <div class="view" id="view">
+      <canvas id="cv" role="img" aria-label="전시 포스터로 짠 Display U. 로고"></canvas>
+      <h1 id="h">전시가 모여<br>디유가 돼요</h1>
+      <div class="info" id="info"></div>
+    </div>
+  </section>
+</main>
+<footer class="end">
+  <a class="big" href="home.html">전시 둘러보기<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  <div class="foot"><span id="fwm"></span><span>대학생 전시 · 작품 아카이브</span></div>
+</footer>
+
+<script src="assets/demo-data.js"></script>
+<script src="promo/shared.js"></script>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id), { clamp, seg, rm } = BRAND;
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const E = DEMO.EXH, N = E.length, scene = $('scene'), view = $('view'), cv = $('cv'), ctx = cv.getContext('2d'), h1 = $('h'), info = $('info');
+  $('fwm').innerHTML = BRAND.wordmark();
+  if (rm) document.documentElement.classList.add('still');
+
+  /* ── 로고 모양: 글자 9조각을 한 길로 합치고(자르는 틀), 작은 캔버스에 그려 "이 점이 글자 안인가"를 묻는 표로 씀 ── */
+  const LW = 124, LH = 28.3059, WM = new Path2D(); BRAND.P.forEach((d) => WM.addPath(new Path2D(d)));
+  const MS = 10, mc = document.createElement('canvas'); mc.width = LW * MS; mc.height = Math.ceil(LH * MS);
+  const mx = mc.getContext('2d'); mx.scale(MS, MS); mx.fill(WM);
+  const md = mx.getImageData(0, 0, mc.width, mc.height).data;
+  const inside = (x, y) => { const px = Math.floor(x * MS), py = Math.floor(y * MS); return px >= 0 && py >= 0 && px < mc.width && py < mc.height && md[(py * mc.width + px) * 4 + 3] > 128; };
+
+  /* ── 타일 격자: 포스터 비율(402:568) 칸으로 로고를 덮고, 글자에 조금이라도 걸친 칸에만 타일을 둠. 이웃과 같은 포스터가 안 오게 섞음 ── */
+  let C = 0, R = 0, tw = 1, th = 1, cells = [], grid = null, target = null;
+  const feat = E.find((e) => e.st === '전시 중') || E[0];   /* 끝에 닿을 전시 = 전시 중인 첫 전시 */
+  function build() {
+    C = innerWidth < 700 ? 96 : 150; tw = LW / C; th = tw * 568 / 402; R = Math.ceil(LH / th); cells = []; grid = new Int32Array(C * R).fill(-1);
+    for (let r = 0; r < R; r++) for (let c = 0; c < C; c++) {
+      const x = c * tw, y = r * th; let n = 0;
+      for (let j = 0; j < 3; j++) for (let i = 0; i < 3; i++) if (inside(x + tw * (0.1 + 0.4 * i), y + th * (0.1 + 0.4 * j))) n++;
+      if (!n) continue;
+      const L = c > 0 ? grid[r * C + c - 1] : -1, Up = r > 0 ? grid[(r - 1) * C + c] : -1; let k = (c * 7 + r * 13 + ((c * r) % 5) * 3) % N;
+      while ((L >= 0 && cells[L].k === k) || (Up >= 0 && cells[Up].k === k)) k = (k + 1) % N;
+      grid[r * C + c] = cells.length; cells.push({ c, r, x, y, k, full: n === 9 });
+    }
+    /* 끝에 닿을 타일: 끝 화면(가로 hw · 세로 hh, 로고 단위)이 글자 획 안에 다 들어가도록, 사방으로 글자 안쪽 칸이 가장 넉넉한 타일(같으면 로고 가운데에 가까운 것) */
+    const ok = (c, r) => { const g = c >= 0 && r >= 0 && c < C && r < R ? grid[r * C + c] : -1; return g >= 0 && cells[g].full; };
+    const run = (c, r, dc, dr) => { let n = 0; while (ok(c + dc * (n + 1), r + dr * (n + 1))) n++; return n; };
+    const small = innerWidth < 700, s1 = innerHeight * (small ? 0.5 : 0.56) / th, hw = innerWidth / s1 / 2, hh = innerHeight / s1 / 2;
+    let best = null, bs = -1, bd = 1e9;
+    for (const q of cells) { if (!q.full) continue;
+      const hc = (Math.min(run(q.c, q.r, -1, 0), run(q.c, q.r, 1, 0)) + 0.5) * tw, vc = (Math.min(run(q.c, q.r, 0, -1), run(q.c, q.r, 0, 1)) + 0.5) * th;
+      const sc = Math.min(1, hc / hw, vc / hh), d = Math.abs(q.x - LW * 0.5) + Math.abs(q.y - LH * 0.45) * 2;
+      if (sc > bs + 1e-6 || (Math.abs(sc - bs) <= 1e-6 && d < bd)) { bs = sc; bd = d; best = q; } }
+    target = best || cells[cells.length >> 1]; target.k = feat.i;
+    target.lock = true;
+    [[-1, 0, 3], [1, 0, 5], [0, -1, 7], [0, 1, 2], [-1, -1, 9], [1, -1, 4], [-1, 1, 6], [1, 1, 8]].forEach(([i, j, n]) => { const g = grid[(target.r + j) * C + target.c + i]; if (g >= 0) { cells[g].k = (feat.i + n) % N; cells[g].lock = true; } });   /* 끝 화면에 보이는 이웃 8장은 서로 다른 전시로 고정 */
+  }
+
+  /* ── 포스터 그림: 크기별 작은 사본(6·16·48·144px 폭)을 미리 만들어 두고, 화면에 그려질 크기에 맞는 것을 씀 ── */
+  const MIP = E.map(() => null), LV = [6, 16, 48, 144]; let dirty = true;
+  E.forEach((e, i) => { const im = new Image(); im.decoding = 'async'; im.onload = () => {
+    MIP[i] = LV.map((w) => { const c = document.createElement('canvas'); c.width = w; c.height = Math.round(w * 568 / 402); const x = c.getContext('2d'); x.imageSmoothingQuality = 'high'; x.drawImage(im, 0, 0, c.width, c.height); return c; }).concat([im]); dirty = true; };
+    im.src = DEMO.src(e.img); });
+
+  let vw = 1, vh = 1, dpr = 1, S0 = 1, S1 = 1;
+  function fit() {
+    vw = view.clientWidth; vh = view.clientHeight; dpr = Math.min(2, devicePixelRatio || 1); cv.width = Math.round(vw * dpr); cv.height = Math.round(vh * dpr);
+    const m = parseFloat(getComputedStyle(view).getPropertyValue('padding-left')) || 0, small = vw < 700;
+    build(); S0 = Math.min(vw - (small ? 40 : 96), 1500) / LW; S1 = vh * (small ? 0.5 : 0.56) / th; dirty = true;
+  }
+  fit(); addEventListener('resize', fit);
+
+  /* 한 장면 그리기: S = 로고 1단위가 화면 몇 px인지, (ox, oy) = 로고 왼쪽 위가 놓일 화면 자리, dim = 닿을 타일 말고 나머지의 밝기 */
+  function paint(S, ox, oy, dim, base) {
+    ctx.save(); ctx.translate(ox, oy); ctx.scale(S, S);
+    ctx.fillStyle = '#000'; ctx.fill(WM); ctx.clip(WM);   /* 글자 안은 검정 벽, 타일은 글자 모양으로 잘림 */
+    const x0 = -ox / S - tw, x1 = (vw - ox) / S, y0 = -oy / S - th, y1 = (vh - oy) / S, pw = tw * S * dpr;
+    const lv = pw <= 7 ? 0 : pw <= 20 ? 1 : pw <= 60 ? 2 : pw <= 180 ? 3 : 4, g = tw * S > 12 ? 0.07 : 0;   /* 타일이 커지면 사이에 검은 틈 */
+    for (const q of cells) {
+      if (q.x < x0 || q.x > x1 || q.y < y0 || q.y > y1) continue; const set = MIP[q.k]; if (!set) continue;
+      ctx.globalAlpha = (q === target ? 1 : dim) * base; ctx.drawImage(set[lv], q.x + tw * g / 2, q.y + th * g / 2, tw * (1 - g), th * (1 - g));
+    }
+    ctx.restore();
+  }
+
+  /* 정보 글자(끝) */
+  info.innerHTML = `<div class="tx"><span class="st" data-st="${feat.st}"><i></i>${feat.st}</span><strong>${esc(feat.t)}</strong><span class="s">${esc(feat.s)}</span><span class="dt">${esc(feat.d)} · ${esc(feat.p)}</span></div><a class="go" href="exhibition.html?e=${feat.i}">전시 보기<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>`;
+  const setO = (el, o, dy) => { el.style.opacity = o.toFixed(3); el.style.visibility = o < 0.01 ? 'hidden' : 'visible'; el.style.transform = `translate3d(0, ${((1 - o) * dy).toFixed(1)}px, 0)`; };
+
+  /* 마우스 렌즈(처음 화면에서만): 네모 칸 안이 6배로 커져 타일이 포스터라는 게 보임 */
+  let lx = -1, ly = -1, lens = 0;
+  view.addEventListener('pointermove', (e) => { if (e.pointerType !== 'mouse') return; const b = view.getBoundingClientRect(); lx = e.clientX - b.left; ly = e.clientY - b.top; dirty = true; });
+  view.addEventListener('pointerleave', () => { lx = -1; dirty = true; });
+
+  let p = 0, shown = -1, tick = 0;
+  function frame(dt) {
+    const r = scene.getBoundingClientRect(), tp = rm ? 0 : clamp(-r.top / Math.max(1, r.height - innerHeight));
+    p += (tp - p) * (rm ? 1 : 1 - Math.exp(-dt * 9)); if (Math.abs(tp - p) < 0.0004) p = tp;
+    if (!rm && p < 0.5) { tick += dt; if (tick > 0.11) { tick = 0; for (let k = 0; k < 5; k++) { const q = cells[(Math.random() * cells.length) | 0]; if (!q.lock) q.k = (q.k + 1 + ((Math.random() * (N - 1)) | 0)) % N; } dirty = true; } }   /* 가만히 있어도 타일 몇 장이 계속 바뀜 */
+    const lt = lx >= 0 && p < 0.06 ? 1 : 0; if (Math.abs(lt - lens) > 0.01) { lens += (lt - lens) * Math.min(1, dt * 10); dirty = true; }
+    if (Math.abs(p - shown) < 0.00005 && !dirty) return; shown = p; dirty = false;
+    const e = p * p * (3 - 2 * p), S = S0 * Math.pow(S1 / S0, e), f = seg(p, 0, 0.5), ff = f * f * (3 - 2 * f);
+    const fx = LW / 2 + (target.x + tw / 2 - LW / 2) * ff, fy = LH / 2 + (target.y + th / 2 - LH / 2) * ff, cy = vh * (0.45 - 0.04 * e);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.globalAlpha = 1; ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, vw, vh);
+    paint(S, vw / 2 - fx * S, cy - fy * S, 1 - 0.72 * seg(p, 0.82, 1), 0.6 + 0.4 * seg(p, 0.04, 0.4));   /* 멀리서는 타일을 살짝 어둡게(검은 글자 바탕이 비쳐 로고가 또렷) → 다가가면 제 색 */
+    if (lens > 0.02) {
+      const Z = 6, half = Math.min(120, vw * 0.16) * lens, wx = (lx - (vw / 2 - fx * S)) / S, wy = (ly - (cy - fy * S)) / S;
+      ctx.save(); ctx.beginPath(); ctx.rect(lx - half, ly - half, half * 2, half * 2); ctx.clip(); ctx.fillStyle = '#fff'; ctx.fillRect(lx - half, ly - half, half * 2, half * 2);
+      paint(S * Z, lx - wx * S * Z, ly - wy * S * Z, 1, 1); ctx.restore();
+    }
+    setO(h1, 1 - seg(p, 0.02, 0.1), -24); setO(info, seg(p, 0.9, 1), 16);
+    document.querySelector('meta[name="theme-color"]').content = p > 0.6 ? '#000000' : '#ffffff';
+  }
+  frame(0.016); BRAND.loop(frame);
+  const jp = parseFloat(new URLSearchParams(location.search).get('p')); if (jp >= 0) scrollTo(0, scene.offsetTop + jp * (scene.offsetHeight - innerHeight));   /* 검토용: ?p=0.6 */
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+/* 브랜드 사이트 시안 공용(11-15, 검토용): 디유 색·글자(무채색 · Pretendard · 각진 사진). 앱 화면이 아니라 홍보용 페이지라 큰 글자를 씀 */
+:root {
+  --ink: #18181b; --paper: #ffffff; --black: #000000; --z8: #27272a; --z6: #52525c; --z5: #71717b; --z3: #d4d4d8; --bg2: #f4f4f5; --fa: #fafafa;
+  --m: clamp(20px, 3.2vw, 48px);
+  --ease: cubic-bezier(.23, 1, .32, 1);
+  --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; letter-spacing: -0.03em; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 500 16px/1.5 var(--font); -webkit-font-smoothing: antialiased; }
+h1, h2, h3, p, ul, ol { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+img, svg { display: block; }
+a { color: inherit; text-decoration: none; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+::selection { background: var(--ink); color: var(--paper); }
+.dark ::selection { background: var(--fa); color: var(--black); }
+:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.wm, .lt { fill: currentColor; width: 100%; height: auto; overflow: visible; }
+/* 글자 링크: 화살표가 붙은 한 줄, 누르는 영역 44 */
+.go { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: 16px; font-weight: 600; white-space: nowrap; }
+.go svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .25s var(--ease); }
+.go:active { transform: scale(.96); }
+@media (hover: hover) { .go:hover svg { transform: translateX(4px); } }
+@media (prefers-reduced-motion: reduce) { .go svg { transition: none; } }

@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="robots" content="noindex">
+<base href="../../">
+<title>홈 시안 C · 색인</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="promo/home/shared.css">
+<link rel="stylesheet" href="assets/nav.css">
+<script src="assets/nav.js"></script>
+<style>
+/* 시안 C · 색인(11-15, 검토용): 홈이 "전시 색인". 전시 이름이 큰 글자로 줄지어 있고, 내릴 때 읽는 자리에 온 줄만 밝아지며 그 전시 포스터 한 장이 그 줄 옆으로 따라붙음(카드는 손가락을 따라 미끄러지고, 빨리 내리면 살짝 기울었다 섬).
+   작품도 같은 색인으로 이어짐(작품 이름 + 작가, 사진이 따라붙음). 마우스는 줄에 올리기만 해도 같음.
+   참고: Codrops 호버 리빌(글자 위에 그림이 따라 나타남) · Android TV 몰입형 목록(고른 것만 크게) · 브랜드 시안 '지나간 자리'(손이 지나간 자리에 그림) */
+.bar { position: sticky; top: 0; z-index: 40; background: var(--black); }
+.ix { position: relative; padding: 16px 0 48px; }
+.row { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 10px; padding: 10px var(--pad); color: var(--z5); transition: color .2s var(--out); }
+.row.nr { grid-template-columns: minmax(0, 1fr); }
+.row .ti, .row .me { grid-column: -2; }
+.row .rk { grid-row: 1 / span 2; font-size: 28px; font-weight: 600; line-height: 1.3; font-variant-numeric: tabular-nums; color: var(--z6); transition: color .2s var(--out); }
+.row .ti { font-size: 28px; font-weight: 600; line-height: 1.3; text-wrap: balance; }
+.row .me { font-size: 12px; color: var(--z6); transition: color .2s var(--out); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.row.on { color: var(--z0); }
+.row.on .rk { color: var(--z5); }
+.row.on .me { color: var(--z3); }
+.row:active .ti { opacity: .7; }
+.row:focus-visible { outline-offset: -2px; border-radius: 0; }
+.ix.w .ti { font-size: 24px; }
+.ix-h { display: flex; align-items: center; justify-content: space-between; padding: 48px var(--pad) 8px; }
+.ix-h h2 { font-size: 18px; font-weight: 600; }
+.ix-h a { display: inline-flex; align-items: center; gap: 2px; min-height: 44px; font-size: 12px; color: var(--z5); }
+.ix-h a svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.ix-sub { padding: 0 var(--pad); margin-top: -8px; font-size: 12px; color: var(--z5); }
+.empty { padding: 80px var(--pad); text-align: center; }
+.empty p { font-size: 16px; font-weight: 600; }
+.empty a { display: inline-flex; min-height: 44px; align-items: center; color: var(--z5); font-size: 12px; text-decoration: underline; text-underline-offset: 2px; }
+
+/* 따라붙는 포스터: 화면에 떠 있는 한 장(폰 128 · 768 220 · 1100+ 300). 줄이 바뀌면 새 그림이 내리는 쪽에서 덮어 나타남 */
+.peek { position: fixed; z-index: 30; right: var(--pad); top: 0; width: 128px; aspect-ratio: 402 / 568; overflow: hidden; background: var(--z8); transform-origin: 50% 0; opacity: 0; visibility: hidden; transition: opacity .2s var(--out), visibility 0s linear .2s; will-change: transform; }
+.peek.show { opacity: 1; visibility: visible; transition: opacity .2s var(--out); }
+.peek img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.peek img.in { animation: reveal .38s var(--out) both; }
+.peek img.in.up { animation-name: reveal-up; }
+@keyframes reveal { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes reveal-up { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
+
+.sheet { margin-top: 24px; }
+
+@media (min-width: 768px) {
+  .ix { padding-right: calc(220px + var(--pad) * 2); }
+  .row { padding-block: 12px; column-gap: 16px; }
+  .row .rk, .row .ti { font-size: 36px; }
+  .row .me { font-size: 14px; }
+  .ix.w .ti { font-size: 28px; }
+  .peek { width: 220px; }
+}
+@media (min-width: 1100px) {
+  .ix { padding-right: calc(300px + var(--pad) * 2); }
+  .row .rk, .row .ti { font-size: 48px; line-height: 1.2; }   /* ❓ 48은 Figma 글자 표 밖 — 웹 큰 제목 제안 */
+  .ix.w .ti { font-size: 36px; }
+  .peek { width: 300px; }
+}
+@media (prefers-reduced-motion: reduce) { .peek img.in { animation: none; } }
+</style>
+</head>
+<body>
+<main id="main">
+  <h1 class="sr">Display U. 홈</h1>
+  <div class="bar" id="bar"><header class="hd" id="hd"></header><div class="cats" id="cats"></div></div>
+  <section class="ix" id="ex" aria-label="전시 색인"></section>
+  <section aria-labelledby="works-title">
+    <div class="ix-h"><h2 id="works-title">ARTWORKS</h2><a href="explore.html?tab=works">더보기<svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg></a></div>
+    <p class="ix-sub">전시 속 작품을 만나보세요</p>
+    <div class="ix w" id="wk"></div>
+  </section>
+  <div class="sheet">
+    <a class="mband" id="mband" href="map.html"></a>
+    <div id="tail"></div>
+  </div>
+</main>
+<a class="peek" id="peek" href="#" aria-hidden="true" tabindex="-1"></a>
+<script src="assets/byline.js"></script>
+<script src="assets/demo-data.js"></script>
+<script src="assets/minimap.js"></script>
+<script src="promo/shared.js"></script>
+<script src="promo/home/shared.js"></script>
+<script>
+(() => {
+  const { rm, clamp, esc, src, wsrc, frame } = HN;
+  const bar = document.getElementById('bar'), exEl = document.getElementById('ex'), wkEl = document.getElementById('wk'), peek = document.getElementById('peek');
+  HN.header(document.getElementById('hd')); HN.nav();
+  const band = HN.band(document.getElementById('mband'));
+  document.getElementById('tail').innerHTML = HN.tail();
+  const EMPTY = { pop: '진행 중이거나 예정된 전시가 없어요', grad: '진행 중이거나 예정된 졸업전시가 없어요', live: '진행 중인 전시가 없어요', soon: '예정된 전시가 없어요', end: '곧 끝나는 전시가 없어요' };
+  let rows = [], act = -1;
+
+  function build(k) {
+    const list = DEMO.TAB[k]();
+    exEl.innerHTML = list.length ? list.map((e, i) => `<a class="row${k === 'pop' ? '' : ' nr'}" href="exhibition.html?e=${e.i}" data-img="${src(e)}" data-ex="${e.i}">${k === 'pop' ? `<span class="rk" aria-hidden="true">${i + 1}</span>` : ''}<span class="ti">${k === 'pop' ? `<span class="sr">순위 ${i + 1}: </span>` : ''}${esc(e.t)}</span><span class="me">${esc(e.s)} · <span class="dt12">${e.d}</span></span></a>`).join('')
+      : `<div class="empty"><p>${EMPTY[k]}</p><a href="#">지난 전시 둘러보기</a></div>`;
+    collect(); act = -1; paint(true);
+  }
+  wkEl.innerHTML = HN.works(innerWidth >= 1100 ? 10 : 8).map((w) => `<a class="row nr" href="work.html?w=${w.i}" data-img="${wsrc(w)}"><span class="ti">${esc(w.t)}</span><span class="me">${esc(w.a.join(', '))}</span></a>`).join('');
+  function collect() { rows = [...document.querySelectorAll('.row')]; rows.forEach((r, i) => { r.dataset.n = i; }); }
+
+  /* 읽는 자리: 탭 줄 바로 아래(첫 줄 가운데 높이). 그 자리를 지나는 줄이 밝아짐 → 처음엔 1위, 내리면 맨 위에 보이는 줄이 차례로 */
+  let pointerRow = -1;
+  function pickRow() {
+    if (!rows.length) return -1;
+    if (pointerRow >= 0) return pointerRow;
+    const b = bar.getBoundingClientRect().bottom, line = b + 16 + rows[0].offsetHeight / 2;
+    const last = rows[rows.length - 1].getBoundingClientRect(); if (last.bottom < b + 8) return -1;   // 색인을 다 지나면 카드 없음
+    for (let i = 0; i < rows.length; i++) { const r = rows[i].getBoundingClientRect(); if (r.bottom > line) return i; }
+    return rows.length - 1;
+  }
+  /* 카드: 고른 줄의 바로 아래(오른쪽)로 미끄러져 따라감. 빨리 내리면 그 속도만큼 살짝 기욺(최대 3도) */
+  const st = { y: 0, ty: 0, vy: 0, th: 0, om: 0, on: false };
+  let raf = 0, lastT = 0, lastSy = scrollY, sv = 0;
+  function target() {
+    if (act < 0) return;
+    const r = rows[act].getBoundingClientRect(), h = peek.offsetHeight, b = bar.getBoundingClientRect().bottom;
+    const wide = innerWidth >= 768;
+    st.ty = wide ? clamp(r.top + r.height / 2 - h / 2, b + 16, innerHeight - h - 96) : clamp(r.bottom + 4, b + 8, innerHeight - h - 96);
+  }
+  function loop(now) {
+    const dt = Math.min(.05, (now - lastT) / 1000 || .016); lastT = now;
+    target();
+    if (rm) { st.y = st.ty; st.th = 0; } else {
+      const k = 1 - Math.exp(-dt * 16); st.y += (st.ty - st.y) * k;
+      const want = clamp(sv / 900, -1, 1) * 3; st.om += ((want - st.th) * 170 - st.om * 14) * dt; st.th += st.om * dt;
+    }
+    peek.style.transform = `translate3d(0, ${st.y.toFixed(1)}px, 0) rotate(${st.th.toFixed(2)}deg)`;
+    sv *= Math.exp(-dt * 8);
+    const moving = Math.abs(st.ty - st.y) > .3 || Math.abs(st.th) > .02 || Math.abs(sv) > 5;
+    raf = moving ? requestAnimationFrame(loop) : 0;
+  }
+  const kick = () => { if (!raf) { lastT = performance.now(); raf = requestAnimationFrame(loop); } };
+  function show(i, dir) {
+    if (i === act) return; const prev = act; act = i;
+    rows.forEach((r, n) => r.classList.toggle('on', n === i));
+    if (i < 0) { peek.classList.remove('show'); return; }
+    const r = rows[i], img = document.createElement('img'); img.src = r.dataset.img; img.alt = '';
+    if (prev >= 0 && !rm) img.className = 'in' + (dir < 0 ? ' up' : '');
+    peek.appendChild(img); while (peek.children.length > 2) peek.firstElementChild.remove();
+    peek.href = r.getAttribute('href');
+    if (!peek.classList.contains('show')) { target(); st.y = st.ty; peek.classList.add('show'); }
+    if (r.dataset.ex) band.focus(+r.dataset.ex);
+  }
+  function paint(force) {
+    const i = pickRow(); if (i !== act || force) show(i, i - act); kick();
+  }
+  addEventListener('scroll', () => { const now = scrollY; sv = sv * .5 + (now - lastSy) * 30; lastSy = now; pointerRow = -1; frame(() => paint()); }, { passive: true });
+  addEventListener('resize', () => frame(() => paint(true)));
+  /* 마우스: 줄에 올리면 그 줄 */
+  document.addEventListener('pointermove', (e) => { if (e.pointerType !== 'mouse') return; const r = e.target.closest('.row'); const n = r ? +r.dataset.n : -1; if (n >= 0 && n !== pointerRow) { pointerRow = n; show(n, n - act); kick(); } });
+  document.addEventListener('focusin', (e) => { const r = e.target.closest && e.target.closest('.row'); if (r) { pointerRow = +r.dataset.n; show(pointerRow, 1); kick(); } });
+
+  const q = new URLSearchParams(location.search);
+  HN.cats(document.getElementById('cats'), (k, first) => { build(k); if (!first) scrollTo({ top: 0, behavior: 'auto' }); }, q.get('tab') || 'pop');
+  window.__go = (y) => { scrollTo(0, y); pointerRow = -1; paint(true); };
+  if (q.has('y')) [300, 1200].forEach((ms) => setTimeout(() => window.__go(parseFloat(q.get('y'))), ms));
+})();
+</script>
+<script src="assets/tap.js"></script>
+</body>
+</html>

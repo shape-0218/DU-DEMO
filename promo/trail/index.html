@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#ffffff">
+<!-- 브랜드 사이트 시안 5 · 지나간 자리(11-15, 검토용 · 푸시 대상 아님)
+     생각: Display U = 네가 건다. 손가락·마우스가 지나간 자리마다 작품이 한 점씩 걸렸다 사라진다. 아래는 12개 분야가 큰 글자로 흐름. 문구는 모두 ❓임시 -->
+<base href="../../">
+<title>Display U. — 움직이는 곳마다 작품이 걸려요</title>
+<meta name="description" content="대학생 전시와 작품을 발견하고, 감상하고, 기록하는 곳. Display U.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="promo/shared.css">
+<style>
+html, body { overscroll-behavior-y: none; }   /* 첫 화면에서 아래로 그을 때 '당겨서 새로고침'이 끼어들지 않게 */
+body { background: var(--black); }
+.top { position: fixed; left: 0; right: 0; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; padding: max(12px, env(safe-area-inset-top)) var(--m) 12px; color: #fff; mix-blend-mode: difference; }
+.top .logo { display: inline-flex; align-items: center; min-height: 44px; }
+.top .wm { width: 110px; }
+
+/* 첫 화면: 흰 벽. 지나간 자리에 작품(3:4)이 걸렸다 사라짐. 제목은 '차이' 섞기로 작품 위에서 색이 뒤집힘 */
+.hero { position: relative; height: 100svh; min-height: 560px; overflow: hidden; background: var(--paper); cursor: crosshair; --tw: clamp(128px, 15vw, 224px); }
+.trail { position: absolute; inset: 0; pointer-events: none; }
+.t { position: absolute; left: 0; top: 0; width: var(--tw); aspect-ratio: 3 / 4; margin: calc(var(--tw) * -2 / 3) 0 0 calc(var(--tw) / -2); overflow: hidden; background: var(--bg2); opacity: 0; will-change: transform, opacity; }
+.t img { width: 100%; height: 100%; object-fit: cover; }
+h1 { position: absolute; z-index: 3; left: var(--m); bottom: max(var(--m), env(safe-area-inset-bottom)); color: #fff; mix-blend-mode: difference; pointer-events: none; font-size: clamp(40px, 8.4vw, 136px); font-weight: 600; line-height: 1.06; }
+h1 .ln { display: block; overflow: hidden; padding-bottom: .08em; }
+h1 .ln > span { display: block; }
+.js h1 .ln > span { transform: translateY(105%); }
+.js.in h1 .ln > span { transform: none; transition: transform .9s var(--ease); }
+.js.in h1 .ln:nth-child(2) > span { transition-delay: .09s; }
+
+/* 둘째 화면: 검정. 12개 분야가 세 줄로 엇갈려 흐르고, 글자 사이에 작품이 끼어 있음 */
+.fields { background: var(--black); color: var(--fa); padding: clamp(96px, 12vw, 200px) 0 clamp(72px, 9vw, 160px); overflow: hidden; }
+.fields h2 { padding: 0 var(--m); margin-bottom: clamp(40px, 5vw, 80px); font-size: clamp(24px, 2.8vw, 40px); font-weight: 600; line-height: 1.25; }
+.mq { display: flex; white-space: nowrap; will-change: transform; font-size: clamp(64px, 13vw, 208px); font-weight: 600; line-height: 1.16; }
+.mq > span { flex: none; display: inline-flex; align-items: center; gap: .3em; padding-right: .3em; }
+.mq img { flex: none; height: .74em; aspect-ratio: 3 / 4; object-fit: cover; background: var(--z8); }
+
+.end { background: var(--black); color: var(--fa); padding: clamp(48px, 6vw, 96px) var(--m) max(var(--m), env(safe-area-inset-bottom)); display: grid; gap: clamp(32px, 4vw, 64px); }
+.end .row { display: flex; justify-content: space-between; align-items: center; gap: 24px; color: var(--z5); font-size: 14px; }
+.end .row .go { color: var(--fa); }
+@media (prefers-reduced-motion: reduce) { .js h1 .ln > span { transform: none; } }
+</style>
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="home.html" aria-label="Display U. 홈" id="logo"></a>
+  <a class="go" href="explore.html">작품 둘러보기<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+</header>
+<main>
+  <section class="hero" id="hero" aria-labelledby="h">
+    <div class="trail" id="trail" aria-hidden="true"></div>
+    <h1 id="h"><span class="ln"><span>움직이는 곳마다</span></span><span class="ln"><span>작품이 걸려요</span></span></h1>
+  </section>
+  <section class="fields" aria-labelledby="f">
+    <h2 id="f">12개 분야의 대학생 작품</h2>
+    <div id="mqs" aria-hidden="true"></div>
+    <p class="sr">회화, 조소, 사진, 그래픽, 브랜딩, 제품, 영상, 공간, 건축, UXUI, 공예, 기타</p>
+  </section>
+</main>
+<footer class="end">
+  <div id="fwm" role="img" aria-label="Display U."></div>
+  <div class="row"><span>대학생 전시 · 작품 아카이브</span><a class="go" href="explore.html">작품 둘러보기<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+</footer>
+
+<script src="promo/shared.js"></script>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id), { clamp, rm } = BRAND, D = document.documentElement;
+  const N = 22, src = (k) => BRAND.img('a' + String((k % N) + 1).padStart(2, '0'));
+  $('logo').innerHTML = BRAND.wordmark(); $('fwm').innerHTML = BRAND.wordmark();
+  requestAnimationFrame(() => requestAnimationFrame(() => D.classList.add('in')));
+  for (let k = 0; k < N; k++) { const im = new Image(); im.decoding = 'async'; im.src = src(k); }   /* 미리 받아 두기 — 걸리는 순간 빈 칸이 안 보이게 */
+
+  /* ── 지나간 자리: 일정 거리를 움직일 때마다 그 자리에 다음 작품이 걸림(움직인 방향으로 살짝 기울어) → 잠깐 머물다 아래로 빠지며 사라짐 ── */
+  const hero = $('hero'), trail = $('trail'), POOL = 16;
+  trail.innerHTML = Array.from({ length: POOL }, () => '<div class="t"><img alt="" decoding="async"></div>').join('');
+  const els = [...trail.children]; let pi = 0, wi = 0, zi = 1, lx = null, ly = null, acc = 0, lastIn = -1e9;
+  const thr = () => Math.max(64, (els[0].offsetWidth || 160) * 0.5);   /* 작품 칸 폭의 절반만큼 움직일 때마다 한 점 */
+  function hang(x, y, vx) {
+    const el = els[pi++ % POOL], r = clamp(vx * 0.02, -9, 9);
+    el.firstElementChild.src = src(wi++); el.style.zIndex = zi++;
+    el.getAnimations().forEach((a) => a.cancel());
+    const at = (dy, rot, s) => `translate3d(${x.toFixed(1)}px, ${(y + dy).toFixed(1)}px, 0) rotate(${rot.toFixed(2)}deg) scale(${s})`;
+    if (rm) { el.animate([{ opacity: 1, transform: at(0, 0, 1) }, { opacity: 1, transform: at(0, 0, 1), offset: 0.8 }, { opacity: 0, transform: at(0, 0, 1) }], { duration: 1200, fill: 'both' }); return; }
+    el.animate([
+      { opacity: 0, transform: at(-18, r * 1.8, 0.55), easing: 'cubic-bezier(.23, 1, .32, 1)' },
+      { opacity: 1, transform: at(0, r, 1), offset: 0.24 },
+      { opacity: 1, transform: at(0, r, 1), offset: 0.6, easing: 'cubic-bezier(.6, 0, .85, .3)' },
+      { opacity: 0, transform: at(56, r * 0.6, 0.92) },
+    ], { duration: 1500, fill: 'both' });
+  }
+  function move(cx, cy, user) {
+    const b = hero.getBoundingClientRect(), x = cx - b.left, y = cy - b.top;
+    if (y < 0 || y > b.height) { lx = null; return; }
+    if (user) lastIn = performance.now();
+    if (lx === null) { lx = x; ly = y; if (user) hang(x, y, 0); return; }
+    const dx = x - lx, dy = y - ly; acc += Math.hypot(dx, dy); lx = x; ly = y;
+    if (acc >= thr()) { acc = 0; hang(x, y, dx * 12); }
+  }
+  hero.addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse') move(e.clientX, e.clientY, true); });
+  hero.addEventListener('pointerleave', () => { lx = null; });
+  hero.addEventListener('touchstart', (e) => { lx = null; const t = e.touches[0]; move(t.clientX, t.clientY, true); }, { passive: true });
+  hero.addEventListener('touchmove', (e) => { const t = e.touches[0]; move(t.clientX, t.clientY, true); }, { passive: true });
+
+  /* ── 분야 글자 줄: 세 줄이 엇갈린 방향으로 흐르고, 스크롤하면 그 속도만큼 더 밀림 ── */
+  const F = [['회화', '조소', '사진', '그래픽'], ['브랜딩', '제품', '영상', '공간'], ['건축', 'UXUI', '공예', '기타']];
+  $('mqs').innerHTML = F.map((row, r) => { const one = `<span>${row.map((w, k) => `${w}<img src="${src(r * 8 + k * 2)}" alt="" loading="lazy">`).join('')}</span>`; return `<div class="mq">${one.repeat(4)}</div>`; }).join('');
+  const rows = [...$('mqs').children].map((el, r) => ({ el, x: r * 120, dir: r % 2 ? 1 : -1, w: 1 }));
+  const measure = () => rows.forEach((o) => { o.w = o.el.firstElementChild.offsetWidth || 1; });
+  measure(); addEventListener('resize', measure); addEventListener('load', measure);
+  const place = () => rows.forEach((o) => { const xx = ((o.x % o.w) + o.w) % o.w; o.el.style.transform = `translate3d(${(-xx).toFixed(1)}px, 0, 0)`; });
+  place();
+  if (rm) return;
+
+  /* 아무도 안 만질 때(2.2초): 보이지 않는 손이 8자를 그리며 작품을 걺 — 무엇을 하는 화면인지 보이게 */
+  let sy = scrollY, sv = 0, gt = 0;
+  BRAND.loop((dt, t) => {
+    const y = scrollY; sv += ((y - sy) / Math.max(dt, 0.001) - sv) * Math.min(1, dt * 8); sy = y;
+    rows.forEach((o) => { o.x += o.dir * (36 + clamp(sv, -1400, 1400) * 0.55) * dt; });   /* 내리면 더 빨리, 올리면 거꾸로 밀림 */
+    place();
+    if (performance.now() - lastIn > 2200 && y < innerHeight * 0.6) {
+      gt += dt; const b = hero.getBoundingClientRect(), W = b.width, H = b.height;
+      move(b.left + W / 2 + Math.cos(gt * 0.9) * W * 0.3, b.top + H * 0.42 + Math.sin(gt * 1.8) * H * 0.2, false);
+    }
+  });
+})();
+</script>
+</body>
+</html>

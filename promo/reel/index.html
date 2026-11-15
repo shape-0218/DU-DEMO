@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#000000">
+<!-- 브랜드 사이트 시안 6 · 포스터 릴(11-15, 검토용 · 푸시 대상 아님)
+     생각: 전시 포스터가 한 줄 필름처럼 이어져 있고, 넘길 때 종이처럼 휘며 색이 번진다(WebGL) → 멈추면 그 전시의 이름·학교·일정이 올라온다. 문구는 모두 ❓임시 -->
+<base href="../../">
+<title>Display U. — 한 장씩 넘겨 보는 대학생 전시</title>
+<meta name="description" content="대학생 전시와 작품을 발견하고, 감상하고, 기록하는 곳. Display U.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="promo/shared.css">
+<style>
+html, body { height: 100%; }
+body { overflow: hidden; overscroll-behavior: none; background: var(--black); color: var(--fa); }
+.stage { position: relative; height: 100svh; min-height: 520px; overflow: hidden; touch-action: none; cursor: grab; -webkit-user-select: none; user-select: none; }
+.stage.drag { cursor: grabbing; }
+canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.fb { position: absolute; left: 50%; top: 40%; height: 50svh; aspect-ratio: 402 / 568; object-fit: cover; transform: translate(-50%, -50%); display: none; }
+.nogl canvas { display: none; } .nogl .fb { display: block; }
+
+.top { position: absolute; left: 0; right: 0; top: 0; z-index: 4; display: flex; align-items: center; justify-content: space-between; padding: max(12px, env(safe-area-inset-top)) var(--m) 12px; }
+.top .logo { display: inline-flex; align-items: center; min-height: 44px; }
+.top .wm { width: 110px; }
+.top a { cursor: pointer; }
+
+/* 아래 왼쪽: 지금 가운데 온 전시. 줄마다 가려진 칸에서 올라옴 */
+.info { position: absolute; z-index: 3; left: var(--m); right: var(--m); bottom: max(var(--m), env(safe-area-inset-bottom)); display: grid; gap: 4px; pointer-events: none; }
+.info .ln { display: block; overflow: hidden; }
+.info .ln > span { display: block; animation: rise .75s var(--ease) both; animation-delay: calc(var(--k, 0) * 70ms); }
+@keyframes rise { from { transform: translateY(108%); } }
+.info .st { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: var(--z3); }
+.info .st i { display: inline-block; width: 8px; height: 8px; margin-right: 8px; vertical-align: 1px; border-radius: 50%; background: var(--fa); }
+.info .st[data-st="전시 예정"] i { background: none; box-shadow: inset 0 0 0 2px var(--z3); }
+.info .st[data-st="종료"] { color: var(--z5); } .info .st[data-st="종료"] i { background: var(--z5); }
+.info h2 { font-size: clamp(40px, 6vw, 96px); font-weight: 600; line-height: 1.08; padding-bottom: .04em; }
+.info p { font-size: 16px; color: var(--z3); }
+.info .dt { font-variant-numeric: tabular-nums; letter-spacing: 0; color: var(--z5); }
+
+/* 아래 오른쪽: 네모 점 11개(지금 자리만 흰색) + 앞·뒤 + 전시 보기 */
+.ctl { position: absolute; z-index: 4; right: var(--m); bottom: max(var(--m), env(safe-area-inset-bottom)); display: flex; align-items: center; gap: 16px; }
+.dots { display: flex; gap: 6px; }
+.dots i { width: 6px; height: 6px; background: var(--z8); transition: background-color .3s var(--ease), transform .3s var(--ease); }
+.dots i.on { background: var(--fa); transform: scale(1.34); }
+.ar { width: 44px; height: 44px; display: grid; place-items: center; color: var(--fa); transition: transform .16s var(--ease); }
+.ar:active { transform: scale(.92); }
+.ar svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.ctl .go { margin-left: 8px; cursor: pointer; }
+@media (max-width: 899px) {
+  .info { bottom: calc(max(20px, env(safe-area-inset-bottom)) + 52px); }
+  .info h2 { font-size: clamp(32px, 9.6vw, 44px); }
+  .info p { font-size: 14px; }
+  .ctl { left: var(--m); bottom: max(12px, env(safe-area-inset-bottom)); justify-content: space-between; gap: 8px; }
+  .ctl .go { margin-left: auto; }
+  .ar { margin: 0 -10px; }
+}
+@media (prefers-reduced-motion: reduce) { .info .ln > span { animation: none; } .dots i { transition: none; } }
+</style>
+</head>
+<body>
+<main class="stage" id="stage">
+  <h1 class="sr">Display U. — 한 장씩 넘겨 보는 대학생 전시</h1>
+  <canvas id="cv" aria-hidden="true"></canvas>
+  <img class="fb" id="fb" alt="">
+  <header class="top">
+    <a class="logo" href="home.html" aria-label="Display U. 홈" id="logo"></a>
+    <a class="go" href="home.html">전시 둘러보기<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  </header>
+  <div class="info" id="info" aria-live="polite"></div>
+  <div class="ctl">
+    <span class="dots" id="dots" aria-hidden="true"></span>
+    <button type="button" class="ar" id="prev" aria-label="이전 전시"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+    <button type="button" class="ar" id="next" aria-label="다음 전시"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+    <a class="go" id="open" href="home.html">전시 보기<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  </div>
+</main>
+
+<script src="assets/demo-data.js"></script>
+<script src="promo/shared.js"></script>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id), { clamp, rm } = BRAND;
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const ord = { '전시 중': 0, '전시 예정': 1, '종료': 2 }, E = [...DEMO.EXH].sort((a, b) => ord[a.st] - ord[b.st] || a.i - b.i), N = E.length;
+  const stage = $('stage'), cv = $('cv'), info = $('info'), dots = $('dots');
+  $('logo').innerHTML = BRAND.wordmark();
+  dots.innerHTML = E.map(() => '<i></i>').join('');
+  const mod = (v, n) => ((v % n) + n) % n;
+
+  /* ── 지금 전시 글자: 가운데 온 포스터가 바뀔 때마다 줄을 새로 올림 ── */
+  let cur = -1;
+  function show(i) {
+    if (i === cur) return; cur = i; const e = E[i];
+    info.innerHTML = `<span class="ln st" data-st="${e.st}"><span style="--k:0"><i></i> ${e.st}</span></span><h2 class="ln"><span style="--k:1">${esc(e.t)}</span></h2><p class="ln"><span style="--k:2">${esc(e.s)}</span></p><p class="ln dt"><span style="--k:3">${esc(e.d)} · ${esc(e.p)}</span></p>`;
+    [...dots.children].forEach((d, k) => d.classList.toggle('on', k === i));
+    $('open').href = 'exhibition.html?e=' + e.i; $('fb').src = DEMO.src(e.img);
+  }
+
+  /* ── WebGL: 포스터마다 잘게 나눈 네모 판 하나. 넘기는 속도만큼 줄 전체가 활처럼 휘고(꼭짓점), 빨강·파랑이 옆으로 번짐(색) ── */
+  let gl = null; try { gl = cv.getContext('webgl', { antialias: true, alpha: false }); } catch (err) {}
+  let U = {}, tex = [], count = 0;
+  if (gl) {
+    const VS = `attribute vec2 p; uniform vec2 uRes, uPos, uSize; uniform float uBend; varying vec2 vUv;
+      void main() { vec2 px = uPos + p * uSize; float nx = px.x / uRes.x * 2.0 - 1.0;
+        px.y += nx * nx * uBend * uRes.y * 0.11; px.x += nx * abs(uBend) * uRes.x * 0.035;
+        gl_Position = vec4(px.x / uRes.x * 2.0 - 1.0, 1.0 - px.y / uRes.y * 2.0, 0.0, 1.0); vUv = p; }`;
+    const FS = `precision mediump float; uniform sampler2D uTex; uniform float uShift, uDim; varying vec2 vUv;
+      void main() { float r = texture2D(uTex, vUv + vec2(uShift, 0.0)).r, g = texture2D(uTex, vUv).g, b = texture2D(uTex, vUv - vec2(uShift, 0.0)).b;
+        gl_FragColor = vec4(vec3(r, g, b) * uDim, 1.0); }`;
+    const mk = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); return s; };
+    try {
+      const pr = gl.createProgram(); gl.attachShader(pr, mk(gl.VERTEX_SHADER, VS)); gl.attachShader(pr, mk(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(pr);
+      if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(pr));
+      gl.useProgram(pr);
+      const SX = 24, SY = 12, v = [];
+      for (let y = 0; y < SY; y++) for (let x = 0; x < SX; x++) { const x0 = x / SX, x1 = (x + 1) / SX, y0 = y / SY, y1 = (y + 1) / SY; v.push(x0, y0, x1, y0, x0, y1, x0, y1, x1, y0, x1, y1); }
+      count = v.length / 2;
+      gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(v), gl.STATIC_DRAW);
+      const a = gl.getAttribLocation(pr, 'p'); gl.enableVertexAttribArray(a); gl.vertexAttribPointer(a, 2, gl.FLOAT, false, 0, 0);
+      ['uRes', 'uPos', 'uSize', 'uBend', 'uShift', 'uDim', 'uTex'].forEach((n) => { U[n] = gl.getUniformLocation(pr, n); });
+      gl.uniform1i(U.uTex, 0); gl.activeTexture(gl.TEXTURE0); gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+      tex = E.map((e) => {
+        const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([39, 39, 42, 255]));   /* 불러오기 전 = zinc/800 빈 칸 */
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        const im = new Image(); im.onload = () => { gl.bindTexture(gl.TEXTURE_2D, t); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, im); }; im.src = DEMO.src(e.img);
+        return t;
+      });
+    } catch (err) { gl = null; }
+  }
+  if (!gl) stage.classList.add('nogl');
+
+  /* ── 치수 ── */
+  let vw = 1, vh = 1, W = 1, H = 1, pitch = 1, cy = 1;
+  function fit() {
+    vw = stage.clientWidth; vh = stage.clientHeight; const small = vw < 900, dpr = Math.min(2, devicePixelRatio || 1);
+    H = small ? Math.min(vh * 0.5, vw * 0.7 / 0.708) : Math.min(vh * 0.56, 600); W = H * 402 / 568; pitch = W * 1.12; cy = vh * (small ? 0.37 : 0.4);
+    if (gl) { cv.width = Math.round(vw * dpr); cv.height = Math.round(vh * dpr); gl.viewport(0, 0, cv.width, cv.height); gl.uniform2f(U.uRes, vw, vh); }
+  }
+  fit(); addEventListener('resize', fit);
+
+  /* ── 넘기기: 끌기 · 휠 · 방향키 · 버튼. 놓으면 가장 가까운 장에 멈추고, 4.5초 가만히 있으면 저절로 다음 장 ── */
+  let pos = rm ? 0 : -2.4, target = 0, vel = 0, bend = 0, drag = false, lx = 0, lt = 0, vx = 0, moved = 0, last = performance.now(), wt = 0;
+  const touchIn = () => { last = performance.now(); };
+  const step = (d) => { target = Math.round(target) + d; touchIn(); };
+  stage.addEventListener('pointerdown', (e) => { if (e.target.closest('a, button')) return; drag = true; moved = 0; vx = 0; lx = e.clientX; lt = performance.now(); stage.classList.add('drag'); try { stage.setPointerCapture(e.pointerId); } catch (err) {} touchIn(); });
+  stage.addEventListener('pointermove', (e) => { if (!drag) return; const dx = e.clientX - lx, now = performance.now(), dt = Math.max(8, now - lt); moved += Math.abs(dx); target -= dx / pitch; vx += ((-dx / pitch) / dt * 1000 - vx) * 0.5; lx = e.clientX; lt = now; touchIn(); });
+  const up = (e) => {
+    if (!drag) return; drag = false; stage.classList.remove('drag');
+    if (moved < 6) { const d = Math.round((e.clientX - vw / 2) / pitch); if (d === 0 && Math.abs(e.clientY - cy) < H / 2) location.href = $('open').href; else target = Math.round(target) + d; }   /* 누른 장으로 / 가운데 장은 그 전시로 */
+    else target = performance.now() - lt < 90 && Math.abs(vx) > 0.7 ? (vx > 0 ? Math.ceil(target) : Math.floor(target)) : Math.round(target);
+    touchIn();
+  };
+  stage.addEventListener('pointerup', up); stage.addEventListener('pointercancel', () => { drag = false; stage.classList.remove('drag'); target = Math.round(target); });
+  stage.addEventListener('wheel', (e) => { e.preventDefault(); target += clamp((e.deltaX + e.deltaY) / pitch * 0.9, -1.2, 1.2); clearTimeout(wt); wt = setTimeout(() => { target = Math.round(target); }, 150); touchIn(); }, { passive: false });
+  addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') step(1); else if (e.key === 'ArrowLeft') step(-1); });
+  $('prev').addEventListener('click', () => step(-1)); $('next').addEventListener('click', () => step(1));
+
+  function draw() {
+    gl.clearColor(0, 0, 0, 1); gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.uniform1f(U.uBend, bend); gl.uniform1f(U.uShift, Math.min(0.009, Math.abs(vel) * 0.0026));
+    for (let i = 0; i < N; i++) {
+      const d = mod(i - pos + N / 2, N) - N / 2, x = vw / 2 + d * pitch; if (Math.abs(d) * pitch > vw / 2 + W) continue;
+      const s = 1 - 0.1 * Math.min(1, Math.abs(d)), w = W * s, h = H * s;
+      gl.bindTexture(gl.TEXTURE_2D, tex[i]); gl.uniform2f(U.uPos, x - w / 2, cy - h / 2); gl.uniform2f(U.uSize, w, h); gl.uniform1f(U.uDim, 1 - 0.62 * Math.min(1, Math.abs(d)));
+      gl.drawArrays(gl.TRIANGLES, 0, count);
+    }
+  }
+  show(0);
+  if (rm) { if (gl) { const tick = () => { pos = target; show(mod(Math.round(pos), N)); draw(); requestAnimationFrame(tick); }; tick(); } else setInterval(() => show(mod(Math.round(target), N)), 100); return; }
+  BRAND.loop((dt) => {
+    if (!drag && performance.now() - last > 4500) { target = Math.round(target) + 1; last = performance.now(); }
+    const p0 = pos; pos += (target - pos) * (1 - Math.exp(-dt * 6.5));
+    vel = dt > 0 ? (pos - p0) / dt : 0; bend += (clamp(vel * 0.2, -1, 1) - bend) * Math.min(1, dt * 10);
+    show(mod(Math.round(pos), N));
+    if (gl) draw();
+  });
+})();
+</script>
+</body>
+</html>

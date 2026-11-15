@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="robots" content="noindex">
+<base href="../../">
+<title>홈 시안 A · 한 장</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="promo/home/shared.css">
+<link rel="stylesheet" href="assets/nav.css">
+<script src="assets/nav.js"></script>
+<style>
+/* 시안 A · 한 장(11-15, 검토용): 홈이 "포스터 더미". 한 화면에 전시 한 장만 크게, 내리면 다음 포스터가 아래에서 올라와 지금 장을 덮고 지금 장은 살짝 작아지며 어두워짐(겹겹이 쌓인 포스터).
+   탭·순위·작품·지도 띠·등록은 그대로 두고 자리만 바꿈: 탭은 포스터 위에 떠 있고, 작품 2점은 그 전시 정보 안에, 지도 띠는 포스터를 다 본 뒤 흰 시트 맨 위.
+   참고: Android TV 몰입형 목록(고른 것을 크게) · Codrops 무한 갤러리의 겹침 전환. 움직임은 전부 스크롤에 묶임(저절로 도는 것 없음) */
+html { scroll-snap-type: y proximity; }
+.stack { position: relative; }
+.stage { position: sticky; top: 0; height: 100svh; overflow: hidden; background: var(--black); }
+.snap { position: absolute; left: 0; width: 1px; height: 1px; scroll-snap-align: start; pointer-events: none; }
+.top { position: absolute; z-index: 60; left: 0; right: 0; top: 0; height: 104px; background: var(--black); }   /* 로고·탭은 검은 띠 위(포스터 위에 얹으면 밝은 포스터에서 안 읽힘) */
+.bar { display: flex; align-items: center; }
+.bar .cats { flex: 1; min-width: 0; }
+.count { flex: none; padding: 0 var(--pad) 0 8px; font-size: 12px; color: var(--z5); }
+.count b { color: var(--z0); font-weight: 500; }
+
+.card { position: absolute; inset: 0; background: var(--black); visibility: hidden; will-change: transform; transform-origin: 50% 30%; }
+.card .poster { position: absolute; left: 0; top: 104px; width: 100%; aspect-ratio: 402 / 568; overflow: hidden; background: var(--z8); }
+.card .poster img { width: 100%; height: 100%; object-fit: cover; }
+/* 글자 밑 덮개만(규칙상 허용): 화면 아래에 붙여 정보 글자 뒤만 어둡게 — 화면이 짧아(사파리 주소창) 정보가 포스터 가운데에 걸려도 읽힘. 직선 대신 곡선 */
+.card .fade { position: absolute; left: 0; right: 0; bottom: 0; height: calc(100px + 300px + env(safe-area-inset-bottom)); pointer-events: none; background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .1) 12%, rgba(0, 0, 0, .3) 24%, rgba(0, 0, 0, .55) 38%, rgba(0, 0, 0, .78) 54%, rgba(0, 0, 0, .92) 70%, #000 86%); }
+.card .dim { position: absolute; inset: 0; background: var(--black); opacity: 0; pointer-events: none; }
+.info { position: absolute; left: var(--pad); right: var(--pad); bottom: calc(100px + env(safe-area-inset-bottom)); display: grid; gap: 4px; will-change: transform, opacity; }
+.info .t { display: flex; align-items: baseline; gap: 10px; font-size: 28px; font-weight: 600; line-height: 1.3; text-wrap: balance; }
+.info .t .rk { flex: none; color: var(--z5); font-variant-numeric: tabular-nums; }
+.info .t a { min-width: 0; }
+@media (hover: hover) { .info .t a:hover { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; } }
+.info .s { font-size: 14px; color: var(--z3); }
+.info .m { display: flex; align-items: center; flex-wrap: wrap; gap: 0 6px; font-size: 12px; color: var(--z4); }
+.info .pl { display: inline-flex; align-items: center; gap: 2px; min-height: 32px; color: var(--z3); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(212, 212, 216, .4); }
+.info .pl svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+.wk { display: flex; gap: 4px; margin-top: 8px; }
+.wk a { display: block; width: 44px; aspect-ratio: 3 / 4; overflow: hidden; background: var(--z8); transition: transform .16s var(--ease); }
+.wk a:active { transform: scale(.96); }
+.wk img { width: 100%; height: 100%; object-fit: cover; }
+.empty { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 8px; text-align: center; }
+.empty p { font-size: 16px; font-weight: 600; }
+.empty a { color: var(--z5); font-size: 12px; text-decoration: underline; text-underline-offset: 2px; min-height: 44px; display: inline-flex; align-items: center; }
+
+.sheet { margin-top: -20px; }
+.wgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 12px; margin-top: 16px; }
+
+/* 768 이상 · 가로로 넓은 화면: 포스터는 왼쪽에 세로로 크게(규격 그대로), 정보는 오른쪽 아래에 맞춰 크게 */
+@media (min-width: 768px) and (min-aspect-ratio: 1 / 1) {
+  .stage { --pw: min(calc((100svh - 224px) * 402 / 568), calc(100vw - var(--pad) * 2 - 360px)); }   /* 포스터 폭: 높이에 맞추되 오른쪽 정보 칸 320 이상 남김 */
+  .card .poster { left: var(--pad); top: auto; bottom: 104px; width: var(--pw); height: auto; }
+  .card .fade { display: none; }
+  .info { left: calc(var(--pad) + var(--pw) + 40px); right: var(--pad); bottom: 104px; }
+}
+/* 768 이상 · 세로로 긴 화면(태블릿 세로): 포스터 위, 정보는 그 아래 */
+@media (min-width: 768px) and (max-aspect-ratio: 1 / 1) {
+  .card .poster { left: var(--pad); top: 120px; height: calc(100svh - 520px); width: auto; }
+  .card .fade { display: none; }
+  .info { left: var(--pad); right: var(--pad); top: calc(100svh - 376px); bottom: auto; }   /* 포스터 바로 아래 24 */
+}
+@media (min-width: 768px) {
+  .info { gap: 8px; }
+  .info .t { font-size: 36px; }
+  .info .s { font-size: 16px; }
+  .info .m { font-size: 14px; }
+  .wk { gap: 8px; margin-top: 16px; }
+  .wk a { width: 88px; }
+  .wgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px 16px; }
+}
+@media (min-width: 1100px) {
+  .info .t { font-size: 48px; line-height: 1.2; }   /* ❓ 48은 Figma 글자 표 밖 — 웹 큰 제목 제안 */
+  .wk a { width: 112px; }
+  .wgrid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 32px 24px; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-snap-type: y mandatory; } }
+</style>
+</head>
+<body>
+<main id="main">
+  <h1 class="sr">Display U. 홈</h1>
+  <section class="stack" id="stack" aria-label="전시 둘러보기">
+    <div class="stage" id="stage">
+      <div class="top"><header class="hd" id="hd"></header><div class="bar"><div class="cats" id="cats"></div><p class="count tnum" id="count" aria-live="polite"></p></div></div>
+      <div id="cards"></div>
+    </div>
+  </section>
+  <div class="sheet">
+    <a class="mband" id="mband" href="map.html"></a>
+    <section class="works inner" aria-labelledby="works-title"><div id="wh"></div><div class="wgrid" id="wgrid"></div></section>
+    <div id="tail"></div>
+  </div>
+</main>
+<script src="assets/byline.js"></script>
+<script src="assets/demo-data.js"></script>
+<script src="assets/minimap.js"></script>
+<script src="promo/shared.js"></script>
+<script src="promo/home/shared.js"></script>
+<script>
+(() => {
+  const { rm, clamp, esc, src, wsrc, ICON, frame } = HN;
+  const stack = document.getElementById('stack'), stage = document.getElementById('stage'), cardsEl = document.getElementById('cards'), count = document.getElementById('count');
+  HN.header(document.getElementById('hd')); HN.nav();
+  const band = HN.band(document.getElementById('mband'));
+  document.getElementById('wh').innerHTML = HN.worksHead();
+  document.getElementById('tail').innerHTML = HN.tail();
+  const EMPTY = { pop: '진행 중이거나 예정된 전시가 없어요', grad: '진행 중이거나 예정된 졸업전시가 없어요', live: '진행 중인 전시가 없어요', soon: '예정된 전시가 없어요', end: '곧 끝나는 전시가 없어요' };
+  let list = [], cards = [], unit = 0, cur = -1, tabK = 'pop';
+
+  const cardHtml = (e, i, rank) => {
+    const ws = DEMO.WORKS.filter((w) => w.e === e.i).slice(0, 2);
+    return `<article class="card" aria-label="${rank ? '순위 ' + rank + ': ' : ''}${esc(e.t)}" style="z-index:${i + 1}">
+      <a class="poster" href="exhibition.html?e=${e.i}" tabindex="-1" aria-hidden="true"><img src="${src(e)}" alt="" width="402" height="568" ${i > 1 ? 'loading="lazy"' : ''} decoding="async"></a>
+      <span class="fade" aria-hidden="true"></span><div class="info"><h2 class="t">${rank ? `<span class="rk">${rank}</span>` : ''}<a href="exhibition.html?e=${e.i}">${esc(e.t)}</a></h2>
+        <p class="s">${esc(e.s)}</p>
+        <p class="m"><span class="dt12">${e.d}</span><span aria-hidden="true">·</span><a class="pl" href="map.html?ex=${e.i}" aria-label="지도에서 보기: ${esc(e.p)}">${ICON.pin}${esc(e.p)}</a></p>
+        ${ws.length ? `<div class="wk">${ws.map((w) => `<a href="work.html?w=${w.i}" aria-label="작품: ${esc(w.t)}"><img src="${wsrc(w)}" alt="" loading="lazy"></a>`).join('')}</div>` : ''}
+      </div><span class="dim" aria-hidden="true"></span></article>`;
+  /* 덮개는 정보 뒤(포스터 위) */
+  };
+  function build(k) {
+    tabK = k; list = DEMO.TAB[k]();
+    if (!list.length) { cardsEl.innerHTML = `<div class="empty"><p>${EMPTY[k]}</p><a href="#">지난 전시 둘러보기</a></div>`; cards = []; count.textContent = ''; }
+    else { cardsEl.innerHTML = list.map((e, i) => cardHtml(e, i, k === 'pop' ? i + 1 : 0)).join(''); cards = [...cardsEl.children].map((el) => ({ el, info: el.querySelector('.info'), dim: el.querySelector('.dim'), last: '' })); }
+    cur = -1; layout(); paint();
+  }
+  /* 한 장 = 화면 한 높이만큼 스크롤. 맞춤 자리(scroll-snap)를 장마다 하나 */
+  function layout() {
+    unit = stage.offsetHeight || innerHeight;
+    stack.style.height = Math.max(1, list.length) * unit + 'px';
+    stack.querySelectorAll('.snap').forEach((s) => s.remove());
+    list.forEach((_, i) => { const s = document.createElement('i'); s.className = 'snap'; s.style.top = i * unit + 'px'; stack.appendChild(s); });
+  }
+  /* 겹침: d = 장 번호 − 지금 위치. 0<d<1 아래에서 올라오는 장, −1<d≤0 덮이는 장(작아지며 어두워짐) */
+  function paint() {
+    if (!cards.length) return;
+    const n = cards.length, f = clamp((scrollY - stack.offsetTop) / unit, 0, n - 1);
+    cards.forEach((c, i) => {
+      let d = i - f; if (rm) d = i - Math.round(f);
+      const show = d < 1 && d > -1.001 && !(d <= -1 && i < n - 1);
+      let key = show ? d.toFixed(3) : 'x'; if (key === c.last) return; c.last = key;
+      c.el.style.visibility = show ? 'visible' : 'hidden'; if (!show) return;
+      if (d > 0) { c.el.style.transform = `translate3d(0, ${(d * 100).toFixed(3)}%, 0)`; c.dim.style.opacity = 0; }
+      else { const u = -d; c.el.style.transform = u ? `translate3d(0, ${(-u * 3).toFixed(3)}%, 0) scale(${(1 - .06 * u).toFixed(4)})` : 'none'; c.dim.style.opacity = (u * .72).toFixed(3); }
+      const v = Math.abs(d); c.info.style.opacity = clamp(1 - v * 2.4, 0, 1).toFixed(3); c.info.style.transform = v ? `translate3d(0, ${(d * 56).toFixed(2)}px, 0)` : 'none';
+    });
+    const now = Math.round(f);
+    if (now !== cur) { cur = now; count.innerHTML = `<b>${cur + 1}</b> / ${n}`; band.focus(list[cur].i); cards.forEach((c, i) => c.el.setAttribute('aria-hidden', i !== cur)); }
+  }
+  let tk = false; addEventListener('scroll', () => { if (tk) return; tk = true; frame(() => { tk = false; paint(); }); }, { passive: true });
+  addEventListener('resize', () => { const k = (scrollY - stack.offsetTop) / unit; layout(); cards.forEach((c) => { c.last = ''; }); if (k > 0 && k < list.length) scrollTo(0, stack.offsetTop + k * unit); paint(); });
+
+  const q = new URLSearchParams(location.search);
+  HN.cats(document.getElementById('cats'), (k, first) => { build(k); if (!first && scrollY > stack.offsetTop) scrollTo({ top: stack.offsetTop, behavior: 'auto' }); }, q.get('tab') || 'pop');
+  const wl = HN.works(innerWidth >= 1100 ? 10 : 6); document.getElementById('wgrid').innerHTML = wl.map(HN.wcard).join('');
+  /* 확인용: ?p=1.5 → 1.5장 내린 자리 */
+  window.__go = (p) => { scrollTo(0, stack.offsetTop + p * unit); paint(); };
+  if (q.has('p')) [300, 1200].forEach((ms) => setTimeout(() => window.__go(parseFloat(q.get('p'))), ms));
+})();
+</script>
+<script src="assets/tap.js"></script>
+</body>
+</html>

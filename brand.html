@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#000000">
-<!-- 브랜드 홍보 페이지 · 포스터 벽 (11-15 U-161, 웹 전용 — Figma 없음)
+<!-- 브랜드 홍보 페이지 · 포스터 벽 (11-15 U-161 · U-162, 웹 전용 — Figma 없음)
      디유에 걸린 전시 포스터가 한 벽이 되어 천천히 흐르고, 한 장에 손을 대면 그 전시만 불이 켜진다. 전시는 데모 데이터(assets/demo-data.js), 문구는 ❓임시 -->
-<title>Display U. — 대학생 전시를 발견하는 곳</title>
+<title>Display U.</title>
 <meta name="description" content="대학생 전시와 작품을 발견하고, 감상하고, 기록하는 곳. Display U.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -41,7 +41,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 
 body { background: var(--black); color: var(--fa); }
 
-/* 첫 화면: 벽이 화면 전체, 그 위에 로고(반전), 아래 검은 띠에 한 문장 + 지금 불 켜진 전시 */
+/* 첫 화면: 벽이 화면 전체, 그 위에 로고(반전), 아래 검은 띠에 지금 불 켜진 전시를 크게(U-162: 소개 문장 삭제 — 사용자 "포스터 릴처럼 전시 정보를 크게") */
 .hero { position: relative; height: 100svh; min-height: 600px; display: flex; flex-direction: column; overflow: hidden; }
 .wall { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(var(--cols, 3), 1fr); gap: var(--g); padding: 0 var(--m); --g: clamp(8px, 1.1vw, 16px); }
 .col { display: flex; flex-direction: column; gap: var(--g); will-change: transform; }
@@ -50,16 +50,21 @@ body { background: var(--black); color: var(--fa); }
 .wall.has .card img { opacity: .16; }
 .wall .card.on img { opacity: 1; }
 .brand { position: relative; z-index: 2; padding: var(--m) var(--m) 0; color: #fff; mix-blend-mode: difference; pointer-events: none; }
-.bar { position: relative; z-index: 2; margin-top: auto; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 16px 32px; padding: 24px var(--m) max(24px, env(safe-area-inset-bottom)); background: var(--black); }
-h1 { font-size: clamp(24px, 2.8vw, 40px); font-weight: 600; line-height: 1.25; text-wrap: balance; }
-.now { grid-column: 1; min-height: 72px; display: grid; align-content: end; gap: 2px; color: var(--z3); font-size: 14px; }
-.now strong { color: var(--fa); font-size: clamp(18px, 1.6vw, 24px); font-weight: 600; line-height: 1.3; }
-.now span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.now .dt { font-variant-numeric: tabular-nums; letter-spacing: 0; color: var(--z5); }
-.bar .go { grid-column: 2; grid-row: 1 / span 2; align-self: end; }
-.swap { animation: swap .28s var(--ease); }
-@keyframes swap { from { opacity: 0; transform: translateY(8px); } }
-@media (max-width: 699px) { .bar { grid-template-columns: 1fr; } .bar .go { grid-column: 1; grid-row: auto; } .now { min-height: 68px; } }
+.bar { position: relative; z-index: 2; margin-top: auto; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 16px 32px; padding: 28px var(--m) max(24px, env(safe-area-inset-bottom)); background: var(--black); }
+/* 지금 전시: 상태 · 이름(크게) · 학교 · 일정과 장소. 전시가 바뀔 때 줄마다 가려진 칸에서 올라옴 */
+.now { grid-column: 1; display: grid; gap: 4px; min-width: 0; }
+.now .ln { display: block; overflow: hidden; }
+.now .ln > span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; animation: nowrise .75s var(--ease) both; animation-delay: calc(var(--k, 0) * 70ms); }
+@keyframes nowrise { from { transform: translateY(108%); } }
+.now .st { font-size: 14px; font-weight: 600; color: var(--z3); }
+.now .st i { display: inline-block; width: 8px; height: 8px; margin-right: 8px; vertical-align: 1px; border-radius: 50%; background: var(--fa); }
+.now .st[data-st="전시 예정"] i { background: none; box-shadow: inset 0 0 0 2px var(--z3); }
+.now .st[data-st="종료"] { color: var(--z5); } .now .st[data-st="종료"] i { background: var(--z5); }
+.now strong { color: var(--fa); font-size: clamp(40px, 6vw, 96px); font-weight: 600; line-height: 1.08; padding-bottom: .04em; }
+.now .s { font-size: 16px; color: var(--z3); }
+.now .dt { font-size: 16px; font-variant-numeric: tabular-nums; letter-spacing: 0; color: var(--z5); }
+.bar .go { grid-column: 2; align-self: end; }
+@media (max-width: 699px) { .bar { grid-template-columns: 1fr; gap: 12px; padding-top: 20px; } .bar .go { grid-column: 1; } .now strong { font-size: clamp(32px, 9.6vw, 44px); } .now .s, .now .dt { font-size: 14px; } }
 
 /* 둘째 화면: 흰 바탕, 전시 11개를 큰 글자 줄로. 마우스를 올리면 그 전시 포스터가 커서를 따라옴 */
 .index { background: var(--paper); color: var(--ink); padding: clamp(96px, 12vw, 200px) var(--m) clamp(96px, 12vw, 200px); }
@@ -99,7 +104,7 @@ h1 { font-size: clamp(24px, 2.8vw, 40px); font-weight: 600; line-height: 1.25; t
 .end .big:active { transform: scale(.98); }
 .end .foot { display: flex; justify-content: space-between; align-items: end; gap: 24px; color: var(--z5); font-size: 14px; }
 .end .foot .wm { width: 124px; color: var(--fa); }
-@media (prefers-reduced-motion: reduce) { .card img, .rows a, .rows strong, .peek, .end .big svg { transition: none; } .swap { animation: none; } .rise { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .card img, .rows a, .rows strong, .peek, .end .big svg { transition: none; } .now .ln > span { animation: none; } .rise { opacity: 1; transform: none; } }
 </style>
 </head>
 <body>
@@ -108,7 +113,7 @@ h1 { font-size: clamp(24px, 2.8vw, 40px); font-weight: 600; line-height: 1.25; t
     <div class="wall" id="wall" aria-hidden="true"></div>
     <div class="brand" id="brand" role="img" aria-label="Display U."></div>
     <div class="bar">
-      <h1 id="h">대학생 전시를 발견하는 곳</h1>
+      <h1 id="h" class="sr">Display U.</h1>
       <div class="now" id="now" aria-live="polite"></div>
       <a class="go" href="home.html">전시 둘러보기<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
     </div>
@@ -162,7 +167,7 @@ const BRAND = (() => {
   const place = () => cols.forEach((c) => { const y = ((c.y % c.period) + c.period) % c.period; c.el.style.transform = `translate3d(0, ${-y.toFixed(1)}px, 0)`; });
   place();
 
-  /* 불 켜기: 마우스는 올리면, 손가락은 한 번 누르면 켜지고 한 번 더 누르면 그 전시로. 아무도 안 만지면 2.6초마다 한 장씩 저절로 켜짐 */
+  /* 불 켜기: 마우스는 올리면, 손가락은 한 번 누르면 켜지고 한 번 더 누르면 그 전시로. 아무도 안 만지면 3.4초마다 한 장씩 저절로 켜짐 */
   let cur = -1, manual = 0;
   function light(i, by) {
     if (i === cur) return; cur = i; if (by) manual = performance.now();
@@ -170,11 +175,16 @@ const BRAND = (() => {
     wall.querySelectorAll('.card').forEach((c) => c.classList.toggle('on', +c.dataset.i === i));
     if (i < 0) { now.innerHTML = ''; return; }
     const e = E[i];
-    now.innerHTML = `<strong class="swap">${esc(e.t)}</strong><span class="swap">${esc(e.s)}</span><span class="dt swap">${esc(e.d)} · ${esc(e.st)}</span>`;
+    now.innerHTML = `<span class="ln st" data-st="${e.st}"><span style="--k:0"><i></i>${e.st}</span></span><strong class="ln"><span style="--k:1">${esc(e.t)}</span></strong><span class="ln s"><span style="--k:2">${esc(e.s)}</span></span><span class="ln dt"><span style="--k:3">${esc(e.d)} · ${esc(e.p)}</span></span>`;
   }
   wall.addEventListener('pointerover', (ev) => { if (ev.pointerType !== 'mouse') return; const c = ev.target.closest('.card'); if (c) light(+c.dataset.i, true); });
   wall.addEventListener('click', (ev) => { const c = ev.target.closest('.card'); if (!c) return; const i = +c.dataset.i; if (i === cur && performance.now() - manual > 250) location.href = 'exhibition.html?e=' + i; else light(i, true); });
-  let auto = 0; const pickAuto = () => { let i; do { i = Math.floor(Math.random() * E.length); } while (i === cur); light(i, false); };
+  let auto = 0; const bar = document.querySelector('.bar');
+  const pickAuto = () => {   /* 지금 화면에 3분의 2 넘게 보이는 포스터 중에서만 고름 — 불 켜진 포스터가 늘 눈에 보이게 */
+    const lim = bar.getBoundingClientRect().top;
+    const vis = [...new Set([...wall.querySelectorAll('.card')].filter((c) => { const r = c.getBoundingClientRect(); return r.height > 0 && r.top > -r.height * 0.34 && r.bottom < lim + r.height * 0.34; }).map((c) => +c.dataset.i))].filter((i) => i !== cur);
+    light(vis.length ? vis[Math.floor(Math.random() * vis.length)] : (cur + 1) % E.length, false);
+  };
   if (BRAND.rm) { light(0, false); return rows(); }
   pickAuto();
 
@@ -184,7 +194,7 @@ const BRAND = (() => {
     const boost = Math.min(900, Math.abs(sv) * 0.6);
     cols.forEach((c) => { c.y += c.dir * (c.sp + boost) * dt; });
     if (y < innerHeight) place();
-    auto += dt; if (auto > 2.6 && performance.now() - manual > 5000) { auto = 0; pickAuto(); }
+    auto += dt; if (auto > 3.4 && performance.now() - manual > 5000) { auto = 0; pickAuto(); }
   });
   rows();
 

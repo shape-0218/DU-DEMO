@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#ffffff">
+<!-- 브랜드 사이트 시안 3 · D와 U 사이(11-15, 검토용 · 푸시 대상 아님)
+     생각: 스플래시에서 DU가 벌어지며 로고가 되듯, 여기서는 D와 U가 화면 양 끝으로 벌어지고 그 사이로 작품이 지나간다. 글자는 작품 위에서 색이 뒤집힘. 문구는 모두 ❓임시 -->
+<base href="../../">
+<title>Display U. — D와 U 사이, 대학생의 작품</title>
+<meta name="description" content="대학생 전시와 작품을 발견하고, 감상하고, 기록하는 곳. Display U.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="promo/shared.css">
+<style>
+html, body { height: 100%; }
+body { overflow: hidden; overscroll-behavior: none; }
+.stage { position: relative; height: 100svh; min-height: 520px; overflow: hidden; touch-action: none; cursor: grab; -webkit-user-select: none; user-select: none; --lh: 46svh; --th: 56svh; --g: clamp(12px, 1.6vw, 24px); }
+.stage.drag { cursor: grabbing; }
+
+/* 작품 줄: 3:4 칸이 끝없이 왼쪽으로 흐름(끌거나 휠·방향키로 밀 수 있음) */
+.track { position: absolute; left: 0; top: 50%; height: var(--th); margin-top: calc(var(--th) / -2); display: flex; gap: var(--g); will-change: transform; opacity: 0; transition: opacity .9s var(--ease); }
+.ready .track { opacity: 1; }
+.w { flex: none; height: 100%; aspect-ratio: 3 / 4; background: var(--bg2); overflow: hidden; }
+.w img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+
+/* 글자: 흰 글자를 '차이' 섞기로 올림 → 흰 바탕에서는 검정, 작품 위에서는 그 자리 색이 뒤집힘 */
+.D, .U, .mid { position: absolute; z-index: 3; color: #fff; mix-blend-mode: difference; pointer-events: none; }
+.D svg, .U svg, .mid svg { width: auto; height: 100%; transform-origin: 0 0; will-change: transform; }
+.D { left: var(--m); top: 50%; height: var(--lh); margin-top: calc(var(--lh) / -2); }
+.U { right: var(--m); top: 50%; height: var(--lh); margin-top: calc(var(--lh) / -2); }
+.mid { left: 0; top: 0; height: 40px; }
+
+h1 { position: absolute; z-index: 4; left: var(--m); top: max(var(--m), env(safe-area-inset-top)); font-size: clamp(22px, 2.8vw, 40px); font-weight: 600; line-height: 1.3; }
+.stage .go { position: absolute; z-index: 4; right: var(--m); top: max(calc(var(--m) - 8px), env(safe-area-inset-top)); cursor: pointer; }
+h1, .stage .go { opacity: 0; transform: translateY(12px); transition: opacity .6s var(--ease) .1s, transform .6s var(--ease) .1s; }
+.ready h1, .ready .go { opacity: 1; transform: none; }
+.ready .go { transition-delay: .2s; }
+
+@media (max-width: 899px) {
+  .stage { --lh: 26svh; --th: 50svh; }
+  .D { top: max(72px, calc(env(safe-area-inset-top) + 56px)); margin-top: 0; }
+  .U { top: auto; bottom: max(24px, env(safe-area-inset-bottom)); margin-top: 0; }
+  h1 { left: auto; right: var(--m); top: max(76px, calc(env(safe-area-inset-top) + 60px)); text-align: right; }
+  .stage .go { right: auto; left: var(--m); top: auto; bottom: max(20px, env(safe-area-inset-bottom)); }
+}
+@media (prefers-reduced-motion: reduce) { .track, h1, .stage .go { transition: none; } }
+</style>
+</head>
+<body>
+<main class="stage" id="stage">
+  <div class="track" id="track" aria-hidden="true"></div>
+  <div class="D" id="D" aria-hidden="true"></div>
+  <div class="mid" id="mid" aria-hidden="true"></div>
+  <div class="U" id="U" aria-hidden="true"></div>
+  <h1>D와 U 사이,<br>대학생의 작품</h1>
+  <a class="go" href="explore.html">작품 둘러보기<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+</main>
+
+<script src="promo/shared.js"></script>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id), { rm, out, clamp } = BRAND;
+  const stage = $('stage'), track = $('track'), N = 22;
+  $('D').innerHTML = BRAND.letters([0]); $('U').innerHTML = BRAND.letters([7, 8]); $('mid').innerHTML = BRAND.letters([1, 2, 3, 4, 5, 6]);
+  track.innerHTML = Array.from({ length: N * 2 }, (_, k) => `<div class="w"><img src="${BRAND.img('a' + String((k % N) + 1).padStart(2, '0'))}" alt="" draggable="false" decoding="async"></div>`).join('');
+
+  /* ── 작품 줄 ── */
+  let P = 1, x = 0, v = 0, drag = false, lx = 0, ly = 0, lt = 0;
+  const measure = () => { P = track.children[N].offsetLeft - track.children[0].offsetLeft || 1; };
+  measure(); addEventListener('resize', measure);
+  const place = () => { const xx = ((x % P) + P) % P; track.style.transform = `translate3d(${-xx.toFixed(1)}px, 0, 0)`; };
+  place();
+  stage.addEventListener('pointerdown', (e) => { if (e.target.closest('a')) return; drag = true; v = 0; lx = e.clientX; ly = e.clientY; lt = performance.now(); stage.classList.add('drag'); try { stage.setPointerCapture(e.pointerId); } catch (err) {} });
+  stage.addEventListener('pointermove', (e) => {
+    if (!drag) return; const dx = e.clientX - lx, dy = e.clientY - ly, d = Math.abs(dx) >= Math.abs(dy) ? dx : dy, now = performance.now(), dt = Math.max(8, now - lt);   /* 옆으로든 위아래로든 민 만큼 */
+    x -= d; v += ((-d / dt * 1000) - v) * 0.5; lx = e.clientX; ly = e.clientY; lt = now; if (rm) place();
+  });
+  const up = () => { if (!drag) return; drag = false; stage.classList.remove('drag'); if (performance.now() - lt > 80) v = 0; };
+  stage.addEventListener('pointerup', up); stage.addEventListener('pointercancel', up);
+  stage.addEventListener('wheel', (e) => { e.preventDefault(); x += e.deltaX + e.deltaY; if (rm) place(); }, { passive: false });
+  addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') v += 900; else if (e.key === 'ArrowLeft') v -= 900; else return; if (rm) { x += Math.sign(v) * 240; v = 0; place(); } });
+
+  if (rm) { stage.classList.add('ready'); return; }   /* 움직임 줄이기: 처음부터 벌어진 모습, 저절로 흐르지 않음 */
+
+  /* ── 처음: 가운데 모인 로고(Display U.) → 0.45초 뒤 D와 U.가 양 끝 큰 글자 자리로 벌어지고 가운데 글자는 사라짐 ── */
+  const parts = ['D', 'U', 'mid'].map((id) => ({ el: $(id).firstElementChild, id }));
+  function prep() {
+    const W = innerWidth, H = innerHeight, m = parseFloat(getComputedStyle(stage).getPropertyValue('--m')) || 24;
+    const wmW = Math.min(W - m * 2, 880), s0 = wmW / 124, wl = (W - wmW) / 2, wt = (H - 28.3 * s0) / 2;
+    parts.forEach((p) => { p.el.style.transform = ''; const b = p.el.viewBox.baseVal, f = p.el.getBoundingClientRect(); p.k = (b.width * s0) / f.width; p.dx = wl + b.x * s0 - f.left; p.dy = wt + b.y * s0 - f.top; });
+  }
+  prep();
+  const HOLD = 0.45, DUR = 1.25; let t0 = -1, done = false;
+  BRAND.loop((dt, t) => {
+    if (!done) {
+      if (t0 < 0) t0 = t;
+      const q = clamp((t - t0 - HOLD) / DUR), e = out(q) * (2 - out(q));   /* 빠르게 떠나 부드럽게 도착 */
+      parts.forEach((p) => {
+        if (p.id === 'mid') { p.el.style.transform = `translate3d(${p.dx.toFixed(1)}px, ${(p.dy - q * 18).toFixed(1)}px, 0) scale(${p.k.toFixed(4)})`; p.el.style.opacity = (1 - clamp(q / 0.35)).toFixed(3); }
+        else p.el.style.transform = `translate3d(${(p.dx * (1 - e)).toFixed(1)}px, ${(p.dy * (1 - e)).toFixed(1)}px, 0) scale(${(1 + (p.k - 1) * (1 - e)).toFixed(4)})`;
+      });
+      if (q > 0.3) stage.classList.add('ready');
+      if (q >= 1) { done = true; parts.forEach((p) => { if (p.id !== 'mid') p.el.style.transform = ''; else p.el.style.visibility = 'hidden'; }); }
+    }
+    if (!drag) { v *= Math.exp(-dt * 3); x += ((stage.classList.contains('ready') ? 30 : 0) + v) * dt; }
+    place();
+  });
+})();
+</script>
+</body>
+</html>

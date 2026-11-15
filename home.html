@@ -201,16 +201,34 @@ img { display: block; }
 .empty a { color: var(--text-teritary); text-decoration: underline; text-underline-offset: 2px; }
 [hidden] { display: none !important; }
 
-.map { display: block; border-top: 1px solid #2d2d30; margin-top: 16px; }
-.map .inner { display: flex; align-items: center; justify-content: space-between; padding-block: 20px; }
-.map .l { display: flex; align-items: center; gap: 14px; }
-.map .pin { width: 34px; height: 34px; display: grid; place-items: center; }
-.map .pin img { width: 21.56px; height: 27.48px; }
-.map strong { display: block; font-size: 16px; font-weight: 600; color: var(--text-quaternary); letter-spacing: -0.03em; }
-.map span { display: block; padding-top: 2px; color: var(--text-teritary); }
-.map .go { width: 32px; height: 32px; }
-@media (hover: hover) { .map:hover .go { transform: translateX(2px); } }
-.map .go { transition: transform .3s var(--ease); }
+/* 11-15 지도 띠(U-163, 사용자 확정 · 시안 review/home-live-v1 ?m=1): 검은 영역의 "가까운 전시 찾기" 글자 줄(핀 그림 + 제목 + 설명 + 화살표)을 없애고, 흰 시트 맨 위를 지도로 시작함.
+   이유: 지도 화면으로 가는 길이 그 한 줄뿐인데 폰 첫 화면에서 하단 메뉴에 가려 있었고, 지도 화면의 얼굴(밝은 지도 + 포스터 핀)이 홈에서 안 보였음.
+   · 지도 그림·핀 모양은 지도 화면과 같음(assets/minimap.js가 map.html과 같은 값으로 그림 — 핀 34×46 흰 틀, 가운데 전시의 핀은 검정 1.3배, 예정 전시는 빈 점, 끝난 전시는 핀 없음)
+   · 포스터를 넘기는 만큼 지도가 두 전시 사이를 따라 옮겨 감(손가락에 묶임, 따로 도는 움직임 없음). 띠를 누르면 그 전시를 고른 채로 지도 화면이 열림(map.html?ex=)
+   · 왼쪽 위 흰 칩 = 지도 화면의 칩과 같은 모양(높이 36 · 14/600). 문구는 기존 제목 그대로, 설명 줄("지도에서 전시 위치를 확인해보세요")은 뺌
+   · 높이 폰 140 · 768 180 · 1100+ 200. 이전 값은 review/_bak-homemap-1115/home.html */
+.mband { display: block; position: relative; height: 140px; border-radius: var(--r20) var(--r20) 0 0; overflow: hidden; color: var(--text-primary); }
+.mband:focus-visible { border-radius: var(--r20) var(--r20) 0 0; outline-offset: -3px; }
+.mm { position: absolute; inset: 0; overflow: hidden; background: #ebebe8; }
+.mm canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.mpins { position: absolute; inset: 0; z-index: 1; }
+.mpin { position: absolute; left: 0; top: 0; width: 0; height: 0; z-index: var(--z, 1); }
+.mpin .pc { position: absolute; left: -17px; top: -52px; width: 34px; height: 46px; padding: 2px; border-radius: 8px; background: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, .14), 0 4px 10px rgba(0, 0, 0, .16); transform-origin: 50% 52px; transition: transform .28s cubic-bezier(.23, 1, .32, 1), background-color .2s, box-shadow .2s, opacity .2s; }
+.mpin .pc::after { content: ""; position: absolute; left: 50%; bottom: -10px; margin-left: -6px; border: 6px solid transparent; border-top-color: #fff; border-bottom: 0; transition: border-top-color .2s; }
+.mpin .pc img { width: 100%; height: 100%; border-radius: 6px; object-fit: cover; background: #797979; }
+.mpin .dt { position: absolute; right: -4px; top: -4px; width: 10px; height: 10px; border-radius: 50%; background: var(--text-primary); box-shadow: 0 0 0 2px #fff; }
+.mpin.soon .dt { background: #fff; box-shadow: inset 0 0 0 2.5px var(--text-primary), 0 0 0 2px #fff; }
+.mpin.hid .pc { opacity: 0; }
+.mpin.on { z-index: 9999; }
+.mpin.on .pc { transform: scale(1.3); background: #000; box-shadow: 0 6px 16px rgba(0, 0, 0, .3); }
+.mpin.on .pc::after { border-top-color: #000; }
+.mpin.on .dt { display: none; }
+.mband .mchip { position: absolute; left: var(--pad); top: 12px; z-index: 2; display: inline-flex; align-items: center; gap: 2px; height: 36px; padding: 0 10px 0 14px; border-radius: 18px; background: #fff; font-size: 14px; font-weight: 600; box-shadow: 0 1px 2px rgba(0, 0, 0, .2), 0 2px 6px rgba(0, 0, 0, .14); transition: transform .16s var(--ease); }
+.mband:active .mchip { transform: scale(.96); }
+.mband .mchip svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; transition: transform .3s var(--ease); }
+@media (hover: hover) { .mband:hover .mchip svg { transform: translateX(2px); } }
+@media (min-width: 768px)  { .mband { height: 180px; } }
+@media (min-width: 1100px) { .mband { height: 200px; } }
 
 /* 흰 영역 */
 .sheet { position: relative; margin-top: -20px; background: var(--bg-white); border-radius: var(--r20) var(--r20) 0 0; }
@@ -305,18 +323,13 @@ img { display: block; }
       </div>
     </div>
 
-    <a class="map" href="map.html">
-      <span class="inner">
-        <span class="l">
-          <span class="pin"><img src="assets/img/map-pin.svg" alt="" width="22" height="27"></span>
-          <span><strong>가까운 전시 찾기</strong><span>지도에서 전시 위치를 확인해보세요</span></span>
-        </span>
-        <img class="go" src="assets/img/chevron-map.svg" alt="" width="32" height="32">
-      </span>
-    </a>
   </section>
 
   <div class="sheet">
+    <a class="mband" id="mband" href="map.html">
+      <span class="mm" aria-hidden="true"><canvas></canvas><span class="mpins"></span></span>
+      <span class="mchip">가까운 전시 찾기<svg viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5"/></svg></span>
+    </a>
     <section class="works inner" aria-labelledby="works-title">
       <div class="hd">
         <h2 id="works-title">ARTWORKS</h2>
@@ -338,7 +351,7 @@ img { display: block; }
     <footer class="foot">
       <div class="inner">
         <a class="logo" href="#" aria-label="Display U. 홈"><img src="assets/img/logo-footer.svg" width="99" height="23" alt="Display U."></a>
-        <div class="links"><a href="#">이용약관</a><i></i><a href="#">개인정보처리방침</a></div>
+        <div class="links"><a href="terms.html?doc=service">이용약관</a><i></i><a href="terms.html?doc=privacy">개인정보처리방침</a></div>
         <small>© 2026 displayU. All rights reserved.</small>
       </div>
     </footer>
@@ -355,6 +368,7 @@ img { display: block; }
 </nav>
 
 <script src="assets/demo-data.js"></script>
+<script src="assets/minimap.js"></script>
 <script>
 const rail = document.getElementById('rail'); let slots = [];
 const HEART = '<svg class="hi" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.2S4.5 15.6 4.5 9.9A4.2 4.2 0 0 1 12 7.6a4.2 4.2 0 0 1 7.5 2.3c0 5.7-7.5 10.3-7.5 10.3z"/></svg>';
@@ -397,7 +411,7 @@ function applyView(empty) {
   const l = view === 'list'; posters.hidden = !!empty || l; lst.hidden = !!empty || !l;
   vt.innerHTML = l ? ICON_SWAP + '포스터형' : ICON_LIST + '리스트형'; vt.setAttribute('aria-pressed', l); vt.setAttribute('aria-label', l ? '포스터형으로 보기' : '리스트형으로 보기');
   if (!l && !empty && slots.length) requestAnimationFrame(() => go(active, false)); else if (l) { lst.scrollLeft = 0; markCol(); }
-  syncVideos();
+  syncVideos(); bandFollow();
 }
 vt.addEventListener('click', () => { view = view === 'list' ? 'poster' : 'list'; try { localStorage.setItem('du.homeview', view); } catch (e) {} applyView(document.getElementById('empty').hidden === false); });
 
@@ -469,13 +483,27 @@ function go(i, smooth = true) {
 }
 let ticking = false;
 const frame = (fn) => { let d = false; const f = () => { if (d) return; d = true; fn(); }; requestAnimationFrame(f); setTimeout(f, 34); };   // 화면이 가려져 rAF가 늦어도 끝까지 반영
-rail.addEventListener('scroll', () => { if (ticking) return; ticking = true; frame(() => { ticking = false; paint(); const n = nearest(); if (n !== active) setActive(n); }); }, { passive: true });
+rail.addEventListener('scroll', () => { if (ticking) return; ticking = true; frame(() => { ticking = false; paint(); const n = nearest(); if (n !== active) setActive(n); bandFollow(); }); }, { passive: true });
 /* 가운데 포스터는 전시 상세로 이동, 옆 포스터는 먼저 가운데로 */
 rail.addEventListener('click', (e) => { const s = e.target.closest('.slot'); const i = slots.indexOf(s); if (s && i !== active) { e.preventDefault(); go(i); } });
 document.getElementById('prev').addEventListener('click', () => go(active - 1));
 document.getElementById('next').addEventListener('click', () => go(active + 1));
 rail.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') { e.preventDefault(); go(active + 1); } if (e.key === 'ArrowLeft') { e.preventDefault(); go(active - 1); } });
-addEventListener('resize', () => go(active, false));
+addEventListener('resize', () => { go(active, false); bandFollow(); });
+
+/* 11-15 지도 띠(U-163): 포스터를 넘기는 만큼 지도가 두 전시 사이를 따라 옮겨 가고, 가운데 전시의 핀이 켜짐. 띠를 누르면 그 전시를 고른 채로 지도 화면이 열림.
+   리스트형이거나 전시가 없는 탭이면 전시 전체가 보이는 자리에 머묾. 핀은 탭과 상관없이 진행 중·예정 전시 전부(지도 화면과 같음) */
+const mband = document.getElementById('mband'), mchip = mband.querySelector('.mchip');
+const MAPPED = DEMO.EXH.filter((e) => e.st !== '종료' && DUMiniMap.pos(e));
+const band = DUMiniMap.make(mband.querySelector('.mm'), { s: (w) => Math.max(.5, Math.min(.8, w / 1100)), ay: .64, src: (e) => DEMO.src(e.img), keep: () => ({ x: mchip.offsetLeft + mchip.offsetWidth + 24, y: mchip.offsetTop + mchip.offsetHeight + 10 }) });
+band.set(MAPPED);
+let curList = [];
+function bandFollow() {
+  const pts = curList.map(DUMiniMap.pos);
+  if (posters.hidden || !slots.length || !pts.length || pts.some((p) => !p)) { const c = band.center(MAPPED); band.view(c.x, c.y); band.mark(null); mband.setAttribute('href', 'map.html'); return; }
+  const f = Math.max(0, Math.min(pts.length - 1, (rail.scrollLeft - offsetOf(0)) / (geo.w + geo.gap))), i = Math.floor(f), t = f - i, a = pts[i], b = pts[Math.min(i + 1, pts.length - 1)], n = curList[Math.round(f)];
+  band.view(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t); band.mark(n.i); mband.setAttribute('href', 'map.html?ex=' + n.i);
+}
 
 const tabs = [...document.querySelectorAll('.tab')], tabsEl = document.querySelector('.tabs'), ind = tabsEl.querySelector('.ind');
 /* 11-13 선택 밑줄 한 줄이 탭 사이를 미끄러짐: 선택된 탭의 위치·폭을 재서 transform으로만 옮김 */
@@ -492,6 +520,7 @@ function pick(tab, focus, silent) {
   const list = DEMO.TAB[k](), isEmpty = !list.length;
   /* 11-13 사용자가 탭을 바꿨을 때만 새 칸이 올라오며 나타남(처음 열 때·주소로 들어올 때는 없음) */
   rail.classList.toggle('swap', !silent); lst.classList.toggle('swap', !silent);
+  curList = list;
   rail.innerHTML = list.map((e, i) => slotHtml(e, k === 'pop' ? i + 1 : 0)).join(''); slots = [...rail.children]; active = 0; cacheRefs();
   lst.innerHTML = listHtml(list, k === 'pop');
   slots.forEach((s, i) => s.style.setProperty('--sw', Math.min(i, 4)));
@@ -500,6 +529,7 @@ function pick(tab, focus, silent) {
   applyView(isEmpty);
   document.getElementById('stage').setAttribute('aria-labelledby', tab.id);
   if (!isEmpty) { setActive(0); rail.scrollLeft = 0; frame(() => go(0, false)); }
+  bandFollow();
   syncVideos();
   DULoad.images(rail); DULoad.images(lst);   // 11-14 새로 받는 사진은 흐림이 걷히며 켜짐(이미 받아 둔 사진은 바로)
   if (focus) tab.focus();

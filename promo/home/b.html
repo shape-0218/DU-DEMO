@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="robots" content="noindex">
+<base href="../../">
+<title>홈 시안 B · 벽과 지도</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="promo/home/shared.css">
+<link rel="stylesheet" href="assets/nav.css">
+<script src="assets/nav.js"></script>
+<style>
+/* 시안 B · 벽과 지도(11-15, 검토용): 홈이 "포스터 벽". 전시 포스터와 그 전시의 작품이 한 벽에 빼곡히 걸리고, 내릴 때 가운데 열이 먼저 움직이고 양옆 열이 살짝 늦게 따라옴.
+   아래 떠 있는 "지도" 버튼을 누르면 벽의 포스터가 하나하나 날아가 지도 위 자기 자리의 핀이 됨(같은 포스터가 모양만 바뀌어 이어짐). 다시 누르면 핀이 벽으로 돌아옴.
+   참고: Codrops Elastic Grid Scroll(열마다 다른 속도) · 무한 갤러리의 Flip(같은 그림이 다른 자리로 이어짐) · 숙소·모임 앱의 목록 위 떠 있는 지도 버튼 · 지도 띠(U-163)의 핀 모양 */
+.bar { position: sticky; top: 0; z-index: 40; background: var(--black); }
+.wall { display: grid; grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr)); gap: 4px; padding: 4px 4px 0; align-items: start; transition: opacity .3s var(--out); }
+.col { display: grid; gap: 4px; min-width: 0; will-change: transform; }
+.tile { position: relative; display: block; overflow: hidden; background: var(--z8); transition: opacity .25s var(--out), transform .16s var(--ease); }
+.tile:active { transform: scale(.98); }
+.tile.p { aspect-ratio: 402 / 568; }
+.tile.w { aspect-ratio: 3 / 4; }
+.tile img { width: 100%; height: 100%; object-fit: cover; }
+.tile .rk { position: absolute; left: 0; top: 0; min-width: 24px; height: 24px; padding: 0 6px; display: grid; place-items: center; background: var(--black); font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.tile.ghost { opacity: 0; }
+.tile.rise { animation: rise .42s var(--ease) backwards; animation-delay: calc(var(--k, 0) * 28ms); }
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+@media (hover: hover) and (pointer: fine) { .wall:has(.tile:hover) .tile:not(:hover) { opacity: .45; } }
+.wend { height: 96px; }
+
+/* 지도 모드: 벽 위에 지도가 덮이고, 포스터가 핀 자리로 날아감(넷바 z 20보다 아래) */
+.maplayer { position: fixed; left: 0; right: 0; bottom: 0; top: var(--barh, 104px); z-index: 16; opacity: 0; visibility: hidden; transition: opacity .32s var(--out), visibility 0s linear .32s; touch-action: none; }
+.maplayer.on { opacity: 1; visibility: visible; transition: opacity .32s var(--out); }
+.maplayer .mm { cursor: default; }
+.maplayer .mpin .pc { cursor: pointer; }
+.maplayer .mpin .pc::before { content: ""; position: absolute; inset: -8px -6px; }
+.maplayer.pre .mpin .pc { opacity: 0; transition: none; }
+.fly { position: fixed; left: 0; top: 0; z-index: 18; overflow: hidden; pointer-events: none; transform-origin: 0 0; background: var(--z8); will-change: transform, opacity; }
+.fly img { width: 100%; height: 100%; object-fit: cover; }
+.fly.pin { border-radius: 6px; }
+/* 고른 전시 카드: 지도 화면 시트 카드(`.lcard`)와 같은 모양 — 짙은 회색 바탕 + 선 1 */
+.mcard { position: absolute; left: var(--pad); right: var(--pad); bottom: calc(max(16px, env(safe-area-inset-bottom)) + 56px + 12px + 40px + 12px); display: grid; grid-template-columns: 72px minmax(0, 1fr); height: 102px; background: #18181b; border: 1px solid var(--z8); color: var(--z0); touch-action: pan-y; transition: transform .16s var(--ease); }
+.mcard:active { transform: scale(.99); }
+.mcard .lp { position: relative; background: var(--z8); overflow: hidden; }
+.mcard .lp img { width: 100%; height: 100%; object-fit: cover; }
+.mcard .lt { display: grid; align-content: space-between; min-width: 0; padding: 12px 52px 12px 12px; }
+.mcard h3 { font-size: 16px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mcard .og { font-size: 12px; color: var(--z3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mcard .mt { font-size: 12px; color: var(--z5); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mcard .big { position: absolute; right: 8px; top: 8px; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--z8); color: var(--z0); transition: transform .16s var(--ease); }
+.mcard .big::after { content: ""; position: absolute; inset: -6px; }
+.mcard .big:active { transform: scale(.96); }
+.mcard .big svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* 떠 있는 지도 버튼: 넷바 바로 위 가운데, 넷바와 같은 검정 알약 + 선 */
+.mtog { position: fixed; z-index: 45; left: 50%; bottom: calc(max(16px, env(safe-area-inset-bottom)) + 56px + 12px); transform: translateX(-50%); display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 16px 0 14px; border-radius: 9999px; background: var(--black); border: 1px solid var(--z7); font-size: 14px; font-weight: 600; transition: transform .16s var(--ease), background-color .2s; }
+.mtog:active { transform: translateX(-50%) scale(.96); }
+@media (hover: hover) { .mtog:hover { background: #18181b; } }
+.mtog svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.mtog .lab { display: inline-block; }
+
+.sheet { margin-top: -20px; }
+.sheet .mband { border-radius: var(--r20) var(--r20) 0 0; }
+html.mapmode .sheet, html.mapmode .wend { visibility: hidden; }
+
+@media (min-width: 768px) {
+  .wall { --cols: 4; gap: 8px; padding: 8px var(--pad) 0; }
+  .col { gap: 8px; }
+  .mcard { left: var(--pad); right: auto; width: 400px; bottom: 32px; height: 124px; grid-template-columns: 86px minmax(0, 1fr); }
+}
+@media (min-width: 1100px) { .wall { --cols: 6; gap: 12px; } .col { gap: 12px; } }
+@media (prefers-reduced-motion: reduce) { .tile.rise { animation: none; } }
+</style>
+</head>
+<body>
+<main id="main">
+  <h1 class="sr">Display U. 홈</h1>
+  <div class="bar" id="bar"><header class="hd" id="hd"></header><div class="cats" id="cats"></div></div>
+  <section aria-label="전시 둘러보기">
+    <div class="wall" id="wall"></div>
+    <div class="wend" aria-hidden="true"></div>
+  </section>
+  <div class="maplayer" id="ml" aria-hidden="true">
+    <div class="mm"><canvas></canvas><div class="mpins"></div></div>
+    <div id="mcard"></div>
+  </div>
+  <div class="sheet">
+    <a class="mband" id="mband" href="map.html"></a>
+    <div id="tail"></div>
+  </div>
+</main>
+<button type="button" class="mtog" id="mtog" aria-pressed="false"></button>
+<script src="assets/byline.js"></script>
+<script src="assets/demo-data.js"></script>
+<script src="assets/minimap.js"></script>
+<script src="promo/shared.js"></script>
+<script src="promo/home/shared.js"></script>
+<script>
+(() => {
+  const { rm, clamp, esc, src, wsrc, frame } = HN;
+  const bar = document.getElementById('bar'), wall = document.getElementById('wall'), ml = document.getElementById('ml'), mcardEl = document.getElementById('mcard'), tog = document.getElementById('mtog');
+  HN.header(document.getElementById('hd')); HN.nav();
+  const band = HN.band(document.getElementById('mband'));
+  document.getElementById('tail').innerHTML = HN.tail();
+  const I_MAP = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 17.2s5.2-4.7 5.2-8.9a5.2 5.2 0 0 0-10.4 0c0 4.2 5.2 8.9 5.2 8.9z"/><circle cx="10" cy="8.3" r="1.9"/></svg>';
+  const I_WALL = '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3.5" y="3.5" width="5" height="7"/><rect x="11.5" y="3.5" width="5" height="5"/><rect x="3.5" y="13.5" width="5" height="3"/><rect x="11.5" y="11.5" width="5" height="5"/></svg>';
+  const I_BIG = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M11.5 4H16v4.5M8.5 16H4v-4.5M16 4l-5.5 5.5M4 16l5.5-5.5"/></svg>';
+  let list = [], tiles = [], cols = [], mode = 'wall', sel = 0, busy = false, k = 'pop';
+
+  /* ── 벽: 전시 포스터 다음에 그 전시 작품 2점. 가장 짧은 열에 차례로 쌓음(높이는 비율로 계산) ── */
+  const colCount = () => (innerWidth >= 1100 ? 6 : innerWidth >= 768 ? 4 : 3);
+  function build(anim) {
+    list = DEMO.TAB[k]();
+    const items = []; list.forEach((e, i) => { items.push({ t: 'p', e, r: k === 'pop' ? i + 1 : 0 }); DEMO.WORKS.filter((w) => w.e === e.i).slice(0, 2).forEach((w) => items.push({ t: 'w', e, w })); });
+    const n = colCount(), hs = Array(n).fill(0), cs = Array.from({ length: n }, () => []);
+    items.forEach((it) => { const c = hs.indexOf(Math.min(...hs)); cs[c].push(it); hs[c] += it.t === 'p' ? 568 / 402 : 4 / 3; });
+    let kk = 0;
+    wall.style.setProperty('--cols', n);
+    wall.innerHTML = cs.map((c) => `<div class="col">${c.map((it) => it.t === 'p'
+      ? `<a class="tile p${anim ? ' rise' : ''}" style="--k:${kk++}" data-e="${it.e.i}" href="exhibition.html?e=${it.e.i}" aria-label="${it.r ? '순위 ' + it.r + ': ' : ''}전시 ${esc(it.e.t)}"><img src="${src(it.e)}" alt="" ${kk > 12 ? 'loading="lazy" ' : ''}decoding="async">${it.r ? `<span class="rk" aria-hidden="true">${it.r}</span>` : ''}</a>`
+      : `<a class="tile w${anim ? ' rise' : ''}" style="--k:${kk++}" data-e="${it.e.i}" href="work.html?w=${it.w.i}" aria-label="작품 ${esc(it.w.t)}, ${esc(it.w.a.join(', '))}"><img src="${wsrc(it.w)}" alt="" ${kk > 12 ? 'loading="lazy" ' : ''}decoding="async"></a>`).join('')}</div>`).join('') || '<p style="padding:80px var(--pad);text-align:center;color:var(--z5)">진행 중이거나 예정된 전시가 없어요</p>';
+    tiles = [...wall.querySelectorAll('.tile')]; cols = [...wall.querySelectorAll('.col')].map((el, i) => ({ el, y: scrollY, w: 1 - Math.abs(i - (n - 1) / 2) / Math.max(1, n / 2) * .55 }));
+    sel = 0; if (mm) { mm.set(list); placeMap(true); }
+  }
+  /* ── 열마다 다른 속도(가운데 열이 먼저, 양옆이 살짝 늦게) — 손을 떼면 다 같이 제자리 ── */
+  let lagRaf = 0, lastT = 0;
+  function lag(now) {
+    const dt = Math.min(.05, (now - lastT) / 1000 || .016); lastT = now; let moving = false;
+    for (const c of cols) { const rate = 6 + 14 * c.w; c.y += (scrollY - c.y) * (1 - Math.exp(-rate * dt)); const off = c.y - scrollY; if (Math.abs(off) > .3) moving = true; else c.y = scrollY; c.el.style.transform = Math.abs(off) > .3 ? `translate3d(0, ${clamp(off, -60, 60).toFixed(1)}px, 0)` : ''; }
+    lagRaf = moving ? requestAnimationFrame(lag) : 0;
+  }
+  addEventListener('scroll', () => { if (rm || mode !== 'wall' || lagRaf) return; lastT = performance.now(); lagRaf = requestAnimationFrame(lag); }, { passive: true });
+
+  /* ── 지도 ── */
+  const barH = () => bar.offsetHeight;
+  let mm = null, mmS = .6;
+  function fitScale(W, H) {   // 전시 핀이 카드 위 남는 칸에 다 들어오는 배율
+    const ps = HN.MAPPED.map(DUMiniMap.pos), xs = ps.map((p) => p.x), ys = ps.map((p) => p.y), cardH = innerWidth >= 768 ? 40 : 230;
+    return clamp(Math.min((W - 72) / (Math.max(...xs) - Math.min(...xs)), (H - cardH - 120) / (Math.max(...ys) - Math.min(...ys))), .4, 1.1);
+  }
+  function placeMap(instant) {
+    if (!list.length) return;
+    const H = ml.clientHeight || innerHeight - barH(), c = mm.center(list);
+    const shift = innerWidth >= 768 ? 0 : (230 / 2) / mmS;   // 폰은 아래 카드만큼 위로
+    mm.view(c.x, c.y + shift);
+    if (instant) mm.mark(list[sel] && list[sel].i);
+  }
+  mm = DUMiniMap.make(ml.querySelector('.mm'), { s: (W) => (mmS = fitScale(W, ml.clientHeight || innerHeight - 104)), ay: .5, src: (e) => src(e) });
+  const pinEls = () => [...ml.querySelectorAll('.mpin')];
+  function card() {
+    const e = list[sel]; if (!e) { mcardEl.innerHTML = ''; return; }
+    mcardEl.innerHTML = `<a class="mcard" href="exhibition.html?e=${e.i}"><span class="lp"><img src="${src(e)}" alt=""></span><span class="lt"><span><h3>${esc(e.t)}</h3><p class="og">${esc(e.s)}</p></span><span class="mt"><span class="dt12">${e.d}</span> · ${esc(e.p)}</span></span></a>`;
+    const big = document.createElement('a'); big.className = 'big'; big.href = 'map.html?ex=' + e.i; big.setAttribute('aria-label', '지도 크게 보기'); big.innerHTML = I_BIG;
+    mcardEl.querySelector('.mcard').appendChild(big);
+    big.addEventListener('click', (ev) => ev.stopPropagation());
+  }
+  function choose(i) { sel = (i + list.length) % list.length; mm.mark(list[sel].i); card(); band.focus(list[sel].i); }
+  ml.querySelector('.mm').addEventListener('click', (ev) => { const p = ev.target.closest('.mpin'); if (!p) return; const i = pinEls().indexOf(p); if (i < 0) return; if (i === sel) location.href = 'exhibition.html?e=' + list[i].i; else choose(i); });
+  let sx = null; mcardEl.addEventListener('pointerdown', (e) => { sx = e.clientX; });
+  mcardEl.addEventListener('pointerup', (e) => { if (sx == null) return; const dx = e.clientX - sx; sx = null; if (Math.abs(dx) > 40) { choose(sel + (dx < 0 ? 1 : -1)); mcardEl.addEventListener('click', (ev) => ev.preventDefault(), { once: true, capture: true }); } });
+  addEventListener('keydown', (e) => { if (mode !== 'map') return; if (e.key === 'ArrowRight') choose(sel + 1); if (e.key === 'ArrowLeft') choose(sel - 1); if (e.key === 'Escape') toggle(); });
+
+  /* ── 날아가기: 화면에 보이는 포스터는 핀 자리로, 작품은 자기 전시 핀으로 모이며 사라짐 ── */
+  const inView = (r) => r.bottom > barH() && r.top < innerHeight && r.width > 0;
+  function flyer(img, from, to, o = {}) {
+    const f = document.createElement('div'); f.className = 'fly' + (o.pin ? ' pin' : '');
+    f.style.width = to.width + 'px'; f.style.height = to.height + 'px'; f.style.transform = `translate(${to.left}px, ${to.top}px)`;
+    f.innerHTML = `<img src="${img}" alt="">`; document.body.appendChild(f);
+    const a = f.animate([
+      { transform: `translate(${from.left}px, ${from.top}px) scale(${from.width / to.width}, ${from.height / to.height})`, opacity: o.fromO ?? 1, borderRadius: o.r0 || '0px' },
+      { transform: `translate(${to.left}px, ${to.top}px) scale(1, 1)`, opacity: o.toO ?? 1, borderRadius: o.r1 || '0px' }
+    ], { duration: o.dur || 620, delay: o.delay || 0, easing: 'cubic-bezier(.77, 0, .175, 1)', fill: 'both' });
+    return a.finished.then(() => f).catch(() => f);
+  }
+  async function toMap() {
+    busy = true; mode = 'map'; document.documentElement.classList.add('mapmode'); setTog();
+    document.documentElement.style.setProperty('--barh', barH() + 'px');
+    ml.classList.add('pre'); ml.setAttribute('aria-hidden', 'false'); placeMap(false); mm.mark(null); card();
+    ml.classList.add('on'); document.documentElement.style.overflow = 'hidden';
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+    const pins = pinEls(), jobs = [];
+    if (!rm) tiles.forEach((t, idx) => {
+      const r = t.getBoundingClientRect(); if (!inView(r)) return;
+      const li = list.findIndex((e) => e.i === +t.dataset.e), pin = pins[li]; if (!pin) return;
+      const to = pin.querySelector('img').getBoundingClientRect(), d = Math.hypot(r.left - to.left, r.top - to.top);
+      t.classList.add('ghost');
+      jobs.push(t.classList.contains('p')
+        ? flyer(t.querySelector('img').src, r, to, { delay: d * .25, r1: '6px', pin: true })
+        : flyer(t.querySelector('img').src, r, to, { delay: d * .25, toO: 0, dur: 520 }));
+    });
+    const flyers = await Promise.all(jobs);
+    ml.classList.remove('pre'); flyers.forEach((f) => f.remove()); tiles.forEach((t) => t.classList.remove('ghost'));
+    choose(sel); busy = false;
+  }
+  async function toWall() {
+    busy = true; const pins = pinEls(), jobs = [];
+    mm.mark(null); mcardEl.innerHTML = '';
+    if (!rm) {
+      await new Promise((r) => setTimeout(r, 30));
+      tiles.forEach((t) => {
+        const r = t.getBoundingClientRect(); if (!inView(r)) return;
+        const li = list.findIndex((e) => e.i === +t.dataset.e), pin = pins[li]; if (!pin) return;
+        const from = pin.querySelector('img').getBoundingClientRect(), d = Math.hypot(r.left - from.left, r.top - from.top);
+        t.classList.add('ghost');
+        jobs.push(t.classList.contains('p') ? flyer(t.querySelector('img').src, from, r, { delay: d * .2, r0: '6px' }) : flyer(t.querySelector('img').src, from, r, { delay: 120 + d * .2, fromO: 0, dur: 520 }));
+      });
+      ml.classList.add('pre');
+    }
+    mode = 'wall'; setTog(); ml.classList.remove('on'); ml.setAttribute('aria-hidden', 'true');
+    document.documentElement.classList.remove('mapmode'); document.documentElement.style.overflow = '';
+    const flyers = await Promise.all(jobs); flyers.forEach((f) => f.remove()); tiles.forEach((t) => t.classList.remove('ghost')); ml.classList.remove('pre'); busy = false;
+  }
+  function setTog() { const m = mode === 'map'; tog.innerHTML = m ? `${I_WALL}<span class="lab">모아 보기</span>` : `${I_MAP}<span class="lab">지도</span>`; tog.setAttribute('aria-pressed', m); tog.setAttribute('aria-label', m ? '포스터 벽으로 보기' : '지도에서 보기'); }
+  function toggle() { if (busy || !list.length) return; mode === 'wall' ? toMap() : toWall(); }
+  tog.addEventListener('click', toggle); setTog();
+
+  const q = new URLSearchParams(location.search); k = q.get('tab') || 'pop';
+  HN.cats(document.getElementById('cats'), (kk, first) => { k = kk; build(!first && !rm); if (mode === 'map') { mm.set(list); placeMap(true); choose(0); } }, k);
+  let lastCols = colCount(); addEventListener('resize', () => { document.documentElement.style.setProperty('--barh', barH() + 'px'); if (colCount() !== lastCols) { lastCols = colCount(); build(false); } if (mode === 'map') placeMap(true); });
+  window.__map = toggle;
+  if (q.get('view') === 'map') setTimeout(toMap, 500);
+})();
+</script>
+<script src="assets/tap.js"></script>
+</body>
+</html>

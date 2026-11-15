@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#ffffff">
+<base href="../">
+<title>Display U. · 페이지 모음</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="promo/shared.css">
+<style>
+/* 홍보용 페이지 모음(11-15, U-164): 브랜드 페이지 8개 + 홈 새 구조 시안 3개로 가는 문. 원본은 review/brand-sites · review/home-new-v1(검토용, 저장소에 안 올림) — 여기 promo/는 올리는 사본
+   모양은 review/brand-sites/index.html(글자 목록 + 화살표)과 같음. 포스터 벽은 이미 올린 brand.html(U-161·162)로 연결 */
+body { padding: clamp(40px, 8vw, 96px) var(--m) clamp(64px, 10vw, 128px); word-break: keep-all; }
+.top { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+.top .wm { width: clamp(124px, 18vw, 240px); }
+.top p { color: var(--z5); font-size: 14px; font-variant-numeric: tabular-nums; }
+section { margin-top: clamp(48px, 7vw, 96px); }
+h2 { padding-bottom: 8px; font-size: 14px; font-weight: 600; color: var(--z5); }
+ol { display: grid; }
+li a { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; gap: 4px 24px; padding: clamp(16px, 2.4vw, 28px) 0; transition: opacity .25s var(--ease); }
+li strong { font-size: clamp(28px, 5.2vw, 72px); font-weight: 600; line-height: 1.1; }
+li span { grid-column: 1; font-size: 16px; color: var(--z5); text-wrap: pretty; }
+li svg { grid-column: 2; grid-row: 1; width: clamp(28px, 5vw, 72px); height: auto; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .3s var(--ease); }
+li a:active { opacity: .6; }
+@media (hover: hover) { ol:hover a { opacity: .28; } ol a:hover { opacity: 1; } li a:hover svg { transform: translateX(8px); } }
+@media (prefers-reduced-motion: reduce) { li a, li svg { transition: none; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <h1><span class="sr">Display U. 페이지 모음</span><span id="wm" aria-hidden="true"></span></h1>
+</header>
+
+<section aria-labelledby="h-brand">
+  <h2 id="h-brand">브랜드 페이지</h2>
+  <ol>
+    <li><a href="promo/mosaic/"><strong>모자이크</strong><span>로고가 전시 포스터 수백 장으로 짜여 있고, 스크롤하면 그 안으로 파고들어 한 전시에 닿아요</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+    <li><a href="promo/fold/"><strong>병풍</strong><span>포스터 11장이 병풍처럼 접혀 서 있다가, 스크롤하면 펼쳐지며 옆으로 지나가요</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+    <li><a href="promo/corridor/"><strong>전시장</strong><span>스크롤이 걸음이 돼요. 흰 전시장 안으로 걸어 들어가면 포스터가 양옆으로 지나가요</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+    <li><a href="promo/reel/"><strong>포스터 릴</strong><span>포스터가 필름처럼 이어지고, 넘길 때 종이처럼 휘며 색이 번져요</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+    <li><a href="promo/trail/"><strong>지나간 자리</strong><span>손가락·마우스가 지나간 자리마다 작품이 걸렸다 사라져요</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+    <li><a href="brand.html"><strong>포스터 벽</strong><span>전시 포스터가 벽이 되어 흐르고, 손을 대면 그 전시만 불이 켜져요</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+    <li><a href="promo/days/"><strong>닷새</strong><span>스크롤이 날짜를 넘기고, 전시가 끝나 내려온 포스터가 디유에 다시 걸려요</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+    <li><a href="promo/between/"><strong>D와 U 사이</strong><span>로고의 D와 U가 양 끝으로 벌어지고, 그 사이로 작품이 지나가요</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+  </ol>
+</section>
+
+<section aria-labelledby="h-home">
+  <h2 id="h-home">홈 시안</h2>
+  <ol>
+    <li><a href="promo/home/a.html"><strong>한 장</strong><span>한 화면에 전시 한 장. 내리면 다음 포스터가 아래에서 올라와 지금 장을 덮어요</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+    <li><a href="promo/home/b.html"><strong>벽과 지도</strong><span>포스터와 작품이 한 벽에 걸리고, 지도 버튼을 누르면 포스터가 지도 위 자기 자리로 날아가요</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+    <li><a href="promo/home/c.html"><strong>색인</strong><span>전시 이름이 큰 글자로 줄지어 있고, 읽는 줄 옆에 그 포스터가 따라붙어요</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></li>
+  </ol>
+</section>
+<script src="promo/shared.js"></script>
+<script>document.getElementById('wm').innerHTML = BRAND.wordmark('wm');</script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#f4f4f5">
+<!-- 브랜드 사이트 시안 2 · 닷새(11-15, 검토용 · 푸시 대상 아님)
+     생각: 졸업전시는 며칠이면 벽에서 내려온다 → 스크롤이 날짜를 넘기고, 마지막 날이 지나면 포스터가 떨어지고, 디유(검은 화면)에 다시 걸린다. 문구는 모두 ❓임시 -->
+<base href="../../">
+<title>Display U. — 전시가 끝나도 남는 곳</title>
+<meta name="description" content="대학생 전시와 작품을 발견하고, 감상하고, 기록하는 곳. Display U.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="promo/shared.css">
+<style>
+body { background: var(--black); }
+.top { position: fixed; left: 0; right: 0; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; padding: max(12px, env(safe-area-inset-top)) var(--m) 12px; color: #fff; mix-blend-mode: difference; }
+.top .logo { display: inline-flex; align-items: center; min-height: 44px; }
+.top .wm { width: 110px; }
+
+.scene { height: 560vh; }
+.stage { position: sticky; top: 0; height: 100svh; min-height: 560px; overflow: hidden; background: var(--bg2); color: var(--ink); display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-rows: minmax(0, 1fr) auto; gap: 0 var(--m); padding: 96px var(--m) var(--m); --ph: min(58svh, 54vw); --pw: calc(var(--ph) * 402 / 568); }
+.stage.dark { background: var(--black); color: var(--fa); }
+
+/* 왼쪽 위: 문장 세 개가 같은 자리에서 바뀜 */
+.say { grid-area: 1 / 1; position: relative; z-index: 3; }   /* 떨어지는 포스터가 문장 뒤로 지나감 */
+.say > * { position: absolute; left: 0; top: 0; max-width: 14em; font-size: clamp(24px, 2.8vw, 40px); font-weight: 600; line-height: 1.3; text-wrap: balance; opacity: 0; will-change: opacity, transform; }
+.say .go { position: absolute; left: 0; top: calc(clamp(24px, 2.8vw, 40px) * 2.6 + 24px); opacity: 0; font-size: 16px; }
+/* 왼쪽 아래: 날짜 큰 숫자 + 상태 */
+.when { grid-area: 2 / 1; position: relative; z-index: 2; display: grid; gap: 8px; transition: opacity .25s var(--ease); }   /* 실은 숫자 뒤로 지나감 */
+.stage.dark .when { opacity: 0; }
+.status { display: inline-flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 600; }
+.status i { width: 10px; height: 10px; border-radius: 50%; background: var(--ink); }
+.status[data-st="전시 예정"] i { background: none; box-shadow: inset 0 0 0 2px var(--z5); }
+.status[data-st="종료"] { color: var(--z5); } .status[data-st="종료"] i { background: var(--z3); }
+.date { display: flex; align-items: baseline; gap: .12em; font-size: clamp(88px, 15.5vw, 240px); font-weight: 600; line-height: .86; letter-spacing: -0.05em; font-variant-numeric: tabular-nums; }
+.date .w { font-size: .22em; letter-spacing: -0.03em; color: var(--z5); }
+.date .n.tick { animation: tick .32s var(--ease); }
+@keyframes tick { from { transform: translateY(.12em); opacity: .2; } }
+
+/* 오른쪽: 벽. 포스터는 화면 위에서 내려온 실 두 가닥에 매달림 */
+.wallbox { grid-area: 1 / 2 / 3 / 3; position: relative; }
+.hang, .trace { position: absolute; left: 50%; top: 50%; width: var(--pw); height: var(--ph); margin: calc(var(--ph) / -2 + 12px) 0 0 calc(var(--pw) / -2); }
+.trace { background: #fff; opacity: 0; }
+.hang { transform-origin: 50% -120vh; will-change: transform; }
+.hang .th { position: absolute; bottom: 100%; width: 1px; height: 120vh; background: var(--z3); }
+.hang .th.l { left: 18%; } .hang .th.r { right: 18%; }
+.stage.dark .hang .th, .stage.dark .trace { visibility: hidden; }
+.poster { position: absolute; inset: 0; background: var(--z8); overflow: hidden; will-change: transform; }
+.poster img, .arch img { width: 100%; height: 100%; object-fit: cover; }
+
+/* 검은 화면(디유): 가운데 그 포스터 + 양옆에 다른 전시들 */
+.arch { position: absolute; inset: 0; display: grid; place-items: center; opacity: 0; pointer-events: none; }
+.stage.dark .arch { pointer-events: auto; }
+.arch .rowp { position: absolute; left: 50%; top: 50%; display: flex; align-items: flex-start; gap: clamp(8px, 1.2vw, 20px); transform: translate(-50%, -50%); margin-top: -36px; }
+.arch .p { flex: none; width: calc(var(--pw) * .82); aspect-ratio: 402 / 568; background: var(--z8); overflow: hidden; will-change: transform; }
+.arch .p.side img { opacity: .4; }
+.arch .mid { display: grid; gap: 12px; }
+.arch .info { display: grid; gap: 2px; text-align: center; font-size: 14px; color: var(--z5); }
+.arch .info strong { font-size: 18px; font-weight: 600; color: var(--fa); }
+.arch .info .dt { font-variant-numeric: tabular-nums; letter-spacing: 0; }
+@media (min-width: 900px) { .arch .rowp { left: calc(50% + (100% - var(--m) * 2) * 5 / 24 + var(--m) / 2); } .arch .side[data-k="-2"], .arch .side[data-k="2"] { display: none; } }   /* 넓은 화면: 오른쪽 벽 칸의 가운데, 양옆 한 장씩만(왼쪽 문장을 가리지 않게) */
+
+@media (max-width: 899px) {
+  .stage { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr) auto; padding: 76px var(--m) max(20px, env(safe-area-inset-bottom)); --ph: min(46svh, 108vw); }
+  .when { grid-area: 1 / 1; } .wallbox { grid-area: 2 / 1; } .say { grid-area: 3 / 1; height: 132px; }
+  .date { font-size: clamp(88px, 27vw, 140px); }
+  .say .go { top: 84px; }
+}
+
+.end { background: var(--black); color: var(--fa); padding: clamp(96px, 12vw, 200px) var(--m) max(var(--m), env(safe-area-inset-bottom)); display: grid; gap: clamp(32px, 4vw, 64px); }
+.end .row { display: flex; justify-content: space-between; align-items: center; gap: 24px; color: var(--z5); font-size: 14px; }
+.end .row .go { color: var(--fa); }
+@media (prefers-reduced-motion: reduce) { .date .n.tick { animation: none; } .when { transition: none; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="home.html" aria-label="Display U. 홈" id="logo"></a>
+  <a class="go" href="home.html">전시 둘러보기<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+</header>
+<main>
+  <section class="scene" id="scene" aria-labelledby="h">
+    <div class="stage" id="stage">
+      <div class="say">
+        <h1 id="h"></h1>
+        <p id="l2"></p>
+        <p id="l3">디유에서는 계속 걸려 있어요</p>
+        <a class="go" id="l3go" href="home.html">전시 보기<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+      <div class="when" id="when" aria-hidden="true">
+        <span class="status" id="st" data-st="전시 예정"><i></i><span></span></span>
+        <span class="date"><span class="n" id="dn"></span><span class="w" id="dw"></span></span>
+      </div>
+      <div class="wallbox" aria-hidden="true">
+        <div class="trace" id="trace"></div>
+        <div class="hang" id="hang"><i class="th l"></i><i class="th r"></i><div class="poster" id="poster"><img id="pim" alt=""></div></div>
+      </div>
+      <div class="arch" id="arch"></div>
+    </div>
+  </section>
+</main>
+<footer class="end">
+  <div id="fwm" role="img" aria-label="Display U."></div>
+  <div class="row"><span>대학생 전시 · 작품 아카이브</span><a class="go" href="home.html">전시 둘러보기<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+</footer>
+
+<script src="assets/demo-data.js"></script>
+<script src="promo/shared.js"></script>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id), { seg, out, clamp, rm } = BRAND;
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const pimg = (e) => BRAND.img('p' + String(e.i + 1).padStart(2, '0'));
+  $('logo').innerHTML = BRAND.wordmark(); $('fwm').innerHTML = BRAND.wordmark();
+
+  /* 주인공 전시: 데모 데이터의 《한 칸 너머》(2026.11.09 월 ~ 11.13 금). 날짜·기간 낱말은 데이터에서 계산 — 전시를 바꾸면 문장도 따라 바뀜 */
+  const E = DEMO.EXH, ex = E.find((e) => e.t === '한 칸 너머') || E[0];
+  const DAY = 86400000, s = new Date(ex.start + 'T00:00:00'), n = Math.round((new Date(ex.end + 'T00:00:00') - s) / DAY) + 1;
+  const days = Array.from({ length: n + 1 }, (_, k) => { const d = new Date(+s + k * DAY); return { n: `${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`, w: '일월화수목금토'[d.getDay()] }; });
+  const WORD = { 2: ['이틀', '이'], 3: ['사흘', '이'], 4: ['나흘', '이'], 5: ['닷새', '가'], 6: ['엿새', '가'], 7: ['이레', '가'] }[n] || [n + '일', '이'];
+  $('h').textContent = `졸업전시는 ${WORD[0]} 동안 열려요`;
+  $('l2').textContent = `${WORD[0]}${WORD[1]} 지나면 벽에서 내려와요`;
+  $('l3go').href = 'exhibition.html?e=' + ex.i;
+  $('pim').src = pimg(ex);
+  const others = E.filter((e) => e.i !== ex.i).slice(0, 4);
+  const side = (e, k) => `<div class="p side" data-k="${k}"><img src="${pimg(e)}" alt="" loading="lazy"></div>`;
+  $('arch').innerHTML = `<div class="rowp">${side(others[2], -2)}${side(others[0], -1)}<div class="mid" data-k="0"><div class="p"><img src="${pimg(ex)}" alt=""></div><div class="info"><strong>${esc(ex.t)}</strong><span>${esc(ex.s)}</span><span class="dt">${esc(ex.d)} · 종료</span></div></div>${side(others[1], 1)}${side(others[3], 2)}</div>`;
+
+  const scene = $('scene'), stage = $('stage'), hang = $('hang'), poster = $('poster'), trace = $('trace'), arch = $('arch'), stEl = $('st'), dn = $('dn'), dw = $('dw');
+  const h1 = $('h'), l2 = $('l2'), l3 = $('l3'), l3go = $('l3go'), cells = [...arch.querySelectorAll('[data-k]')];
+  const show = (el, o) => { el.style.opacity = o.toFixed(3); el.style.transform = `translate3d(0, ${((1 - o) * 12).toFixed(1)}px, 0)`; el.style.visibility = o < 0.01 ? 'hidden' : 'visible'; };
+  let day = -9, dark = null, th = 0, om = 0, ly = scrollY;
+  function setDay(k, stt) {
+    if (k === day) return; day = k; const d = days[Math.min(k, n)];
+    dn.textContent = d.n; dw.textContent = d.w; stEl.dataset.st = stt; stEl.lastElementChild.textContent = stt;
+    if (!rm) { dn.classList.remove('tick'); void dn.offsetWidth; dn.classList.add('tick'); }
+  }
+  function frame(dt) {
+    const r = scene.getBoundingClientRect(), p = clamp(-r.top / Math.max(1, r.height - innerHeight));
+    /* 0~.1 포스터가 내려와 걸림 · .1~.56 하루씩 · .56~ 다음 날(종료) · .6~.74 떨어짐 · .77~ 검은 화면 · .8~.94 다시 걸림 */
+    if (p < 0.1) setDay(0, '전시 예정'); else if (p < 0.56) setDay(Math.min(n - 1, Math.floor(seg(p, 0.1, 0.56) * n)), '전시 중'); else setDay(n, '종료');
+    const y = scrollY, sv = (y - ly) / Math.max(dt, 0.001); ly = y;
+    if (!rm) { om += (-70 * th - 6 * om + clamp(-sv * 0.03, -60, 60)) * dt; th = clamp(th + om * dt, -4, 4); }
+    const en = out(seg(p, 0, 0.1));
+    hang.style.transform = `translate3d(0, ${(-(1 - en) * 115).toFixed(2)}vh, 0) rotate(${th.toFixed(3)}deg)`;
+    const dr = seg(p, 0.6, 0.74);
+    if (rm) poster.style.opacity = (1 - dr).toFixed(3); else poster.style.transform = `translate3d(0, ${(dr * dr * 135).toFixed(2)}vh, 0) rotate(${(dr * 11).toFixed(2)}deg)`;
+    trace.style.opacity = seg(p, 0.61, 0.66).toFixed(3);
+    show(h1, 1 - seg(p, 0.5, 0.56)); show(l2, seg(p, 0.6, 0.66) * (1 - seg(p, 0.73, 0.77))); const o3 = seg(p, 0.86, 0.92); show(l3, o3); show(l3go, o3);
+    const d = p > 0.77; if (d !== dark) { dark = d; stage.classList.toggle('dark', d); document.querySelector('meta[name="theme-color"]').content = d ? '#000000' : '#f4f4f5'; }
+    arch.style.opacity = seg(p, 0.78, 0.82).toFixed(3);
+    const a = out(seg(p, 0.8, 0.94));
+    cells.forEach((c) => { const k = +c.dataset.k; c.style.transform = k ? `translate3d(${((1 - a) * k * 70).toFixed(1)}px, calc(var(--pw) * 14 / 232), 0) scale(.9138)` : `translate3d(0, ${((1 - a) * 28).toFixed(2)}vh, 0)`; });
+  }
+  /* 검토용: 주소 끝에 ?p=0.7 처럼 붙이면 그 지점으로 바로 감 */
+  const jp = parseFloat(new URLSearchParams(location.search).get('p')); if (jp >= 0) scrollTo(0, scene.offsetTop + jp * (scene.offsetHeight - innerHeight));
+  frame(0.016); BRAND.loop(frame);
+})();
+</script>
+</body>
+</html>
