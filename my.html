@@ -539,7 +539,7 @@ $('btn-set').addEventListener('click', () => {
     ${verified ? `<button class="cert" id="dr-cert"><span>작가 인증</span><small>${SCHOOL} 인증 완료</small></button>` : `<button class="cert act" id="dr-cert"><span><b>작가 인증하기</b><small>학교 이메일로 인증해요</small></span>${ic('i-chev')}</button>`}
     <div class="grow"></div>
     <div class="bot"><button id="dr-out">로그아웃</button><button class="mute" id="dr-del">회원 탈퇴</button></div>
-    <div class="foot"><nav><a href="#">이용약관</a><i></i><a href="#">개인정보처리방침</a></nav><small>© 2026 displayU. All rights reserved.</small></div></div>`, '설정');
+    <div class="foot"><nav><a href="terms.html?doc=service">이용약관</a><i></i><a href="terms.html?doc=privacy">개인정보처리방침</a></nav><small>© 2026 displayU. All rights reserved.</small></div></div>`, '설정');
   applyProfile(s.querySelector('#dr-prof'));
   s.querySelector('#dr-prof').addEventListener('click', () => { location.href = 'profile-edit.html?kind=basic'; });
   s.querySelector('#dr-cert').addEventListener('click', () => { if (!verified) location.href = 'verify.html'; });
