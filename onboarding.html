@@ -71,8 +71,8 @@ ul { list-style: none; }
 .row .main:active .cb { transform: scale(.96); }
 .row .lb { font-size: 14px; font-weight: 400; color: var(--text-primary); }
 .row .lb em { font-style: normal; color: var(--text-teritary); margin-left: 4px; }
-/* 11-15 체크 없는 안내 줄(Terms / 안내 행 4383:40462): 라벨은 체크 줄 라벨과 같은 열(체크 24 + 간격 12 = 36) */
-.row.info .main { padding-left: 36px; text-align: left; }
+/* 11-15 사용자 B안: 체크 목록 바로 아래 글자 링크(Figma `Terms / 안내 링크` 4425:41094 — 12 Medium text/secondary 밑줄, 누르는 높이 44 + 위 4). 이전: 체크 없는 안내 줄(Terms / 안내 행)은 '빠진 체크처럼 낯설다'로 바꿈 */
+.doclink { display: inline-flex; align-items: center; min-height: 44px; margin-top: 4px; font-size: 12px; font-weight: 500; color: var(--text-secondary); text-decoration: underline; text-underline-offset: 3px; }
 
 /* 닉네임 (Figma 3891:46838~47099) */
 .desc { margin-top: 8px; font-size: 14px; font-weight: 400; color: var(--text-secondary); }
@@ -132,6 +132,7 @@ ul { list-style: none; }
     <h1 class="lead" id="t-terms" tabindex="-1">서비스 이용을 위해<br>이용약관 동의가 필요합니다</h1>
     <div class="terms">
       <ul id="rows"></ul>
+      <button type="button" class="doclink" id="privacy">개인정보 수집·이용 안내</button>
     </div>
     <div class="cta"><button type="button" class="big" id="next" disabled>다음</button></div>
   </section>
@@ -179,18 +180,15 @@ const NEXT = q.get('next') && SAFE.test(q.get('next')) ? q.get('next') : 'home.h
 const TAKEN = ['admin', '디유', 'displayu', '민재', '서하'];
 $('go').href = NEXT;
 
-/* ---------- 약관 (11-15 사용자 B안 확정, Figma 4383:40618·40690: 필수 체크 2 + 체크 없는 안내 1, 전체 동의 없음)
+/* ---------- 약관 (11-15 사용자 B안 확정, Figma 4383:40618·40690: 필수 체크 2 + 목록 아래 '개인정보 수집·이용 안내' 글자 링크, 전체 동의 없음)
    이전(11-09 Figma 3891:46750): 전체 동의 + 서비스 이용약관·개인정보 수집·이용 동의·만 14세(필수 3) + 위치기반서비스 이용약관(선택) ---------- */
 const TERMS = [
   { n: '서비스 이용약관', req: true, doc: true },
-  { n: '만 14세 이상 확인', req: true, doc: false },
-  { n: '개인정보 수집·이용 안내', info: true, doc: true }   /* 동의가 아니라 안내(개인정보위 2024.9) — 체크 없이 문서만 */
-];
+  { n: '만 14세 이상 확인', req: true, doc: false }
+];   /* 개인정보 수집·이용은 동의가 아니라 안내(개인정보위 2024.9) — 목록 아래 #privacy 링크 */
 const on = TERMS.map(() => false);
 const MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="#d7d7df" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8.4 12.4 2.6 2.4 4.8-5.2"/></svg>';
-$('rows').innerHTML = TERMS.map((t, i) => t.info
-  ? `<li class="row info"><button type="button" class="main" aria-label="${t.n} 보기"><span class="lb">${t.n}</span></button><button type="button" class="go" tabindex="-1" aria-hidden="true"><svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></button></li>`
-  : `<li class="row"><button type="button" class="main" role="checkbox" aria-checked="false" data-i="${i}"><span class="cb">${MARK}</span><span class="lb">${t.n}<em>(${t.req ? '필수' : '선택'})</em></span></button>${t.doc ? `<button type="button" class="go" aria-label="${t.n} 보기"><svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></button>` : ''}</li>`).join('');
+$('rows').innerHTML = TERMS.map((t, i) => `<li class="row"><button type="button" class="main" role="checkbox" aria-checked="false" data-i="${i}"><span class="cb">${MARK}</span><span class="lb">${t.n}<em>(${t.req ? '필수' : '선택'})</em></span></button>${t.doc ? `<button type="button" class="go" aria-label="${t.n} 보기"><svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></button>` : ''}</li>`).join('');
 function paintTerms() {
   $('rows').querySelectorAll('[role=checkbox]').forEach((b) => b.setAttribute('aria-checked', on[+b.dataset.i]));
   $('next').disabled = !TERMS.every((t, i) => !t.req || on[i]);
