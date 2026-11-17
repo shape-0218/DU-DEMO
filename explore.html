@@ -111,14 +111,46 @@ html.kb .search input:focus-visible { box-shadow: 0 0 0 2px var(--text-primary);
 .sortbtn { height: 32px; display: inline-flex; align-items: center; gap: 2px; padding-left: 8px; font-size: 12px; font-weight: 500; transition: color .2s; }
 .sortbtn .i { width: 18px; height: 18px; transition: transform .25s var(--ease); }
 .sortbtn[aria-expanded="true"] .i { transform: rotate(180deg); }
+/* 11-17 보기 전환(U-165, 시안 W-11~13 D 확정): 정렬 왼쪽 회색 격자 아이콘 하나로 기본(지금 카드) ↔ 촘촘히(사진만). 켜지면 회색 원(작가 프로필 행동 버튼의 bg/secondary 원과 같은 말투) —
+   전시/작품 검정 알약과 같은 종류 조작으로 보이지 않게. 32 원 · 아이콘 18(채운 네모 4 · 사이 2 · 정수 칸이라 1배 화면에서도 또렷), 꺼짐 text/teritary(흰 바탕 4.8:1) · 켜짐 text/primary,
+   누르는 영역 44는 tap.js(정렬과 사이 8). 고른 보기는 이 기기에 기억(localStorage du-explore-view), 주소 z=1이 먼저 */
+.zt { display: grid; place-items: center; width: 32px; height: 32px; margin-left: auto; margin-right: 8px; border-radius: 50%; color: var(--text-teritary); transition: background-color .2s, color .2s, transform .16s var(--ease); }
+.zt[aria-pressed="true"] { background: var(--bg-secondary); color: var(--text-primary); }
+.zt:active { transform: scale(.96); }
+@media (hover: hover) { .zt:not([aria-pressed="true"]):hover { color: var(--text-primary); } }
+.zt svg { width: 18px; height: 18px; fill: currentColor; }
+.zt + .sortwrap { margin-left: 0; }
 
 /* 목록 */
 .grid { margin-top: 12px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 12px; }   /* 11-12 카드 E(U-94): 세로 24 · 가로 12, 모든 폭 같음 (이전 16/12, 640 이상 16) */
 @media (min-width: 640px)  { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (min-width: 1000px) { .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 @media (min-width: 1280px) { .grid { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+/* 촘촘히(U-165): 사진만 폰 3 · 640 6 · 1000 8 · 1280 10열, 사이 4. 카드 글은 화면에서만 숨김(읽기 도구·검색엔 남음). 바뀔 때 보던 사진은 제자리, 나머지는 옮겨 감(FLIP 420ms .77,0,.175,1) */
+.grid.dense { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+@media (min-width: 640px)  { .grid.dense { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+@media (min-width: 1000px) { .grid.dense { grid-template-columns: repeat(8, minmax(0, 1fr)); } }
+@media (min-width: 1280px) { .grid.dense { grid-template-columns: repeat(10, minmax(0, 1fr)); } }
+.grid.dense .tx { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; padding: 0; }
+.grid.flip .card { animation: none; }
+.card .tx.fadein { animation: du-in .24s var(--ease) .16s both; }
+#list { touch-action: pan-y; }   /* 목록 위 두 손가락 = 보기 전환(페이지 확대 대신) */
+/* 촘촘히에서 마우스를 올리면(마우스 기기만, 폰은 누르면 상세) 사진 아래에서 그라데이션이 차오르고 작품명 · 작가(전시 탭은 전시명)가 4 올라오며 나타남(.2s ease-out).
+   그라데이션은 글 위 40에서 7단으로 완만하게(가로 줄 없음), 글 자리 검정 62~72% → 흰 벽 사진에서도 흰 글 약 6:1. 학교·학과는 넣지 않음(11-17 사용자 "정보가 너무 많다") */
+.card .hv { display: none; word-break: keep-all; overflow-wrap: break-word; }
+@media (hover: hover) and (pointer: fine) {
+  .grid.dense .card .hv { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; aspect-ratio: auto; display: flex; flex-direction: column; padding: 40px 8px 8px; color: #fff; pointer-events: none; opacity: 0; transition: opacity .2s var(--ease);
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, .03) 8px, rgba(0, 0, 0, .1) 14px, rgba(0, 0, 0, .22) 20px, rgba(0, 0, 0, .38) 26px, rgba(0, 0, 0, .52) 32px, rgba(0, 0, 0, .62) 40px, rgba(0, 0, 0, .72) 100%); }   /* aspect-ratio: auto = 사진 칸 비율(.card .im div)이 이 칸에 걸리지 않게 */
+  .grid.dense .card .hv > * { transform: translateY(4px); transition: transform .2s var(--ease); }
+  .grid.dense .card:hover .hv, .grid.dense .card:focus-visible .hv { opacity: 1; }
+  .grid.dense .card:hover .hv > *, .grid.dense .card:focus-visible .hv > * { transform: none; }
+}
+.card .hv b { font-size: 14px; font-weight: 600; overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; text-wrap: pretty; }
+.card .hv .by { font-size: 12px; font-weight: 500; }
+@media (prefers-reduced-motion: reduce) { .card .hv > * { transform: none !important; } }
 .card { display: block; color: var(--text-primary); animation: rise .55s var(--ease) backwards; animation-delay: calc(var(--n, 0) * 35ms); transition: transform .3s var(--ease); }
 .card:active { transform: scale(.98); }
+.card { position: relative; }
 /* 11-14 로딩: 스켈레톤 칸은 올라오는 등장 없이, 스켈레톤 뒤의 실제 카드는 글자만 200ms로 나타남(칸마다 30ms, 앞 6칸) */
 .card.du-sk-item, .grid.from-sk .card { animation: none; }
 .grid.from-sk .card .tx { animation: du-in .2s var(--du-ease) both; animation-delay: calc(min(var(--n, 0), 5) * 30ms); }
@@ -190,6 +222,7 @@ html.kb .search input:focus-visible { box-shadow: 0 0 0 2px var(--text-primary);
 
   <div class="meta">
     <p class="count" id="count" aria-live="polite"></p>
+    <button type="button" class="zt" id="zt" aria-pressed="false" aria-label="촘촘히 보기"><svg viewBox="0 0 18 18" aria-hidden="true"><rect x="1" y="1" width="4" height="4" rx=".5"/><rect x="7" y="1" width="4" height="4" rx=".5"/><rect x="13" y="1" width="4" height="4" rx=".5"/><rect x="1" y="7" width="4" height="4" rx=".5"/><rect x="7" y="7" width="4" height="4" rx=".5"/><rect x="13" y="7" width="4" height="4" rx=".5"/><rect x="1" y="13" width="4" height="4" rx=".5"/><rect x="7" y="13" width="4" height="4" rx=".5"/><rect x="13" y="13" width="4" height="4" rx=".5"/></svg></button>
     <div class="sortwrap">
       <button class="sortbtn" id="sortbtn" aria-haspopup="menu" aria-expanded="false" aria-controls="menu-sort"><span id="sortlb">최신순</span><svg class="i" aria-hidden="true"><use href="#i-down"/></svg></button>
       <div class="menu right" id="menu-sort" role="menu" hidden></div>
@@ -222,10 +255,13 @@ const WORKS = DEMO.WORKS;
 /* ============ 상태 (주소와 연동: 상세에서 돌아와도 검색어·분야·필터 유지) ============ */
 const P = new URLSearchParams(location.search);
 const pick = (v, list, d) => (list.includes(v) ? v : d);
+const VKEY = 'du-explore-view';   // 보기(U-165): 촘촘히면 'dense' — 주소 z가 먼저
+let dense = P.get('z') === '1' ? true : P.get('z') === '2' ? false : (() => { try { return localStorage.getItem(VKEY) === 'dense'; } catch (e) { return false; } })();
 const state = { q: P.get('q') || '', tab: P.get('tab') === 'works' ? 'works' : 'exh', field: pick(P.get('field'), FIELDS, '전체'), type: pick(P.get('type'), TYPES, '전체'), status: pick(P.get('status'), STATUS, '전체'), sort: pick(P.get('sort'), SORTS, '최신순') };
 function syncUrl() {
   const u = new URL(location.href); const def = { q: '', tab: 'exh', field: '전체', type: '전체', status: '전체', sort: '최신순' };
   for (const k in state) state[k] === def[k] ? u.searchParams.delete(k) : u.searchParams.set(k, state[k]);
+  dense ? u.searchParams.set('z', '1') : u.searchParams.delete('z');
   try { history.replaceState(null, '', u); } catch (e) {}
 }
 
@@ -251,7 +287,7 @@ function filtered() {
 const SK_EX = [['h20', 70], ['h17', 50], ['h17', 60, 'mt4'], ['h17', 40, 'mt2']], SK_WK = [['h20', 70], ['h17', 50]], SK_VARY = [0, -12, 6, -6, 2, -10];
 function skeletonHtml() {
   const ex = state.tab === 'exh';
-  return '<div class="grid" aria-hidden="true">' + SK_VARY.map((v) => `<div class="card ${ex ? 'ex' : 'wk'} du-sk-item"><div class="im"><div class="du-ph"></div></div><div class="tx du-bars">${DULoad.bars((ex ? SK_EX : SK_WK).map((b) => [b[0], b[1] + v, b[2]]))}</div></div>`).join('') + '</div>';
+  return '<div class="grid' + (dense ? ' dense' : '') + '" aria-hidden="true">' + SK_VARY.map((v) => `<div class="card ${ex ? 'ex' : 'wk'} du-sk-item"><div class="im"><div class="du-ph"></div></div><div class="tx du-bars">${DULoad.bars((ex ? SK_EX : SK_WK).map((b) => [b[0], b[1] + v, b[2]]))}</div></div>`).join('') + '</div>';
 }
 let loadSeq = 0;
 function renderList() {
@@ -263,9 +299,9 @@ function paintList() {
   const items = filtered(), q = norm(state.q), el = $('list');
   $('count').textContent = q ? `${state.tab === 'exh' ? '전시' : '작품'} ${items.length}개` : '';
   if (!items.length) { el.innerHTML = `<div class="empty"><strong>검색 결과가 없어요</strong><p>다른 검색어나 필터로 찾아보세요</p></div>`; return; }
-  el.innerHTML = '<div class="grid">' + items.map((it, n) => state.tab === 'exh'
-    ? `<a class="card ex" href="exhibition.html?e=${it.i}" style="--n:${Math.min(n, 12)}"><div class="im"><div><img src="${DEMO.src(it.img)}" alt="${it.t} 포스터" width="161" height="241" loading="${n < 6 ? 'eager' : 'lazy'}"></div></div><div class="tx"><b>${it.t}</b><span class="l">${it.s}</span><span class="m"><span class="dt12">${it.d}</span></span><span class="m">${it.p}</span></div></a>`
-    : `<a class="card wk" href="work.html?w=${it.i}" style="--n:${Math.min(n, 12)}"><div class="im"><div><img src="assets/img/explore/opt/${it.img}.jpg" alt="${it.t}" width="161" height="215" loading="${n < 6 ? 'eager' : 'lazy'}"></div></div><div class="tx"><b>${it.t}</b><span class="l">${byline(it.a)}</span></div></a>`).join('') + '</div>';
+  el.innerHTML = '<div class="grid' + (dense ? ' dense' : '') + '">' + items.map((it, n) => state.tab === 'exh'
+    ? `<a class="card ex" data-k="e${it.i}" href="exhibition.html?e=${it.i}" style="--n:${Math.min(n, 12)}"><div class="im"><div><img src="${DEMO.src(it.img)}" alt="${it.t} 포스터" width="161" height="241" loading="${n < 6 ? 'eager' : 'lazy'}"><div class="hv" aria-hidden="true"><b>${it.t}</b></div></div></div><div class="tx"><b>${it.t}</b><span class="l">${it.s}</span><span class="m"><span class="dt12">${it.d}</span></span><span class="m">${it.p}</span></div></a>`
+    : `<a class="card wk" data-k="w${it.i}" href="work.html?w=${it.i}" style="--n:${Math.min(n, 12)}"><div class="im"><div><img src="assets/img/explore/opt/${it.img}.jpg" alt="${it.t}" width="161" height="215" loading="${n < 6 ? 'eager' : 'lazy'}"><div class="hv" aria-hidden="true"><b>${it.t}</b>${byline(it.a)}</div></div></div><div class="tx"><b>${it.t}</b><span class="l">${byline(it.a)}</span></div></a>`).join('') + '</div>';
 }
 function placeInd() {
   const fl = $('fields'), b = fl.querySelector('.field[aria-selected="true"]'), ind = fl.querySelector('.ind'); if (!b || !ind) return;
@@ -310,6 +346,47 @@ let t; $('q').addEventListener('input', (e) => { state.q = e.target.value; $('cl
 addEventListener('keydown', (e) => { if (e.key === 'Tab') document.documentElement.classList.add('kb'); }); addEventListener('pointerdown', () => document.documentElement.classList.remove('kb'));   // 키보드로 이동 중일 때만 포커스 테두리
 $('search-form').addEventListener('submit', (e) => { e.preventDefault(); $('q').blur(); renderList(); syncUrl(); });
 $('clear').addEventListener('click', () => { state.q = ''; render(); $('q').focus(); });
+
+/* ============ 보기: 기본 ↔ 촘촘히 (11-17 U-165) — 아이콘 · 두 손가락 오므리기/벌리기 · 노트북 ctrl+휠(터치패드 오므리기) ============ */
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function flipFirst() { const m = new Map(); $('list').querySelectorAll('.card[data-k]').forEach((c) => { const r = c.getBoundingClientRect(); if (r.bottom > -200 && r.top < innerHeight + 200) m.set(c.dataset.k, r); }); return m.size ? m : null; }
+function flipPlay(first) {   // 같은 사진은 원래 자리에서 새 자리로 미끄러지고(가로 배율 하나 → 사진 비율 그대로), 새로 보이는 칸은 옅게 나타남
+  if (RM) return;
+  $('list').querySelectorAll('.card[data-k]').forEach((c) => {
+    const r = c.getBoundingClientRect(); if (r.bottom < -200 || r.top > innerHeight + 200) return;
+    const o = first.get(c.dataset.k);
+    if (!o) { c.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 260, delay: 120, easing: 'cubic-bezier(.23, 1, .32, 1)', fill: 'backwards' }); return; }
+    const dx = o.left - r.left, dy = o.top - r.top, sx = o.width / r.width;
+    if (Math.abs(dx) < .5 && Math.abs(dy) < .5 && Math.abs(sx - 1) < .01) return;
+    c.style.transformOrigin = '0 0';
+    c.animate([{ transform: `translate(${dx}px, ${dy}px) scale(${sx})` }, { transform: 'none' }], { duration: 420, easing: 'cubic-bezier(.77, 0, .175, 1)' });
+  });
+}
+function setDense(on) {
+  if (on === dense) return; dense = on;
+  try { on ? localStorage.setItem(VKEY, 'dense') : localStorage.removeItem(VKEY); } catch (e) {}
+  $('zt').setAttribute('aria-pressed', on); syncUrl();
+  const grid = $('list').querySelector('.grid:not([aria-hidden])'); if (!grid) return;
+  const fb = $('fields').getBoundingClientRect().bottom, anchor = [...grid.querySelectorAll('.card')].find((c) => c.getBoundingClientRect().bottom > fb + 8), aTop = anchor && anchor.getBoundingClientRect().top;
+  const first = flipFirst();
+  grid.classList.toggle('dense', on); grid.classList.add('flip');
+  if (!on && !RM) grid.querySelectorAll('.tx').forEach((t) => { t.classList.remove('fadein'); void t.offsetWidth; t.classList.add('fadein'); });
+  if (anchor) scrollBy(0, anchor.getBoundingClientRect().top - aTop);   // 보던 사진이 그 자리에 머물게
+  if (first) flipPlay(first);
+  Byline.fit();   // 숨겨져 있던 동안 좁게 재서 "외 N명"으로 줄었던 작가 이름을 다시 맞춤
+}
+$('zt').setAttribute('aria-pressed', dense);
+$('zt').addEventListener('click', () => setDense(!dense));
+(() => {
+  const L = $('list'), dist = (t) => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+  let pz = null;   // 한 번 오므리면 촘촘히, 벌리면 기본
+  L.addEventListener('touchstart', (e) => { if (e.touches.length === 2) pz = { d: dist(e.touches), done: false }; }, { passive: true });
+  L.addEventListener('touchmove', (e) => { if (!pz || pz.done || e.touches.length !== 2) return; const r = dist(e.touches) / pz.d; if (r < .78) { pz.done = true; setDense(true); } else if (r > 1.28) { pz.done = true; setDense(false); } }, { passive: true });
+  L.addEventListener('touchend', (e) => { if (e.touches.length < 2) pz = null; });
+  document.addEventListener('gesturestart', (e) => { if (e.target.closest && e.target.closest('#list')) e.preventDefault(); });   // 아이폰 Safari: 목록 위에선 페이지 확대 대신 보기 전환
+  let wz = 0, wt = 0;
+  L.addEventListener('wheel', (e) => { if (!e.ctrlKey) return; e.preventDefault(); wz += e.deltaY; clearTimeout(wt); wt = setTimeout(() => { wz = 0; }, 260); if (wz > 40) { wz = 0; setDense(true); } else if (wz < -40) { wz = 0; setDense(false); } }, { passive: false });
+})();
 
 /* 선택된 분야 탭이 화면 안에 보이게 */
 render();
