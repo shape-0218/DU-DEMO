@@ -48,6 +48,7 @@
 .cprev[hidden] { display: none; }
 .cp-im { position: relative; flex: none; width: 72px; aspect-ratio: 3 / 4; overflow: hidden; background: var(--bg-secondary); }
 .cp-im img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; user-select: none; }
+.cp-im.fit { background: var(--bg-white); }   /* 11-17 U-167 전체 보이기: 목록 칸의 남는 곳은 흰색(사진 색을 따라가지 않음) */
 .cp-tx { display: grid; gap: 2px; min-width: 0; font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--text-secondary); }
 .cp-tx b { font-size: 14px; font-weight: 600; color: var(--text-primary); }
 .cp-btn { justify-self: start; margin-top: 8px; min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid var(--border-primary); background: #fff; font-size: 12px; font-weight: 600; transition: transform .2s var(--ease); }
@@ -212,7 +213,7 @@
 </div>
 
 <script src="assets/flow.js"></script>
-<script src="assets/cropbox.js?v=u160"></script>
+<script src="assets/cropbox.js?v=u167"></script>
 <script src="assets/media.js"></script>
 <script src="assets/exdata.js"></script>
 <script src="assets/reorder.js"></script>
@@ -281,18 +282,26 @@ function tileHtml(m, i, allowVideo) {
   return `<div class="tile ${m.video ? 'v' : ''}" role="listitem"><img src="${m.video ? m.thumb : m.url}" alt="${m.video ? '영상 썸네일' : '사진'} ${i + 1}">${!m.video && m.url && i === 0 ? `<button type="button" class="chg" data-a="adj" data-i="${i}" aria-label="대표 사진 썸네일 조정">조정</button>` : ''}${m.video ? `<span class="vbadge"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg>${mmss(m.duration)}</span><button type="button" class="chg" data-a="chg" data-i="${i}" aria-label="영상 썸네일 변경">썸네일</button>` : ''}${i === 0 && allowVideo ? '<span class="rep">대표 사진</span>' : ''}${i === 0 && !allowVideo ? '<span class="rep">대표 사진</span>' : ''}<button type="button" class="x" data-a="rm" data-i="${i}" aria-label="${i + 1}번째 삭제"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button></div>`;
 }
 /* 카드에 보이는 부분 = 노출 범위 상자(CropBox). 사진마다 crop({x,y,w,h}, 사진 전체가 1)을 저장하고, 없으면 사진 가운데를 3:4로 가장 크게 자른 모습 */
-const CARD_R = 3 / 4;
+const CARD_R = 3 / 4, FIT_OVER = 0.30;   // 11-17 U-167: 3:4 칸에 꽉 채웠을 때 30% 넘게 잘리면 처음부터 '전체 보이기'(여백 자동 걷기는 없음)
+/* 대표 사진이 정해지면(올림·순서 바꾸기·수정) 그 사진의 가로·세로로 자동 방식을 정함. 학생이 시트에서 고른 방식(m.mode)이 있으면 그대로 */
+function measure(m) {
+  if (!m || m.video || !m.url) return Promise.resolve();
+  if (!m._p) m._p = new Promise((res) => { const im = new Image(); im.onload = () => { m.auto = CropBox.auto(im.naturalWidth, im.naturalHeight, CARD_R, FIT_OVER); if (!m.mode) m.mode = m.auto; res(); }; im.onerror = () => res(); im.src = m.url; });
+  return m._p;
+}
 function refreshPrev(row) {
   const box = $('cprev'), first = st.media[0];
   if (!first || first.video || !first.url) { box.hidden = true; return; }
+  if (!first.auto) measure(first).then(() => { if (first.auto && st.media[0] === first) refreshPrev(); });
   const ci = $('cp-img'); if (ci.getAttribute('src') !== first.url) ci.src = first.url;
-  ci.style.cssText = first.crop ? CropBox.style(first.crop) : '';
+  ci.style.cssText = CropBox.shown(first.crop, first.mode);
+  ci.parentElement.classList.toggle('fit', first.mode === 'fit');
   const fu = $('cp-full'); if (fu.getAttribute('src') !== first.url) fu.src = first.url;   // U-160 상세 칸 = 사진 전체
   box.hidden = false;
 }
 function openAdjust(i) {
   const m = st.media[i]; if (!m || m.video || !m.url) return;
-  CropBox.open({ url: m.url, ratio: CARD_R, detail: 402 / 554, title: '썸네일 조정', sub: '탐색·전시 목록에는 상자 안만 보여요', rect: m.crop, onDone: (rect) => { m.crop = rect || null; renderRow('media'); } });   // U-160(11-15 사용자 B안) — 이전 "카드에 보이는 부分" 
+  CropBox.open({ url: m.url, ratio: CARD_R, detail: 402 / 554, title: '썸네일 조정', sub: { fill: '탐색·전시 목록에는 상자 안만 보여요', fit: '탐색·전시 목록에도 사진 전체가 보여요' }, modes: true, mode: m.mode, autoMode: m.auto, autoOver: FIT_OVER, fitBg: 'var(--bg-white)', rect: m.crop, onDone: (rect, mode) => { m.crop = rect || null; m.mode = mode; renderRow('media'); } });   // 11-17 U-167 [꽉 채우기 | 전체 보이기]   // U-160(11-15 사용자 B안) — 이전 "카드에 보이는 부分" 
 }
 $('cp-adj').addEventListener('click', () => openAdjust(0));
 function renderRow(key) {
@@ -351,14 +360,16 @@ function validate() { $('go').disabled = !(st.media.length && $('title').value.t
 $('form').addEventListener('submit', async (ev) => {
   ev.preventDefault(); if ($('go').disabled) return; $('go').disabled = true;
   const first = st.media[0];
+  await measure(first);   // U-167 자동 방식이 아직 안 정해졌으면 기다림
+  const mode = first.video ? 'fill' : first.mode || 'fill', autoMode = first.video ? 'fill' : first.auto || mode;
   const img = first.video ? first.thumb : (first.existing ? first.url : ((first.file ? await imageThumb(first.file) : null) || first.url));
-  const work = { id: 'w' + Date.now().toString(36), exId: ex.id, title: $('title').value.trim(), fields: [...st.fields], year: $('year').value, medium: $('medium').value.trim(), size: $('size').value.trim(), desc: $('desc').value.trim(), authors: [author, ...st.co.map((c) => c.n)], media: st.media.length, video: st.media.some((m) => m.video), proc: st.proc.length, thumb: img, crop: first.crop || null };
+  const work = { id: 'w' + Date.now().toString(36), exId: ex.id, title: $('title').value.trim(), fields: [...st.fields], year: $('year').value, medium: $('medium').value.trim(), size: $('size').value.trim(), desc: $('desc').value.trim(), authors: [author, ...st.co.map((c) => c.n)], media: st.media.length, video: st.media.some((m) => m.video), proc: st.proc.length, thumb: img, crop: first.crop || null, mode, autoMode };
   if (editing) {
-    ExData.updateWork(ex.id, editing.id, { title: work.title, fields: work.fields, year: work.year, medium: work.medium, img, crop: st.media[0].crop || null });
+    ExData.updateWork(ex.id, editing.id, { title: work.title, fields: work.fields, year: work.year, medium: work.medium, img, crop: st.media[0].crop || null, mode, autoMode });
     st.left = true; sessionStorage.setItem('du.toast', '작품을 수정했어요'); location.href = WORKS; return;
   }
   const w = store.get('du.works', []); w.unshift(work); store.set('du.works', w);
-  ExData.addWork(ex.id, { title: work.title, author: work.authors.length > 1 ? work.authors[0] : work.authors[0], authors: work.authors, img, mine: !PROXY, fields: work.fields, year: work.year, medium: work.medium, crop: st.media[0].crop || null });
+  ExData.addWork(ex.id, { title: work.title, author: work.authors.length > 1 ? work.authors[0] : work.authors[0], authors: work.authors, img, mine: !PROXY, fields: work.fields, year: work.year, medium: work.medium, crop: st.media[0].crop || null, mode, autoMode });
   $('d-t').textContent = work.title; $('d-a').innerHTML = Byline.html(work.authors); $('d-e').textContent = ex.title;
   st.left = true; $('form').hidden = true; $('bar').hidden = true; $('done').hidden = false; window.scrollTo(0, 0); $('done-h').focus({ preventScroll: true });
 });
@@ -378,7 +389,7 @@ if (editing) {
   st.fields = new Set(editing.fields || []);
   [...$('chips').children].forEach((c) => { const on = st.fields.has(c.dataset.f); c.setAttribute('aria-pressed', on); c.innerHTML = (on ? '<svg class="i" aria-hidden="true"><use href="#i-check"/></svg>' : '') + c.dataset.f; });
   $('fcnt').textContent = `${st.fields.size}/${MAXF}`;
-  st.media = [{ url: editing.img, name: '등록된 이미지', existing: true, crop: editing.crop || null }];
+  st.media = [{ url: editing.img, name: '등록된 이미지', existing: true, crop: editing.crop || null, mode: editing.mode || null }];
 }
 renderAuthors(); renderRow('media'); renderRow('proc'); validate();
 </script>

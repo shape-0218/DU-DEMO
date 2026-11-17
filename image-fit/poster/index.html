@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>대표 포스터 보이는 방식</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/* 개발 전달용 사본(11-17, 원본 review/poster-fit-v1) — 대표 포스터 D안(11-16 확정)만 */
+:root { --g: #c8f7a8; --ink: #2e4f1f; --line: rgba(46, 79, 31, .28); }
+* { box-sizing: border-box; letter-spacing: -0.03em; }
+body { margin: 0; background: var(--g); color: var(--ink); font: 500 14px/1.4 "Pretendard Variable", Pretendard, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+::selection { background: var(--ink); color: var(--g); }
+.top { position: sticky; top: 0; z-index: 5; background: var(--g); padding: 16px 32px 12px; border-bottom: 1px solid var(--line); }
+h1 { margin: 0; font-size: 20px; font-weight: 700; }
+.lead { margin: 4px 0 0; font-size: 12px; }
+.ctl { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 12px; align-items: center; }
+.grp { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.grp > span { font-size: 12px; font-weight: 600; margin-right: 4px; }
+.grp button { min-height: 36px; padding: 0 12px; border-radius: 9999px; border: 1px solid var(--line); background: transparent; color: inherit; font: inherit; font-size: 14px; cursor: pointer; transition: background-color .15s, color .15s; }
+.grp button small { font-size: 12px; opacity: .75; margin-left: 4px; }
+.grp button[aria-pressed="true"] { background: var(--ink); color: var(--g); border-color: var(--ink); }
+.grp button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+@media (hover: hover) { .grp button:not([aria-pressed="true"]):hover { background: rgba(46, 79, 31, .08); } }
+
+/* 올린 파일 → 디유가 쓰는 포스터 */
+.flow { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; padding: 20px 32px 0; }
+.flow figure { margin: 0; display: grid; gap: 6px; justify-items: start; }
+.flow figcaption { font-size: 12px; font-weight: 600; }
+.flow figcaption small { font-weight: 500; margin-left: 4px; font-variant-numeric: tabular-nums; }
+.upf { position: relative; display: inline-block; line-height: 0; box-shadow: 0 0 0 1px rgba(0, 0, 0, .12); background: #fff; }
+.upf img { height: 160px; width: auto; display: block; }
+.upf i { position: absolute; border: 2px dashed #e5484d; pointer-events: none; }
+.flow .to { font-size: 20px; font-weight: 600; }
+.steps { margin: 0; padding-left: 20px; display: grid; gap: 4px; font-size: 14px; max-width: 460px; }
+.steps b { font-weight: 600; }
+
+.phones { display: grid; grid-template-columns: repeat(var(--cols, 4), var(--pw, 289px)); gap: 24px; padding: 24px 32px; }
+.ph h3 { margin: 0 0 8px; font-size: 14px; font-weight: 600; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.ph h3 a { color: inherit; font-size: 12px; font-weight: 500; text-underline-offset: 2px; }
+.fr { width: var(--pw, 289px); height: calc(812px * var(--s, .72)); overflow: hidden; background: #fff; }
+.fr iframe { display: block; width: 402px; height: 812px; border: 0; transform: scale(var(--s, .72)); transform-origin: 0 0; }
+.notes { padding: 8px 32px 48px; max-width: 1240px; }
+.notes h2 { margin: 16px 0 8px; font-size: 16px; font-weight: 600; }
+.tw { overflow-x: auto; }   /* 폰 폭에서는 표만 옆으로 밀어 봄(화면 전체가 넘치지 않게) */
+table { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 12px; }
+th, td { border-top: 1px solid var(--line); padding: 8px 12px 8px 0; text-align: left; vertical-align: top; }
+th { font-weight: 600; white-space: nowrap; }
+td.me { font-weight: 600; }
+.notes ol { margin: 0; padding-left: 20px; font-size: 12px; display: grid; gap: 4px; }
+@media (max-width: 700px) { .top, .phones, .notes, .flow { padding-left: 16px; padding-right: 16px; } .upf img { height: 120px; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>대표 포스터 보이는 방식 · 전시 등록 조정 · D안</h1>
+  <p class="lead">위에서 포스터를 고르면, 아래의 '올린 파일 → 디유가 쓰는 포스터'와 등록·홈·탐색·상세 화면이 같이 바뀌어요. 등록 화면의 시트에서 직접 눌러 봐도 돼요. 본 화면은 그대로예요.</p>
+  <div class="ctl">
+    <div class="grp" id="g-p" role="group" aria-label="예시 포스터"><span>포스터 <small>(졸준위 304개 중 비율)</small></span></div>
+  </div>
+</header>
+
+<section class="flow" aria-label="올린 파일과 디유가 쓰는 포스터">
+  <figure><div class="upf" id="up-a"><img id="up-img" alt="올린 파일"><i id="up-box" hidden></i></div><figcaption>올린 파일<small id="up-s1"></small></figcaption></figure>
+  <span class="to" aria-hidden="true">→</span>
+  <figure><div class="upf"><img id="up-use" alt="디유가 쓰는 포스터"></div><figcaption>디유가 쓰는 포스터<small id="up-s2"></small></figcaption></figure>
+  <ol class="steps" id="steps"></ol>
+</section>
+
+<main class="phones" id="phones">
+  <section class="ph" data-k="sheet"><h3>등록 · 썸네일 조정 <a href="?one=sheet" target="_blank">한 장 크게</a></h3><div class="fr"><iframe id="f-sheet" title="전시 등록 썸네일 조정 시트"></iframe></div></section>
+  <section class="ph" data-k="home"><h3>홈 <a href="?one=home" target="_blank">한 장 크게</a></h3><div class="fr"><iframe id="f-home" src="../../home.html" title="홈"></iframe></div></section>
+  <section class="ph" data-k="explore"><h3>탐색 <a href="?one=explore" target="_blank">한 장 크게</a></h3><div class="fr"><iframe id="f-explore" src="../../explore.html" title="탐색"></iframe></div></section>
+  <section class="ph" data-k="detail"><h3>전시 상세 <a href="?one=detail" target="_blank">한 장 크게</a></h3><div class="fr"><iframe id="f-detail" src="../../exhibition.html" title="전시 상세"></iframe></div></section>
+</main>
+
+<section class="notes">
+  <h2>규칙 (D안, 11-16 확정)</h2>
+  <div class="tw"><table>
+    <tbody>
+      <tr><th>인스타용 흰 여백 파일</th><td>흰 여백을 알아서 잘라내 A 규격 포스터로 씀</td></tr>
+      <tr><th>등록에서 고르는 것</th><td>꽉 채우기 / 전체 보이기(처음엔 자동)</td></tr>
+      <tr><th>정사각·가로 포스터</th><td>처음부터 전체 보이기, 남는 곳은 포스터 가장자리 색</td></tr>
+      <tr><th>3:4·4:5·2:3</th><td>4–15%만 잘려서 처음엔 꽉 채우기, 필요하면 '썸네일 조정'으로 보이는 부분을 고름</td></tr>
+      <tr><th>걱정되는 점</th><td>단색 바탕 포스터를 여백으로 잘못 알고 자를 수 있음(안쪽이 포스터 비율이고 가운데일 때만 자르게 막아 둠)</td></tr>
+    </tbody>
+  </table></div>
+  <h2>조사로 알게 된 것 (졸준위 인스타 304개, 10-15~11-15)</h2>
+  <ol>
+    <li>실제 포스터의 83%가 A 규격 — 지금 칸(402:568)에 3% 이하로만 잘림</li>
+    <li>15% 넘게 잘리는 건 3%(가로·정사각) — '전체 보이기'는 드문 경우라 자동으로 정하고 시트 안에만</li>
+    <li>졸준위는 게시물 97%를 흰 여백 정사각 같은 틀에 넣어 올림 — 학생이 그 파일을 디유에도 그대로 올릴 수 있음</li>
+  </ol>
+</section>
+
+<script src="posters.js"></script>
+<script>
+const R = 402 / 568;
+const q = new URLSearchParams(location.search);
+const PF = window.PF = { v: 'd',   /* D안만 */ ps: q.get('p') || 'ig', file: null, src: null, w: 1, h: 1, edge: '#f4f4f5', mode: 'fill', defMode: 'fill', bg: 'poster', crop: null, title: '' };
+const $ = (s) => document.querySelector(s);
+const F = { sheet: $('#f-sheet'), home: $('#f-home'), explore: $('#f-explore'), detail: $('#f-detail') };
+const cut = (w, h) => { const r = w / h; return 1 - Math.min(r, R) / Math.max(r, R); };
+const pct = (x) => Math.round(x * 100) + '%';
+const ratio = (w, h) => (w / h).toFixed(2);
+
+$('#g-p').insertAdjacentHTML('beforeend', PF_POSTERS.LIST.map((p) => `<button type="button" data-p="${p.k}">${p.label} <small>${p.note}</small></button>`).join(''));
+
+function pressed() {
+  document.querySelectorAll('#g-v button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === PF.v)));
+  document.querySelectorAll('#g-p button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.p === PF.ps)));
+}
+/* 지금 후보에서 디유가 실제로 쓰는 그림(D만 여백을 잘라낸 그림) */
+function useOf(p) { return PF.v === 'd' && p.trim ? p.trim : p; }
+function explain() {
+  const p = PF.file; if (!p) return;
+  const u = useOf(p), trimmed = u !== p;
+  $('#up-img').src = p.src; $('#up-use').src = u.src;
+  $('#up-s1').textContent = `${p.w}×${p.h} · ${ratio(p.w, p.h)}`;
+  $('#up-s2').textContent = `${u.w}×${u.h} · ${ratio(u.w, u.h)}`;
+  const box = $('#up-box');
+  if (p.trim && PF.v === 'd') { const b = p.trim.box; box.hidden = false; box.style.left = (b.x * 100) + '%'; box.style.top = (b.y * 100) + '%'; box.style.width = (b.w * 100) + '%'; box.style.height = (b.h * 100) + '%'; }
+  else box.hidden = true;
+  const c = cut(u.w, u.h), auto = PF.v !== 'now';
+  const lines = [];
+  if (PF.v === 'd') lines.push(trimmed ? '<b>둘레 흰 여백 → 자동으로 잘라냄</b>(빨간 점선 안만 씀)' : '둘레에 덧붙인 여백 없음 → 그대로 씀');
+  else if (p.trim) lines.push('둘레 흰 여백이 있지만 이 후보는 자르지 않음');
+  lines.push(`402:568 칸에 꽉 채우면 <b>${pct(c)}</b> 잘림`);
+  if (!auto) lines.push('지금은 항상 꽉 채우기(보이는 부분만 고를 수 있음)');
+  else lines.push(c > 0.15 ? `15%를 넘어서 처음엔 <b>전체 보이기</b>${PF.v === 'd' || PF.v === 'b' ? ' · 남는 곳은 포스터 가장자리 색' : PF.v === 'a' ? ' · 남는 곳은 연한 회색' : ' · 남는 곳은 흐린 포스터'}` : '15% 이하라 처음엔 <b>꽉 채우기</b>');
+  lines.push(`지금 화면: ${PF.mode === 'fit' ? '전체 보이기' : '꽉 채우기'}${PF.crop ? ' · 보이는 부분 고름' : ''}`);
+  $('#steps').innerHTML = lines.map((l) => `<li>${l}</li>`).join('');
+}
+function applyAll() { ['home', 'explore', 'detail'].forEach((k) => { try { const w = F[k].contentWindow; w && w.PF_apply && w.PF_apply(); } catch (e) {} }); }
+function reloadSheet() { F.sheet.src = `screen.html?v=${PF.v}&sheet=1&t=${Date.now()}`; }
+window.PF_sync = () => { applyAll(); explain(); };
+function use() {
+  const u = useOf(PF.file);
+  Object.assign(PF, { src: u.src, w: u.w, h: u.h, edge: u.edge, crop: null, bg: 'poster' });
+  PF.defMode = cut(u.w, u.h) > 0.15 ? 'fit' : 'fill';
+  PF.mode = PF.v === 'now' ? 'fill' : PF.defMode;
+  pressed(); explain(); reloadSheet(); applyAll();
+  const url = new URL(location.href); url.searchParams.delete('v'); url.searchParams.set('p', PF.ps); history.replaceState(null, '', url);
+}
+async function setPoster(k) { PF.ps = k; PF.file = await PF_POSTERS.make(k); use(); }
+$('#g-p').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) setPoster(b.dataset.p); });
+
+['home', 'explore', 'detail'].forEach((k) => F[k].addEventListener('load', () => {
+  try { const d = F[k].contentDocument; if (d.querySelector('script[data-pf]')) return; const s = d.createElement('script'); s.src = new URL('inject.js', location.href).href; s.dataset.pf = '1'; d.body.appendChild(s); } catch (e) {}
+}));
+
+const one = q.get('one');
+if (one) document.querySelectorAll('.ph').forEach((s) => { s.hidden = s.dataset.k !== one; });
+function size() {
+  const W = document.documentElement.clientWidth - (innerWidth <= 700 ? 32 : 64);
+  const cols = one ? 1 : W >= 1100 ? 4 : W >= 640 ? 2 : 1;
+  const s = Math.min(1, (W - (cols - 1) * 24) / (cols * 402));
+  const ph = $('#phones'); ph.style.setProperty('--cols', cols); ph.style.setProperty('--s', s.toFixed(4)); ph.style.setProperty('--pw', Math.floor(402 * s) + 'px');
+}
+addEventListener('resize', size); size();
+setPoster(PF.ps);
+</script>
+</body>
+</html>
