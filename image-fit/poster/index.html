@@ -7,7 +7,7 @@
 <title>대표 포스터 보이는 방식</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
-/* 개발 전달용 사본(11-17, 원본 review/poster-fit-v1) — 대표 포스터 D안(11-16 확정)만 */
+/* 개발 전달용 사본(11-17, 원본 review/poster-fit-v1) — 대표 포스터 D안(11-16 확정)만. 11-17 U-169: 자동 여백 잘라내기는 뺌(썸네일 조정으로 고름) */
 :root { --g: #c8f7a8; --ink: #2e4f1f; --line: rgba(46, 79, 31, .28); }
 * { box-sizing: border-box; letter-spacing: -0.03em; }
 body { margin: 0; background: var(--g); color: var(--ink); font: 500 14px/1.4 "Pretendard Variable", Pretendard, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
@@ -76,14 +76,14 @@ td.me { font-weight: 600; }
 </main>
 
 <section class="notes">
-  <h2>규칙 (D안, 11-16 확정)</h2>
+  <h2>규칙 (D안 11-16 확정 · 11-17 자동 잘라내기 뺌)</h2>
   <div class="tw"><table>
     <tbody>
-      <tr><th>인스타용 흰 여백 파일</th><td>흰 여백을 알아서 잘라내 A 규격 포스터로 씀</td></tr>
+      <tr><th>덧붙인 여백</th><td><b>자동으로 잘라내지 않음</b> — 올린 파일 그대로 씀, 학생이 '썸네일 조정' 상자로 보이는 부분을 고름</td></tr>
       <tr><th>등록에서 고르는 것</th><td>꽉 채우기 / 전체 보이기(처음엔 자동)</td></tr>
       <tr><th>정사각·가로 포스터</th><td>처음부터 전체 보이기, 남는 곳은 포스터 가장자리 색</td></tr>
       <tr><th>3:4·4:5·2:3</th><td>4–15%만 잘려서 처음엔 꽉 채우기, 필요하면 '썸네일 조정'으로 보이는 부분을 고름</td></tr>
-      <tr><th>걱정되는 점</th><td>단색 바탕 포스터를 여백으로 잘못 알고 자를 수 있음(안쪽이 포스터 비율이고 가운데일 때만 자르게 막아 둠)</td></tr>
+      <tr><th>인스타용 흰 여백 파일</th><td>정사각이라 꽉 채우면 29% 잘려서 처음엔 전체 보이기(흰 틀째) — 학생이 꽉 채우기로 바꾸고 상자로 포스터 부분을 고름. 상세에는 흰 틀째 보임</td></tr>
     </tbody>
   </table></div>
   <h2>조사로 알게 된 것 (졸준위 인스타 304개, 10-15~11-15)</h2>
@@ -111,21 +111,19 @@ function pressed() {
   document.querySelectorAll('#g-v button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === PF.v)));
   document.querySelectorAll('#g-p button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.p === PF.ps)));
 }
-/* 지금 후보에서 디유가 실제로 쓰는 그림(D만 여백을 잘라낸 그림) */
-function useOf(p) { return PF.v === 'd' && p.trim ? p.trim : p; }
+/* 디유가 쓰는 그림 = 올린 파일 그대로(11-17 U-169 자동 잘라내기 뺌) */
+function useOf(p) { return p; }
 function explain() {
   const p = PF.file; if (!p) return;
-  const u = useOf(p), trimmed = u !== p;
+  const u = useOf(p);
   $('#up-img').src = p.src; $('#up-use').src = u.src;
   $('#up-s1').textContent = `${p.w}×${p.h} · ${ratio(p.w, p.h)}`;
   $('#up-s2').textContent = `${u.w}×${u.h} · ${ratio(u.w, u.h)}`;
   const box = $('#up-box');
-  if (p.trim && PF.v === 'd') { const b = p.trim.box; box.hidden = false; box.style.left = (b.x * 100) + '%'; box.style.top = (b.y * 100) + '%'; box.style.width = (b.w * 100) + '%'; box.style.height = (b.h * 100) + '%'; }
-  else box.hidden = true;
+  box.hidden = true;
   const c = cut(u.w, u.h), auto = PF.v !== 'now';
   const lines = [];
-  if (PF.v === 'd') lines.push(trimmed ? '<b>둘레 흰 여백 → 자동으로 잘라냄</b>(빨간 점선 안만 씀)' : '둘레에 덧붙인 여백 없음 → 그대로 씀');
-  else if (p.trim) lines.push('둘레 흰 여백이 있지만 이 후보는 자르지 않음');
+  lines.push('올린 파일을 그대로 씀(덧붙인 여백도 자동으로 잘라내지 않음, 필요하면 썸네일 조정 상자로 보이는 부분을 고름)');
   lines.push(`402:568 칸에 꽉 채우면 <b>${pct(c)}</b> 잘림`);
   if (!auto) lines.push('지금은 항상 꽉 채우기(보이는 부분만 고를 수 있음)');
   else lines.push(c > 0.15 ? `15%를 넘어서 처음엔 <b>전체 보이기</b>${PF.v === 'd' || PF.v === 'b' ? ' · 남는 곳은 포스터 가장자리 색' : PF.v === 'a' ? ' · 남는 곳은 연한 회색' : ' · 남는 곳은 흐린 포스터'}` : '15% 이하라 처음엔 <b>꽉 채우기</b>');
