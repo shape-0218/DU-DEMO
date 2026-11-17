@@ -135,18 +135,24 @@ html.kb .search input:focus-visible { box-shadow: 0 0 0 2px var(--text-primary);
 .grid.flip .card { animation: none; }
 .card .tx.fadein { animation: du-in .24s var(--ease) .16s both; }
 #list { touch-action: pan-y; }   /* 목록 위 두 손가락 = 보기 전환(페이지 확대 대신) */
-/* 촘촘히에서 마우스를 올리면(마우스 기기만, 폰은 누르면 상세) 사진 아래에서 그라데이션이 차오르고 작품명 · 작가(전시 탭은 전시명)가 4 올라오며 나타남(.2s ease-out).
-   그라데이션은 글 위 40에서 7단으로 완만하게(가로 줄 없음), 글 자리 검정 62~72% → 흰 벽 사진에서도 흰 글 약 6:1. 학교·학과는 넣지 않음(11-17 사용자 "정보가 너무 많다") */
+/* 촘촘히에서 마우스를 올리면(마우스 기기만, 폰은 누르면 상세) 사진 아래에서 그라데이션이 차오르고 작품명 · 작가 / 전시명 · 학교 학과가 4 올라오며 나타남(.2s ease-out).
+   U-166(11-17, 검토 W-14 2차 → 사용자 "본 화면에 넣기"): ① 옅어지는 길이 = 칸 폭의 24%(115 → 28 · 153 → 37, 이전 40 고정 — 작은 칸에서 덜 가림) ② 7단으로 완만하게(가로 줄 없음)
+   ③ 글 자리 작품 .62~.72(흰 벽 사진에서도 흰 글 약 6:1) · 전시 .76~.86(포스터 안 흰 글씨가 학교 학과 뒤로 비치지 않게) ④ 글씨는 칸이 커져도 키우지 않음(사용자 "작은 게 좋다")
+   ⑤ 전시는 학교 학과를 작은 캡션으로(10/500 text/disable, 위 4, 띄어쓰기에서만 줄바꿈). 작품은 학교 학과 없음(11-17 "정보가 너무 많다") */
 .card .hv { display: none; word-break: keep-all; overflow-wrap: break-word; }
 @media (hover: hover) and (pointer: fine) {
-  .grid.dense .card .hv { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; aspect-ratio: auto; display: flex; flex-direction: column; padding: 40px 8px 8px; color: #fff; pointer-events: none; opacity: 0; transition: opacity .2s var(--ease);
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, .03) 8px, rgba(0, 0, 0, .1) 14px, rgba(0, 0, 0, .22) 20px, rgba(0, 0, 0, .38) 26px, rgba(0, 0, 0, .52) 32px, rgba(0, 0, 0, .62) 40px, rgba(0, 0, 0, .72) 100%); }   /* aspect-ratio: auto = 사진 칸 비율(.card .im div)이 이 칸에 걸리지 않게 */
+  .grid.dense .card .im > div { container-type: inline-size; }   /* 아래 24cqw = 이 사진 칸 폭의 24% */
+  .grid.dense .card .hv { --f: 24cqw; position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; aspect-ratio: auto; display: flex; flex-direction: column; padding: var(--f) 8px 8px; color: #fff; pointer-events: none; opacity: 0; transition: opacity .2s var(--ease);
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, .03) calc(var(--f) * .2), rgba(0, 0, 0, .1) calc(var(--f) * .35), rgba(0, 0, 0, .22) calc(var(--f) * .5), rgba(0, 0, 0, .37) calc(var(--f) * .65), rgba(0, 0, 0, .52) calc(var(--f) * .8), rgba(0, 0, 0, .62) var(--f), rgba(0, 0, 0, .72) 100%); }   /* aspect-ratio: auto = 사진 칸 비율(.card .im div)이 이 칸에 걸리지 않게. 색은 미리 계산한 숫자(색 안의 calc는 옛 Safari에서 그라데이션이 통째로 빠짐) */
+  .grid.dense .card.ex .hv { background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, .04) calc(var(--f) * .2), rgba(0, 0, 0, .12) calc(var(--f) * .35), rgba(0, 0, 0, .27) calc(var(--f) * .5), rgba(0, 0, 0, .46) calc(var(--f) * .65), rgba(0, 0, 0, .64) calc(var(--f) * .8), rgba(0, 0, 0, .76) var(--f), rgba(0, 0, 0, .86) 100%); }
+  @supports not (width: 1cqw) { .grid.dense .card .hv { --f: 28px; } }   /* 칸 단위를 모르는 옛 브라우저는 28 고정 */
   .grid.dense .card .hv > * { transform: translateY(4px); transition: transform .2s var(--ease); }
   .grid.dense .card:hover .hv, .grid.dense .card:focus-visible .hv { opacity: 1; }
   .grid.dense .card:hover .hv > *, .grid.dense .card:focus-visible .hv > * { transform: none; }
 }
 .card .hv b { font-size: 14px; font-weight: 600; overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; text-wrap: pretty; }
 .card .hv .by { font-size: 12px; font-weight: 500; }
+.card .hv .sc { margin-top: 4px; font-size: 10px; font-weight: 500; color: var(--text-disable); overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
 @media (prefers-reduced-motion: reduce) { .card .hv > * { transform: none !important; } }
 .card { display: block; color: var(--text-primary); animation: rise .55s var(--ease) backwards; animation-delay: calc(var(--n, 0) * 35ms); transition: transform .3s var(--ease); }
 .card:active { transform: scale(.98); }
@@ -300,7 +306,7 @@ function paintList() {
   $('count').textContent = q ? `${state.tab === 'exh' ? '전시' : '작품'} ${items.length}개` : '';
   if (!items.length) { el.innerHTML = `<div class="empty"><strong>검색 결과가 없어요</strong><p>다른 검색어나 필터로 찾아보세요</p></div>`; return; }
   el.innerHTML = '<div class="grid' + (dense ? ' dense' : '') + '">' + items.map((it, n) => state.tab === 'exh'
-    ? `<a class="card ex" data-k="e${it.i}" href="exhibition.html?e=${it.i}" style="--n:${Math.min(n, 12)}"><div class="im"><div><img src="${DEMO.src(it.img)}" alt="${it.t} 포스터" width="161" height="241" loading="${n < 6 ? 'eager' : 'lazy'}"><div class="hv" aria-hidden="true"><b>${it.t}</b></div></div></div><div class="tx"><b>${it.t}</b><span class="l">${it.s}</span><span class="m"><span class="dt12">${it.d}</span></span><span class="m">${it.p}</span></div></a>`
+    ? `<a class="card ex" data-k="e${it.i}" href="exhibition.html?e=${it.i}" style="--n:${Math.min(n, 12)}"><div class="im"><div><img src="${DEMO.src(it.img)}" alt="${it.t} 포스터" width="161" height="241" loading="${n < 6 ? 'eager' : 'lazy'}"><div class="hv" aria-hidden="true"><b>${it.t}</b><span class="sc">${it.s}</span></div></div></div><div class="tx"><b>${it.t}</b><span class="l">${it.s}</span><span class="m"><span class="dt12">${it.d}</span></span><span class="m">${it.p}</span></div></a>`
     : `<a class="card wk" data-k="w${it.i}" href="work.html?w=${it.i}" style="--n:${Math.min(n, 12)}"><div class="im"><div><img src="assets/img/explore/opt/${it.img}.jpg" alt="${it.t}" width="161" height="215" loading="${n < 6 ? 'eager' : 'lazy'}"><div class="hv" aria-hidden="true"><b>${it.t}</b>${byline(it.a)}</div></div></div><div class="tx"><b>${it.t}</b><span class="l">${byline(it.a)}</span></div></a>`).join('') + '</div>';
 }
 function placeInd() {
