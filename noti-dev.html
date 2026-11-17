@@ -67,11 +67,12 @@ svg.i { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-widt
 .noti.is-focus::before { content: ""; position: absolute; inset: 0 -20px; background: var(--bg-secondary); z-index: -1; }
 .noti > i { width: 8px; height: 8px; margin-top: 7px; border-radius: 9999px; background: transparent; }
 .noti.new > i { background: var(--notice); }
-.noti .nt { display: block; font-size: 14px; font-weight: 600; }
-.noti .nb { display: block; margin-top: 2px; font-size: 14px; color: var(--text-secondary); overflow-wrap: anywhere; }
+.noti .nt { display: block; font-size: 14px; font-weight: 600; word-break: keep-all; }
+.noti .nb { display: block; margin-top: 2px; font-size: 14px; color: var(--text-secondary); word-break: keep-all; overflow-wrap: anywhere; text-wrap: pretty; }   /* 11-17: 띄어쓰기에서만 줄바꿈, 공백 없는 긴 이름만 끊음 */
+.noti .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }   /* 화면 읽기 도구용: 읽지 않음 */
 .noti .nb b, .info dd b { font-weight: 600; color: var(--text-primary); }
 .noti small { display: block; margin-top: 2px; font-size: 12px; color: var(--text-teritary); }
-.noti .ch { align-self: center; width: 16px; height: 16px; color: #a1a1aa; }
+.noti .ch { align-self: center; width: 16px; height: 16px; color: var(--text-teritary); }   /* 11-17: #a1a1aa(대비 2.6:1) → #71717b(4.8:1) */
 
 /* 이동한 화면(실제 화면 자리에 놓은 자리표시) */
 .dest { padding: 4px 20px 32px; }
@@ -181,7 +182,8 @@ td p + p { margin-top: 8px; }
     <h2>알림 문구 규칙</h2>
     <ul>
       <li><b>강조</b>: 내용 안의 사람 이름, 작품명, 전시명, 숫자는 굵게(SemiBold, 600)로 보여 주고 나머지 글자는 보통 굵기예요. 강조할 글자는 알림을 만들 때 <code>highlights</code>로 함께 저장해요.</li>
-      <li><b>길이</b>: 내용은 길어도 줄이지 않고 전부 보여 줘요.</li>
+      <li><b>길이</b>: 내용은 길어도 줄이지 않고 전부 보여 줘요. 줄은 띄어쓰기에서 바뀌고, 띄어쓰기 없이 긴 이름만 중간에서 끊어요.</li>
+      <li><b>읽기 도구</b>: 안 읽은 알림은 빨간 점 대신 "읽지 않음"을 먼저 읽어 줘요. 이동 없는 알림은 버튼이 아니에요.</li>
       <li><b>사람 이름</b>: 전시 안에서 일어난 일(삭제한 사람, 등록한 사람)은 그 전시의 전시 작가명을 써요. 전시 초대는 초대 화면처럼 "이름(아이디)"로 써요.</li>
       <li><b>삭제된 작품</b>: 1점이면 “작품명” 작품, 2점 이상이면 "작품 N점(“이름”, “이름”)"처럼 이름을 모두 적어요. 전시 삭제와 내보내짐 알림은 이름 없이 "작품 N점"으로 개수만 적어요.</li>
       <li><b>개수 0</b>: 삭제된 작품이 없으면 작품 문장을 빼요. 알림 자체는 그대로 가요.</li>
@@ -313,8 +315,11 @@ td p + p { margin-top: 8px; }
   /* ---------- 폰 안 ---------- */
   function renderList() {
     view = 'list';
-    $('screen').innerHTML = `<div class="sh-head"><h2>알림함</h2></div><div class="sh-body">` + ORDER.map(byId).map((x, i) =>
-      `<button class="noti${i < unread ? ' new' : ''}${x.go ? ' go' : ''}" type="button" data-k="${x.id}"><i></i><span><b class="nt">${x.title}</b><span class="nb">${x.body}</span><small>${x.w}</small></span>${x.go ? CHEV : ''}</button>`).join('') + `</div>`;
+    /* 11-17: 이동하는 알림만 버튼, 이동 없는 알림은 버튼이 아님(키보드로 갈 곳·눌러도 반응 없는 버튼 없음). 안 읽음은 점 + 화면 읽기용 "읽지 않음" */
+    $('screen').innerHTML = `<div class="sh-head"><h2>알림함</h2></div><div class="sh-body">` + ORDER.map(byId).map((x, i) => {
+      const isNew = i < unread, tag = x.go ? 'button' : 'div';
+      return `<${tag} class="noti${isNew ? ' new' : ''}${x.go ? ' go' : ''}"${x.go ? ' type="button"' : ''} data-k="${x.id}"><i aria-hidden="true"></i><span>${isNew ? '<span class="sr">읽지 않음, </span>' : ''}<b class="nt">${x.title}</b><span class="nb">${x.body}</span><small>${x.w}</small></span>${x.go ? CHEV : ''}</${tag}>`;
+    }).join('') + `</div>`;
     unread = 0;   // 알림함을 열면 점이 사라짐(이미 그려진 목록에는 열기 전 상태 그대로)
     crumb('마이 › 알림함');
     focusRow();

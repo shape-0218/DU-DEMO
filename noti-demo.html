@@ -107,9 +107,10 @@ h1, h2, p, dl, dd, ul { margin: 0; }
       <div class="common">
         <h2>모든 알림 공통</h2>
         <ul>
-          <li>제목과 내용으로 오고, 내용은 길어도 줄이지 않고 전부 보여 줘요</li>
+          <li>제목과 내용으로 오고, 내용은 길어도 줄이지 않고 전부 보여 줘요. 줄은 띄어쓰기에서 바뀌어요</li>
           <li>이름·작품명·전시명·숫자는 굵게 강조해요</li>
-          <li>화살표가 있는 알림 7개는 누르면 해당 화면으로 이동해요</li>
+          <li>화살표가 있는 알림 7개는 누르면 해당 화면으로 이동해요. 나머지는 버튼이 아니에요</li>
+          <li>안 읽은 알림은 빨간 점과 함께 화면 읽기 도구에 "읽지 않음"으로 읽혀요</li>
           <li>한 사건에 받는 사람당 알림은 한 건이에요. 전시가 삭제돼 작품이 여러 개 사라져도 전시 삭제 알림 하나만 가요</li>
           <li>내가 직접 한 일에는 알림을 받지 않아요</li>
           <li>푸시와 이메일은 없어요</li>
@@ -221,16 +222,31 @@ h1, h2, p, dl, dd, ul { margin: 0; }
     ORDER.map(byId).forEach((x) => list.push({ t: `<b class="nt">${x.title}</b><span class="nb">${x.body}</span>`, w: x.w, k: x.id }));
     const st = d.createElement('style');
     const goSel = ITEMS.filter((x) => x.go).map((x) => `.noti[data-k="${x.id}"]`).join(', ');   // 화살표가 있는(이동하는) 알림
-    const chev = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m9 6 6 6-6 6'/%3E%3C/svg%3E\")";
+    const chev = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2371717b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m9 6 6 6-6 6'/%3E%3C/svg%3E\")";
     st.textContent = `.noti { position: relative; }
       .noti.demo-focus::before { content: ""; position: absolute; inset: 0 -20px; background: #f4f4f5; z-index: -1; }
       .noti p { font-weight: 400; }
-      .noti .nt { display: block; font-size: 14px; font-weight: 600; line-height: 1.4; }
-      .noti .nb { display: block; margin-top: 2px; font-size: 14px; font-weight: 400; line-height: 1.4; color: #3f3f47; overflow-wrap: anywhere; }
+      .noti .nt { display: block; font-size: 14px; font-weight: 600; line-height: 1.4; word-break: keep-all; }
+      .noti .nb { display: block; margin-top: 2px; font-size: 14px; font-weight: 400; line-height: 1.4; color: #3f3f47; word-break: keep-all; overflow-wrap: anywhere; text-wrap: pretty; }
       .noti .nb b { font-weight: 600; color: #18181b; }
+      .noti .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
       ${goSel} { grid-template-columns: 8px minmax(0, 1fr) 16px; }
       ${goSel.split(', ').map((s) => s + '::after').join(', ')} { content: ""; width: 16px; height: 16px; align-self: center; background: ${chev} center / 16px no-repeat; }`;
     d.head.appendChild(st);
+    /* 11-17: 알림함이 열릴 때마다 줄을 다듬음 — 이동하는 알림만 버튼(이동 없는 알림은 div), 안 읽음은 점 + 화면 읽기용 "읽지 않음" */
+    const goIds = new Set(ITEMS.filter((x) => x.go).map((x) => x.id));
+    const fixRows = () => d.querySelectorAll('.noti:not([data-a11y])').forEach((b) => {
+      b.dataset.a11y = '1';
+      let row = b;
+      if (b.tagName === 'BUTTON' && !goIds.has(b.dataset.k)) {
+        row = d.createElement('div'); row.className = b.className; row.dataset.k = b.dataset.k; row.dataset.a11y = '1'; row.innerHTML = b.innerHTML; b.replaceWith(row);
+      }
+      const dot = row.querySelector(':scope > i'); if (dot) dot.setAttribute('aria-hidden', 'true');
+      const body = row.querySelector(':scope > span');
+      if (body && row.classList.contains('new')) body.insertAdjacentHTML('afterbegin', '<span class="sr">읽지 않음, </span>');
+    });
+    new w.MutationObserver(fixRows).observe(d.body, { childList: true, subtree: true });
+    fixRows();
     /* 알림을 누르면: 이동할 곳이 있으면 그 화면으로, 없으면 그 자리에서 내용을 펼침 */
     d.addEventListener('click', (ev) => {
       const b = ev.target.closest && ev.target.closest('.noti'); if (!b) return;
