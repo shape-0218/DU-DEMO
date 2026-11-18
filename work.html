@@ -519,7 +519,7 @@ document.getElementById('like-n').textContent = W.l;
 document.getElementById('back').href = 'exhibition.html?e=' + WE.i + '&tab=works';
 
 /* ---------- 이미지 슬라이더 (사진 5장) ---------- */
-const base = WI === 0 ? [['main', 'th1', '', ''], ['s2', 'th2', '', ''], ['s3', 'th3', '', ''], ['s4', 'th4', '', ''], ['s5', 'th5', '', '']].map(([f, t, a, b]) => [O + f + '.jpg', O + t + '.jpg', a, b]) : [[`assets/img/explore/opt/${W.img}.jpg`, `assets/img/explore/opt/${W.img}.jpg`, '', '']];
+const base = WI === 0 ? [['main', 'th1', '', ''], ['s2', 'th2', '', ''], ['s3', 'th3', '', ''], ['s4', 'th4', '', ''], ['s5', 'th5', '', '']].map(([f, t, a, b]) => [O + f + '.jpg', O + t + '.jpg', a, b]) : [[DEMO.src(W.img), DEMO.src(W.img), '', '']];
 const imgs = X ? [...base, [X.g.img, X.g.img]] : base;   // 기존 사진은 그대로 두고 세부 사진을 뒤에 추가(사진별 설명 글은 없음 — 작품 등록에 그런 입력이 없어서)
 const photos = imgs.length;
 const track = document.getElementById('track'), thumbs = document.getElementById('thumbs'), pager = document.getElementById('pager');

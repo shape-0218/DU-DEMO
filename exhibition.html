@@ -895,7 +895,7 @@ if (DX) {
   setupContent(DX.cts.map((t, k) => ({ t, photos: photosOf(k) })));   // 11-15 U-154 카드·보기 화면은 공용(setupContent)
   /* 작품: 이 전시에 올라온 작품 */
   const mine = DEMO.WORKS.filter((w) => w.e === DX.i);
-  document.getElementById('works').innerHTML = mine.length ? mine.map((w, i) => `<a class="w" href="work.html?w=${w.i}" style="--n:${i}"><div class="im"><div><img src="assets/img/explore/opt/${w.img}.jpg" alt="${w.t}" loading="lazy"></div></div><div class="tx"><b>${w.t}</b><span>${Byline.html(w.a)}</span></div></a>`).join('') : '<p class="pv-empty">아직 올라온 작품이 없어요</p>';
+  document.getElementById('works').innerHTML = mine.length ? mine.map((w, i) => `<a class="w" href="work.html?w=${w.i}" style="--n:${i}"><div class="im"><div><img src="${DEMO.src(w.img)}" alt="${w.t}" loading="lazy"></div></div><div class="tx"><b>${w.t}</b><span>${Byline.html(w.a)}</span></div></a>`).join('') : '<p class="pv-empty">아직 올라온 작품이 없어요</p>';
 }
 /* 11-12 소개글 더보기 없음(작품 상세와 같게 전부 보임) · 장소를 누르면 카카오 지도
    데모는 장소 이름(미리보기는 주소 우선)으로 검색 링크를 만듦. 실제 서비스는 개발에서 좌표·주소 기반 카카오 지도 링크로 */

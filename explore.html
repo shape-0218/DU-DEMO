@@ -287,7 +287,7 @@ function filtered() {
   } else {
     items = WORKS.map((w, i) => ({ ...w, i })).filter((w) => typeStatusOk(ex[w.e]) && (state.field === '전체' || w.f === state.field) && (!q || norm(w.t).includes(q) || w.a.some((n) => norm(n).includes(q))));
   }
-  return state.sort === '인기순' ? items.sort((a, b) => b.l - a.l || a.i - b.i) : items.sort((a, b) => a.i - b.i);
+  return state.sort === '인기순' ? items.sort((a, b) => b.l - a.l || a.i - b.i) : items.sort((a, b) => (a.o ?? a.i) - (b.o ?? b.i));   // 11-17 U-170: o = 최신순 자리(실제 작품 시험분)
 }
 /* 11-14 로딩: 데모 데이터는 바로 뜨므로 평소엔 스켈레톤이 안 보임(150ms 규칙). 주소에 ?slow 를 붙이면 느린 응답을 흉내 내 스켈레톤이 보임 */
 const SK_EX = [['h20', 70], ['h17', 50], ['h17', 60, 'mt4'], ['h17', 40, 'mt2']], SK_WK = [['h20', 70], ['h17', 50]], SK_VARY = [0, -12, 6, -6, 2, -10];
@@ -307,7 +307,7 @@ function paintList() {
   if (!items.length) { el.innerHTML = `<div class="empty"><strong>검색 결과가 없어요</strong><p>다른 검색어나 필터로 찾아보세요</p></div>`; return; }
   el.innerHTML = '<div class="grid' + (dense ? ' dense' : '') + '">' + items.map((it, n) => state.tab === 'exh'
     ? `<a class="card ex" data-k="e${it.i}" href="exhibition.html?e=${it.i}" style="--n:${Math.min(n, 12)}"><div class="im"><div><img src="${DEMO.src(it.img)}" alt="${it.t} 포스터" width="161" height="241" loading="${n < 6 ? 'eager' : 'lazy'}"><div class="hv" aria-hidden="true"><b>${it.t}</b><span class="sc">${it.s}</span></div></div></div><div class="tx"><b>${it.t}</b><span class="l">${it.s}</span><span class="m"><span class="dt12">${it.d}</span></span><span class="m">${it.p}</span></div></a>`
-    : `<a class="card wk" data-k="w${it.i}" href="work.html?w=${it.i}" style="--n:${Math.min(n, 12)}"><div class="im"><div><img src="assets/img/explore/opt/${it.img}.jpg" alt="${it.t}" width="161" height="215" loading="${n < 6 ? 'eager' : 'lazy'}"><div class="hv" aria-hidden="true"><b>${it.t}</b>${byline(it.a)}</div></div></div><div class="tx"><b>${it.t}</b><span class="l">${byline(it.a)}</span></div></a>`).join('') + '</div>';
+    : `<a class="card wk" data-k="w${it.i}" href="work.html?w=${it.i}" style="--n:${Math.min(n, 12)}"><div class="im"><div><img src="${DEMO.src(it.img)}" alt="${it.t}" width="161" height="215" loading="${n < 6 ? 'eager' : 'lazy'}"><div class="hv" aria-hidden="true"><b>${it.t}</b>${byline(it.a)}</div></div></div><div class="tx"><b>${it.t}</b><span class="l">${byline(it.a)}</span></div></a>`).join('') + '</div>';
 }
 function placeInd() {
   const fl = $('fields'), b = fl.querySelector('.field[aria-selected="true"]'), ind = fl.querySelector('.ind'); if (!b || !ind) return;
