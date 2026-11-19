@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>전시 연락 문구 · v5</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/* 마케팅 팀 전달용 배포 사본(11-20, U-171) — 원본은 review/outreach-v1/index.html. 고칠 땐 원본을 고친 뒤 다시 복사. 〈 〉 = 채울 곳 */
+:root { --g: #c8f7a8; --ink: #2e4f1f; --line: rgba(46, 79, 31, .28); --bub: #ffffff; --hl: #fff3a3; }
+* { box-sizing: border-box; letter-spacing: -0.03em; }
+body { margin: 0; background: var(--g); color: var(--ink); font: 500 14px/1.4 "Pretendard Variable", Pretendard, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+::selection { background: var(--ink); color: var(--g); }
+.top { padding: 20px 32px 16px; border-bottom: 1px solid var(--line); }
+h1 { margin: 0; font-size: 20px; font-weight: 700; text-wrap: balance; }
+.lead { margin: 4px 0 0; font-size: 12px; max-width: 760px; text-wrap: pretty; }
+.ctl { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px; }
+.ctl + .ctl { margin-top: 8px; }
+.ctl > span { font-size: 12px; font-weight: 600; margin-right: 4px; }
+.ctl button, .copy { min-height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid var(--line); background: transparent; color: inherit; font: inherit; font-size: 14px; cursor: pointer; transition: background-color .15s, color .15s, transform .16s cubic-bezier(.2, 0, 0, 1); }
+.ctl button[aria-pressed="true"] { background: var(--ink); color: var(--g); border-color: var(--ink); }
+.ctl button:active, .copy:active { transform: scale(.96); }
+.ctl button:focus-visible, .copy:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+@media (hover: hover) { .ctl button:not([aria-pressed="true"]):hover, .copy:hover { background: rgba(46, 79, 31, .08); } }
+main { padding: 8px 32px 8px; max-width: 1240px; }
+.cat { padding-top: 20px; }
+.cat + .cat { margin-top: 28px; border-top: 1px solid var(--line); }
+.cat > h2 { margin: 0; font-size: 18px; font-weight: 600; }
+.cat > .csub { margin: 2px 0 16px; font-size: 12px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); gap: 32px; }
+.msg { min-width: 0; }   /* 한 줄 미리보기(nowrap)가 칸을 넓히지 않게 */
+.msg h3 { margin: 0; font-size: 16px; font-weight: 600; }
+.msg .when { margin: 2px 0 12px; font-size: 12px; }
+.pv { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; background: rgba(255, 255, 255, .55); }
+.pv i { flex: none; width: 36px; height: 36px; border-radius: 9999px; background: #18181b; display: grid; place-items: center; color: #fff; font-style: normal; font-size: 12px; font-weight: 600; }
+.pv div { min-width: 0; }
+.pv b { display: block; font-size: 14px; font-weight: 600; color: #18181b; }
+.pv span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; color: #52525c; }
+.pvl { margin: 6px 0 12px; font-size: 12px; }
+.bub { padding: 14px 16px; border-radius: 20px 20px 20px 4px; background: var(--bub); color: #18181b; font-size: 16px; line-height: 1.5; white-space: pre-line; word-break: keep-all; overflow-wrap: anywhere; box-shadow: 0 1px 2px rgba(0, 0, 0, .06); }
+.bub mark { background: var(--hl); color: inherit; border-radius: 4px; padding: 0 2px; }
+.bub mark.ex { background: #e4f7d6; }
+.bub .q { display: inline-block; margin-left: 4px; padding: 0 6px; border-radius: 9999px; background: #18181b; color: #fff; font-size: 12px; font-weight: 600; line-height: 20px; vertical-align: 2px; }
+.meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 10px; }
+.meta small { font-size: 12px; font-variant-numeric: tabular-nums; }
+.why { margin: 12px 0 0; padding-left: 18px; font-size: 12px; display: grid; gap: 2px; }
+.notes { padding: 16px 32px 48px; max-width: 900px; }
+.notes h2 { margin: 16px 0 8px; font-size: 16px; font-weight: 600; }
+.notes ol { margin: 0; padding-left: 20px; display: grid; gap: 4px; font-size: 14px; }
+.toast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 8px); opacity: 0; padding: 10px 18px; border-radius: 8px; background: #18181b; color: #fff; font-size: 14px; pointer-events: none; transition: opacity .2s cubic-bezier(.2, 0, 0, 1), transform .2s cubic-bezier(.2, 0, 0, 1); }
+.toast.on { opacity: 1; transform: translate(-50%, 0); }
+@media (prefers-reduced-motion: reduce) { .toast { transition: opacity .2s; transform: translate(-50%, 0); } }
+@media (max-width: 700px) { .top, main, .notes { padding-left: 16px; padding-right: 16px; } .grid { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>전시 연락 문구 · 시안 v5</h1>
+  <p class="lead">런칭 전 콜드 스타트용 연락 문구를 분류별로 모음 — 진행 중·예정 전시 / 끝난 전시(기록·아카이빙) / 런칭 뒤 / 물어보면. 각 분류 안은 보내는 순서대로. 문구는 모두 제안이고, 노란 칸은 보낼 때 채울 곳. v5(11-20): 끝난 전시 분류 추가, 말투는 v4(기존 마케팅 양식) 그대로.</p>
+  <div class="ctl" id="cats" role="group" aria-label="분류"><span>분류</span></div>
+  <div class="ctl" id="modes" role="group" aria-label="보기"><span>보기</span>
+    <button type="button" data-m="blank" aria-pressed="true">빈칸</button>
+    <button type="button" data-m="ex" aria-pressed="false">예시로 채우기 <small>(데모 전시)</small></button>
+  </div>
+</header>
+
+<main id="list"></main>
+
+<section class="notes">
+  <h2>보내기 전에 꼭</h2>
+  <ol>
+    <li><b>⚠️ 데모에서 시험용 실제 작품 끄기</b> — ③에서 보낼 데모(프로토)에 지금 인스타·비핸스에서 가져온 학생 작품 50점이 <b>임의로 지은 제목·작가</b>로 들어가 있어요(U-170, <code>REAL_ON = true</code>, 이미 푸시됨). 받는 쪽이 자기나 지인 작품을 엉뚱한 이름으로 보면 반감이 커요. 인스타 사진 주소도 11-22쯤 만료돼 빈칸이 생겨요.</li>
+    <li><b>디유 인스타 프로필</b> — 모르는 계정의 DM은 프로필부터 봐요. 소개 한 줄 · 게시물 몇 개 · 링크.</li>
+    <li><b>하루 40개씩 나눠 보내기</b> — 새 계정이 비슷한 메시지를 몰아 보내면 DM이 막힐 수 있어요(정확한 한도는 공개되지 않음).</li>
+    <li><b>보낸 곳 기록 표</b> — 전시명 · 계정 · 보낸 날 · 답장 · 자료 받음 · 올림 · 오픈 알림.</li>
+  </ol>
+  <h2>채울 것</h2>
+  <ol>
+    <li><b>마감 날짜</b> — ①·①-1·②에 같은 날짜.</li>
+    <li><b>런칭 때</b> — ④ 전시 페이지 링크 · ⑤ 문 연 날짜.</li>
+  </ol>
+  <h2>정한 것 (11-19 ~ 11-20)</h2>
+  <ol>
+    <li>오픈 날짜는 첫 연락에 넣지 않음("곧 정식으로 문을 열어요"), 대신 <b>답장 마감 날짜</b>를 넣음.</li>
+    <li>비용 — 들지 않음.</li>
+    <li>디유 SNS 소개는 약속하지 않음 — 모르는 계정이 소개까지 해 준다고 하면 반감이 있을 수 있어서.</li>
+    <li>보내는 이름 — 사람 이름 대신 <b>디유(displayU) 홍보팀</b>.</li>
+    <li>넘겨 드리기 — 첫 연락에서 뺌, 물어보시면 답(운영팀이 DB에 직접 넣으니 대신 올리기·넘기기 모두 가능).</li>
+    <li>자료 — DM으로 구글 드라이브 링크(DM 사진은 화질이 떨어짐), 받는 대로 바로 올리고 알림.</li>
+    <li>오픈 전 보여 줄 링크 = 데모(프로토), 오픈 뒤 = 전시 페이지 링크.</li>
+    <li>동의 — 보내 주신 것 = 올려도 되는 것으로 가볍게, "수정하거나 내리고 싶은 부분이 있으면 말씀해 주세요".</li>
+    <li>끝난 전시에도 연락(11-20) — 목적은 기록·아카이빙. 끝난 전시는 지도에 나오지 않아(프로토 정책) 지도 이야기는 빼고 "전시를 못 본 분들도 언제든 감상"을 앞세움, 작품 사진·전시장 사진·브로셔를 함께 요청.</li>
+    <li>끝난 뒤에 올리는 전시 = 운영팀이 DB에 <b>승인된 전시</b>로 직접 넣음(11-20) — 심사 단계가 없고, 상태는 날짜로 정해져 다른 끝난 전시처럼 '종료'로 보임.</li>
+    <li>말투 — 기존 마케팅 양식처럼 "~입니다 · 연락드렸습니다 · 감사합니다", 받는 곳은 "〈학교 학과〉 담당자님!", 끝은 "디유(displayU) 홍보팀 드림".</li>
+  </ol>
+  <h2>이렇게 쓴 이유</h2>
+  <ol>
+    <li>말투는 기존 양식 그대로 — 업무 연락에서 흔히 쓰는 말투라 사람이 쓴 것처럼 읽혀요. 반대로 "~해서요"로 끝나는 짧은 말, 장점을 나란히 늘어놓는 문장, 감성적인 칭찬은 AI 티가 나서 뺐어요.</li>
+    <li>누구인지와 용건을 처음 두세 줄에 — 처음 연락하는 메일·DM은 소속과 목적을 도입부에서 바로 밝히는 게 기본이에요.</li>
+    <li>비용 · 할 일(자료만) · 기한을 처음부터 — 조건이 모호하면 되묻게 돼서 답이 늦어져요.</li>
+    <li>이모지 소제목 · 굵은 글씨 없이 — DM에서는 광고처럼 보여요.</li>
+    <li>첫 메시지에는 링크 없음 — 모르는 계정이 보낸 링크는 걸러지기 쉽다는 이야기가 있어요(인스타 공식 설명은 아님).</li>
+  </ol>
+</section>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* 채울 곳: k = 이름, b = 빈칸에서 보이는 말, e = 예시(데모 전시 '빛의 결 | 조용한 흐름' — 프로토의 가상 데이터) */
+const F = {
+  to:   { b: '학교 학과 졸업전시 준비위원회', e: '한결대학교 사진동아리' },
+  ex:   { b: '전시명', e: '빛의 결 | 조용한 흐름' },
+  due:  { b: '마감 날짜', e: '11월 ○일' },
+  demo: { b: '데모 링크', e: 'displayu-demo.vercel.app' },
+  page: { b: '전시 페이지 링크', e: '(전시 페이지 주소)' },
+  day:  { b: '문 연 날짜', e: '12월 ○일' },
+};
+const SIGN = '디유(displayU) 홍보팀 드림';
+const ME = "대학생 전시와 작품을 한곳에 기록하는 플랫폼 '디유(displayU)'입니다.";   /* 기존 마케팅 양식의 소개 문장 */
+/* 문구: {이름} = 채울 곳, {이름|을} {이름|으로} = 받침에 맞춘 조사, [?…] = 정할 것(❓) */
+const CATS = [
+  { id: 'live', name: '진행 중·예정 전시', sub: '런칭 전 · 전시 기간에 지도에 뜨는 것과 끝난 뒤에도 남는 것을 앞세움' },
+  { id: 'ended', name: '끝난 전시', sub: '런칭 전 · 기록·아카이빙 목적 — 포스터와 작품을 언제든 다시 감상할 수 있게' },
+  { id: 'after', name: '런칭 뒤', sub: '오픈한 뒤 처음 연락하는 곳' },
+  { id: 'common', name: '물어보면', sub: '답장으로 받은 질문에 쓸 답 (모든 분류 공통)' },
+];
+let CAT = 'all';
+const MSGS = [
+  { k: '1', cat: 'live', title: '① 첫 연락', when: '처음 보내는 DM — 대신 올려도 될지 묻기',
+    text: `안녕하세요, {to} 담당자님!
+${ME}
+
+인스타그램에서 {ex} 포스터를 보고, 곧 있을 디유 정식 오픈에 맞춰 먼저 소개해 드리고 싶어 연락드렸습니다.
+자료만 보내 주시면 등록은 저희가 진행하며, 비용은 따로 들지 않습니다. 등록된 전시는 전시 기간 동안 지도에서 찾아볼 수 있고, 전시가 끝난 뒤에도 온라인 아카이브로 남게 됩니다.
+
+괜찮으시다면 {due}까지 답장 부탁드립니다.
+감사합니다.
+${SIGN}`,
+    why: ['인사 → 누구인지 → 어디서 보고 왜 연락했는지 순서(기존 양식과 같음)', '비용 없음 · 할 일은 자료만 · 답장 기한을 한 번에'] },
+  { k: '1b', cat: 'live', title: '①-1 답이 없을 때', when: '①을 보내고 3~4일 뒤, 한 번만',
+    text: `안녕하세요, {to} 담당자님! 디유(displayU)입니다.
+지난번 보내드린 {ex} 소개 건으로 다시 한번 연락드립니다. {due}까지 답장 주시면 오픈에 맞춰 함께 소개해 드리겠습니다.
+감사합니다.`,
+    why: ['메시지 요청함은 놓치기 쉬워서 한 번만 다시', '같은 마감 날짜를 다시 알려 줌'] },
+  { k: '2', cat: 'live', title: '② 자료 요청', when: '①에 "좋아요" 답장이 왔을 때',
+    text: `답장 주셔서 감사합니다!
+포스터 원본 파일을 구글 드라이브에 올려 링크로 보내 주시면 됩니다. DM으로 받으면 이미지 화질이 낮아질 수 있어 드라이브 링크로 부탁드립니다.
+작품도 함께 소개하고 싶으시다면 작품 사진과 작품명, 작가 이름(활동명 가능)을 같이 넣어 주세요.
+
+전시 기간, 장소 등 기본 정보는 인스타그램 게시물을 참고해 저희가 입력하겠습니다. 수정이 필요한 내용이 있으면 말씀해 주세요.
+링크는 '링크가 있는 모든 사용자'로 공유해 주시고, {due}까지 보내 주시면 받는 대로 바로 등록 후 알려드리겠습니다.`,
+    why: ['받을 것 = 포스터 원본 + (있으면) 작품, 나머지는 저희가 입력', '드라이브 공유 설정을 미리 적어 다시 묻지 않게'] },
+  { k: '3', cat: 'live', title: '③ 올린 뒤 알림 (오픈 전)', when: '자료를 받아 올린 바로 뒤',
+    text: `{ex} 등록을 마쳤습니다!
+정식 오픈 후 전시 페이지 링크를 바로 보내드릴 예정이며, 디유에서 보이는 모습은 아래 미리보기에서 먼저 확인하실 수 있습니다.
+{demo}
+수정하거나 내리고 싶은 부분이 있으면 언제든 말씀해 주세요. 감사합니다.`,
+    why: ['오픈 전이라 전시 페이지 대신 데모로 모습만', '⚠️ 데모의 시험용 실제 작품을 끈 뒤에 보내기'] },
+  { k: '4', cat: 'live', title: '④ 오픈 알림', when: '정식 오픈한 날, 올려 드린 곳 모두에',
+    text: `안녕하세요, 디유(displayU)입니다.
+디유가 정식 오픈했습니다! {ex} 전시 페이지는 아래 링크에서 확인하실 수 있습니다.
+{page}
+함께해 주셔서 감사합니다.`,
+    why: ['③에서 한 약속(오픈하면 링크) 지키기', '상대가 자기 채널에 공유할 계기'] },
+  { k: 'e1', cat: 'ended', title: '① 첫 연락', when: '처음 보내는 DM — 기록해 둬도 될지 묻기',
+    text: `안녕하세요, {to} 담당자님!
+${ME}
+
+인스타그램에서 지난 {ex} 소식을 보고 연락드렸습니다. 전시는 마무리되었지만, 전시를 보지 못한 분들도 포스터와 작품을 언제든 감상하실 수 있도록 디유에 기록해 두고 싶습니다.
+자료만 보내 주시면 등록은 저희가 진행하며, 비용은 따로 들지 않습니다. 곧 있을 디유 정식 오픈에 맞춰 함께 소개해 드리겠습니다.
+
+괜찮으시다면 {due}까지 답장 부탁드립니다.
+감사합니다.
+${SIGN}`,
+    why: ['끝난 전시는 지도에 나오지 않아 지도 이야기는 뺌(프로토 정책)', '앞세울 것 = 못 본 사람도 언제든 감상 · 포스터와 작품 기록'] },
+  { k: 'e1b', cat: 'ended', title: '①-1 답이 없을 때', when: '①을 보내고 3~4일 뒤, 한 번만',
+    text: `안녕하세요, {to} 담당자님! 디유(displayU)입니다.
+지난번 보내드린 {ex} 기록 건으로 다시 한번 연락드립니다. {due}까지 답장 주시면 오픈에 맞춰 함께 소개해 드리겠습니다.
+감사합니다.`,
+    why: ['끝난 전시 계정은 답이 늦을 수 있어 한 번만 다시', '준비위원회 계정이 멈춰 있으면 학과 계정으로 보내는 것도 방법'] },
+  { k: 'e2', cat: 'ended', title: '② 자료 요청', when: '①에 "좋아요" 답장이 왔을 때',
+    text: `답장 주셔서 감사합니다!
+포스터 원본 파일과 작품 사진을 구글 드라이브에 올려 링크로 보내 주시면 됩니다. DM으로 받으면 이미지 화질이 낮아질 수 있어 드라이브 링크로 부탁드립니다.
+작품 사진은 파일 이름이나 메모로 작품명과 작가 이름(활동명 가능)을 함께 적어 주시고, 전시장 사진이나 브로셔가 있다면 같이 넣어 주셔도 좋습니다.
+
+전시 기간, 장소 등 기본 정보는 인스타그램 게시물을 참고해 저희가 입력하겠습니다. 수정이 필요한 내용이 있으면 말씀해 주세요.
+링크는 '링크가 있는 모든 사용자'로 공유해 주시고, {due}까지 보내 주시면 받는 대로 바로 등록 후 알려드리겠습니다.`,
+    why: ['기록이 목적이라 작품 사진을 포스터와 함께 요청', '전시장 사진·브로셔는 전시 콘텐츠(섹션)로 들어감'] },
+  { k: 'e3', cat: 'ended', title: '③ 올린 뒤 알림 (오픈 전)', when: '자료를 받아 올린 바로 뒤',
+    text: `{ex} 기록을 마쳤습니다!
+정식 오픈 후 전시 페이지 링크를 바로 보내드릴 예정이며, 디유에서 보이는 모습은 아래 미리보기에서 먼저 확인하실 수 있습니다.
+{demo}
+수정하거나 내리고 싶은 부분이 있으면 언제든 말씀해 주세요. 감사합니다.`,
+    why: ['진행 중 전시의 ③과 같고 "등록" → "기록"만', '⚠️ 데모의 시험용 실제 작품을 끈 뒤에 보내기'] },
+  { k: 'e4', cat: 'ended', title: '④ 오픈 알림', when: '정식 오픈한 날, 올려 드린 곳 모두에',
+    text: `안녕하세요, 디유(displayU)입니다.
+디유가 정식 오픈했습니다! {ex} 전시 페이지는 아래 링크에서 확인하실 수 있습니다.
+{page}
+함께해 주셔서 감사합니다.`,
+    why: ['진행 중 전시의 ④와 같음'] },
+  { k: '5', cat: 'after', title: '진행 중·예정 전시', when: '오픈 뒤 처음 연락하는 전시 — 마케팅 팀 양식을 줄인 것',
+    text: `안녕하세요, {to} 담당자님!
+${ME}
+
+인스타그램에서 {ex} 소식을 보고 연락드렸습니다. 디유는 {day} 정식 오픈한 대학생 전시 아카이빙 플랫폼으로, 등록된 전시는 전시 기간 동안 지도에서 찾아볼 수 있고 전시가 끝난 뒤에도 온라인 아카이브로 남습니다.
+디유 가입 후 학교 이메일 인증을 하시면 '마이 → 새 전시 등록'에서 직접 등록하실 수 있으며, 어려우시면 포스터만 보내 주셔도 저희가 대신 등록해 드립니다. 비용은 따로 들지 않습니다.
+
+홈페이지 링크가 필요하시면 편하게 답장 주세요.
+감사합니다.
+${SIGN}`,
+    why: ['기존 양식의 순서·말투는 두고 길이만 줄임(약 650자 → 아래 글자 수)', '경로를 프로토와 맞춤(마이 → 새 전시 등록, 학교 이메일 인증 먼저)'] },
+  { k: 'e5', cat: 'after', title: '끝난 전시', when: '오픈 뒤 처음 연락하는 끝난 전시',
+    text: `안녕하세요, {to} 담당자님!
+${ME}
+
+인스타그램에서 지난 {ex} 소식을 보고 연락드렸습니다. 디유는 {day} 정식 오픈한 대학생 전시 아카이빙 플랫폼으로, 전시가 끝난 뒤에도 포스터와 작품을 온라인 아카이브로 남겨 언제든 감상할 수 있습니다.
+자료만 보내 주시면 등록은 저희가 진행하며, 비용은 따로 들지 않습니다.
+
+괜찮으시다면 답장 부탁드립니다.
+감사합니다.
+${SIGN}`,
+    why: ['끝난 전시는 직접 가입보다 "자료만 보내 주시면"이 가벼움', '지도 이야기 없이 기록·감상만'] },
+  { k: 'q', cat: 'common', title: '물어보면 · "직접 관리할 수 있나요?"', when: '넘겨받고 싶다는 답이 왔을 때',
+    text: `네, 가능합니다! 정식 오픈 후 디유에 가입하고 학교 이메일 인증을 해 주시면, 해당 계정으로 전시 관리 권한을 넘겨드리겠습니다. 이후에는 전시 정보 수정과 작품 추가를 직접 하실 수 있습니다.`,
+    why: ['첫 연락에선 말하지 않고 물어볼 때만', '운영팀이 DB에서 대표자를 그 계정으로 바꿈'] },
+];
+let MODE = 'blank';
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+/* 받침에 맞춘 조사: 을/를, 으로/로(ㄹ받침은 로). 빈칸이면 "을(를)"처럼 둘 다 */
+function josa(word, j) {
+  const c = word.trim().slice(-1).charCodeAt(0);
+  if (!(c >= 0xac00 && c <= 0xd7a3)) return j === '을' ? '을(를)' : '(으)로';
+  const jong = (c - 0xac00) % 28;
+  if (j === '을') return jong ? '을' : '를';
+  return jong && jong !== 8 ? '으로' : '로';
+}
+function render(m, asText) {
+  return m.text.replace(/\{(\w+)(?:\|(을|으로))?\}|\[\?([^\]]+)\]/g, (all, k, j, q) => {
+    if (q) return asText ? q : `${esc(q)}<span class="q" title="정할 것">❓</span>`;
+    const f = F[k], ex = MODE === 'ex', word = ex ? f.e : f.b;
+    const tail = j ? (ex ? josa(word, j) : (j === '을' ? '을(를)' : '(으)로')) : '';
+    if (asText) return (ex ? word : `〈${word}〉`) + tail;
+    return `<mark class="${ex ? 'ex' : ''}">${esc(ex ? word : `〈${word}〉`)}</mark>${tail}`;
+  });
+}
+function card(m) {
+  const txt = render(m, true), first = txt.split('\n')[0];
+  return `<section class="msg" aria-labelledby="h${m.k}">
+      <h3 id="h${m.k}">${m.title}</h3><p class="when">${m.when}</p>
+      <div class="pv" aria-hidden="true"><i>DU</i><div><b>디유</b><span>${esc(first)}</span></div></div>
+      <p class="pvl">↑ 요청함에서 대략 이렇게 첫 줄만 보여요</p>
+      <div class="bub">${render(m, false)}</div>
+      <div class="meta"><small>${txt.replace(/\s/g, '').length}자 · ${txt.split('\n').filter((l) => l.trim()).length}줄</small><button type="button" class="copy" data-k="${m.k}">복사</button></div>
+      <ul class="why">${m.why.map((w) => `<li>${w}</li>`).join('')}</ul>
+    </section>`;
+}
+document.getElementById('cats').insertAdjacentHTML('beforeend', [{ id: 'all', name: '전체' }, ...CATS].map((c) => `<button type="button" data-c="${c.id}" aria-pressed="false">${c.name}</button>`).join(''));
+function draw() {
+  document.querySelectorAll('#modes button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.m === MODE)));
+  document.querySelectorAll('#cats button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.c === CAT)));
+  document.getElementById('list').innerHTML = CATS.filter((c) => CAT === 'all' || c.id === CAT).map((c) => `<section class="cat" aria-labelledby="c-${c.id}">
+    <h2 id="c-${c.id}">${c.name}</h2><p class="csub">${c.sub}</p>
+    <div class="grid">${MSGS.filter((m) => m.cat === c.id).map(card).join('')}</div>
+  </section>`).join('');
+}
+let tt = 0;
+function toast(s) { const t = document.getElementById('toast'); t.textContent = s; t.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('on'), 1600); }
+async function copy(s) {
+  try { await navigator.clipboard.writeText(s); return true; } catch (e) {}
+  const ta = document.createElement('textarea'); ta.value = s; ta.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(ta); ta.select();
+  let ok = false; try { ok = document.execCommand('copy'); } catch (e) {} ta.remove(); return ok;
+}
+document.getElementById('modes').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { MODE = b.dataset.m; draw(); } });
+document.getElementById('cats').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { CAT = b.dataset.c; draw(); } });
+document.getElementById('list').addEventListener('click', async (e) => {
+  const b = e.target.closest('.copy'); if (!b) return;
+  const m = MSGS.find((x) => x.k === b.dataset.k);
+  toast((await copy(render(m, true))) ? '복사했어요' : '복사하지 못했어요');
+});
+draw();
+</script>
+</body>
+</html>
