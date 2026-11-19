@@ -191,13 +191,8 @@ img { display: block; }
   .lcard .lt .og { font-size: 14px; }
   .lcard .lk { right: 20px; top: 20px; }
 }
-.arrow { display: none; position: absolute; top: 190px; z-index: 2; width: 44px; height: 44px; border-radius: 9999px; border: 1px solid #2d2d30; background: #000; place-items: center; transition: background .2s, transform .2s var(--ease); }
-@media (hover: hover) { .arrow:hover { background: #18181b; } }
-.arrow:active { transform: scale(.96); }
-.arrow img { width: 24px; height: 24px; }
-.arrow.prev { left: var(--pad); } .arrow.prev img { transform: scaleX(-1); }
-.arrow.next { right: var(--pad); }
-@media (min-width: 1100px) { .arrow { display: grid; } .tabs { justify-content: center; } }
+/* 11-20 U-177: 포스터 좌우 화살표 버튼 삭제(사용자) — 옆 포스터 누르기·끌기·키보드 ←/→로 넘김 */
+@media (min-width: 1100px) { .tabs { justify-content: center; } }
 
 .empty { min-height: 280px; display: grid; place-content: center; justify-items: center; gap: 12px; text-align: center; }
 .empty p { font-size: 16px; font-weight: 600; color: var(--text-quaternary); }
@@ -230,8 +225,10 @@ img { display: block; }
 .reg .inner { display: flex; align-items: flex-end; justify-content: space-between; padding-block: 20px; gap: 16px; }
 .reg h2 { font-size: 18px; font-weight: 600; letter-spacing: -0.03em; }
 .reg p { color: var(--text-teritary); }
-.reg a { display: inline-flex; align-items: center; gap: 3px; font-weight: 600; color: var(--text-secondary); text-decoration: underline; text-underline-offset: 2px; white-space: nowrap; }
-.reg a img { width: 12px; height: 12px; }
+.reg a { position: relative; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--text-secondary); white-space: nowrap; }   /* 11-20 U-177: 늘 있던 밑줄·화살표 → 전시 상세 장소 링크(.info .pl)와 같은 ↗ */
+.reg a::before { content: ""; position: absolute; inset: -12px -4px; }   /* 터치 영역 44 */
+.reg a .o { flex: none; width: 12px; height: 12px; color: var(--text-teritary); fill: none; stroke: currentColor; transition: transform .25s var(--ease), color .2s; }   /* Figma `Icon / 바깥으로` 12 */
+@media (hover: hover) { .reg a:hover span { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; } .reg a:hover .o { transform: translate(1px, -1px); color: var(--text-primary); } }
 .foot .inner { padding-block: 20px; display: grid; gap: 8px; }
 .foot .logo img { width: 99px; height: 22.6px; }
 .foot .links { display: flex; align-items: center; gap: 12px; color: var(--text-teritary); }
@@ -285,8 +282,6 @@ img { display: block; }
     <div class="stage" id="stage" role="tabpanel" aria-labelledby="t-pop">
       <div class="views">
       <div id="posters">
-        <button class="arrow prev" id="prev" aria-label="이전 전시"><img src="assets/img/chevron-arrow.svg" width="24" height="24" alt=""></button>
-        <button class="arrow next" id="next" aria-label="다음 전시"><img src="assets/img/chevron-arrow.svg" width="24" height="24" alt=""></button>
         <div class="rail" id="rail" tabindex="0" role="group" aria-roledescription="카로셀" aria-label="전시 포스터">
                   </div>
       </div>
@@ -316,7 +311,7 @@ img { display: block; }
     <section class="reg" aria-label="전시 등록 안내">
       <div class="inner">
         <div><h2>준비 중인 전시가 있나요?</h2><p>디유에 전시와 작품을 소개해보세요</p></div>
-        <a href="exhibition-new.html">전시 등록하기<img src="assets/img/icon-go.svg" alt="" width="12" height="12"></a>
+        <a href="exhibition-new.html"><span>전시 등록하기</span><svg class="o" viewBox="0 0 12 12" aria-hidden="true"><path d="M4.125 7.875 7.875 4.125M7.875 4.125h-3M7.875 4.125v3" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       </div>
     </section>
 
@@ -457,8 +452,6 @@ const frame = (fn) => { let d = false; const f = () => { if (d) return; d = true
 rail.addEventListener('scroll', () => { if (ticking) return; ticking = true; frame(() => { ticking = false; paint(); const n = nearest(); if (n !== active) setActive(n); }); }, { passive: true });
 /* 가운데 포스터는 전시 상세로 이동, 옆 포스터는 먼저 가운데로 */
 rail.addEventListener('click', (e) => { const s = e.target.closest('.slot'); const i = slots.indexOf(s); if (s && i !== active) { e.preventDefault(); go(i); } });
-document.getElementById('prev').addEventListener('click', () => go(active - 1));
-document.getElementById('next').addEventListener('click', () => go(active + 1));
 rail.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') { e.preventDefault(); go(active + 1); } if (e.key === 'ArrowLeft') { e.preventDefault(); go(active - 1); } });
 addEventListener('resize', () => go(active, false));
 
