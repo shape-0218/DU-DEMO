@@ -7,7 +7,7 @@
 <title>전시 연락 문구 · v8</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
-/* 마케팅 팀 전달용 배포 사본(11-20, U-171·U-172·U-175·U-176) — 원본은 review/outreach-v1/index.html. 고칠 땐 원본을 고친 뒤 다시 복사. 〈 〉 = 채울 곳 */
+/* 마케팅 팀 전달용 배포 사본(11-20, U-171·U-172·U-175·U-176·U-178) — 원본은 review/outreach-v1/index.html. 고칠 땐 원본을 고친 뒤 다시 복사. 〈 〉 = 채울 곳 */
 :root { --g: #c8f7a8; --ink: #2e4f1f; --line: rgba(46, 79, 31, .28); --bub: #ffffff; --hl: #fff3a3; }
 * { box-sizing: border-box; letter-spacing: -0.03em; }
 body { margin: 0; background: var(--g); color: var(--ink); font: 500 14px/1.4 "Pretendard Variable", Pretendard, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
@@ -57,7 +57,7 @@ main { padding: 8px 32px 8px; max-width: 1240px; }
 <body>
 <header class="top">
   <h1>전시 연락 문구 · 시안 v8</h1>
-  <p class="lead">런칭 전 콜드 스타트용 연락 문구를 분류별로 모음 — 진행 중·예정 전시 / 끝난 전시(기록·아카이빙) / 런칭 뒤 / 물어보면. 각 분류 안은 보내는 순서대로. 문구는 모두 제안이고, 노란 칸은 보낼 때 채울 곳. v8(11-20): "전시 자료를 보내주시면…" 문장으로 통일·비용 말 뺌, 데모 설명 "AI 목업 전시/작품". v7: ② 자료 요청을 구글폼으로 — DM은 짧게, 안내는 폼에서. v6: 첫 연락에 오픈 시기(11월 말 ~ 12월 초)와 데모 링크. v5: 끝난 전시 분류 추가, 말투는 v4(기존 마케팅 양식) 그대로.</p>
+  <p class="lead">런칭 전 콜드 스타트용 연락 문구를 분류별로 모음 — 진행 중·예정 전시 / 끝난 전시(기록·아카이빙) / 런칭 뒤 / 물어보면. 각 분류 안은 보내는 순서대로. 문구는 모두 제안이고, 노란 칸은 보낼 때 채울 곳. v8(11-20): ②에 폼 링크 채움 · "전시 자료를 보내주시면…" 문장으로 통일·비용 말 뺌, 데모 설명 "AI 목업 전시/작품". v7: ② 자료 요청을 구글폼으로 — DM은 짧게, 안내는 폼에서. v6: 첫 연락에 오픈 시기(11월 말 ~ 12월 초)와 데모 링크. v5: 끝난 전시 분류 추가, 말투는 v4(기존 마케팅 양식) 그대로.</p>
   <div class="ctl" id="cats" role="group" aria-label="분류"><span>분류</span></div>
   <div class="ctl" id="modes" role="group" aria-label="보기"><span>보기</span>
     <button type="button" data-m="blank" aria-pressed="true">빈칸</button>
@@ -78,7 +78,7 @@ main { padding: 8px 32px 8px; max-width: 1240px; }
   <h2>채울 것</h2>
   <ol>
     <li><b>마감 날짜</b> — ①·①-1·②에 같은 날짜.</li>
-    <li><b>폼 링크</b> — ②. 폼은 아래 '구글폼' 분류의 문구로 만들기.</li>
+    <li><b>폼 링크</b> — ②에 채워 둠(11-20): https://forms.gle/1fQ9tW2T514A9WWp8 (디유 구글 계정 소유, 게시됨).</li>
     <li><b>런칭 때</b> — ④ 전시 페이지 링크 · ⑤ 문 연 날짜.</li>
   </ol>
   <h2>정한 것 (11-19 ~ 11-20)</h2>
@@ -115,9 +115,9 @@ const F = {
   demo: { b: '데모 링크', e: 'displayu-demo.vercel.app' },
   page: { b: '전시 페이지 링크', e: '(전시 페이지 주소)' },
   day:  { b: '문 연 날짜', e: '12월 ○일' },
-  form: { b: '폼 링크', e: 'forms.gle/○○○○' },
 };
 const SIGN = '디유(displayU) 홍보팀 드림';
+const FORM = 'https://forms.gle/1fQ9tW2T514A9WWp8';   /* 구글폼 응답자 링크(11-20 디유 계정으로 소유권 이전 뒤 사용자가 준 주소) */
 const DEMO = 'https://displayu-demo.vercel.app';   /* 데모 주소(첫 화면 = 홈) */
 const ME = "대학생 전시와 작품을 한곳에 기록하는 플랫폼 '디유(displayU)'입니다.";   /* 기존 마케팅 양식의 소개 문장 */
 /* 문구: {이름} = 채울 곳, {이름|을} {이름|으로} = 받침에 맞춘 조사, [?…] = 정할 것(❓) */
@@ -152,7 +152,7 @@ ${SIGN}`,
   { k: '2', cat: 'live', title: '② 자료 요청', when: '①에 "좋아요" 답장이 왔을 때',
     text: `답장 주셔서 감사합니다!
 아래 폼으로 자료를 보내 주시면 됩니다. 포스터만 올리셔도 되고, 작품과 전시장 사진까지 함께 올리실 수도 있습니다.
-{form}
+${FORM}
 {due}까지 보내 주시면 받는 대로 바로 등록 후 알려드리겠습니다.`,
     why: ['공유 설정·파일 이름·작가 동의 같은 안내는 폼으로 옮겨 DM은 짧게', '포스터만 / 작품까지는 폼 3번에서 고름'] },
   { k: '3', cat: 'live', title: '③ 올린 뒤 알림 (오픈 전)', when: '자료를 받아 올린 바로 뒤',
@@ -189,7 +189,7 @@ ${SIGN}`,
   { k: 'e2', cat: 'ended', title: '② 자료 요청', when: '①에 "좋아요" 답장이 왔을 때',
     text: `답장 주셔서 감사합니다!
 아래 폼으로 자료를 보내 주시면 됩니다. 포스터만 남기셔도 되고, 작품과 전시장 사진까지 함께 기록하실 수도 있습니다.
-{form}
+${FORM}
 {due}까지 보내 주시면 받는 대로 바로 기록 후 알려드리겠습니다.`,
     why: ['진행 중 전시 ②와 같은 폼, "남기셔도 · 기록하실 · 기록 후"만 다름'] },
   { k: 'e3', cat: 'ended', title: '③ 올린 뒤 알림 (오픈 전)', when: '자료를 받아 올린 바로 뒤',
@@ -229,12 +229,11 @@ ${SIGN}`,
   { k: 'q', cat: 'common', title: '물어보면 · "직접 관리할 수 있나요?"', when: '넘겨받고 싶다는 답이 왔을 때',
     text: `네, 가능합니다! 정식 오픈 후 디유에 가입하고 학교 이메일 인증을 해 주시면, 해당 계정으로 전시 관리 권한을 넘겨드리겠습니다. 이후에는 전시 정보 수정과 작품 추가를 직접 하실 수 있습니다.`,
     why: ['첫 연락에선 말하지 않고 물어볼 때만', '운영팀이 DB에서 대표자를 그 계정으로 바꿈'] },
-  { k: 'f1', cat: 'form', pv: false, title: '폼 설명', when: '폼 제목 아래 설명 칸 (폼 제목: 디유(displayU) 전시 등록 자료 보내기)',
-    text: `안녕하세요, 대학생 전시와 작품을 한곳에 기록하는 플랫폼 '디유(displayU)'입니다.
-보내 주신 자료로 디유 운영팀이 전시를 등록하고, 등록을 마치면 DM으로 알려드립니다. 비용은 따로 들지 않습니다.
+  { k: 'f1', cat: 'form', pv: false, title: '폼 설명', when: '실제 게시된 폼과 같음(11-20 사용자가 다듬은 글) — https://forms.gle/1fQ9tW2T514A9WWp8',
+    text: `보내 주신 자료로 디유 운영팀이 전시를 등록하고, 등록을 마치면 DM으로 알려드립니다.
 
 보내기 전에 확인해 주세요.
-1. 포스터는 최종본으로 보내 주세요. 날짜·요일·오타를 한 번 더 확인해 주세요.
+1. 포스터는 최종본으로 보내 주세요.
 2. 전시 기간, 장소 등 기본 정보는 인스타그램 게시물을 참고해 저희가 입력합니다.
 3. 작품은 작가 본인이 등록에 동의한 작품만 올릴 수 있습니다.
 4. 등록한 내용은 언제든 수정하거나 내릴 수 있습니다. DM으로 말씀해 주세요.`,
