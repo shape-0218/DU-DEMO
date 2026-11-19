@@ -58,6 +58,9 @@ img { display: block; }
 .head .inner { padding-block: 16px; display: flex; align-items: center; justify-content: space-between; }   /* 11-08 Figma `홈 - 수정` 헤더: 위아래 16 + 로고 28.3 = 60.3 (이전 44) */
 .head .logo img { width: 124px; height: 28.3px; }
 .head .search { width: 28px; height: 28px; }
+.head .hr { display: flex; align-items: center; gap: 16px; }   /* 11-20 지도 입구: 돋보기 왼쪽 접은 지도 아이콘(검색과 같은 28 상자·선 2, 사이 16 = 터치 영역 44가 안 겹침). 이전: 검은 영역 맨 끝 지도 줄(a.map, 핀 + 제목 + 설명 + 화살표) */
+.head .mapb { display: block; width: 28px; height: 28px; color: var(--text-primary); }
+.head .mapb svg { display: block; width: 28px; height: 28px; }
 @media (min-width: 768px) { .head .inner { height: 64px; } }
 
 /* 검정 영역 */
@@ -201,17 +204,6 @@ img { display: block; }
 .empty a { color: var(--text-teritary); text-decoration: underline; text-underline-offset: 2px; }
 [hidden] { display: none !important; }
 
-.map { display: block; border-top: 1px solid #2d2d30; margin-top: 16px; }
-.map .inner { display: flex; align-items: center; justify-content: space-between; padding-block: 20px; }
-.map .l { display: flex; align-items: center; gap: 14px; }
-.map .pin { width: 34px; height: 34px; display: grid; place-items: center; }
-.map .pin img { width: 21.56px; height: 27.48px; }
-.map strong { display: block; font-size: 16px; font-weight: 600; color: var(--text-quaternary); letter-spacing: -0.03em; }
-.map span { display: block; padding-top: 2px; color: var(--text-teritary); }
-.map .go { width: 32px; height: 32px; }
-@media (hover: hover) { .map:hover .go { transform: translateX(2px); } }
-.map .go { transition: transform .3s var(--ease); }
-
 /* 흰 영역 */
 .sheet { position: relative; margin-top: -20px; background: var(--bg-white); border-radius: var(--r20) var(--r20) 0 0; }
 .works { padding-block: 20px; }
@@ -268,7 +260,10 @@ img { display: block; }
 <header class="head">
   <div class="inner">
     <a class="logo" href="#" aria-label="Display U. 홈"><img src="assets/img/logo.svg" width="124" height="28" alt="Display U."></a>
-    <a class="search" href="explore.html" aria-label="검색"><img src="assets/img/search-header.svg" width="28" height="28" alt=""></a>
+    <div class="hr">
+      <a class="mapb" href="map.html" aria-label="지도"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.72" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg></a>
+      <a class="search" href="explore.html" aria-label="검색"><img src="assets/img/search-header.svg" width="28" height="28" alt=""></a>
+    </div>
   </div>
 </header>
 
@@ -304,16 +299,6 @@ img { display: block; }
         <a href="#">지난 전시 둘러보기</a>
       </div>
     </div>
-
-    <a class="map" href="map.html">
-      <span class="inner">
-        <span class="l">
-          <span class="pin"><img src="assets/img/map-pin.svg" alt="" width="22" height="27"></span>
-          <span><strong>가까운 전시 찾기</strong><span>지도에서 전시 위치를 확인해보세요</span></span>
-        </span>
-        <img class="go" src="assets/img/chevron-map.svg" alt="" width="32" height="32">
-      </span>
-    </a>
   </section>
 
   <div class="sheet">
