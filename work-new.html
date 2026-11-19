@@ -229,7 +229,7 @@ const author = PROXY ? PROXY.n : myName;
 const exd = ExData.get(ex), EDIT = q.get('edit'), editing = EDIT ? exd.works.find((w) => w.id === EDIT) : null;
 const WORKS = 'works.html?id=' + ex.id;
 /* 데모용 전시 팀원(가상) — 실제로는 전시 팀원 목록 API */
-const TEAM = [{ n: '이정우', h: 'quietroom', ok: true }, { n: '김서윤', h: 'blue.note', ok: true }, { n: '박서준', h: 'seojun', ok: true }, { n: '최하늘', h: '작가 인증 필요', ok: false }];
+const TEAM = [{ n: '이정우', h: 'quietroom', ok: true }, { n: '김서윤', h: 'bluenote', ok: true }, { n: '박서준', h: 'seojun', ok: true }, { n: '최하늘', h: '작가 인증 필요', ok: false }];
 $('d-ok').href = WORKS;
 
 const st = { media: [], proc: [], fields: new Set(), co: [], errMedia: false, errProc: false, left: false };
@@ -238,7 +238,7 @@ const dirty = () => !!(st.media.length || st.proc.length || st.fields.size || st
 /* ---------- 작가 ---------- */
 const AV = '<span class="av" aria-hidden="true"><svg><use href="#i-avatar"/></svg></span>';
 /* 11-15(U-148): 작가명 아래 줄 = 기본 닉네임(Figma 작품 등록 01·05·06과 같게 "작가 ·" 없이). 나 = 내 닉네임, 대신 등록 = 그 팀원 닉네임 / "직접 입력" */
-const myNick = ((exd.team && exd.team.members) || []).find((m) => m.me)?.nick || 'sangjun';
+const myNick = ((exd.team && exd.team.members) || []).find((m) => m.me)?.nick || 'seoa';
 function renderAuthors() {
   $('authors').innerHTML = `<div class="ar">${AV}<div class="nm"><b>${esc(author)}</b><small>${esc(PROXY ? PROXY.h : myNick)}</small></div></div>` +
     st.co.map((c, i) => `<div class="ar">${AV}<div class="nm"><b>${esc(c.n)}</b><small>${esc(c.h)}</small></div><button type="button" class="rm" data-i="${i}" aria-label="${esc(c.n)} 제외"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button></div>`).join('') +

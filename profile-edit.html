@@ -182,8 +182,8 @@ let st1; function snack(m) { const s = $('snack'); s.textContent = m; s.classLis
 
 const P = load('du.profile'), C = load('du.cert');
 const S = KIND === 'basic'
-  ? { img: P.img || '', nick: P.nick || 'sangjun' }
-  : { img: C.img != null ? C.img : 'assets/img/artist-sample.jpg', name: C.name || '고상준', fields: new Set(C.fields && C.fields.length ? C.fields : ['그래픽', '브랜딩']), bio: C.bio != null ? C.bio : '빛과 색의 경계를 탐구하며, 일상에서 발견한 순간들을 작품으로 표현합니다.', ig: C.ig != null ? C.ig : 'sangjun.works', web: C.web != null ? C.web : 'sangjun-works.com' };
+  ? { img: P.img || '', nick: P.nick || 'seoa' }
+  : { img: C.img != null ? C.img : 'assets/img/artist-sample.jpg', name: C.name || '윤서아', fields: new Set(C.fields && C.fields.length ? C.fields : ['그래픽', '브랜딩']), bio: C.bio != null ? C.bio : '빛과 색의 경계를 탐구하며, 일상에서 발견한 순간들을 작품으로 표현합니다.', ig: C.ig != null ? C.ig : 'sangjun.works', web: C.web != null ? C.web : 'sangjun-works.com' };
 const snap = () => JSON.stringify(KIND === 'basic' ? { i: S.img, n: S.nick } : { i: S.img, n: S.name, f: [...S.fields].sort(), b: S.bio, g: S.ig, w: S.web });
 let saved = snap(), checked = false, takenMsg = false, ORIG = S.nick;
 

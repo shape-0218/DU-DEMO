@@ -10,13 +10,13 @@ const ExData = (() => {
 
   function seed(e) {
     const works = W.slice(0, e.works || 0).map(([t, a, f], i) => ({ id: 'w' + i, title: t, author: a, img: IMG + f + '.jpg', mine: false, fields: ['기타'], year: '2026', medium: '혼합 매체' }));
-    if (works.length) works[0] = { ...works[0], author: e.myName || '고상준', mine: true };
+    if (works.length) works[0] = { ...works[0], author: e.myName || '윤서아', mine: true };
     const secs = S.slice(0, e.sections || 0).map(([t, n], i) => ({ id: 's' + i, title: t, photos: Array.from({ length: n }, (_, k) => IMG + W[(i * 3 + k) % W.length][2] + '.jpg') }));
-    const me = { id: 'm_me', name: e.myName || '고상준', nick: 'sangjun', role: e.role, me: true };
-    const others = [{ id: 'm1', name: '김도윤', nick: 'doyoon', role: 'owner' }, { id: 'm2', name: '서유진', nick: 'yujin_archive', role: 'manager' }, { id: 'm3', name: '한여름', nick: 'summerhan', role: 'member' }, { id: 'm4', name: '박이안', nick: 'ian_works', role: 'member' }];
+    const me = { id: 'm_me', name: e.myName || '윤서아', nick: 'seoa', role: e.role, me: true };
+    const others = [{ id: 'm1', name: '김도윤', nick: 'doyoon', role: 'owner' }, { id: 'm2', name: '서유진', nick: 'yujinarchive', role: 'manager' }, { id: 'm3', name: '한여름', nick: 'summerhan', role: 'member' }, { id: 'm4', name: '박이안', nick: 'ianworks', role: 'member' }];
     const rest = others.filter((o) => !(o.role === 'owner' && e.role === 'owner') && !(o.role === 'manager' && e.role === 'manager'));
     const members = [me, ...rest].slice(0, Math.max(1, e.members || 1));
-    const pending = [{ id: 'p1', nick: 'yoonsl' }, { id: 'p2', nick: 'minjae_c' }].slice(0, e.pending || 0);
+    const pending = [{ id: 'p1', nick: 'yoonsl' }, { id: 'p2', nick: 'minjaec' }].slice(0, e.pending || 0);
     return { works, secs, team: { link: true, members, pending } };
   }
   function get(e) { let d = store.get(key(e.id), null); if (!d || !d.team) { d = seed(e); store.set(key(e.id), d); } return d; }

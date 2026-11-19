@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
-<title>고상준 · 작가 · Display U.</title>
+<title>윤서아 · 작가 · Display U.</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -186,7 +186,7 @@ img { display: block; }
   <div class="layout">
     <section class="profile" aria-label="작가 정보">
         <div class="who">
-          <div class="nm"><h1>고상준</h1><button type="button" class="abtn" id="save" aria-label="작가 저장" aria-pressed="false"><span class="dot"><svg class="i" aria-hidden="true"><use href="#i-bookmark"/></svg></span></button></div>
+          <div class="nm"><h1>윤서아</h1><button type="button" class="abtn" id="save" aria-label="작가 저장" aria-pressed="false"><span class="dot"><svg class="i" aria-hidden="true"><use href="#i-bookmark"/></svg></span></button></div>
           <p class="school">한결대학교 · 그래픽 · 브랜딩</p>
         </div>
         <div class="avw" id="avw"><div class="avatar" id="avatar"></div></div>
@@ -242,8 +242,8 @@ const RANK = { '전시 중': 0, '전시 예정': 1, '종료': 2 };
 const exhibitions = [DEMO.EXH[7], DEMO.EXH[0], DEMO.EXH[10]].map(exOf)
 .sort((a, b) => (RANK[a.state] - RANK[b.state]) || (b.pub - a.pub));
 const works = [
-  { img: 'w1.jpg', title: '접으면 달라지는 지도', by: '고상준', href: 'work.html' },
-  { img: '../../explore/opt/wk20.jpg', title: '장면을 넘기는 극장', by: '고상준', href: 'work.html?w=11' }
+  { img: 'w1.jpg', title: '접으면 달라지는 지도', by: '윤서아', href: 'work.html' },
+  { img: '../../explore/opt/wk20.jpg', title: '장면을 넘기는 극장', by: '윤서아', href: 'work.html?w=11' }
 ];
 /* ?exh=N&works=N 으로 많을 때 모습 확인 */
 const nE = q.has('exh') ? +q.get('exh') : exhibitions.length, nW = q.has('works') ? +q.get('works') : works.length;

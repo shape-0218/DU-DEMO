@@ -538,6 +538,7 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
 <script src="assets/fade.js"></script>
 <script src="assets/stickback.js"></script>
 <script src="assets/demo-data.js"></script>
+<script src="assets/demo-comments.js"></script>
 <script src="assets/cropbox.js"></script>
 <script>
 /* ---------- 전시 고르기: ?e=번호 (데모 전시 11개), ?id= 는 허브 미리보기, 둘 다 없으면 0번 ---------- */
@@ -619,12 +620,8 @@ player.addEventListener('close', () => { pv.pause(); });
 const TXT = '작품들이 전시 주제와 잘 연결되어 있어서 천천히 보게 되었어요. 특히 색을 다루는 방식이 인상 깊었습니다.';
 const ic = (id, cls = '') => `<svg class="i ${cls}" aria-hidden="true"><use href="#${id}"/></svg>`;
 const avatar = `<span class="av">${ic('i-avatar')}</span>`;
-let comments = [
-  { id: 1, name: '서하', date: '2026.06.14', photos: 3, likes: 12, replies: [{ name: '윤채원', team: true, date: '2026.06.14', likes: 12 }], hidden: 2 },
-  { id: 2, name: '탈퇴한 회원', gone: true, date: '7시간', likes: 12 },
-  { id: 3, name: '민재', date: '3시간', likes: 12, mine: true }
-];
-if (new URLSearchParams(location.search).get('cmdel') === 'admin') comments[0].deleted = 'admin';   // 확인용: 관리자가 지운 댓글(Figma 삭제된 댓글 2643:29821). 사용자가 지운 것은 deleted = true
+let comments = DXI === null ? [] : DEMO_CM.ex(DXI);   // 11-20 U-173: 전시마다 다른 후기(assets/demo-comments.js), 안 열린 전시·내 전시 미리보기는 없음
+if (new URLSearchParams(location.search).get('cmdel') === 'admin' && comments[0]) comments[0].deleted = 'admin';   // 확인용: 관리자가 지운 댓글(Figma 삭제된 댓글 2643:29821). 사용자가 지운 것은 deleted = true
 const goneText = (c) => c.deleted === 'admin' ? '운영 정책에 따라 삭제된 댓글이에요' : '삭제된 댓글이에요';
 const expanded = new Set();
 
@@ -647,7 +644,7 @@ function item(c, reply) {
 }
 function repliesOf(c) {
   const shown = (c.replies || []);
-  const extra = expanded.has(c.id) ? Array.from({ length: c.hidden || 0 }, () => ({ name: 'User name', date: '3시간', likes: 12 })) : [];
+  const extra = expanded.has(c.id) ? (c.more || []) : [];   // 11-20: 실제로 쓴 나머지 답글
   const list = [...shown, ...extra];
   if (!list.length && !c.hidden) return '';
   const btn = c.hidden ? `<button class="mr" data-toggle="${c.id}">${expanded.has(c.id) ? '답글 접기' : `답글 ${c.hidden}개 더 보기`}</button>` : '';
@@ -723,7 +720,7 @@ const GBC = `<form class="gbc" novalidate>
   <input type="file" accept="image/&#42;" multiple hidden>
 </form>`;
 function postFresh(text, imgs) {   // 글+사진 보내기, 그림 보내기 모두 여기로
-  comments.unshift({ id: ++nextCid, name: '민재', date: '방금', imgs, text, likes: 0, mine: true, fresh: true }); renderComments();
+  comments.unshift({ id: ++nextCid, name: DEMO_CM.ME, date: '방금', imgs, text, likes: 0, mine: true, fresh: true }); renderComments();
   const tb = document.querySelector('.tabs'); const top = tb.getBoundingClientRect().top + scrollY - (matchMedia('(min-width:768px)').matches ? 64 : 0); if (scrollY > top) scrollTo({ top, behavior: 'smooth' });
 }
 function initGbc(host) {
