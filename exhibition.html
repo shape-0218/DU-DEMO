@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
-<title>여넥스 · Display U.</title>
+<title>색의 겹 · Display U.</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -449,7 +449,7 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
       <header class="summary">
         <div class="title-row">
           <div>
-            <h1 id="x-title">여넥스</h1>
+            <h1 id="x-title">색의 겹</h1>
             <p id="x-org">한결대학교 시각디자인학과</p>
           </div>
           <button class="like" id="like" aria-pressed="false" aria-label="좋아요"><svg class="i" aria-hidden="true"><use href="#i-heart"/></svg><span id="like-n">204</span></button>
@@ -477,7 +477,7 @@ dialog.sk::backdrop { background: rgba(0, 0, 0, .42); }
       <div class="panel" id="p-intro" role="tabpanel" aria-labelledby="t-intro">
         <section class="sec" id="s-intro" aria-labelledby="h-intro">
           <h2 id="h-intro" class="sr">전시소개</h2>
-          <p class="lead" id="x-intro">움직임이 멈춘 자리에서 색은 더 또렷해집니다. 이번 졸업 전시는 한결대학교 시각디자인학과 졸업 예정자 24명이 그래픽·브랜딩·모션으로 풀어낸 「여넥스 — 선명하되, 투명한 연결」을 소개합니다. 겹치고 비치는 색의 층을 따라, 서로 다른 작업이 하나의 흐름으로 이어지는 순간을 만나 보세요.</p>
+          <p class="lead" id="x-intro">움직임이 멈춘 자리에서 색은 더 또렷해집니다. 이번 졸업 전시는 한결대학교 시각디자인학과 졸업 예정자 24명이 그래픽·브랜딩·모션으로 풀어낸 「색의 겹 — 선명하되, 투명한 연결」을 소개합니다. 겹치고 비치는 색의 층을 따라, 서로 다른 작업이 하나의 흐름으로 이어지는 순간을 만나 보세요.</p>
         </section>
 
         <div class="band" id="s-content">
@@ -595,7 +595,7 @@ const works = [
   { f: 'art-head', n: 2 }, { f: 'art-picasso', n: 1 }, { f: 'art-model', n: 5 }
 ];
 document.getElementById('works').innerHTML = works.map((w, i) =>
-  `<a class="w" href="${w.video ? '#' : 'work.html' + (w.n > 1 ? '?authors=' + w.n : '')}" style="--n:${i}" ${w.video ? `data-video="${w.video}" aria-haspopup="dialog"` : ''}><div class="im"><div><img src="${w.thumb || `assets/img/detail/opt/${w.f}.jpg`}" alt="${w.video ? '여넥스 영상 작품' : '여넥스 작품'}" loading="lazy">${w.video ? `<span class="play"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg></span><span class="dur" hidden></span>` : ''}</div></div><div class="tx"><b>여넥스</b><span>${byline(w.n, i)}</span></div></a>`).join('');
+  `<a class="w" href="${w.video ? '#' : 'work.html' + (w.n > 1 ? '?authors=' + w.n : '')}" style="--n:${i}" ${w.video ? `data-video="${w.video}" aria-haspopup="dialog"` : ''}><div class="im"><div><img src="${w.thumb || `assets/img/detail/opt/${w.f}.jpg`}" alt="${w.video ? '색의 겹 영상 작품' : '색의 겹 작품'}" loading="lazy">${w.video ? `<span class="play"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg></span><span class="dur" hidden></span>` : ''}</div></div><div class="tx"><b>색의 겹</b><span>${byline(w.n, i)}</span></div></a>`).join('');
 
 /* 영상 작품: 길이는 파일을 읽을 수 있을 때만 표시, 클릭하면 플레이어 */
 const player = document.getElementById('player'), pv = document.getElementById('player-v'), pmiss = document.getElementById('player-miss');
@@ -748,7 +748,7 @@ function initGbc(host) {
 document.querySelectorAll('[data-gbc]').forEach(initGbc);
 
 /* ---------- 미리보기: ?id= 로 열면 등록해 둔 전시 값으로 채움(허브의 "전시 미리보기") ----------
-   저장 위치: localStorage `du.exh`(글·썸네일), IndexedDB `du.media`(포스터 원본·영상). 없으면 아래 샘플(여넥스)이 그대로 보임 */
+   저장 위치: localStorage `du.exh`(글·썸네일), IndexedDB `du.media`(포스터 원본·영상). 없으면 아래 샘플(색의 겹)이 그대로 보임 */
 /* 전시 링크: 입력한 것만 보임. 데모 기본 전시는 가상 계정이라 눌러도 이동하지 않고 안내만 */
 const escT = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 function renderLinks(ig, web, webShow, demo) {
@@ -777,7 +777,7 @@ function pvSlides() { /* 포스터 목록 → 캐러셀 칸 정보 */
   if (PV.posterList && PV.posterList.length) return PV.posterList.map((p) => ({ video: p.video, thumb: p.video ? (p.thumb || PV.poster) : (p.full || p.thumb || PV.poster), key: p.key }));
   return [{ video: !!PV.posterVideo, thumb: PV.poster, key: null, src: PV.posterVideo ? 'assets/poster-shore.mp4' : null }];
 }
-if (!PVID || !PV) renderLinks('yeonex_2026', 'https://yeonex.kr/', 'yeonex.kr', true);
+if (!PVID || !PV) renderLinks('color_layers_2026', 'https://color-layers.kr/', 'color-layers.kr', true);
 if (PV) {
   renderLinks(PV.ig, PV.web, PV.webShow, false);
   document.body.classList.add('is-pv'); document.getElementById('pvb').hidden = false;

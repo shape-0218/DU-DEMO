@@ -218,9 +218,9 @@ const allLinks = saved ? [
   ...(MC.ig ? [{ name: 'Instagram', sub: '@' + MC.ig, href: 'https://www.instagram.com/' + MC.ig }] : []),
   ...(MC.web ? [{ name: 'Portfolio', sub: hostOf(MC.web), href: /^https?:/i.test(MC.web) ? MC.web : 'https://' + MC.web }] : [])
 ] : [
-  { name: 'Instagram', sub: '@sangjun.works', href: 'https://www.instagram.com/sangjun.works' },
-  { name: 'Portfolio', sub: 'sangjun-works.com', href: 'https://sangjun-works.com' },
-  { name: '노션', sub: 'sangjun-works.notion.site', href: 'https://sangjun-works.notion.site' }
+  { name: 'Instagram', sub: '@seoa.works', href: 'https://www.instagram.com/seoa.works' },
+  { name: 'Portfolio', sub: 'seoa-works.com', href: 'https://seoa-works.com' },
+  { name: '노션', sub: 'seoa-works.notion.site', href: 'https://seoa-works.notion.site' }
 ];
 const nLinks = Math.max(0, Math.min(3, q.has('links') ? +q.get('links') : saved ? allLinks.length : 2));
 const linksEl = document.getElementById('links');

@@ -386,7 +386,7 @@ const ARTISTS = [['송하윤', '새봄여자대학교', '디자인', [1, 2, 3]],
 const INVITES = EXH.slice(0, 5).map((e) => ({ t: e[0], s: e[1], d: e[2], p: e[3], img: e[5], by: '김도윤(doyoon)' })).slice(0, nInv);   // 초대한 사람(데모 가상 값, Figma `초대 요청`과 같음)
 /* 알림 예시 — 문구는 초안(알림 종류·문구는 아직 미정) */
 const NOTIS = [
-  { t: '“여넥스” 전시에 초대받았어요', w: '방금', k: 'invite' }, { t: '“사이의 온도” 전시 등록 요청이 승인됐어요', w: '1시간 전', k: 'x' },
+  { t: '“색의 겹” 전시에 초대받았어요', w: '방금', k: 'invite' }, { t: '“사이의 온도” 전시 등록 요청이 승인됐어요', w: '1시간 전', k: 'x' },
   { t: '“접으면 달라지는 지도” 작품에 공동 작가로 추가됐어요', w: '어제', k: 'x' }, { t: '저장한 작가 송하윤님의 새 전시가 올라왔어요', w: '2일 전', k: 'x' }
 ];
 const ic = (id) => `<svg class="i" aria-hidden="true"><use href="#${id}"/></svg>`;
@@ -524,7 +524,7 @@ syncInv();
 /* ============ 프로필 수정 연결 (11-07) ============
    기본 프로필(닉네임·사진)은 profile-edit.html?kind=basic 에서 바꾸고 localStorage du.profile 에 저장 */
 const PR = (() => { try { return JSON.parse(localStorage.getItem('du.profile')) || {}; } catch (e) { return {}; } })();
-const SCHOOL = (() => { try { return (JSON.parse(localStorage.getItem('du.cert')) || {}).school || ''; } catch (e) { return ''; } })() || '한결대학교';   /* 11-10: 인증 후 드로어 "OO대학교 인증 완료" — verify.html이 저장한 학교, 없으면 데모 학교(여넥스 대표 고상준의 소속) */
+const SCHOOL = (() => { try { return (JSON.parse(localStorage.getItem('du.cert')) || {}).school || ''; } catch (e) { return ''; } })() || '한결대학교';   /* 11-10: 인증 후 드로어 "OO대학교 인증 완료" — verify.html이 저장한 학교, 없으면 데모 학교(내 전시 관리 예시의 소속) */
 function applyProfile(root) {
   root.querySelectorAll('b').forEach((b) => { if (b.textContent === 'seoa' && PR.nick) b.textContent = PR.nick; });
   const av = root.querySelector('.avatar'); if (av && PR.img) av.innerHTML = `<img src="${PR.img}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">`;
