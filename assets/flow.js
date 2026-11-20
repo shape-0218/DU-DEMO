@@ -63,15 +63,15 @@ const store = {
   set(k, v) { mem[k] = v; try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
   del(k) { delete mem[k]; try { localStorage.removeItem(k); } catch (e) {} }
 };
-/* 데모용 전시 4개: Figma `내 전시 관리` 1766:24897의 값 그대로 */
+/* U-180(11-20, 시안 review/demo-content-v1): 내 전시 4개를 '나'(윤서아, 모아디자인대학교 시각디자인학과)에 맞춤 — 공개 중 = 공개 전시 '펼쳐지는 장면'(포스터·날짜 같음), 나머지는 같은 학교 동아리·학회 전시로 데모 시계(2026-12-05) 뒤 날짜 + 글자 포스터 my-a~c(코드로 만든 것, 실제 이미지 아님). 이전 값은 review/_bak-content-1120/ */
 const SEED = [
-  { id: 'e1', status: 'prep', role: 'owner', myName: '윤서아', title: '빛의 결 | 조용한 흐름', org: '한결대학교 사진동아리', start: '2026-06-10', end: '2026-06-20', place: '디스플레이U 갤러리 1관', poster: 'assets/img/explore/opt/p05.jpg', works: 2, sections: 3, members: 3, pending: 1, pubWork: 'start', pubCont: 'approve' },
-  { id: 'e2', status: 'live', role: 'member', myName: '윤서아', title: '손끝의 지도', org: '한결대학교 시각디자인학과', start: '2026-05-23', end: '2026-05-30', place: '한결대학교 진달래홀', poster: 'assets/img/explore/opt/p06.jpg', works: 6, sections: 3, members: 5, pending: 0, pubWork: 'start', pubCont: 'approve' },
-  { id: 'e3', status: 'review', role: 'manager', myName: '윤서아', title: '색의 겹', org: '한결대학교 시각디자인학과', start: '2026-05-28', end: '2026-06-05', place: '진달래홀', poster: 'assets/img/explore/opt/p01.jpg', posterVideo: true, works: 2, sections: 3, members: 3, pending: 1, pubWork: 'start', pubCont: 'approve' },
-  { id: 'e4', status: 'reject', role: 'member', myName: '윤서아', title: '움직임의 기록', org: '한결대학교 시각디자인학과', start: '2026-07-01', end: '2026-07-10', place: '디스플레이U 갤러리 2관', poster: 'assets/img/explore/opt/p09.jpg', works: 2, sections: 3, members: 3, pending: 1, pubWork: 'start', pubCont: 'approve', rejectNote: '이미지 출처를 확인할 수 없어요 수정한 뒤 다시 요청해 주세요' }
+  { id: 'e1', status: 'prep', role: 'owner', myName: '윤서아', title: '빛의 결 | 조용한 흐름', org: '모아디자인대학교 사진동아리', start: '2027-01-08', end: '2027-01-14', place: '학생회관 1층 전시실', poster: 'assets/img/explore/opt/my-a.jpg', works: 0, sections: 0, members: 4, pending: 1, pubWork: 'start', pubCont: 'approve' },
+  { id: 'e2', status: 'live', role: 'member', myName: '윤서아', title: '펼쳐지는 장면', org: '모아디자인대학교 시각디자인학과', start: '2027-11-12', end: '2027-11-18', place: '디자인관 1층', poster: 'assets/img/explore/opt/p01.jpg', works: 2, sections: 3, members: 5, pending: 0, pubWork: 'start', pubCont: 'approve' },
+  { id: 'e3', status: 'review', role: 'manager', myName: '윤서아', title: '작은 글자들', org: '모아디자인대학교 활자공방', start: '2026-12-15', end: '2026-12-19', place: '디자인관 2층 갤러리', poster: 'assets/img/explore/opt/my-b.jpg', works: 2, sections: 1, members: 3, pending: 1, pubWork: 'start', pubCont: 'approve' },
+  { id: 'e4', status: 'reject', role: 'member', myName: '윤서아', title: '움직임의 기록', org: '모아디자인대학교 모션 소모임', start: '2027-02-02', end: '2027-02-06', place: '디자인관 1층 라운지', poster: 'assets/img/explore/opt/my-c.jpg', works: 1, sections: 0, members: 3, pending: 1, pubWork: 'start', pubCont: 'approve', rejectNote: '이미지 출처를 확인할 수 없어요. 수정한 뒤 다시 요청해 주세요.' }
 ];
-/* 11-20 U-173: 데모 이름·예시 전시 이름을 바꿔서 예전에 저장된 데모 값을 한 번 비움 */
-if (store.get('du.seedv', 0) !== 3) { store.del('du.exh'); try { Object.keys(localStorage).filter((k) => k.startsWith('du.d.')).forEach((k) => localStorage.removeItem(k)); } catch (e) {} store.set('du.seedv', 3); }
+/* 11-20 U-173·U-180: 데모 이름·예시 전시 이름을 바꿔서 예전에 저장된 데모 값을 한 번 비움 */
+if (store.get('du.seedv', 0) !== 4) { store.del('du.exh'); try { Object.keys(localStorage).filter((k) => k.startsWith('du.d.')).forEach((k) => localStorage.removeItem(k)); } catch (e) {} store.set('du.seedv', 4); }
 if (q.get('reset')) store.del('du.exh');
 const exhibitions = () => { let l = store.get('du.exh', null); if (!Array.isArray(l)) { l = SEED; store.set('du.exh', l); } return l; };
 const saveExhibitions = (l) => store.set('du.exh', l);

@@ -327,7 +327,7 @@ dialog.modal::backdrop { background: rgba(0, 0, 0, .42); }
 
     <!-- 작가 카드: 인증 후에만(인증 전에는 작가 관련 표시 없음 — 11-07 D안) -->
     <a class="dark pro" href="artist.html?me=1" id="pro-card" aria-label="내 작가 프로필 보기">
-      <span class="t"><span class="nm">윤서아</span><span class="sub" id="cardsub">그래픽 · 브랜딩 · 작품 6 · 전시 2</span></span>
+      <span class="t"><span class="nm">윤서아</span><span class="sub" id="cardsub">그래픽 · 브랜딩 · 작품 2 · 전시 1</span></span>
       <span class="see">작가 프로필<svg class="i" aria-hidden="true"><use href="#i-chev"/></svg></span>
     </a>
 
@@ -368,26 +368,23 @@ const nInv = Math.max(0, Math.min(5, Q.has('invites') ? +Q.get('invites') : 1));
 const nNoti = Math.max(0, Math.min(9, Q.has('noti') ? +Q.get('noti') : 1));        /* ?noti=0 : 안 읽은 알림 없음 */
 const hasOwner = Q.get('owner') === '1';                  /* ?owner=1 : 대표로 있는 전시가 있는 계정(탈퇴 불가 모달) */
 const savedEmpty = Q.get('saved') === '0';                /* ?saved=0 : 보관함 비어 있음 */
-const EXH = [
-  ['펼쳐지는 장면', '모아디자인대학교 시각디자인학과', '11.12 - 11.18', '디자인관 1층', 202, 'p01'], ['다른 곳에서 자라기', '마루조형대학교 조소과', '11.12 - 11.18', '조형관 1층', 188, 'p02'],
-  ['픽셀의 정원', '솔온미디어대학교 미디어디자인학과', '11.12 - 11.18', '미디어센터 로비', 164, 'p03'], ['완성 이전의 순간', '아람예술대학교 도예과', '11.12 - 11.18', '예술관 2층', 150, 'p04'],
-  ['미완의 세계', '온결예술대학교 웹툰창작학과', '11.26 - 11.28', '온결콘텐츠홀 1·2층', 143, 'p05'], ['재생 중', '미온대학교 디지털콘텐츠전공', '12.02 - 12.07', '미온미디어관 B1', 131, 'p06'],
-  ['사용 이후', '마루디자인대학교 산업융합디자인학과', '11.16 - 11.18', '학술관 2층', 120, 'p07'], ['빛이 지나간 자리', '해온예술대학교 사진미디어학과', '12.04 - 12.06', '스튜디오 여백 B1', 95, 'p08'],
-  ['한 칸 너머', '나루예술대학교 만화애니메이션학과', '11.09 - 11.13', '예술관 3층 작은미술관', 88, 'p09'], ['매듭의 방향', '모루예술대학교 섬유예술전공', '12.03 - 12.09', '모루조형관 A동 4층', 76, 'p10'],
-  ['사이의 치수', '소요디자인대학교 실내건축디자인학과', '11.20 - 11.22', '창작관 5층', 64, 'p11']
+const EXH = [   /* U-180: 보관함 전시 6개(모두 저장한 상태가 아니게) — 일정은 아래에서 데모 데이터로 채움 */
+  ['재생 중', '미온대학교 디지털콘텐츠전공', '', '미온미디어관 B1', 0, 'p06'], ['빛이 지나간 자리', '해온예술대학교 사진미디어학과', '', '스튜디오 여백 B1', 0, 'p08'],
+  ['미완의 세계', '온결예술대학교 웹툰창작학과', '', '온결콘텐츠홀 1·2층', 0, 'p05'], ['매듭의 방향', '모루예술대학교 섬유예술전공', '', '모루조형관 A동 4층', 0, 'p10'],
+  ['픽셀의 정원', '솔온미디어대학교 미디어디자인학과', '', '미디어센터 로비', 0, 'p03'], ['사이의 치수', '소요디자인대학교 실내건축디자인학과', '', '창작관 5층', 0, 'p11']
 ];
 /* 11-09 보관함 전시 일정은 데모 데이터와 같은 표기(앞에 연도, 끝 연도는 다를 때만) */
 EXH.forEach((r) => { const x = DEMO.EXH.find((e) => e.t === r[0]); if (x) r[2] = x.d; });
-const WORKS = [
-  ['접으면 달라지는 지도', ['윤서아', '김서윤'], 204, 'wk19'], ['이동하는 묘상', ['김유진'], 190, 'wk3'], ['빛으로 기록한 화단', ['박도현'], 171, 'wk1'], ['쌓아 올린 호흡', ['이채원', '정우진', '한지아'], 160, 'wk21'],
-  ['빈칸의 하루', ['류하린'], 142, 'wk17'], ['되감는 계단', ['오민석'], 133, 'wk7'], ['비가 지난 가방', ['문재이'], 120, 'wk13'], ['오후의 빈방', ['강태오'], 99, 'wk5'], ['골목의 다음 칸', ['백이든'], 85, 'wk9']
+const WORKS = [   /* U-180: 내 작품이 아닌 저장 작품 9점 */
+  ['막차의 창', ['김나온'], 0, 'wk18'], ['되감는 계단', ['오민석'], 0, 'wk7'], ['오후의 빈방', ['강태오'], 0, 'wk5'], ['비가 지난 가방', ['문재이'], 0, 'wk13'],
+  ['골목의 다음 칸', ['백이든'], 0, 'wk9'], ['긴장의 경사', ['서하윤'], 0, 'wk15'], ['잎의 해상도', ['한도윤'], 0, 'wk2'], ['접힌 빛의 표본', ['배지안'], 0, 'wk6'], ['문턱의 선택', ['장예린'], 0, 'wk12']
 ];
-const ARTISTS = [['송하윤', '새봄여자대학교', '디자인', [1, 2, 3]], ['이정우', '한결대학교', '회화', [4, 5, 6]], ['김서윤', '한결대학교', '그래픽', [19, 20, 21]], ['박도현', '다온대학교', '사진', [7]], ['이채원', '가온대학교', '공예', [10, 11, 12]], ['정우진', '한결대학교', '건축', [13, 14, 15]], ['한지아', '새봄여자대학교', '조소', [16, 17, 18]], ['류하린', '다온대학교', 'UXUI', [22]]];   // 4번째 값 = 작품 사진 번호(데모 배치, 최대 3점)
-const INVITES = EXH.slice(0, 5).map((e) => ({ t: e[0], s: e[1], d: e[2], p: e[3], img: e[5], by: '김도윤(doyoon)' })).slice(0, nInv);   // 초대한 사람(데모 가상 값, Figma `초대 요청`과 같음)
+const ARTISTS = [['오민석', '미온대학교', '영상', [7, 8]], ['강태오', '해온예술대학교', '사진', [5, 6]], ['류하린', '온결예술대학교', '그래픽', [17]], ['백이든', '나루예술대학교', '그래픽', [9, 10]], ['서하윤', '모루예술대학교', '공예', [15]], ['장예린', '소요디자인대학교', '건축', [12, 11]]];   // U-180: 데모 작가와 같은 이름·학교·분야, 4번째 = 작품 사진 번호   // 4번째 값 = 작품 사진 번호(데모 배치, 최대 3점)
+const INVITES = [{ t: '색의 겹', s: '모아디자인대학교 시각디자인학과', d: '2026.12.21 - 12.24', p: '디자인관 1층 로비', img: 'my-d', by: '김도윤(doyoon)' }].slice(0, nInv);   // U-180: 초대 = 같은 학교 3학년 과제전(글자 포스터 my-d), 초대한 사람은 데모 가상 값   // 초대한 사람(데모 가상 값, Figma `초대 요청`과 같음)
 /* 알림 예시 — 문구는 초안(알림 종류·문구는 아직 미정) */
 const NOTIS = [
-  { t: '“색의 겹” 전시에 초대받았어요', w: '방금', k: 'invite' }, { t: '“사이의 온도” 전시 등록 요청이 승인됐어요', w: '1시간 전', k: 'x' },
-  { t: '“접으면 달라지는 지도” 작품에 공동 작가로 추가됐어요', w: '어제', k: 'x' }, { t: '저장한 작가 송하윤님의 새 전시가 올라왔어요', w: '2일 전', k: 'x' }
+  { t: '“색의 겹” 전시에 초대받았어요', w: '방금', k: 'invite' }, { t: '“펼쳐지는 장면” 전시 등록 요청이 승인됐어요', w: '1시간 전', k: 'x' },
+  { t: '“접으면 달라지는 지도” 작품에 공동 작가로 추가됐어요', w: '어제', k: 'x' }, { t: '저장한 작가 백이든님의 새 전시가 올라왔어요', w: '2일 전', k: 'x' }
 ];
 const ic = (id) => `<svg class="i" aria-hidden="true"><use href="#${id}"/></svg>`;
 const $ = (id) => document.getElementById(id);
@@ -399,7 +396,7 @@ $('pro-card').hidden = !verified;
 $('li-manage').hidden = !verified;
 $('n-inv-rw').textContent = nInv;
 /* 0은 보이지 않음(11-08): 작가 카드 "작품 N · 전시 N"은 값이 0이면 그 부분을 뺌. 확인용 ?nworks=0&nexh=0. 11-10: "내 전시 관리" 줄 숫자는 없앰(N2, 숫자는 받은 초대에만) */
-const nWk = Q.has('nworks') ? +Q.get('nworks') : 6, nEx = Q.has('nexh') ? +Q.get('nexh') : 2;
+const nWk = Q.has('nworks') ? +Q.get('nworks') : 2, nEx = Q.has('nexh') ? +Q.get('nexh') : 1;
 $('cardsub').textContent = ['그래픽 · 브랜딩', nWk ? `작품 ${nWk}` : '', nEx ? `전시 ${nEx}` : ''].filter(Boolean).join(' · ');
 $('noti-dot').hidden = nNoti === 0;
 $('n-inv-rw').classList.toggle('red', nInv > 0);
@@ -423,7 +420,7 @@ function renderVault() {
   if (tab === 'exh') el.innerHTML = '<div class="grid">' + list.map((e, n) => `<a class="card ex" href="exhibition.html?e=${+e[5].slice(1) - 1}" style="--n:${Math.min(n, 10)}"><div class="im"><div><img src="${O}${e[5]}.jpg" alt="${e[0]} 포스터" width="161" height="241" loading="${n < 4 ? 'eager' : 'lazy'}"></div></div><div class="tx"><b>${e[0]}</b><span class="l">${e[1]}</span><span class="m"><span class="dt12">${e[2]}</span></span><span class="m">${e[3]}</span></div></a>`).join('') + '</div>';
   else if (tab === 'works') el.innerHTML = '<div class="grid">' + list.map((w, n) => `<a class="card wk" href="work.html?w=${Math.max(0, DEMO.WORKS.findIndex((x) => x.img === w[3]))}" style="--n:${Math.min(n, 10)}"><div class="im"><div><img src="${O}${w[3]}.jpg" alt="${w[0]}" width="161" height="215" loading="${n < 4 ? 'eager' : 'lazy'}"></div></div><div class="tx"><b>${w[0]}</b><span class="l">${by(w[1])}</span></div></a>`).join('') + '</div>';
   else {
-    el.innerHTML = '<ul class="artists">' + list.map((a, n) => `<li class="ar" style="--n:${n}"><a class="ar-in" href="artist.html"><span class="nm"><b>${a[0]}</b><span>${a[1]} · ${a[2]}</span></span>${a[3] && a[3].length ? `<span class="ths" aria-hidden="true">${a[3].slice(0, 3).map((k) => `<img src="${O}wk${k}.jpg" alt="" width="40" height="52" loading="lazy">`).join('')}</span>` : ''}</a><button type="button" class="bm" aria-pressed="true" aria-label="${a[0]} 작가 저장 해제"><svg class="off" aria-hidden="true"><use href="#i-bookmark"/></svg><svg class="on" aria-hidden="true"><use href="#i-bookmark"/></svg></button></li>`).join('') + '</ul>';
+    el.innerHTML = '<ul class="artists">' + list.map((a, n) => `<li class="ar" style="--n:${n}"><a class="ar-in" href="artist.html?a=${encodeURIComponent(a[0])}"><span class="nm"><b>${a[0]}</b><span>${a[1]} · ${a[2]}</span></span>${a[3] && a[3].length ? `<span class="ths" aria-hidden="true">${a[3].slice(0, 3).map((k) => `<img src="${O}wk${k}.jpg" alt="" width="40" height="52" loading="lazy">`).join('')}</span>` : ''}</a><button type="button" class="bm" aria-pressed="true" aria-label="${a[0]} 작가 저장 해제"><svg class="off" aria-hidden="true"><use href="#i-bookmark"/></svg><svg class="on" aria-hidden="true"><use href="#i-bookmark"/></svg></button></li>`).join('') + '</ul>';
     el.querySelectorAll('.bm').forEach((b) => b.addEventListener('click', () => { const on = b.getAttribute('aria-pressed') !== 'true'; b.setAttribute('aria-pressed', on); b.setAttribute('aria-label', b.getAttribute('aria-label').replace(/ (저장 해제|저장)$/, on ? ' 저장 해제' : ' 저장')); toast(on ? '작가를 저장했어요' : '저장을 취소했어요'); }));
   }
   $('vault').setAttribute('aria-labelledby', 's-' + (tab === 'exh' ? 'exh' : tab === 'works' ? 'wk' : 'ar'));
@@ -524,7 +521,7 @@ syncInv();
 /* ============ 프로필 수정 연결 (11-07) ============
    기본 프로필(닉네임·사진)은 profile-edit.html?kind=basic 에서 바꾸고 localStorage du.profile 에 저장 */
 const PR = (() => { try { return JSON.parse(localStorage.getItem('du.profile')) || {}; } catch (e) { return {}; } })();
-const SCHOOL = (() => { try { return (JSON.parse(localStorage.getItem('du.cert')) || {}).school || ''; } catch (e) { return ''; } })() || '한결대학교';   /* 11-10: 인증 후 드로어 "OO대학교 인증 완료" — verify.html이 저장한 학교, 없으면 데모 학교(내 전시 관리 예시의 소속) */
+const SCHOOL = (() => { try { return (JSON.parse(localStorage.getItem('du.cert')) || {}).school || ''; } catch (e) { return ''; } })() || '모아디자인대학교';   /* 11-10: 인증 후 드로어 "OO대학교 인증 완료" — verify.html이 저장한 학교, 없으면 데모 학교(내 전시 관리 예시의 소속) */
 function applyProfile(root) {
   root.querySelectorAll('b').forEach((b) => { if (b.textContent === 'seoa' && PR.nick) b.textContent = PR.nick; });
   const av = root.querySelector('.avatar'); if (av && PR.img) av.innerHTML = `<img src="${PR.img}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">`;

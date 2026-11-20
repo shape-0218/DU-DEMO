@@ -189,7 +189,7 @@ img { display: block; }
 
 /* 소개: 제목 없이 글만 */
 .about { padding-top: 28px; }
-.desc { color: var(--text-primary); text-wrap: pretty; }   /* 11-09: 소개글은 접지 않고 전부 보임(더보기 없음) */
+.desc { color: var(--text-primary); text-wrap: pretty; white-space: pre-line; }   /* U-180: 학생이 쓴 줄바꿈(재료·크기 줄) 유지 */   /* 11-09: 소개글은 접지 않고 전부 보임(더보기 없음) */
 /* 작업과정(11-09 시험·임시, 미확정): 소개글 아래 한 줄 — 왼쪽 작은 사진 조각(최대 3장), 오른쪽 v. 누르면 같은 화면에서 사진들이 위부터 차례로 주르륵 펼쳐지고(v는 ^로 돌아섬), 다시 누르면 접힘. 글 없음(스크린리더용 이름만) */
 .pfoot { margin-top: 8px; }
 .pr-row { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 44px; padding: 0 2px; border-radius: 12px; text-align: left; transition: transform .2s var(--ease); outline-offset: 2px; }
@@ -514,7 +514,7 @@ const WQ = new URLSearchParams(location.search), WI = (() => { const n = +WQ.get
 const W = DEMO.WORKS[WI], WE = DEMO.EXH[W.e], X = (typeof WORK_EXTRA !== 'undefined' && WORK_EXTRA[WI]) || null;   // X: 작품별 소개·세부 사진·작업과정(없으면 간결형)
 const TT = W.t;
 document.querySelector('h1').textContent = TT;
-document.querySelector('.spec').textContent = [W.f, '2026', W.m].filter(Boolean).join(' · ');   // 11-14 재료/매체가 선택이 되어 비어 있으면 줄에서 뺌
+document.querySelector('.spec').textContent = [W.f, WE.start.slice(0, 4), W.m].filter(Boolean).join(' · ');   // 11-14 재료/매체가 선택이 되어 비어 있으면 줄에서 뺌
 document.getElementById('like-n').textContent = W.l;
 { const a = document.querySelector('a.exh'); a.href = 'exhibition.html?e=' + WE.i; a.setAttribute('aria-label', '소속 전시 보기: ' + WE.t); a.querySelector('img').src = DEMO.src(WE.img); a.querySelector('strong').textContent = WE.t; a.querySelector('.sub').textContent = WE.s; a.querySelector('.state').lastChild.textContent = WE.st; const dt = a.querySelector('.dot'); dt.classList.toggle('soon', WE.st === '전시 예정'); dt.classList.toggle('end', WE.st === '종료'); }
 document.getElementById('back').href = 'exhibition.html?e=' + WE.i + '&tab=works';
@@ -638,7 +638,7 @@ const names = WQ.has('authors') ? ALL.slice(0, total) : W.a, box = document.getE
 const chev = '<svg class="i" aria-hidden="true"><use href="#i-chev"/></svg>';
 function renderAuthors(expanded) {
   const collapsed = names.length >= 5 && !expanded, shown = collapsed ? names.slice(0, 3) : names;
-  box.innerHTML = shown.map((n) => `<a class="artist" href="artist.html" aria-label="작가 ${n} 프로필 보기">${n}${chev}</a>`).join('') +
+  box.innerHTML = shown.map((n) => `<a class="artist" href="artist.html?a=${encodeURIComponent(n)}" aria-label="작가 ${n} 프로필 보기">${n}${chev}</a>`).join('') +
     (collapsed ? `<button class="artist more-a" aria-expanded="false" aria-label="나머지 작가 ${names.length - 3}명 모두 보기">외 ${names.length - 3}명${chev}</button>` : '');
   document.title = `${TT} · ${names.length > 1 ? `${names[0]} 외 ${names.length - 1}명` : names[0]} · Display U.`;
 }

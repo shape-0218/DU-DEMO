@@ -885,8 +885,7 @@ if (DX) {
   const CPH_N = [6, 4, 3];
   const photosOf = (k) => {
     if (DX.cph && DX.cph[k]) return DX.cph[k];
-    const out = [DEMO.cover(DX, k)];
-    for (let i = 1; i < (CPH_N[k] || 1); i++) out.push(`assets/img/content/opt/c${String(((DX.c - 1 + k + i * 3) % 11) + 1).padStart(2, '0')}_${(i % 3) + 1}.jpg`);
+    const out = [DEMO.cover(DX, k)];   /* U-180: 다른 전시 사진으로 채우지 않음(사진 1장 섹션) */
     return out;
   };
   setupContent(DX.cts.map((t, k) => ({ t, photos: photosOf(k) })));   // 11-15 U-154 카드·보기 화면은 공용(setupContent)

@@ -187,10 +187,10 @@ img { display: block; }
     <section class="profile" aria-label="작가 정보">
         <div class="who">
           <div class="nm"><h1>윤서아</h1><button type="button" class="abtn" id="save" aria-label="작가 저장" aria-pressed="false"><span class="dot"><svg class="i" aria-hidden="true"><use href="#i-bookmark"/></svg></span></button></div>
-          <p class="school">한결대학교 · 그래픽 · 브랜딩</p>
+          <p class="school">모아디자인대학교 · 그래픽 · 브랜딩</p>
         </div>
         <div class="avw" id="avw"><div class="avatar" id="avatar"></div></div>
-      <p class="bio" id="bio">빛과 색의 경계를 탐구하며, 일상에서 발견한 순간들을 작품으로 표현합니다.</p>
+      <p class="bio" id="bio">편집디자인을 공부하고 있습니다. 요즘은 접지와 종이 구조에 관심이 많습니다.</p>
       <section class="linkbox" id="linkbox" aria-label="작가 링크"><ul class="links" id="links"></ul></section>
     </section>
 
@@ -203,9 +203,20 @@ img { display: block; }
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="assets/demo-data.js"></script>
+<script src="assets/artists.js"></script>
 <script src="assets/save.js"></script>
 <script>
 const q = new URLSearchParams(location.search);
+/* U-180(11-20): 작가 이름(?a=)으로 프로필을 만듦 — 학교 = 참여 전시의 학교, 분야 = 작가가 고른 값(없으면 작품 분야, 최대 2), 사진·소개·링크는 있는 작가만 */
+const AN = q.get('me') === '1' ? '윤서아' : (q.get('a') || '윤서아');
+const AP = ARTISTS[AN] || {};
+const AW = DEMO.WORKS.filter((w) => w.a.includes(AN));
+const AE = [...new Set(AW.map((w) => w.e))].map((i) => DEMO.EXH[i]);
+const AF = AP.f || [...new Set(AW.map((w) => w.f))].slice(0, 2);
+document.querySelector('.who h1').textContent = AN;
+document.querySelector('.school').textContent = [AE[0] ? AE[0].s.split(' ')[0] : '', ...AF].filter(Boolean).join(' · ');
+{ const be = document.getElementById('bio'); be.textContent = AP.bio || ''; be.hidden = !AP.bio; }
+document.title = `${AN} · 작가 · Display U.`;
 const ic = (id, cls = '') => `<svg class="i ${cls}" aria-hidden="true"><use href="#${id}"/></svg>`;
 const O = 'assets/img/work/opt/';
 
@@ -222,7 +233,7 @@ const allLinks = saved ? [
   { name: 'Portfolio', sub: 'seoa-works.com', href: 'https://seoa-works.com' },
   { name: '노션', sub: 'seoa-works.notion.site', href: 'https://seoa-works.notion.site' }
 ];
-const nLinks = Math.max(0, Math.min(3, q.has('links') ? +q.get('links') : saved ? allLinks.length : 2));
+const nLinks = Math.max(0, Math.min(3, q.has('links') ? +q.get('links') : saved ? allLinks.length : AP.links ? 2 : 0));
 const linksEl = document.getElementById('links');
 linksEl.innerHTML = allLinks.slice(0, nLinks).map((l) => `<li><a href="${l.href}" target="_blank" rel="noopener noreferrer"><span class="lt"><b>${l.name}</b><span>${l.sub}</span></span>${ic('i-out', 'out')}<span class="sr">(새 창)</span></a></li>`).join('');
 document.getElementById('linkbox').hidden = nLinks === 0;
@@ -236,20 +247,17 @@ linksEl.addEventListener('click', (ev) => {
 });
 
 /* ---------- 참여한 전시 / 작품 (예시 데이터) ---------- */
-const exOf = (e) => ({ img: e.img, pub: 100 - e.i, state: e.st, end: e.st === '종료', title: e.t, school: e.s, date: e.d, place: e.p });
+const exOf = (e) => ({ i: e.i, img: e.img, pub: 100 - e.i, state: e.st, end: e.st === '종료', title: e.t, school: e.s, date: e.d, place: e.p });
 /* 11-10 사용자 결정: 상태 순서 전시 중 → 전시 예정 → 종료(11-05 "상태와 상관없이 최신순"을 대체). 같은 상태 안에서는 최초 공개일 최신순(숫자 비교). 종료 = 회색 점·글자, Figma 작가 프로필 5장과 같은 순서 */
 const RANK = { '전시 중': 0, '전시 예정': 1, '종료': 2 };
-const exhibitions = [DEMO.EXH[7], DEMO.EXH[0], DEMO.EXH[10]].map(exOf)
+const exhibitions = AE.map(exOf)
 .sort((a, b) => (RANK[a.state] - RANK[b.state]) || (b.pub - a.pub));
-const works = [
-  { img: 'w1.jpg', title: '접으면 달라지는 지도', by: '윤서아', href: 'work.html' },
-  { img: '../../explore/opt/wk20.jpg', title: '장면을 넘기는 극장', by: '윤서아', href: 'work.html?w=11' }
-];
+const works = AW.map((w) => ({ src: DEMO.src(w.img), title: w.t, by: w.a.join(', '), href: 'work.html?w=' + w.i }));
 /* ?exh=N&works=N 으로 많을 때 모습 확인 */
 const nE = q.has('exh') ? +q.get('exh') : exhibitions.length, nW = q.has('works') ? +q.get('works') : works.length;
 const exAll = Array.from({ length: nE }, (_, i) => exhibitions[i % exhibitions.length]), wkAll = Array.from({ length: nW }, (_, i) => works[i % works.length]);
-const exCard = (e, i) => `<a class="exh" href="exhibition.html" style="--n:${i}"><img src="assets/img/explore/opt/${e.img}" alt="" width="72" height="96"><span><span class="state ${e.end ? 'end' : ''}"><i class="dot ${e.end ? 'end' : e.state === '전시 예정' ? 'soon' : ''}"></i>${e.state}</span><strong>${e.title}</strong><span class="sub">${e.school}</span><span class="meta"><span class="sub"><span class="dt12">${e.date}</span></span><span class="sub">${e.place}</span></span></span>${ic('i-chev')}</a>`;
-const wkCard = (w, i) => `<a class="w" href="${w.href}" style="--n:${i}"><div class="im"><img src="${O}${w.img}" alt="" loading="lazy"></div><b>${w.title}</b><span>${w.by}</span></a>`;
+const exCard = (e, i) => `<a class="exh" href="exhibition.html?e=${e.i}" style="--n:${i}"><img src="assets/img/explore/opt/${e.img}" alt="" width="72" height="96"><span><span class="state ${e.end ? 'end' : ''}"><i class="dot ${e.end ? 'end' : e.state === '전시 예정' ? 'soon' : ''}"></i>${e.state}</span><strong>${e.title}</strong><span class="sub">${e.school}</span><span class="meta"><span class="sub"><span class="dt12">${e.date}</span></span><span class="sub">${e.place}</span></span></span>${ic('i-chev')}</a>`;
+const wkCard = (w, i) => `<a class="w" href="${w.href}" style="--n:${i}"><div class="im"><img src="${w.src}" alt="" loading="lazy"></div><b>${w.title}</b><span>${w.by}</span></a>`;
 /* 섹션은 내용이 있을 때만. 전시 3개·작품 6개를 넘으면 처음엔 그만큼만 보이고 "모두 보기" */
 const SECS = [
   { id: 'exh', title: '전시', all: exAll, limit: 3, cls: 'exh-list', card: exCard, more: '전시 모두 보기' },
@@ -269,11 +277,11 @@ drawSecs();
 /* ---------- 작가 저장 · 프로필 공유하기 ---------- */
 /* 본인 보기(?me=1, 마이 > 작가 프로필 카드): 작가 저장 배지 대신 프로필 수정 배지(연필), 하단 바 표시. 다른 작가를 볼 때는 작가 저장 배지 */
 /* 작가 사진 (116×132 · 반경 12): 데모 작가는 샘플 사진, 본인 보기(?me=1)는 프로필 수정에서 저장한 사진 — 저장한 값이 있는데 사진이 비었으면 기본 이미지 */
-{ const src = (q.get('me') === '1' && 'img' in MC) ? MC.img : 'assets/img/artist-sample.jpg'; if (src) document.getElementById('avatar').innerHTML = `<img src="${src}" alt="">`; else { document.getElementById('avw').hidden = true; document.querySelector('.profile').classList.add('nophoto'); } }   // 사진이 없으면 아무것도 그리지 않음(11-08)
+{ const src = (q.get('me') === '1' && 'img' in MC) ? MC.img : (AP.photo || ''); if (src) document.getElementById('avatar').innerHTML = `<img src="${src}" alt="">`; else { document.getElementById('avw').hidden = true; document.querySelector('.profile').classList.add('nophoto'); } }   // 사진이 없으면 아무것도 그리지 않음(11-08)
 const mine = q.get('me') === '1';
 if (mine) {
   if (MC.name) document.querySelector('.who h1').textContent = MC.name;
-  if (MC.fields && MC.fields.length) document.querySelector('.school').textContent = (MC.school || '한결대학교') + ' · ' + MC.fields.join(' · ');
+  if (MC.fields && MC.fields.length) document.querySelector('.school').textContent = (MC.school || '모아디자인대학교') + ' · ' + MC.fields.join(' · ');
   if (MC.bio != null) { const be = document.getElementById('bio'); be.textContent = MC.bio; be.hidden = !MC.bio; }
   const sv = document.getElementById('save'); sv.removeAttribute('aria-pressed'); sv.id = 'edit'; sv.setAttribute('aria-label', '프로필 수정');   // 본인: 저장 대신 프로필 수정(연필)
   sv.querySelector('use').setAttribute('href', '#i-pencil');

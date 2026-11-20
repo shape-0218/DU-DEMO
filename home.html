@@ -291,7 +291,7 @@ img { display: block; }
 
       <div class="empty" id="empty" hidden>
         <p id="empty-msg"></p>
-        <a href="#">지난 전시 둘러보기</a>
+        <a href="explore.html?status=종료">지난 전시 둘러보기</a>
       </div>
     </div>
   </section>
@@ -384,7 +384,8 @@ vt.addEventListener('click', () => { view = view === 'list' ? 'poster' : 'list';
 /* ARTWORKS: 전시를 돌아가며 한 점씩 뽑아 최대 10점 */
 const artRow = document.getElementById('art-row');
 function renderArts() {
-  const by = DEMO.EXH.map((e) => DEMO.WORKS.filter((w) => w.e === e.i)).filter((l) => l.length), out = [];
+  const POP = DEMO.TAB.pop(), ORD = [...POP, ...DEMO.EXH.filter((e) => !POP.includes(e))];   /* U-180: 인기 전시 순서로 돌아가며 */
+  const by = ORD.map((e) => DEMO.WORKS.filter((w) => w.e === e.i)).filter((l) => l.length), out = [];
   for (let r = 0; out.length < 10 && by.some((l) => l[r]); r++) by.forEach((l) => { if (l[r] && out.length < 10) out.push(l[r]); });
   document.getElementById('art-row').innerHTML = out.map((w) => `<a class="art" href="work.html?w=${w.i}"><div class="im"><div><img src="${DEMO.src(w.img)}" alt="${w.t} 작품" width="161" height="215" loading="lazy"></div></div><div class="tx"><b>${w.t}</b>${Byline.html(w.a)}</div></a>`).join('');
 }
