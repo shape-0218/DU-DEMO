@@ -69,10 +69,11 @@ html.kb .search input:focus-visible { box-shadow: 0 0 0 2px var(--text-primary);
 .fields { display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; margin-inline: calc(var(--pad) * -1); padding-inline: var(--pad); margin-top: 12px; box-shadow: inset 0 -1px 0 #fff; position: sticky; top: 0; z-index: 30; background: #fff; transition: border-color .2s; }
 .fields.stuck { box-shadow: inset 0 -1px 0 var(--bg-teritary); }
 .fields::-webkit-scrollbar { display: none; }
+.fields { overscroll-behavior-x: contain; }   /* 11-22 U-183: 줄 끝에서 더 밀어도 화면 전체가 옆으로 튕기지 않게 */
 @media (min-width: 900px) { .fields { justify-content: center; flex-wrap: wrap; } }
 .field { position: relative; flex: none; height: 40px; padding: 0 12px; font-size: 16px; font-weight: 600; color: var(--text-disable); transition: color .2s, transform .16s var(--ease); } /* 11-07 Figma 대조 */
 @media (hover: hover) { .field:hover { color: var(--text-teritary); } }
-.field:active { transform: scale(.96); }
+@media (hover: hover) and (pointer: fine) { .field:active { transform: scale(.96); } }   /* 11-22 U-183: 손가락으로 줄을 밀 때 손가락 아래 칩이 작아졌다 커지며 흔들려 보여서, 눌림 축소는 마우스에만(손가락은 색·밑줄로 반응) */
 .field[aria-selected="true"] { color: var(--text-primary); font-weight: 600; }
 .field[aria-selected="true"]:hover { color: var(--text-primary); }
 /* 선택 밑줄: 칸 전체 폭, 칩 사이를 미끄러져 옮겨감(transform만 씀) — 위치·폭은 JS가 칩 크기를 재서 넣음 */
@@ -344,7 +345,9 @@ document.addEventListener('click', (e) => { if (!e.target.closest('.chip') && !e
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { const open = document.querySelector('[aria-expanded="true"]'); closeMenus(); if (open) open.focus(); } });
 
 /* ============ 분야 · 전환 · 검색 ============ */
-$('fields').addEventListener('click', (e) => { const b = e.target.closest('.field'); if (!b) return; state.field = b.dataset.f; render(); b.focus({ preventScroll: true }); b.scrollIntoView({ inline: 'center', block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); });
+/* 11-22 U-183: 고른 칩을 가운데로 — scrollIntoView는 페이지까지 같이 움직일 수 있어(특히 아이폰 Safari) 칩 줄만 옆으로 옮김 */
+const centerField = (b, smooth) => { const fl = $('fields'); if (fl.scrollWidth <= fl.clientWidth) return; fl.scrollTo({ left: Math.max(0, b.offsetLeft - (fl.clientWidth - b.offsetWidth) / 2), behavior: smooth && !matchMedia('(prefers-reduced-motion: reduce)').matches ? 'smooth' : 'auto' }); };
+$('fields').addEventListener('click', (e) => { const b = e.target.closest('.field'); if (!b) return; state.field = b.dataset.f; render(); b.focus({ preventScroll: true }); centerField(b, true); });
 $('fields').addEventListener('keydown', (e) => { const bs = [...$('fields').querySelectorAll('.field')], i = bs.indexOf(document.activeElement); if (e.key === 'ArrowRight' && i > -1) { e.preventDefault(); bs[Math.min(i + 1, bs.length - 1)].click(); } if (e.key === 'ArrowLeft' && i > -1) { e.preventDefault(); bs[Math.max(i - 1, 0)].click(); } });
 $('seg-exh').addEventListener('click', () => { state.tab = 'exh'; render(); });
 $('seg-wk').addEventListener('click', () => { state.tab = 'works'; render(); });
@@ -396,7 +399,7 @@ $('zt').addEventListener('click', () => setDense(!dense));
 
 /* 선택된 분야 탭이 화면 안에 보이게 */
 render();
-const selTab = $('fields').querySelector('[aria-selected="true"]'); if (selTab) selTab.scrollIntoView({ inline: 'center', block: 'nearest' });
+const selTab = $('fields').querySelector('[aria-selected="true"]'); if (selTab) centerField(selTab, false);
 placeInd(); requestAnimationFrame(() => $('fields').classList.add('ready'));   // 처음 자리 잡을 땐 움직이지 않고, 그 뒤부터 미끄러짐
 new ResizeObserver(placeInd).observe($('fields')); document.fonts && document.fonts.ready.then(placeInd);   // 창 크기·글꼴이 바뀌면 밑줄 자리를 다시 잡음
 /* 상세에서 돌아오면 보던 위치 복원 */
