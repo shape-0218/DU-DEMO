@@ -15,7 +15,9 @@
    · 묶음 핀(숫자 핀)과 "여기 모인 전시 N개"는 뺐어요: 전시를 전부 그대로 표시(콜드 스타트에서는 전시가 적어 묶을 일이 거의 없고, 묶음 때문에 버그가 많았음)
    · 지도는 더 크게(시트 기본 높이를 낮춤, 처음엔 전시가 다 보이게 맞춤), 컨트롤(확대·축소 / 내 위치 / 전체 보기)은 폰에서도 항상 보임
    · 움직임: 끌기 관성, 휠·버튼·더블탭 확대가 목표값을 향해 부드럽게 따라감, 핀은 다시 그리지 않고 CSS로만 크기 유지
-   지도 배경은 저작권 때문에 직접 그린 가상 지도(JS로 그림)이고, 위치는 가상 좌표입니다. 실제로는 지도 SDK + 전시 주소 좌표로 바뀌는 부분이에요. */
+   지도 배경은 저작권 때문에 직접 그린 가상 지도(JS로 그림)이고, 위치는 가상 좌표입니다. 실제로는 지도 SDK + 전시 주소 좌표로 바뀌는 부분이에요.
+   · 11-22 U-181(시안 W-21, 사용자 "본 지도에 넣기"): 위 칩 '전시 중 · 전시 예정' → '오늘 N · 이번 주말 N · 날짜 ⌄'(N = 그때 열린 전시 수).
+     '날짜' = 칩 아래 한 달 표(그날 열린 수 + 많을수록 진하게, 이전·다음 달, 손가락으로 밀기, 지난날은 못 고름). 고르면 그날 열린 전시만 핀·목록. 같은 칩·같은 날 다시 = 전부. 문구 ❓제안 */
 :root {
   --text-primary: #18181b;
   --text-teritary: #71717b;
@@ -189,6 +191,31 @@ body.folded { --pw: 0px; }
   body.folded .fold svg { transform: rotate(180deg); }
 }
 @media (prefers-reduced-motion: reduce) { * { transition-duration: .01ms !important; animation: none !important; } }
+/* 11-22 U-181: 날짜 칩 + 칩 아래 한 달 표(캘린더 시안 W-18 D와 같은 모양) */
+.chip .cv { width: 16px; height: 16px; margin-right: -4px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .24s var(--ease); }
+.chip[aria-expanded="true"] .cv { transform: rotate(180deg); }
+.mpop { justify-self: start; width: min(344px, 100%); padding: 4px 16px; border-radius: 20px; background: #fff; box-shadow: var(--sh-float); transform-origin: 24px 0; }
+.mpop[hidden] { display: none; }
+.mpop:not([hidden]) { animation: mpin .2s var(--ease) both; }
+@keyframes mpin { from { opacity: 0; transform: translateY(-4px) scale(.98); } }
+.mpop .mh { display: flex; align-items: center; height: 44px; }
+.mpop .mt { font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.mpop .nv { display: flex; margin-left: auto; margin-right: -10px; }
+.mpop .nv button { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; transition: background-color .2s, transform .16s var(--ease); }
+.mpop .nv button:active { transform: scale(.96); }
+.mpop .nv svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.mpop .wd { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); height: 24px; align-items: center; text-align: center; font-size: 10px; font-weight: 500; color: var(--text-teritary); }
+.mpop .hm { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; padding-bottom: 12px; touch-action: pan-y; }
+.mpop .hc { height: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 4px; background: #fff; transition: background-color .16s, color .16s; }
+.mpop .hc b { font-size: 14px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.mpop .hc em { min-height: 14px; font-style: normal; font-size: 10px; font-weight: 600; color: var(--text-teritary); font-variant-numeric: tabular-nums; }
+.mpop .hc.out { visibility: hidden; }
+.mpop .hc[data-l="1"] { background: var(--bg-secondary); } .mpop .hc[data-l="2"] { background: #e4e4e7; } .mpop .hc[data-l="3"] { background: var(--text-quaternary); } .mpop .hc[data-l="4"] { background: #a1a1aa; } .mpop .hc[data-l="4"] em { color: var(--text-primary); }   /* zinc 100·200·300·400 */
+.mpop .hc.td { box-shadow: inset 0 0 0 1.5px var(--text-primary); }
+.mpop .hc[aria-pressed="true"] { background: var(--text-primary); color: #fff; box-shadow: none; } .mpop .hc[aria-pressed="true"] em { color: #fff; }
+.mpop .hc:disabled { color: var(--text-quaternary); background: #fff; box-shadow: none; cursor: default; } .mpop .hc:disabled em { visibility: hidden; }
+@media (hover: hover) { .mpop .nv button:hover { background: var(--bg-secondary); } .mpop .hc:not([aria-pressed="true"]):not(:disabled):hover { box-shadow: inset 0 0 0 1px var(--text-teritary); } .mpop .hc.td:not([aria-pressed="true"]):hover { box-shadow: inset 0 0 0 1.5px var(--text-primary); } }
+@media (prefers-reduced-motion: reduce) { .mpop:not([hidden]) { animation: none; } }
 </style>
 </head>
 <body>
@@ -213,9 +240,15 @@ body.folded { --pw: 0px; }
     <div class="tx"><strong>위치 권한이 꺼져 있어요</strong><span>가까운 전시를 먼저 보려면 설정에서 켜주세요</span></div>
     <button type="button" id="perm-open">설정 열기</button>
   </div>
-  <div class="chips" id="chips" role="group" aria-label="전시 상태 (둘 다 안 누르면 전부 보여요)">
-    <button class="chip" type="button" data-f="live" aria-pressed="false"><span>전시 중</span><b id="n-live">0</b></button>
-    <button class="chip" type="button" data-f="soon" aria-pressed="false"><span>전시 예정</span><b id="n-soon">0</b></button>
+  <div class="chips" id="chips" role="group" aria-label="날짜 (안 누르면 지금·곧 열리는 전시 전부)">
+    <button class="chip" type="button" data-f="today" aria-pressed="false"><span>오늘</span><b id="n-today">0</b></button>
+    <button class="chip" type="button" data-f="wkend" aria-pressed="false"><span>이번 주말</span><b id="n-wkend">0</b></button>
+    <button class="chip" type="button" data-f="pick" aria-pressed="false" aria-expanded="false" aria-controls="mpop"><span id="pick-l">날짜</span><b id="n-pick"></b><svg class="cv" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+  </div>
+  <div class="mpop" id="mpop" hidden role="dialog" aria-label="날짜 고르기">
+    <div class="mh"><span class="mt" id="mp-t"></span><span class="nv"><button type="button" id="mp-prev" aria-label="이전 달"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button><button type="button" id="mp-next" aria-label="다음 달"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button></span></div>
+    <div class="wd" aria-hidden="true"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div>
+    <div class="hm" id="mp-heat"></div>
   </div>
 </div>
 
@@ -256,7 +289,14 @@ body.folded { --pw: 0px; }
   const byId = new Map(ALL.map((e) => [e.i, e]));
 
   /* ---- 상태 ---- */
-  const fl = new Set(['live', 'soon'].includes(P.get('f')) ? [P.get('f')] : []);   // 비어 있으면 전부
+  /* 11-22 U-181: 날짜로 거르기 — dsel = null(전부: 지금·곧 열리는 전시) | { k: 'today'|'wkend'|'pick', a, b }. 주소 ?f=today|wkend 로 바로 켤 수 있음 */
+  const D0 = new Date(DEMO.today.getFullYear(), DEMO.today.getMonth(), DEMO.today.getDate());
+  const dAt = (s) => new Date(s + 'T00:00:00'), dAdd = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n), dSame = (x, y) => x.getTime() === y.getTime();
+  const p2 = (n) => String(n).padStart(2, '0'), dKey = (d) => `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}`, WDK = ['일', '월', '화', '수', '목', '금', '토'];
+  const WKEND = (() => { const g = D0.getDay(), sat = g === 0 ? dAdd(D0, -1) : dAdd(D0, 6 - g); return { a: sat < D0 ? D0 : sat, b: dAdd(sat, 1) }; })();   // 다가오는 토·일(일요일이면 오늘만)
+  const openIn = (e, a, b) => dAt(e.start) <= b && dAt(e.end) >= a;
+  let dsel = P.get('f') === 'today' ? { k: 'today', a: D0, b: D0 } : P.get('f') === 'wkend' ? { k: 'wkend', a: WKEND.a, b: WKEND.b } : null;
+  let mon = new Date(D0.getFullYear(), D0.getMonth(), 1);
   let query = '';
   let sel = null;                                   // {id, via:'pin'|'list'}
   let sheetState = 'mid';                           // peek | one | mid | full
@@ -271,7 +311,7 @@ body.folded { --pw: 0px; }
   const toOpen = (e) => Math.round((new Date(e.start + 'T00:00:00') - DEMO.today) / 86400000);   // 열리기까지 남은 날
   const stText = (e) => e.st === '전시 예정' ? '전시 예정 · D-' + Math.max(0, toOpen(e)) : '전시 중';   // 예정에만 D-n(열리기까지), 전시 중은 그냥 "전시 중"  ❓ 임시 문구
   const qOk = (e) => !query || (e.t + e.s + e.p).replace(/\s/g, '').toLowerCase().includes(query);
-  const matches = (e) => (!fl.size || fl.has(e.st === '전시 예정' ? 'soon' : 'live')) && qOk(e);
+  const matches = (e) => (!dsel || openIn(e, dsel.a, dsel.b)) && qOk(e);
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
   /* ---- 가상 지도 그리기 (직접 만든 그림, 실제 지도 아님) ---- */
@@ -388,9 +428,13 @@ body.folded { --pw: 0px; }
   }
   function refresh() {
     paintPins(); renderSheet(true);
-    for (const c of document.querySelectorAll('.chip')) c.setAttribute('aria-pressed', String(fl.has(c.dataset.f)));
-    $('n-live').textContent = ALL.filter((e) => e.st === '전시 중' && qOk(e)).length;
-    $('n-soon').textContent = ALL.filter((e) => e.st === '전시 예정' && qOk(e)).length;
+    for (const c of document.querySelectorAll('.chip')) c.setAttribute('aria-pressed', String(!!dsel && dsel.k === c.dataset.f));
+    const cnt = (a, b) => ALL.filter((e) => openIn(e, a, b) && qOk(e)).length;
+    $('n-today').textContent = cnt(D0, D0); $('n-wkend').textContent = cnt(WKEND.a, WKEND.b);
+    const pk = dsel && dsel.k === 'pick';
+    $('pick-l').textContent = pk ? `${p2(dsel.a.getMonth() + 1)}.${p2(dsel.a.getDate())} ${WDK[dsel.a.getDay()]}` : '날짜';
+    $('n-pick').textContent = pk ? cnt(dsel.a, dsel.b) : '';
+    if (!$('mpop').hidden) paintMonth();
   }
   items = ALL.filter(matches);
   const settle = () => { items = ALL.filter(matches); renderSheet(false); };   // 지도가 멈추면 이 지역 목록을 갱신(바뀐 게 없으면 다시 그리지 않음)
@@ -504,13 +548,29 @@ body.folded { --pw: 0px; }
   grab.addEventListener('keydown', (ev) => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); cycle(); } });
 
   /* ---- 칩·검색·위치·뒤로 ---- */
+  /* 11-22 U-181: 날짜 칩 — 오늘·이번 주말은 누르면 켜고 다시 누르면 전부, '날짜'는 칩 아래 한 달 표를 열고 닫음 */
+  const applyDate = (d) => { dsel = d; if (sel && !matches(byId.get(sel.id))) sel = null; items = ALL.filter(matches); refresh(); if (items.length) fit(items); };
+  function paintMonth() {
+    $('mp-t').textContent = `${mon.getFullYear()}.${p2(mon.getMonth() + 1)}`;
+    const start = dAdd(mon, -mon.getDay()), last = new Date(mon.getFullYear(), mon.getMonth() + 1, 0), n = Math.round((dAdd(last, 6 - last.getDay()) - start) / 864e5) + 1;
+    const ds = Array.from({ length: n }, (_, k) => dAdd(start, k)), cs = ds.map((d) => (d.getMonth() === mon.getMonth() ? ALL.filter((e) => openIn(e, d, d) && qOk(e)).length : 0)), mx = Math.max(1, ...cs);
+    $('mp-heat').innerHTML = ds.map((d, k) => { const inM = d.getMonth() === mon.getMonth(), c = cs[k], l = c ? Math.max(1, Math.ceil((c / mx) * 4)) : 0, on = !!dsel && dsel.k === 'pick' && dSame(d, dsel.a); return `<button type="button" class="hc${inM ? '' : ' out'}${dSame(d, D0) ? ' td' : ''}" data-d="${dKey(d)}" data-l="${l}" aria-pressed="${on}" ${inM ? '' : 'tabindex="-1" aria-hidden="true"'}${d < D0 ? ' disabled' : ''} aria-label="${d.getMonth() + 1}월 ${d.getDate()}일, 열린 전시 ${c}"><b>${d.getDate()}</b><em>${c || ''}</em></button>`; }).join('');
+  }
+  const pickBtn = () => document.querySelector('.chip[data-f="pick"]');
+  function openMonth(v) { $('mpop').hidden = !v; pickBtn().setAttribute('aria-expanded', String(v)); if (v) { if (dsel && dsel.k === 'pick') mon = new Date(dsel.a.getFullYear(), dsel.a.getMonth(), 1); paintMonth(); } }
   $('chips').addEventListener('click', (ev) => {
     const b = ev.target.closest('.chip'); if (!b) return;
-    const k = b.dataset.f; if (fl.has(k)) fl.delete(k); else fl.add(k);   // 다시 누르면 해제
-    if (sel && !matches(byId.get(sel.id))) sel = null;
-    items = ALL.filter(matches); refresh();
-    if (items.length) fit(items);
+    const k = b.dataset.f;
+    if (k === 'pick') return openMonth($('mpop').hidden);
+    openMonth(false);
+    applyDate(dsel && dsel.k === k ? null : k === 'today' ? { k, a: D0, b: D0 } : { k, a: WKEND.a, b: WKEND.b });
   });
+  $('mp-heat').addEventListener('click', (ev) => { const b = ev.target.closest('.hc'); if (!b || b.disabled) return; const d = dAt(b.dataset.d); openMonth(false); applyDate(dsel && dsel.k === 'pick' && dSame(dsel.a, d) ? null : { k: 'pick', a: d, b: d }); });
+  $('mp-prev').addEventListener('click', () => { mon = new Date(mon.getFullYear(), mon.getMonth() - 1, 1); paintMonth(); });
+  $('mp-next').addEventListener('click', () => { mon = new Date(mon.getFullYear(), mon.getMonth() + 1, 1); paintMonth(); });
+  document.addEventListener('pointerdown', (ev) => { if (!$('mpop').hidden && !ev.target.closest('#mpop') && !ev.target.closest('.chip[data-f="pick"]')) openMonth(false); });
+  document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && !$('mpop').hidden) { openMonth(false); pickBtn().focus(); } });
+  { let sx = 0, sy = 0, sp = null; const h = $('mp-heat'); h.addEventListener('pointerdown', (ev) => { if (ev.pointerType === 'mouse') return; sx = ev.clientX; sy = ev.clientY; sp = ev.pointerId; }); h.addEventListener('pointerup', (ev) => { if (ev.pointerId !== sp) return; sp = null; const dx = ev.clientX - sx, dy = ev.clientY - sy; if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.5) { mon = new Date(mon.getFullYear(), mon.getMonth() + (dx < 0 ? 1 : -1), 1); paintMonth(); } }); }
   let qt = 0;
   const syncQ = () => { const v = $('q').value; $('qc').hidden = !v; $('q').closest('.search').classList.toggle('has', !!v); };
   $('qc').addEventListener('click', () => { $('q').value = ''; $('q').dispatchEvent(new Event('input')); $('q').focus(); });
