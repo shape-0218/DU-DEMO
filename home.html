@@ -201,13 +201,13 @@ img { display: block; }
 
 /* 흰 영역 */
 .sheet { position: relative; margin-top: -20px; background: var(--bg-white); border-radius: var(--r20) var(--r20) 0 0; }
-.works { padding-block: 20px; }   /* 11-22 U-186: 안내 줄 없이 위 20 · 제목 · 8 · 작품 줄 — 보이는 간격 26:14(제목 줄 상자 안 위·아래 6 포함, MUBI 실측과 같은 1.9배), 위 20 = 아래 '전시 등록' 구역 위 여백과 같은 값. 이전 U-185 위 28 · 아래 12(위가 남아 보임) */
+.works { padding-block: 24px 20px; }   /* 11-22 U-187: 제목 'ARTWORKS' → '작품 둘러보기'(사용자). 한글 18은 줄 상자 안 위·아래 빈 곳이 4.8·4.5로 영어 대문자(6.2·6.1)보다 작아, 20·8이면 제목→사진 보이는 간격 12.5가 카드 '사진→이름'(11.6)과 같아져 답답 → 위 24 · 아래 12 = 보이는 28.8 : 16.5(1.75배). 이전 U-186 ARTWORKS 20·8 */
 .works .hd { display: flex; align-items: center; justify-content: space-between; }
 .works h2 { font-size: 18px; font-weight: 600; letter-spacing: -0.03em; color: var(--text-primary); }
 .works .more { display: inline-flex; align-items: center; color: var(--text-teritary); }
 .works .more img { width: 16px; height: 16px; }
 /* 11-08 사용자: 작품 2장이 폭을 꽉 채워 옆으로 넘어간다는 게 안 보였음 → 폰에서는 2장 + 3번째 32px가 보이게(카드 폭 = (화면 폭−76)/2, 175 넘으면 175) */
-.art-row { margin-top: 8px; display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; padding-right: var(--pad); margin-right: calc(var(--pad) * -1); }
+.art-row { margin-top: 12px; display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; padding-right: var(--pad); margin-right: calc(var(--pad) * -1); }
 .art-row::-webkit-scrollbar { display: none; }
 .art { flex: 0 0 min(175px, calc((100vw - 76px) / 2)); scroll-snap-align: start; display: block; color: var(--text-primary); transition: transform .3s var(--ease); }   /* 11-12 카드 E: 검은 틀·모서리 없음 */
 .art:active { transform: scale(.98); }
@@ -298,7 +298,7 @@ img { display: block; }
   <div class="sheet">
     <section class="works inner" aria-labelledby="works-title">
       <div class="hd">
-        <h2 id="works-title">ARTWORKS</h2>
+        <h2 id="works-title">작품 둘러보기</h2>
         <a class="more" href="explore.html?tab=works">더보기<img src="assets/img/chevron-more.svg" alt="" width="16" height="16"></a>
       </div>
       <div class="art-row" id="art-row"></div>
