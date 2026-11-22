@@ -16,8 +16,9 @@
    · 지도는 더 크게(시트 기본 높이를 낮춤, 처음엔 전시가 다 보이게 맞춤), 컨트롤(확대·축소 / 내 위치 / 전체 보기)은 폰에서도 항상 보임
    · 움직임: 끌기 관성, 휠·버튼·더블탭 확대가 목표값을 향해 부드럽게 따라감, 핀은 다시 그리지 않고 CSS로만 크기 유지
    지도 배경은 저작권 때문에 직접 그린 가상 지도(JS로 그림)이고, 위치는 가상 좌표입니다. 실제로는 지도 SDK + 전시 주소 좌표로 바뀌는 부분이에요.
-   · 11-22 U-181(시안 W-21, 사용자 "본 지도에 넣기"): 위 칩 '전시 중 · 전시 예정' → '오늘 N · 이번 주말 N · 날짜 ⌄'(N = 그때 열린 전시 수).
-     '날짜' = 칩 아래 한 달 표(그날 열린 수 + 많을수록 진하게, 이전·다음 달, 손가락으로 밀기, 지난날은 못 고름). 고르면 그날 열린 전시만 핀·목록. 같은 칩·같은 날 다시 = 전부. 문구 ❓제안 */
+   · 11-22 U-182(U-181 정정, 사용자 "진행 중·전시 예정은 기존처럼 그대로, 캘린더만 넣는 걸 생각했다"): 위 칩 = 전시 중 N · 전시 예정 N · [달력].
+     달력 칩 → 칩 아래 한 달 표(그날 열린 수 + 많을수록 진하게, 이전·다음 달, 손가락으로 밀기, 지난날은 못 고름). 날짜를 고르면 그날 열린 전시만 핀·목록, 칩에 "12.08 화 1".
+     날짜를 고르면 전시 중·예정 칩은 꺼지고, 전시 중·예정을 누르면 고른 날짜가 풀림(두 거르기가 겹치지 않게). 같은 날을 다시 누르면 풀림. */
 :root {
   --text-primary: #18181b;
   --text-teritary: #71717b;
@@ -191,9 +192,11 @@ body.folded { --pw: 0px; }
   body.folded .fold svg { transform: rotate(180deg); }
 }
 @media (prefers-reduced-motion: reduce) { * { transition-duration: .01ms !important; animation: none !important; } }
-/* 11-22 U-181: 날짜 칩 + 칩 아래 한 달 표(캘린더 시안 W-18 D와 같은 모양) */
-.chip .cv { width: 16px; height: 16px; margin-right: -4px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .24s var(--ease); }
-.chip[aria-expanded="true"] .cv { transform: rotate(180deg); }
+/* 11-22 U-182: 달력 칩 + 칩 아래 한 달 표(캘린더 시안 W-18 D와 같은 모양) */
+.chip.cal { padding: 0 9px; }
+.chip.cal.has { padding: 0 14px 0 12px; }
+.chip.cal .ci { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.chip.cal #pick-l:empty, .chip.cal #n-pick:empty { display: none; }
 .mpop { justify-self: start; width: min(344px, 100%); padding: 4px 16px; border-radius: 20px; background: #fff; box-shadow: var(--sh-float); transform-origin: 24px 0; }
 .mpop[hidden] { display: none; }
 .mpop:not([hidden]) { animation: mpin .2s var(--ease) both; }
@@ -240,10 +243,10 @@ body.folded { --pw: 0px; }
     <div class="tx"><strong>위치 권한이 꺼져 있어요</strong><span>가까운 전시를 먼저 보려면 설정에서 켜주세요</span></div>
     <button type="button" id="perm-open">설정 열기</button>
   </div>
-  <div class="chips" id="chips" role="group" aria-label="날짜 (안 누르면 지금·곧 열리는 전시 전부)">
-    <button class="chip" type="button" data-f="today" aria-pressed="false"><span>오늘</span><b id="n-today">0</b></button>
-    <button class="chip" type="button" data-f="wkend" aria-pressed="false"><span>이번 주말</span><b id="n-wkend">0</b></button>
-    <button class="chip" type="button" data-f="pick" aria-pressed="false" aria-expanded="false" aria-controls="mpop"><span id="pick-l">날짜</span><b id="n-pick"></b><svg class="cv" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+  <div class="chips" id="chips" role="group" aria-label="전시 상태 (둘 다 안 누르면 전부 보여요)">
+    <button class="chip" type="button" data-f="live" aria-pressed="false"><span>전시 중</span><b id="n-live">0</b></button>
+    <button class="chip" type="button" data-f="soon" aria-pressed="false"><span>전시 예정</span><b id="n-soon">0</b></button>
+    <button class="chip cal" type="button" data-f="pick" aria-pressed="false" aria-expanded="false" aria-controls="mpop" aria-label="날짜 고르기"><svg class="ci" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z"/></svg><span id="pick-l"></span><b id="n-pick"></b></button>
   </div>
   <div class="mpop" id="mpop" hidden role="dialog" aria-label="날짜 고르기">
     <div class="mh"><span class="mt" id="mp-t"></span><span class="nv"><button type="button" id="mp-prev" aria-label="이전 달"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button><button type="button" id="mp-next" aria-label="다음 달"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button></span></div>
@@ -289,13 +292,13 @@ body.folded { --pw: 0px; }
   const byId = new Map(ALL.map((e) => [e.i, e]));
 
   /* ---- 상태 ---- */
-  /* 11-22 U-181: 날짜로 거르기 — dsel = null(전부: 지금·곧 열리는 전시) | { k: 'today'|'wkend'|'pick', a, b }. 주소 ?f=today|wkend 로 바로 켤 수 있음 */
+  const fl = new Set(['live', 'soon'].includes(P.get('f')) ? [P.get('f')] : []);   // 비어 있으면 전부
+  /* 11-22 U-182: 달력으로 거르기 — dsel = null | { k: 'pick', a, b }. 날짜를 고르면 상태 칩(fl)은 비움 */
   const D0 = new Date(DEMO.today.getFullYear(), DEMO.today.getMonth(), DEMO.today.getDate());
   const dAt = (s) => new Date(s + 'T00:00:00'), dAdd = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n), dSame = (x, y) => x.getTime() === y.getTime();
   const p2 = (n) => String(n).padStart(2, '0'), dKey = (d) => `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}`, WDK = ['일', '월', '화', '수', '목', '금', '토'];
-  const WKEND = (() => { const g = D0.getDay(), sat = g === 0 ? dAdd(D0, -1) : dAdd(D0, 6 - g); return { a: sat < D0 ? D0 : sat, b: dAdd(sat, 1) }; })();   // 다가오는 토·일(일요일이면 오늘만)
   const openIn = (e, a, b) => dAt(e.start) <= b && dAt(e.end) >= a;
-  let dsel = P.get('f') === 'today' ? { k: 'today', a: D0, b: D0 } : P.get('f') === 'wkend' ? { k: 'wkend', a: WKEND.a, b: WKEND.b } : null;
+  let dsel = null;
   let mon = new Date(D0.getFullYear(), D0.getMonth(), 1);
   let query = '';
   let sel = null;                                   // {id, via:'pin'|'list'}
@@ -311,7 +314,7 @@ body.folded { --pw: 0px; }
   const toOpen = (e) => Math.round((new Date(e.start + 'T00:00:00') - DEMO.today) / 86400000);   // 열리기까지 남은 날
   const stText = (e) => e.st === '전시 예정' ? '전시 예정 · D-' + Math.max(0, toOpen(e)) : '전시 중';   // 예정에만 D-n(열리기까지), 전시 중은 그냥 "전시 중"  ❓ 임시 문구
   const qOk = (e) => !query || (e.t + e.s + e.p).replace(/\s/g, '').toLowerCase().includes(query);
-  const matches = (e) => (!dsel || openIn(e, dsel.a, dsel.b)) && qOk(e);
+  const matches = (e) => (dsel ? openIn(e, dsel.a, dsel.b) : (!fl.size || fl.has(e.st === '전시 예정' ? 'soon' : 'live'))) && qOk(e);
   const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
   /* ---- 가상 지도 그리기 (직접 만든 그림, 실제 지도 아님) ---- */
@@ -428,12 +431,13 @@ body.folded { --pw: 0px; }
   }
   function refresh() {
     paintPins(); renderSheet(true);
-    for (const c of document.querySelectorAll('.chip')) c.setAttribute('aria-pressed', String(!!dsel && dsel.k === c.dataset.f));
-    const cnt = (a, b) => ALL.filter((e) => openIn(e, a, b) && qOk(e)).length;
-    $('n-today').textContent = cnt(D0, D0); $('n-wkend').textContent = cnt(WKEND.a, WKEND.b);
-    const pk = dsel && dsel.k === 'pick';
-    $('pick-l').textContent = pk ? `${p2(dsel.a.getMonth() + 1)}.${p2(dsel.a.getDate())} ${WDK[dsel.a.getDay()]}` : '날짜';
-    $('n-pick').textContent = pk ? cnt(dsel.a, dsel.b) : '';
+    for (const c of document.querySelectorAll('.chip')) c.setAttribute('aria-pressed', String(c.dataset.f === 'pick' ? !!dsel : fl.has(c.dataset.f)));
+    $('n-live').textContent = ALL.filter((e) => e.st === '전시 중' && qOk(e)).length;
+    $('n-soon').textContent = ALL.filter((e) => e.st === '전시 예정' && qOk(e)).length;
+    const pk = !!dsel, pc = document.querySelector('.chip.cal');
+    $('pick-l').textContent = pk ? `${p2(dsel.a.getMonth() + 1)}.${p2(dsel.a.getDate())} ${WDK[dsel.a.getDay()]}` : '';
+    $('n-pick').textContent = pk ? ALL.filter((e) => openIn(e, dsel.a, dsel.b) && qOk(e)).length : '';
+    pc.classList.toggle('has', pk); pc.setAttribute('aria-label', pk ? `${dsel.a.getMonth() + 1}월 ${dsel.a.getDate()}일 고름, 날짜 바꾸기` : '날짜 고르기');
     if (!$('mpop').hidden) paintMonth();
   }
   items = ALL.filter(matches);
@@ -548,24 +552,27 @@ body.folded { --pw: 0px; }
   grab.addEventListener('keydown', (ev) => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); cycle(); } });
 
   /* ---- 칩·검색·위치·뒤로 ---- */
-  /* 11-22 U-181: 날짜 칩 — 오늘·이번 주말은 누르면 켜고 다시 누르면 전부, '날짜'는 칩 아래 한 달 표를 열고 닫음 */
-  const applyDate = (d) => { dsel = d; if (sel && !matches(byId.get(sel.id))) sel = null; items = ALL.filter(matches); refresh(); if (items.length) fit(items); };
+  /* 11-22 U-182: 전시 중·예정 칩은 예전 그대로(다시 누르면 해제), 달력 칩은 칩 아래 한 달 표를 열고 닫음. 날짜와 상태는 한쪽만 걸림 */
+  const applyDate = (d) => { dsel = d; if (d) fl.clear(); if (sel && !matches(byId.get(sel.id))) sel = null; items = ALL.filter(matches); refresh(); if (items.length) fit(items); };
   function paintMonth() {
     $('mp-t').textContent = `${mon.getFullYear()}.${p2(mon.getMonth() + 1)}`;
     const start = dAdd(mon, -mon.getDay()), last = new Date(mon.getFullYear(), mon.getMonth() + 1, 0), n = Math.round((dAdd(last, 6 - last.getDay()) - start) / 864e5) + 1;
     const ds = Array.from({ length: n }, (_, k) => dAdd(start, k)), cs = ds.map((d) => (d.getMonth() === mon.getMonth() ? ALL.filter((e) => openIn(e, d, d) && qOk(e)).length : 0)), mx = Math.max(1, ...cs);
-    $('mp-heat').innerHTML = ds.map((d, k) => { const inM = d.getMonth() === mon.getMonth(), c = cs[k], l = c ? Math.max(1, Math.ceil((c / mx) * 4)) : 0, on = !!dsel && dsel.k === 'pick' && dSame(d, dsel.a); return `<button type="button" class="hc${inM ? '' : ' out'}${dSame(d, D0) ? ' td' : ''}" data-d="${dKey(d)}" data-l="${l}" aria-pressed="${on}" ${inM ? '' : 'tabindex="-1" aria-hidden="true"'}${d < D0 ? ' disabled' : ''} aria-label="${d.getMonth() + 1}월 ${d.getDate()}일, 열린 전시 ${c}"><b>${d.getDate()}</b><em>${c || ''}</em></button>`; }).join('');
+    $('mp-heat').innerHTML = ds.map((d, k) => { const inM = d.getMonth() === mon.getMonth(), c = cs[k], l = c ? Math.max(1, Math.ceil((c / mx) * 4)) : 0, on = !!dsel && dSame(d, dsel.a); return `<button type="button" class="hc${inM ? '' : ' out'}${dSame(d, D0) ? ' td' : ''}" data-d="${dKey(d)}" data-l="${l}" aria-pressed="${on}" ${inM ? '' : 'tabindex="-1" aria-hidden="true"'}${d < D0 ? ' disabled' : ''} aria-label="${d.getMonth() + 1}월 ${d.getDate()}일, 열린 전시 ${c}"><b>${d.getDate()}</b><em>${c || ''}</em></button>`; }).join('');
   }
   const pickBtn = () => document.querySelector('.chip[data-f="pick"]');
-  function openMonth(v) { $('mpop').hidden = !v; pickBtn().setAttribute('aria-expanded', String(v)); if (v) { if (dsel && dsel.k === 'pick') mon = new Date(dsel.a.getFullYear(), dsel.a.getMonth(), 1); paintMonth(); } }
+  function openMonth(v) { $('mpop').hidden = !v; pickBtn().setAttribute('aria-expanded', String(v)); if (v) { if (dsel) mon = new Date(dsel.a.getFullYear(), dsel.a.getMonth(), 1); paintMonth(); } }
   $('chips').addEventListener('click', (ev) => {
     const b = ev.target.closest('.chip'); if (!b) return;
     const k = b.dataset.f;
     if (k === 'pick') return openMonth($('mpop').hidden);
     openMonth(false);
-    applyDate(dsel && dsel.k === k ? null : k === 'today' ? { k, a: D0, b: D0 } : { k, a: WKEND.a, b: WKEND.b });
+    dsel = null; if (fl.has(k)) fl.delete(k); else fl.add(k);   // 다시 누르면 해제, 고른 날짜는 풀림
+    if (sel && !matches(byId.get(sel.id))) sel = null;
+    items = ALL.filter(matches); refresh();
+    if (items.length) fit(items);
   });
-  $('mp-heat').addEventListener('click', (ev) => { const b = ev.target.closest('.hc'); if (!b || b.disabled) return; const d = dAt(b.dataset.d); openMonth(false); applyDate(dsel && dsel.k === 'pick' && dSame(dsel.a, d) ? null : { k: 'pick', a: d, b: d }); });
+  $('mp-heat').addEventListener('click', (ev) => { const b = ev.target.closest('.hc'); if (!b || b.disabled) return; const d = dAt(b.dataset.d); openMonth(false); applyDate(dsel && dSame(dsel.a, d) ? null : { k: 'pick', a: d, b: d }); });
   $('mp-prev').addEventListener('click', () => { mon = new Date(mon.getFullYear(), mon.getMonth() - 1, 1); paintMonth(); });
   $('mp-next').addEventListener('click', () => { mon = new Date(mon.getFullYear(), mon.getMonth() + 1, 1); paintMonth(); });
   document.addEventListener('pointerdown', (ev) => { if (!$('mpop').hidden && !ev.target.closest('#mpop') && !ev.target.closest('.chip[data-f="pick"]')) openMonth(false); });
