@@ -227,8 +227,8 @@ img { display: block; }
 .reg p { color: var(--text-teritary); }
 .reg a { position: relative; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--text-secondary); white-space: nowrap; }   /* 11-20 U-177: 늘 있던 밑줄·화살표 → 전시 상세 장소 링크(.info .pl)와 같은 ↗ */
 .reg a::before { content: ""; position: absolute; inset: -12px -4px; }   /* 터치 영역 44 */
-.reg a .o { flex: none; width: 12px; height: 12px; color: var(--text-teritary); fill: none; stroke: currentColor; transition: transform .25s var(--ease), color .2s; }   /* Figma `Icon / 바깥으로` 12 */
-@media (hover: hover) { .reg a:hover span { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; } .reg a:hover .o { transform: translate(1px, -1px); color: var(--text-primary); } }
+.reg a .cv { flex: none; width: 16px; height: 16px; margin-left: -6px; transition: transform .25s var(--ease); }   /* 11-22 U-184: 바깥으로(↗) → 더보기와 같은 꺾쇠 16(안쪽 이동이라) */
+@media (hover: hover) { .reg a:hover span { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; } .reg a:hover .cv { transform: translateX(2px); } }
 .foot .inner { padding-block: 20px; display: grid; gap: 8px; }
 .foot .logo img { width: 99px; height: 22.6px; }
 .foot .links { display: flex; align-items: center; gap: 12px; color: var(--text-teritary); }
@@ -311,7 +311,7 @@ img { display: block; }
     <section class="reg" aria-label="전시 등록 안내">
       <div class="inner">
         <div><h2>준비 중인 전시가 있나요?</h2><p>디유에 전시와 작품을 소개해보세요</p></div>
-        <a href="exhibition-new.html"><span>전시 등록하기</span><svg class="o" viewBox="0 0 12 12" aria-hidden="true"><path d="M4.125 7.875 7.875 4.125M7.875 4.125h-3M7.875 4.125v3" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="exhibition-new.html"><span>전시 등록하기</span><img class="cv" src="assets/img/chevron-more.svg" alt="" width="16" height="16"></a>
       </div>
     </section>
 
