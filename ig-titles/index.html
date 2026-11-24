@@ -1,0 +1,753 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>졸전 제목 · 인스타 게시물 시안</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/* 마케팅 팀 전달용 배포 사본(11-24, U-188) — 원본은 review/ig-titles-v1/index.html(E·A·C·D) + b.html(B).
+   고칠 땐 원본을 고친 뒤 review/ig-titles-v1/build-deploy.py로 다시 만들고 ./sync.sh ig-titles/index.html.
+   카드 = 1080×1350(릴스 1080×1920)을 줄여 보여 줌 — 카드 안 글자 크기는 인스타 이미지용. 한자는 Pretendard에 없어 기기 글꼴로 보임. */
+:root {
+  --text-primary: #18181b; --text-secondary: #3f3f47; --text-teritary: #71717b;
+  --bg-secondary: #f4f4f5; --line: #e4e4e7; --ink: #18181b; --mute: #a1a1aa;
+  --ease-out: cubic-bezier(.23, 1, .32, 1);
+  --pad: 20px; --k: .3; --g: .117;
+}
+@media (min-width: 440px) { :root { --g: .128; } }
+@media (min-width: 768px) { :root { --pad: 32px; --k: .34; } }
+@media (min-width: 1100px) { :root { --pad: 48px; } }
+*, *::before, *::after { box-sizing: border-box; letter-spacing: -0.03em; line-height: 1.4; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: #fff; color: var(--text-primary); font: 400 14px/1.4 "Pretendard Variable", Pretendard, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; word-break: keep-all; overflow-wrap: anywhere; }
+::selection { background: var(--ink); color: #fff; }
+a { color: inherit; text-decoration-color: var(--mute); text-underline-offset: 3px; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; letter-spacing: -0.03em; }
+:focus-visible { outline: 2px solid var(--text-primary); outline-offset: 2px; border-radius: 4px; }
+b { font-weight: 600; }
+.wrap { max-width: 1200px; margin: 0 auto; padding: 32px var(--pad) 64px; }
+h1 { margin: 0; font-size: 20px; font-weight: 700; text-wrap: balance; }
+.lead { margin: 8px 0 0; color: var(--text-secondary); max-width: 72ch; text-wrap: pretty; }
+section { margin-top: 56px; }
+h2 { margin: 0; font-size: 18px; font-weight: 600; text-wrap: balance; }
+h2 small { font-size: 14px; font-weight: 500; color: var(--text-teritary); }
+h3.p { margin: 24px 0 0; font-size: 14px; font-weight: 600; }
+.sub { margin: 4px 0 0; color: var(--text-teritary); font-size: 12px; font-weight: 500; max-width: 76ch; text-wrap: pretty; }
+.n { font-variant-numeric: tabular-nums; }
+
+/* 추천 */
+.rec { margin-top: 16px; padding: 16px 20px; background: var(--bg-secondary); max-width: 80ch; }
+.rec b { display: block; font-size: 16px; }
+.rec ol { margin: 8px 0 0; padding-left: 20px; color: var(--text-secondary); }
+.rec li + li { margin-top: 4px; }
+
+/* 재료: 유행 */
+.themes { margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 20px 32px; max-width: 1100px; }
+.th h3 { margin: 0; display: flex; justify-content: space-between; gap: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--ink); font-size: 14px; font-weight: 600; }
+.th h3 span { color: var(--text-teritary); font-weight: 500; font-variant-numeric: tabular-nums; }
+.th p { margin: 8px 0 0; color: var(--text-secondary); text-wrap: pretty; }
+.th p i { font-style: normal; color: var(--mute); }
+details.all { margin-top: 20px; max-width: 1100px; }
+details.all summary { cursor: pointer; display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+.alltbl { margin-top: 8px; columns: 3 280px; column-gap: 32px; font-size: 12px; }
+.alltbl div { break-inside: avoid; padding: 4px 0; border-top: 1px solid var(--line); }
+.alltbl b { font-size: 14px; font-weight: 500; }
+.alltbl span { display: block; color: var(--text-teritary); font-variant-numeric: tabular-nums; }
+
+/* 넘겨 보기 줄 */
+.row { margin-top: 16px; display: flex; gap: 12px; overflow-x: auto; padding-bottom: 12px; scroll-snap-type: x mandatory; }
+.row::-webkit-scrollbar { height: 6px; } .row::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+.item { flex: none; scroll-snap-align: start; width: calc(1080px * var(--k)); }
+.fr { width: calc(1080px * var(--k)); height: calc(1350px * var(--k)); overflow: hidden; outline: 1px solid var(--line); outline-offset: -1px; position: relative; }
+.fr.reel { height: calc(1920px * var(--k)); }
+.cap { margin: 6px 0 0; font-size: 12px; font-weight: 500; color: var(--text-teritary); font-variant-numeric: tabular-nums; }
+
+/* 격자 미리보기(3:4로 잘림) */
+.grid { margin-top: 16px; display: grid; grid-template-columns: repeat(3, calc(1012px * var(--g))); gap: 2px; }
+.tile { position: relative; width: calc(1012px * var(--g)); height: calc(1350px * var(--g)); overflow: hidden; }
+.tile .sl { transform: scale(var(--g)); left: calc(-34px * var(--g)); }
+
+/* ── 카드 안(1080 기준 px) ── */
+.sl { position: absolute; inset: 0 auto auto 0; width: 1080px; height: 1350px; transform: scale(var(--k)); transform-origin: 0 0; overflow: hidden; background: #fff; color: var(--ink); }
+.sl.k { background: var(--ink); color: #fff; }
+.sl .du { position: absolute; top: 96px; left: 96px; width: 92px; height: 52px; display: block; fill: currentColor; z-index: 2; }
+.sl .se { position: absolute; top: 104px; right: 96px; font-size: 30px; font-weight: 500; color: var(--mute); letter-spacing: -0.01em; font-variant-numeric: tabular-nums; z-index: 2; }
+.sl.k .se { color: #71717b; }
+.sl h3 { margin: 0; font-weight: 600; letter-spacing: -0.04em; line-height: 1.2; text-wrap: balance; }
+.sl .meta { font-size: 34px; font-weight: 500; color: var(--text-teritary); letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+
+/* B: 유행 — b.html과 같음(같은 말에 밑줄 · 묶음 제목 전부) */
+.sl u { text-decoration-line: underline; text-decoration-color: currentColor; text-decoration-skip-ink: none; }
+
+/* 표지 · 마지막 장 */
+.sl .bgwall { position: absolute; left: 96px; right: 96px; top: 200px; height: 760px; overflow: hidden; font-size: 28px; line-height: 1.55; color: #3f3f46; }
+.sl .bgwall i { font-style: normal; }
+.sl .bgwall i::after { content: " / "; color: #27272a; }
+.sl .bgwall em { font-style: normal; color: #d4d4d8; }
+.sl .fadeb { position: absolute; left: 0; right: 0; top: 700px; height: 360px; background: linear-gradient(to bottom, rgb(24 24 27 / 0), var(--ink) 80%); }
+.sl .bt { position: absolute; left: 96px; right: 96px; bottom: 96px; }
+.sl .bt h3 { font-size: 96px; }
+.sl .bt .meta { margin-top: 20px; }
+
+/* 안쪽 장: 위 몇 개는 크게(학교·학과까지), 나머지는 이어서(학교만) */
+.sl .hd { position: absolute; top: 200px; left: 96px; right: 96px; }
+.sl .hd h3 { font-size: 80px; }
+.sl .hd h3 small { font-size: 80px; font-weight: 500; color: var(--mute); margin-left: 16px; font-variant-numeric: tabular-nums; }
+.sl .tl { position: absolute; top: 340px; left: 96px; right: 96px; }
+.sl .fe { padding: 14px 0 16px; border-top: 2px solid var(--line); }
+.sl .fe:first-child { border-top-color: var(--ink); }
+.sl .fe b { display: block; font-size: 40px; font-weight: 600; line-height: 1.25; letter-spacing: -0.04em; }
+.sl .fe b u { text-decoration-thickness: 4px; text-underline-offset: 8px; }
+.sl .fe span { display: block; margin-top: 6px; font-size: 28px; font-weight: 500; line-height: 1.3; color: #71717b; letter-spacing: -0.02em; }
+.sl .rs { padding-top: 20px; border-top: 2px solid var(--line); font-size: 28px; line-height: 1.7; color: var(--ink); }
+.sl .rs i { font-style: normal; font-weight: 500; letter-spacing: -0.03em; }
+.sl .rs i span { color: #71717b; font-weight: 400; }
+.sl .rs i::after { content: " / "; color: #d4d4d8; font-weight: 400; }
+.sl .rs i:last-child::after { content: ""; }
+.sl .rs u { text-decoration-thickness: 3px; text-underline-offset: 6px; }
+.sl.k .bt .meta { color: #a1a1aa; }
+
+/* A: 한 장 한 제목 */
+.sl .one { position: absolute; top: 236px; left: 96px; right: 96px; font-weight: 600; letter-spacing: -0.05em; line-height: 1.15; text-wrap: balance; }
+.sl .foot { position: absolute; left: 96px; right: 96px; bottom: 96px; border-top: 2px solid currentColor; padding-top: 20px; display: grid; gap: 4px; }
+.sl .foot b { font-size: 36px; font-weight: 500; }
+.sl.k .foot { border-top-color: #3f3f46; }
+.sl.k .foot .meta { color: #a1a1aa; }
+
+/* C: 벽 */
+.sl .wall { position: absolute; left: 96px; right: 96px; font-size: 30px; line-height: 1.55; overflow: hidden; }
+.sl .wall i { font-style: normal; font-weight: 500; }
+.sl .wall i::after { content: " / "; color: #d4d4d8; font-weight: 400; }
+.sl .wall i:last-child::after { content: ""; }
+
+/* D: 색인 */
+.sl .cols { position: absolute; left: 96px; right: 96px; display: grid; grid-template-columns: 1fr 1fr; gap: 0 48px; }
+.sl .col > * { break-inside: avoid; }
+.sl .ixh { padding-top: 14px; font-size: 24px; font-weight: 600; color: var(--mute); border-bottom: 2px solid var(--ink); padding-bottom: 4px; }
+.sl .ix { padding: 7px 0; border-bottom: 1px solid var(--line); }
+.sl .ix b { display: block; font-size: 30px; font-weight: 500; line-height: 1.3; }
+.sl .ix span { display: block; font-size: 22px; color: var(--text-teritary); line-height: 1.3; }
+
+/* E: 릴스 */
+.sl.reel { height: 1920px; background: var(--ink); color: #fff; }
+.sl.reel .du { top: 220px; }
+.sl.reel .se { top: 228px; }
+.sl .flip { position: absolute; left: 96px; right: 96px; top: 560px; height: 520px; display: grid; align-content: center; }
+.sl .flip b { display: block; font-weight: 600; letter-spacing: -0.05em; line-height: 1.12; text-wrap: balance; }
+.sl .flip span { display: block; margin-top: 24px; font-size: 34px; font-weight: 500; color: #a1a1aa; letter-spacing: -0.01em; }
+.sl .cnt { position: absolute; left: 96px; top: 1120px; font-size: 30px; font-weight: 500; color: #71717b; letter-spacing: 0; font-variant-numeric: tabular-nums; }
+.safe { position: absolute; inset: 0; pointer-events: none; background:
+  linear-gradient(rgb(239 68 68 / .14), rgb(239 68 68 / .14)) top / 100% 14% no-repeat,
+  linear-gradient(rgb(239 68 68 / .14), rgb(239 68 68 / .14)) bottom / 100% 35% no-repeat; display: none; }
+.showsafe .safe { display: block; }
+
+/* 알아 둘 것 */
+.note { margin: 12px 0 0; padding-left: 18px; max-width: 76ch; color: var(--text-secondary); }
+.note li + li { margin-top: 6px; }
+
+/* 캡션·메모·버튼 */
+.meta-row { margin-top: 8px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 12px 32px; max-width: 1040px; }
+.capbox { padding: 14px 16px; background: var(--bg-secondary); white-space: pre-line; color: var(--text-primary); }
+.meta-row h3 { margin: 0 0 6px; font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+.meta-row ul { margin: 0; padding-left: 18px; color: var(--text-secondary); }
+.meta-row li + li { margin-top: 4px; }
+.acts { margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; }
+.cp { height: 32px; padding: 0 12px; border-radius: 16px; background: var(--bg-secondary); font-size: 12px; font-weight: 600; position: relative; transition: transform .16s var(--ease-out), background-color .16s ease; }
+.cp::after { content: ""; position: absolute; inset: -6px -4px; }
+.cp:active { transform: scale(.96); }
+.cp[aria-pressed="true"] { background: var(--ink); color: #fff; }
+@media (hover: hover) and (pointer: fine) { .cp:hover { background: var(--line); } .cp[aria-pressed="true"]:hover { background: var(--ink); } }
+.toast { position: fixed; left: 50%; bottom: 24px; height: 40px; display: flex; align-items: center; padding: 0 18px; border-radius: 8px; background: var(--ink); color: #fff; font-size: 14px; font-weight: 500; white-space: nowrap; opacity: 0; transform: translate(-50%, 8px); pointer-events: none; transition: opacity .2s var(--ease-out), transform .2s var(--ease-out); }
+.toast.on { opacity: 1; transform: translate(-50%, 0); }
+@media (prefers-reduced-motion: reduce) { .toast { transform: translate(-50%, 0); } *, *::before, *::after { transition-duration: .01ms !important; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- DU: favicon.svg와 같은 D·U 조각, 상자 36.39 × 20.38 -->
+    <symbol id="du" viewBox="0 0 36.39 20.38"><g transform="translate(0 -2.2277)"><path d="M0 22.2812V2.29672H7.05864C14.0867 2.29672 17.7536 6.29972 17.7536 12.2889C17.7536 18.2782 14.0867 22.2812 7.05864 22.2812H0ZM4.95022 17.6976H7.05864C11.0616 17.6976 12.7422 15.6197 12.7422 12.2889C12.7422 8.9582 11.0616 6.88031 7.05864 6.88031H4.95022V17.6976Z"/><path transform="translate(-81.046 0)" d="M109.001 22.6094C103.501 22.6094 100.446 19.3703 100.446 14.2062V2.2277H105.396V14.2062C105.396 16.6507 106.526 18.0258 108.971 18.0258C111.477 18.0258 112.607 16.6813 112.607 14.2062V2.2277H117.435V14.2062C117.435 19.3398 114.41 22.6094 109.001 22.6094Z"/></g></symbol>
+  </defs>
+</svg>
+
+<main class="wrap">
+  <h1>졸전 제목 · 인스타 게시물 시안</h1>
+  <p class="lead">2026 졸업전시 제목 <b class="n" id="nAll">275</b>개로 만든 디유 인스타그램 게시물 시안이에요. 같은 제목들을 다섯 가지 방법으로 보여 줘요. 제목과 학교·학과만 쓰고, 포스터·작품 이미지는 쓰지 않아요.</p>
+
+  <div class="rec">
+    <b>제안하는 순서</b>
+    <ol>
+      <li><b style="display:inline;font-size:14px">B 올해 제목의 유행</b>을 첫 게시물로. 같은 말을 쓴 제목에 밑줄을 그어, 모아 읽어야 보이는 유행을 보여 줘요.</li>
+      <li><b style="display:inline;font-size:14px">E 릴스</b>로 같은 재료를 빠르게. 움직임이 제목만으로 생겨요.</li>
+      <li><b style="display:inline;font-size:14px">A 한 장 한 제목</b>을 매주 연재. 제목 하나에 학교·학과·기간, 전시 계정 태그.</li>
+      <li><b style="display:inline;font-size:14px">C 벽 · D 색인</b>은 시즌이 끝나는 12월 말에 ‘2026 졸업전시 제목 전부’로 아카이브.</li>
+    </ol>
+  </div>
+
+  <section aria-labelledby="h-grid">
+    <h2 id="h-grid">격자에서 보면</h2>
+    <p class="sub">B 표지 · C 첫 장 · A 세 장 · D 첫 장을 올렸을 때. 4:5가 3:4로 보여 양옆이 조금 잘려요.</p>
+    <div class="grid" id="grid" aria-hidden="true"></div>
+  </section>
+
+  <section aria-labelledby="h-mat">
+    <h2 id="h-mat">제목에서 보인 것 <small>재료</small></h2>
+    <p class="sub">같은 말 · 같은 꼴로 묶어 본 것. 한 제목이 두 묶음에 들기도 해요. B의 슬라이드가 여기서 나와요.</p>
+    <div class="themes" id="themes"></div>
+    <details class="all"><summary>모은 제목 전부 보기</summary><div class="alltbl" id="alltbl"></div></details>
+  </section>
+
+  <section aria-labelledby="h-b">
+    <h2 id="h-b">B · 올해 제목의 유행 <small>게시물 8장 · 첫 게시물 추천</small></h2>
+    <p class="sub">표지는 제목 벽 위에 한 줄, 벽에서는 같은 말만 밝게. 안쪽은 한 장에 한 묶음, 같은 말을 쓴 제목에 밑줄. 마지막 장은 빠진 제목을 댓글로 받는 장.</p>
+    <div class="row" id="rowB" aria-label="B 카드"></div>
+    <div class="meta-row">
+      <div><h3>캡션</h3><div class="capbox" id="capB"></div><div class="acts"><button class="cp" type="button" data-copy="capB">캡션 복사</button></div></div>
+      <div><h3>메모</h3><ul><li>밑줄은 긴 제목 안에 숨은 같은 말에만. 제목 전체가 그 말이면 긋지 않아요.</li><li>장마다 그 묶음의 제목 전부. 위 4~5개는 학교·학과까지 크게, 나머지는 제목 + 학교.</li><li>두 묶음에 드는 제목은 한 장에만 실어요.</li><li>마지막 장은 빼도 돼요. 남은 묶음(시작 · 온도 · 경계)은 다음 편으로.</li><li>평가하는 말(좋은 제목 · 아쉬운 제목) 없이 묶기만.</li></ul></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-e">
+    <h2 id="h-e">E · 넘어가는 제목 <small>릴스 약 14초</small></h2>
+    <p class="sub">제목이 0.28초마다 바뀌고 끝에 숫자 한 장. 빨간 칸은 인스타 글자·버튼이 덮는 곳.</p>
+    <div class="acts"><button class="cp" type="button" id="playE" aria-pressed="true">멈추기</button><button class="cp" type="button" id="safeE" aria-pressed="false">가려지는 곳 보기</button></div>
+    <div class="row" aria-label="E 릴스">
+      <div class="item"><div class="fr reel"><div class="sl reel" id="cE"><svg class="du" aria-hidden="true"><use href="#du"/></svg><span class="se">졸전 제목</span><div class="flip" id="flip" aria-live="off"><b></b><span></span></div><div class="cnt" id="cnt"></div><div class="safe"></div></div></div><p class="cap">제목이 바뀌는 장면</p></div>
+      <div class="item"><div class="fr reel"><div class="sl reel"><svg class="du" aria-hidden="true"><use href="#du"/></svg><span class="se">졸전 제목</span><div class="flip"><b style="font-size:240px" class="n" id="eEnd">275</b><span style="font-size:44px;color:#e4e4e7">2026 졸업전시의 제목</span></div><div class="safe"></div></div></div><p class="cap">마지막 2초</p></div>
+    </div>
+    <div class="meta-row">
+      <div><h3>캡션</h3><div class="capbox" id="capE"></div><div class="acts"><button class="cp" type="button" data-copy="capE">캡션 복사</button></div></div>
+      <div><h3>메모</h3><ul><li>소리 없이도 읽히게. 음악은 인스타 앱 안 음원으로, 박자에 맞춰 바뀌면 좋아요.</li><li>45개를 골라 넣음(전부 넣으면 1분 넘음).</li><li>화면 녹화로 뽑거나, 같은 틀로 영상 편집 앱에서.</li></ul></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-a">
+    <h2 id="h-a">A · 한 장 한 제목 <small>매주 연재 · 한 장짜리 게시물</small></h2>
+    <p class="sub">제목 하나를 포스터처럼. 아래에 학교·학과·기간. 흰 바탕이 기본이고, 세 번에 한 번 검정.</p>
+    <div class="row" id="rowA" aria-label="A 카드"></div>
+    <div class="meta-row">
+      <div><h3>캡션 (첫 장 예시)</h3><div class="capbox" id="capA"></div><div class="acts"><button class="cp" type="button" data-copy="capA">캡션 복사</button></div></div>
+      <div><h3>메모</h3><ul><li>제목은 원래 쓴 그대로(대소문자 · 띄어쓰기 · 괄호 · 한자).</li><li>전시 계정을 사진 태그. 팀이 원하지 않으면 바로 내림.</li><li>한 장짜리 게시물로 올리거나, 10장을 묶어 한 게시물로도.</li></ul></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-c">
+    <h2 id="h-c">C · 제목의 벽 <small>게시물 <span id="nC">3</span>장 · 시즌 끝</small></h2>
+    <p class="sub">275개를 날짜 순서대로 이어 붙인 글자 벽. 확대해서 자기 학교 제목을 찾게 하는 게시물.</p>
+    <div class="row" id="rowC" aria-label="C 카드"></div>
+    <div class="meta-row">
+      <div><h3>캡션</h3><div class="capbox" id="capC"></div><div class="acts"><button class="cp" type="button" data-copy="capC">캡션 복사</button></div></div>
+      <div><h3>메모</h3><ul><li>글자가 작아서 폰에서는 확대해서 읽어야 해요. 그게 이 게시물의 놀이.</li><li>학교 이름은 넣지 않고 캡션 끝에 ‘제목 출처: 각 전시 공식 공지’.</li></ul></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-d">
+    <h2 id="h-d">D · 제목 색인 <small>게시물 <span id="nD">6</span>장 · 시즌 끝 · 고정 후보</small></h2>
+    <p class="sub">가나다 · ABC · 한자 순서. 책 뒤 색인처럼 제목과 학교·학과. 디유가 ‘남기는 곳’이라는 걸 보여 줘요.</p>
+    <div class="row" id="rowD" aria-label="D 카드"></div>
+    <div class="meta-row">
+      <div><h3>캡션</h3><div class="capbox" id="capD"></div><div class="acts"><button class="cp" type="button" data-copy="capD">캡션 복사</button></div></div>
+      <div><h3>메모</h3><ul><li>오픈 뒤엔 같은 색인을 디유 안 ‘2026 졸업전시’ 모음과 이어 줄 수 있어요(제안).</li></ul></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-note">
+    <h2 id="h-note">알아 둘 것</h2>
+    <ul class="note">
+      <li>제목은 각 전시가 인스타그램에 올린 공지 기준이에요(졸업전시 일정 계정 @joljoon_we 게시물에서 모아 읽음). 올릴 때 출처는 각 전시의 공식 공지로 적어요.</li>
+      <li>10월 중순~12월에 여는 전시만 들어 있어요. 봄·여름 졸업전시는 아직 없어요.</li>
+      <li>공지 글에서 자동으로 뽑고 손으로 고쳤지만 틀린 글자·학과가 남아 있을 수 있어요. 올리기 전에 해당 전시 공지와 한 번 더 맞춰 봐 주세요.</li>
+      <li>한자는 이 페이지 글꼴에 없어 기기 글꼴로 보여요. 이미지로 만들 때 확인이 필요해요.</li>
+      <li>실제로 올릴 이미지(게시물 1080×1350, 릴스 1080×1920)는 안을 고른 뒤 따로 만들어요.</li>
+      <li>전시 팀이 원하지 않으면 바로 내려요.</li>
+    </ul>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const DU = '<svg class="du" aria-hidden="true"><use href="#du"/></svg>';
+
+/* 제목 — [제목, 시작, 끝, 학교 학과, 묶음] · 각 전시 공지 기준 */
+const TITLES = [
+  ["번지지 않은 채로", "10.19", "11.01", "가천대 조소과", []],
+  ["MEET [ ] MOMENT", "10.22", "10.26", "협성대 가구디자인학과", ["yet"]],
+  ["43.exe", "10.26", "11.01", "서울여대 산업디자인학과", ["pc"]],
+  ["Hello, World!", "10.26", "11.01", "울산대 디지털콘텐츠디자인학과", ["pc"]],
+  ["단금지교 斷金之交", "10.26", "11.03", "국민대 금속공예학과", ["han"]],
+  ["첫 입 The First Bite", "10.27", "10.31", "인제대 시각디자인전공", ["start"]],
+  ["OFFSTAGE", "10.27", "11.01", "이화여대 디자인학부 공간디자인", []],
+  ["시 선 집 중 ! Eyes On", "10.27", "11.02", "목원대 시각디자인학과", ["eye"]],
+  ["THE ODD FACTORY : 창작자의 몸속으로", "10.28", "11.01", "경희대 디지털콘텐츠학과", []],
+  ["IGNITE - START YOUR ENGINE", "10.28", "11.01", "계명대 산업디자인과", ["heat"]],
+  ["우리들은 양을 센다", "10.28", "11.01", "한양대 ERICA 커뮤니케이션디자인학과", ["talk"]],
+  ["COORDINATE", "10.28", "11.01", "협성대 실내디자인학과", ["way"]],
+  ["MESSAGE: 시선", "10.28", "11.02", "경성대 사진학과", ["eye"]],
+  ["16P1", "10.28", "11.02", "국민대 도자공예학과", []],
+  ["0, 0, 0", "10.28", "11.02", "인덕대 실내디자인", ["way"]],
+  ["전통을 전하다", "10.28", "11.02", "한국전통문화대 전통미술공예학과", []],
+  ["FRAMELESS", "10.28", "11.03", "한남대 미술교육과", ["edge"]],
+  ["49 Weights", "10.28", "11.08", "서울시립대 조각학과", []],
+  ["IMPULSE", "10.29", "11.01", "국민대 자동차운송디자인학과", []],
+  ["37°c", "10.29", "11.02", "단국대 디자인학부 커뮤니케이션디자인전공", ["heat"]],
+  ["따뜨태떤_이불 밖을 나선 지금", "10.29", "11.02", "상지대 시각영상디자인학과", []],
+  ["BLUVE", "10.29", "11.04", "숙명여대 시각영상디자인과", []],
+  ["HELLO WORLD", "10.30", "11.02", "건국대 GLOCAL 시각영상디자인학과 시각트랙", ["pc"]],
+  ["RENDERING ; 렌더링", "10.30", "11.02", "경일대 만화애니메이션학부", ["pc"]],
+  ["CHECK OUT", "10.30", "11.03", "경동대 디자인학과", []],
+  ["손뼉치기", "10.30", "11.03", "국립부경대 시각디자인전공", []],
+  ["STELLAR", "10.31", "10.31", "동서대 패션디자인학과 졸업패션쇼", []],
+  ["HUES", "10.31", "11.01", "우석대 패션스타일링학과", []],
+  ["FORM [ ] CONNECTION", "11.01", "11.03", "한서대 산업디자인학과", ["yet"]],
+  ["17 NEW ERA", "11.02", "11.07", "백석대 인테리어디자인전공", ["start"]],
+  ["truehood", "11.02", "11.07", "홍익대 동양화과", []],
+  ["우주 달걀 이론", "11.02", "11.08", "가천대 시각디자인학과", []],
+  ["AFTER_ : we are gone, it remains", "11.02", "11.08", "울산대 섬유디자인학전공", ["yet"]],
+  ["WE", "11.02", "11.13", "한세대 섬유패션디자인전공 · 교내전", []],
+  ["토큰이 없어 내일 제목을 생성하기로 했다.", "11.02", "11.16", "국민대 입체미술전공", ["pc"]],
+  ["화생(化生)", "11.03", "11.05", "국립순천대 영상디자인학전공", ["han"]],
+  ["상상(上像) : 도면 위의 생각 금속 위의 흔적", "11.03", "11.06", "건국대 GLOCAL 조형예술학과 금속공예전공 · 충주전", ["han"]],
+  ["Blooming The Next", "11.03", "11.06", "백석예술대 디지털콘텐츠디자인전공", ["start"]],
+  ["LAYER TO HIGHER", "11.03", "11.08", "성균관대 디자인학과 써피스디자인전공", []],
+  ["DURATION", "11.03", "11.08", "성신여대 디자인과", []],
+  ["35,040", "11.03", "11.08", "영남대 생활제품디자인학과", []],
+  ["VOYAGE", "11.03", "11.09", "중앙대 게임콘텐츠&애니메이션전공", ["way"]],
+  ["0,0,0 : ORIGIN", "11.03", "11.09", "국민대 공간디자인학과", ["way", "start"]],
+  ["NEX:US", "11.04", "11.06", "덕성여대 IT미디어공학전공", []],
+  ["PARALLAX", "11.04", "11.07", "상명대 인더스트리얼디자인전공", ["eye"]],
+  ["깊이를 만들고 단단해지는 것들", "11.04", "11.08", "경희대 시각디자인학과", []],
+  ["32CUT", "11.04", "11.08", "서경대 디자인학부 LF_라이프스타일디자인전공", []],
+  ["RE:1641", "11.04", "11.08", "원광대 금속·주얼리디자인학과", []],
+  ["FILLING TO FLOWING", "11.04", "11.08", "한동대 콘텐츠융합디자인학부", []],
+  ["node", "11.04", "11.08", "목원대 산업디자인학과", []],
+  ["앗뜨", "11.04", "11.09", "단국대 죽전캠퍼스 도예과", []],
+  ["ASSEMBLE", "11.04", "11.09", "수원대 공예디자인과", []],
+  ["First Step", "11.04", "11.09", "중앙대 산업디자인전공", ["start"]],
+  ["당기세요 당기세요 당기세요", "11.04", "11.09", "경기대 서양화전공", ["talk"]],
+  ["shoot", "11.04", "11.10", "서울과학기술대 산업디자인학과", ["start"]],
+  ["별, 새김", "11.05", "11.06", "배재대 아트앤웹툰학과 · 별, 새김", []],
+  ["餘白", "11.05", "11.09", "경성대 공예과 금속전공", ["han"]],
+  ["발화, 시작의 온도", "11.05", "11.09", "인천가톨릭대 시각디자인전공", ["heat"]],
+  ["WELCOME TO THE PUZZLE POP-UP!", "11.05", "11.09", "명지대 영상애니메이션디자인전공", ["talk"]],
+  ["SCENE 0 : THE START LINE", "11.05", "11.10", "삼육대 아트앤디자인학과", ["start"]],
+  ["팡파레", "11.05", "11.11", "동서대 디지털미디어디자인전공", ["start"]],
+  ["RE:VIEW — 시선의 재구성", "11.05", "11.11", "동서대 시각디자인전공", ["eye"]],
+  ["FOR_ : What is design for?", "11.05", "11.11", "동서대 제품인터랙션디자인전공", ["yet"]],
+  ["IN:SITE", "11.05", "11.11", "연세대 실내건축학과", []],
+  ["잔향", "11.06", "11.08", "부산대 디자인학과 디자인앤테크놀로지전공", []],
+  ["새로운 경로를 탐색합니다", "11.06", "11.08", "안산대 멀티미디어디자인과", ["way"]],
+  ["당신은 무엇을 좋아하나요?", "11.06", "11.09", "한서대 공간디자인학과", ["talk"]],
+  ["파티", "11.06", "11.09", "동의대 시각디자인전공", []],
+  ["자아탐닉 (自我耽溺)", "11.06", "11.09", "한서대 공간디자인학과", ["han"]],
+  ["30°", "11.06", "11.10", "협성대 산업디자인학과", ["heat"]],
+  ["Bloom-X : Blooming Beyond Limits", "11.06", "11.12", "국립부경대 공업디자인학과", []],
+  ["INFLECTION — 변곡점", "11.07", "11.11", "원광대 시각정보디자인학과", ["way"]],
+  ["MONOLITH 4*", "11.07", "11.12", "신한대 실내디자인학과", []],
+  ["WEAVE", "11.09", "11.13", "가톨릭대 공간디자인·소비자학과", []],
+  ["Time Capsule : 추억을 담아 미래로", "11.09", "11.14", "백석대 디자인영상학부 영상애니메이션전공", []],
+  ["connection", "11.09", "11.14", "충남대 디자인창의학과 도자·섬유디자인", []],
+  ["ON THE BOUNDARY", "11.09", "11.15", "숙명여대 공예과", ["edge"]],
+  ["목적지를 설정하세요", "11.09", "12.05", "경북대 미술학과", ["way", "talk"]],
+  ["OPENING", "11.10", "11.14", "계명대 웹툰과", ["start"]],
+  ["절반을 바라보는 시선", "11.10", "11.15", "대구가톨릭대 웹툰애니창작과", ["eye"]],
+  ["FOCUS 47th", "11.10", "11.15", "서울예술대 사진전공 · 예술사진", ["eye"]],
+  ["SP[]CE", "11.10", "11.15", "성신여대 조소과", ["yet"]],
+  ["Glow", "11.10", "11.15", "건양대 융합디자인학과", ["heat"]],
+  ["G 401", "11.10", "11.16", "목원대 미술학부 한국화전공", []],
+  ["파편기록", "11.11", "11.15", "상명대 세라믹디자인전공 · 서울전", []],
+  ["너무나무 좋아해", "11.11", "11.15", "전북대 미술학과 가구조형디자인전공", []],
+  ["경계주의 : 변화를 마주하는 태도", "11.11", "11.15", "청주대 시각디자인학과", ["edge"]],
+  ["아니 내 말은 그게 아니라", "11.11", "11.15", "한성대 회화과", ["talk"]],
+  ["완성본은 아직입니다 : Not Final Yet", "11.11", "11.16", "가톨릭관동대 CG디자인학과", ["yet"]],
+  ["THIS IS NOT GRADUATION : THIS IS A NEW PATHWAY", "11.11", "11.16", "경희대 산업디자인학과", ["way"]],
+  ["새로고침", "11.11", "11.16", "인천대 조형예술학부 한국화·서양화전공", ["pc"]],
+  ["형태발생(Morphogenesis)", "11.11", "11.16", "인하대 조형예술학과", []],
+  ["U! WHO?", "11.11", "11.16", "경성대 시각디자인학과", ["talk"]],
+  ["처음이라고 믿었던 것은 이미 시작되고 있었다", "11.11", "11.16", "동국대 조소전공", ["start"]],
+  ["ANIMULA", "11.11", "11.17", "국립순천대 사진미디어학과 상업전공 · 서울전", []],
+  ["도서관 특별 구역", "11.11", "11.18", "국립공주대 도자문화융합디자인학과", []],
+  ["스탠바이", "11.11", "11.18", "건국대 산업디자인학과", ["start"]],
+  ["아무도 우리와 같지 않다", "11.11", "11.24", "한남대 회화과", ["talk"]],
+  ["Selfie.", "11.12", "11.15", "계원예술대 디지털미디어디자인학과 전공심화", []],
+  ["Perihelion", "11.12", "11.15", "동의대 디자인조형학과 공예디자인전공", []],
+  ["OLOID", "11.12", "11.15", "동의대 디자인조형학과 산업디자인파트", []],
+  ["Fold to Dot", "11.12", "11.16", "덕성여대 시각디자인전공", []],
+  ["DUCTILITY : 연성", "11.12", "11.16", "예원예술대 귀금속보석디자인과", []],
+  ["THE MISSING PIECE", "11.12", "11.16", "예원예술대 시각영상디자인학과", ["yet"]],
+  ["개미의 시선", "11.12", "11.16", "평택대 커뮤니케이션디자인과", ["eye"]],
+  ["AXIS : 시선의 축", "11.12", "11.16", "한양여대 산업디자인과", ["eye"]],
+  ["겹의 순간", "11.12", "11.18", "건국대 영상학과", []],
+  ["The Spectrum", "11.13", "11.13", "경북대 패션디자인전공 졸업패션쇼", []],
+  ["GAME EX-HIBITION", "11.13", "11.13", "상명대 게임전공", []],
+  ["PATINA", "11.13", "11.15", "호서대 실내디자인학과", []],
+  ["켜켜이 : 쌓아온 시간의 흔적", "11.13", "11.16", "선문대 디자인학부", []],
+  ["OOPS POPS!", "11.13", "11.16", "을지대 의료홍보디자인학과", []],
+  ["맛보기", "11.13", "11.17", "계원예술대 시각디자인과", []],
+  ["CONTINGENCY : From Chance to Necessity", "11.13", "11.17", "원광대 실내·산업디자인학과", []],
+  ["REALIZE", "11.13", "11.18", "국민대 AI디자인학과", []],
+  ["INTERLACE", "11.14", "11.14", "한남대 패션디자인학과 졸업패션쇼", []],
+  ["흥미의 풍미", "11.15", "11.21", "경기대 입체조형학과", []],
+  ["Re: imagine", "11.16", "11.18", "배화여대 패션산업학과", []],
+  ["모노 MONO", "11.16", "11.20", "조선대 만화애니메이션학과", []],
+  ["TWIST : 비틀다", "11.16", "11.20", "한양여대 산업디자인학과", []],
+  ["보이지 않는 것들은 언제나 가장 늦게 도착한다.", "11.16", "11.21", "백석대 디자인영상학부 시각디자인학과", []],
+  ["도구의 인간", "11.16", "11.21", "전남대 미술학과 공예전공", []],
+  ["WARM UP", "11.16", "11.21", "홍익대 목조형가구학과", ["heat"]],
+  ["굳은 땅을 밀어내고", "11.16", "11.22", "경희대 회화전공", []],
+  ["경계 너머", "11.16", "11.22", "배재대 아트앤웹툰학과 · 경계 너머", ["edge"]],
+  ["蓄積:축적", "11.16", "11.22", "인천가톨릭대 환경조각과", ["han"]],
+  ["UN : MANUAL", "11.17", "11.18", "상지대 산업융합디자인학과 · 원주전", []],
+  ["SPECIMEN (표본)", "11.17", "11.20", "단국대 미술학부 공예전공 · 천안전", []],
+  ["Pathforward", "11.17", "11.20", "연세대 디자인예술학부 산업디자인학전공 · 원주전", ["way"]],
+  ["타임라인에 쌓인 날들 최종출력 : Rendering", "11.17", "11.21", "상명대 디지털콘텐츠전공 · 천안전", ["pc"]],
+  ["담다", "11.17", "11.22", "강원대 생활조형디자인학과", []],
+  ["PASSAGE", "11.17", "11.22", "연성대 실내건축과", ["way"]],
+  ["궤적", "11.17", "11.22", "영남대 회화과 · 1부", ["way"]],
+  ["그리고", "11.17", "11.22", "충남대 회화과 한국화전공 · 대전전", []],
+  ["digging into", "11.17", "11.22", "서원대 디자인학과", []],
+  ["우리는 물로 건배한다 We Toast with Water", "11.17", "11.23", "목원대 미술학부 서양화전공", ["talk"]],
+  ["점(Dot)", "11.17", "11.23", "경성대 산업디자인학과", []],
+  ["SEQUENCE", "11.17", "11.27", "한세대 시각정보디자인전공", []],
+  ["LOADING…", "11.18", "11.22", "국립공주대 주얼리금속디자인학과", ["pc"]],
+  ["OFF-LINE", "11.18", "11.22", "국민대 영상디자인학과", ["pc"]],
+  ["captcha!", "11.18", "11.22", "서울과학기술대 디자인학과 시각디자인전공", ["pc"]],
+  ["OPEN THE ZIP", "11.18", "11.22", "협성대 시각디자인학과", ["pc"]],
+  ["無音", "11.18", "11.23", "단국대 동양화과 · 서울전", ["han"]],
+  ["Pale Blue Dot", "11.18", "11.23", "단국대 미술학부 서양화과", []],
+  ["結", "11.18", "11.23", "동덕여대 디지털공예전공", ["han"]],
+  ["불완전연소", "11.18", "11.23", "명지대 디자인학부 인더스트리얼디자인전공", ["yet"]],
+  ["땅을 딛고 오롯이", "11.18", "11.23", "서울과학기술대 도예학과", []],
+  ["THRESHOLD : 경계를 넘다", "11.18", "11.23", "한양대 실내건축디자인학과", ["edge"]],
+  ["CELSIUS", "11.18", "11.25", "서울시립대 디자인학과 산업디자인전공", ["heat"]],
+  ["유영지대 : Footloose", "11.18", "11.28", "서울여대 현대미술전공", []],
+  ["설계와 오류 사이에 발생하는 감각", "11.18", "11.28", "청주대 공예디자인학과", []],
+  ["Relay", "11.19", "11.21", "건양대 의료공간디자인학과", []],
+  ["_core : Find Your Own _core", "11.19", "11.21", "한경국립대 제품공간디자인전공", ["yet"]],
+  ["공존 : 같지 않아도, 함께", "11.19", "11.21", "강원대 생태조경디자인학과", ["edge"]],
+  ["Rare Taste", "11.19", "11.22", "건국대 GLOCAL 시각영상디자인학과", []],
+  ["結 : 결", "11.19", "11.22", "대구가톨릭대 산업디자인학과", ["han"]],
+  ["Diverse Letters Form Our Perfect 28", "11.19", "11.23", "동국대 WISE 디자인미술학과 시각디자인전공", []],
+  ["ODYSSEY", "11.19", "11.23", "신한대 산업디자인학과", ["way"]],
+  ["LAYERS", "11.19", "11.23", "동양미래대 시각디자인과", []],
+  ["DEPARTURES : 새로운 세계를 향한 출발", "11.19", "11.24", "전북대 산업디자인학과", ["way"]],
+  ["Shape of Cloud", "11.19", "11.25", "국립한밭대 시각·영상디자인학과", []],
+  ["튕겨져 나가 아무 데나 꽂히곤 하지", "11.19", "11.25", "숙명여대 회화과", ["talk"]],
+  ["ACTIVATING +", "11.20", "11.22", "계원예술대 실내건축디자인학과", []],
+  ["소복소복", "11.20", "11.22", "한서대 영상애니메이션학과", []],
+  ["LET’S SYNC!", "11.20", "11.22", "계원예술대 디지털미디어디자인과", ["pc"]],
+  ["LOG : IN", "11.20", "11.22", "계원예술대 영상디자인과", ["pc"]],
+  ["별종주의보", "11.20", "11.23", "한성대 영상애니메이션디자인트랙", []],
+  ["Sense on the Plate", "11.20", "11.23", "호서대 산업디자인학과", []],
+  ["양평 四色十二圖 : 양평을 바라보는 열두 시선", "11.20", "11.23", "계원예술대 문화전시스튜디오", ["eye"]],
+  ["MATTER MATTERS : 형태를 바꿀 뿐 사라지지 않는다", "11.20", "11.23", "계원예술대 전시콘텐츠디자인과", []],
+  ["신명 新明", "11.20", "11.23", "계원예술대 광고브랜드디자인학과", ["han", "start"]],
+  ["re:think | 익숙한 것을 새로운 시선으로", "11.20", "11.23", "계원예술대 전시콘텐츠디자인과", ["eye"]],
+  ["오해는 풀고싶지 않아", "11.20", "11.23", "계원예술대 융합예술과", ["talk"]],
+  ["Dégustation", "11.20", "11.23", "호서대 산업디자인학과", []],
+  ["유연한 결합", "11.20", "11.24", "청주대 디지털미디어디자인학과", []],
+  ["임계 : 臨界", "11.20", "11.24", "계원예술대 리빙가구디자인과", ["han", "edge"]],
+  ["TASTE TRACK", "11.20", "11.25", "대구대 시각디자인전공", []],
+  ["언어의 재정의", "11.20", "11.26", "중앙대 미술학부 한국화전공", []],
+  ["내보내기(Export)", "11.23", "11.27", "조선대 라이프스타일디자인학부 실내디자인전공", ["pc"]],
+  ["BINGO : 겹쳐진 과정 위에 하나의 외침", "11.23", "11.28", "경기대 산업디자인전공", []],
+  ["RIDE THE WAVE", "11.23", "11.28", "청주대 만화애니메이션학과", ["way"]],
+  ["Pli-over-Pli", "11.23", "11.28", "홍익대 회화과", []],
+  ["반향(Resonance)", "11.23", "11.29", "강원대 강릉캠퍼스 조형예술디자인학과 도자디자인전공", []],
+  ["좌표 없는 점들", "11.23", "12.04", "상명대 조형예술전공", ["way"]],
+  ["ACCELERATE", "11.24", "11.25", "재능대 게임아트디자인과", []],
+  ["WHO LIVES HERE?", "11.24", "11.26", "경성대 영상애니메이션학부", ["talk"]],
+  ["찰나의 온도", "11.24", "11.26", "성신여대 문화예술경영학과", ["heat"]],
+  ["異音(이음)", "11.24", "11.29", "강원대 미술학과", ["han"]],
+  ["AORO : 우리들의 순간을 아로새기다", "11.24", "11.29", "원광대 미술과", []],
+  ["Plasticity memory : 가소성 기억", "11.24", "11.29", "이화여대 도자예술전공", []],
+  ["Bazaar", "11.24", "11.29", "이화여대 동양화전공", []],
+  ["Skipping-Hopping", "11.24", "11.29", "이화여대 서양화전공", []],
+  ["Cat and Mouse (쫓고, 쫓기기)", "11.24", "11.29", "이화여대 섬유예술전공", []],
+  ["TAEJEON EXPO-26", "11.24", "11.29", "충남대 조소과", []],
+  ["감각의 밀도", "11.24", "11.30", "목원대 입체조형학부", []],
+  ["CATALYST", "11.25", "11.25", "수원대 패션디자인과 졸업패션쇼", []],
+  ["MADE", "11.25", "11.29", "한성대 ICT융합디자인학과", []],
+  ["아직 할 말이 남았는데,", "11.25", "11.30", "성균관대 미술학과 · 1부", ["yet", "talk"]],
+  ["너머를 보다", "11.25", "11.30", "수원대 회화과 서양화·동양화", ["eye"]],
+  ["COSMOS : 수많은 우주를 항해하는 모든 이를 위하여", "11.25", "11.30", "영산대 웹툰학과", ["way"]],
+  ["이러한 만듦새들 ; 형태 속의 태도", "11.25", "11.30", "중앙대 공예학과", []],
+  ["To The Next Ground", "11.25", "11.30", "한양대 ERICA 산업디자인학과", ["way"]],
+  ["worms warm", "11.25", "12.01", "인천가톨릭대 회화과 · 인천전", ["heat"]],
+  ["JUMPING POINT", "11.25", "12.21", "동국대 WISE 디자인미술학과", ["start"]],
+  ["RESEARCH LAB", "11.26", "11.28", "동서대 웹툰학과", []],
+  [".ZIP", "11.26", "11.29", "동아방송예술대 뉴미디어콘텐츠과", ["pc"]],
+  ["afterimage", "11.26", "11.29", "서울대 동양화과", []],
+  ["HALO : The First Stage of Creators", "11.26", "11.29", "수원대 디지털콘텐츠전공", ["start"]],
+  ["녹음(綠陰) : 초록의 결", "11.26", "11.29", "연성대 웹툰만화콘텐츠학과", ["han"]],
+  ["말쑥하게 그대로 : 편지를 부칠까요?", "11.26", "12.01", "덕성여대 텍스타일디자인전공", ["talk"]],
+  ["AFTER GLOW", "11.27", "11.27", "부산대 애니메이션전공 상영회", ["heat"]],
+  ["Flare", "11.27", "11.30", "건양대 시각디자인학과", ["heat"]],
+  ["Bring Yours", "11.27", "11.30", "경기대 시각정보디자인전공", ["talk"]],
+  ["Question", "11.27", "11.30", "홍익대 디자인컨버전스학부", []],
+  ["점, 선, 면", "11.30", "12.01", "연성대 시각디자인과", []],
+  ["영원처럼 잠깐", "11.30", "12.05", "경기대 한국화전공", []],
+  ["Being Go!", "11.30", "12.05", "홍익대 판화과", []],
+  ["해 : 지고도 선명한", "11.30", "12.06", "계명대 회화과", []],
+  ["추신, 내 말 잘 들려?", "11.30", "12.06", "추계예술대 서양화·현대미술전공", ["talk"]],
+  ["No Boundary - 경계없음", "11.30", "12.06", "충남대 시각·제품디자인전공", ["edge"]],
+  ["CURTAIN CALL", "12.01", "12.04", "백석예술대 게임그래픽·만화애니메이션", ["start"]],
+  ["NEW ERA : 새 시대를 디자인하다", "12.01", "12.04", "명지대 디지털콘텐츠디자인학과", ["start"]],
+  ["다른 이름으로 저장하기", "12.01", "12.05", "서울예술대 시각디자인전공", ["pc"]],
+  ["Growing a Jellyfish", "12.01", "12.05", "한양대 ERICA 영상디자인학과", []],
+  ["NEXTURE", "12.01", "12.06", "명지전문대 커뮤니케이션디자인", []],
+  ["전환과 성장", "12.01", "12.06", "제주대 융합디자인", []],
+  ["재주넘기 SALTO", "12.01", "12.06", "국립제주대 융합디자인학과", []],
+  ["Flux Point", "12.01", "12.06", "성신여대", []],
+  ["침윤 : 마침내 다른 형태가 되는 시간", "12.01", "12.07", "서울과학기술대 문예창작", []],
+  ["돌에 새겨진 건 없다", "12.01", "12.08", "서울과학기술대 조형예술", []],
+  ["때로는 ( )을 믿는 마음으로", "12.01", "12.19", "국민대 회화", ["yet"]],
+  ["ESO : EGO", "12.02", "12.05", "숭실대 글로벌미래교육원 시각디자인", []],
+  ["눈은 칸 밖에 있다", "12.02", "12.07", "동덕여대 회화과", ["eye"]],
+  ["항해록", "12.02", "12.07", "상명대 디지털만화영상", ["way"]],
+  ["PERIPHERAL VISION : 시야의 가장자리", "12.02", "12.12", "KAIST 산업디자인", ["eye"]],
+  ["덜 dull", "12.02", "12.14", "세종대 회화과", []],
+  ["좌표", "12.03", "12.06", "동아방송예술대 무대미술", ["way"]],
+  ["DEBUG", "12.03", "12.06", "연세대 디지털아트학과", ["pc"]],
+  ["(ana) LOG", "12.03", "12.08", "부산대 가구목조형전공", []],
+  ["책상주의자 - Designers on Deskism", "12.03", "12.08", "중앙대 시각디자인전공", []],
+  ["BE(COM)ING", "12.03", "12.12", "고려대 디자인조형학부", ["yet"]],
+  ["FLOW", "12.04", "12.05", "신한대 모델콘텐츠", []],
+  ["유영", "12.04", "12.06", "동아방송예술대 디지털영상디자인", []],
+  ["ARTIFICIAL BUG", "12.04", "12.07", "경남정보대 AI 시각디자인학과", ["pc"]],
+  ["W I N K", "12.04", "12.08", "계원예술대 사진예술", []],
+  ["Arc", "12.04", "12.08", "중부대 산업디자인", []],
+  ["Dot To Root", "12.04", "12.08", "대진대 시각디자인학과", []],
+  ["왜곡렌즈 : DISTORTED LENS", "12.04", "12.08", "명지대 비주얼커뮤니케이션디자인전공", ["eye"]],
+  ["OFF GRID", "12.07", "12.12", "중앙대 서양화", ["edge"]],
+  ["TING TACK TOCK", "12.07", "12.12", "홍익대 도예유리", []],
+  ["FIELD TEST", "12.07", "12.12", "홍익대 시각디자인과", []],
+  ["길을 건너는 방법", "12.08", "12.13", "계명대 공예디자인", ["way"]],
+  ["빛다 _ 흙을 빚어 빛을 담다", "12.08", "12.13", "성신여대 공예과 도자", []],
+  ["Rehearsal", "12.08", "12.13", "제주대 미술학과", ["start"]],
+  ["Checkpoint : Save Progress", "12.08", "12.13", "성신여대 금속전공", ["pc"]],
+  ["4 to 4", "12.08", "12.14", "단국대 조소과", []],
+  ["OVERBIT", "12.09", "12.12", "성신여대 섬유·텍스타일전공", ["pc"]],
+  ["LOADING… [ ]", "12.09", "12.14", "덕성여대 동양화", ["pc", "yet"]],
+  ["Leaving Scene ⨾ 미완의 상태", "12.09", "12.14", "덕성여대 서양화", ["yet"]],
+  ["발화 : 모든 일은 그렇게", "12.09", "12.14", "용인대 회화", ["heat"]],
+  ["무주소 無住所", "12.09", "12.14", "서울대 디자인", ["han"]],
+  ["공명 共鳴", "12.09", "12.14", "서울과학기술대 금속공예디자인학과", ["han"]],
+  ["OVERLAP:INBETWEEN", "12.09", "12.14", "수원대 조소과", ["edge"]],
+  ["루트", "12.09", "12.15", "가천대 회화", ["way"]],
+  ["PROJECT : X", "12.10", "12.13", "수원여대 그래픽전공", []],
+  ["INSPIRATION", "12.11", "12.18", "동아대", []],
+  ["ODD FESTIVAL", "12.15", "12.20", "계명대 영상애니메이션", []],
+  ["PABABAK!", "12.15", "12.20", "성신여대 동양화", []],
+  ["취향수집", "12.16", "12.21", "서울여대 공예·컬렉터블디자인", []],
+  ["ORDER & OTHER", "12.17", "12.20", "강남대 건축", []],
+  ["CROSS TENSION", "12.18", "12.22", "인하대 디자인테크놀로지학과", ["edge"]],
+  ["SYNAPSE : 시냅스", "12.21", "12.28", "정화예술대 웹툰애니메이션", []],
+  ["SYNAPSE : 시냅스", "12.21", "12.28", "정화예술대 시각디자인", []],
+  ["흩어지다, 모이다", "12.23", "12.28", "동국대 WISE 불교미술 서울전", []],
+  ["Palimpsest", "12.26", "12.28", "한양대 ERICA 주얼리·패션디자인", []]
+];
+
+const TH = {
+  pc: '컴퓨터처럼 말하기', way: '길을 찾는 말', yet: '아직, 빈칸', han: '한자로 쓴 제목', talk: '말을 거는 제목', eye: '시선',
+  heat: '온도', start: '시작', edge: '경계',
+};
+const N = TITLES.length;
+const rng = (s, e) => s === e ? `2026.${s}` : `2026.${s} - ${e}`;
+const inTh = (k) => TITLES.filter((r) => r[4].includes(k));
+const card = (cls, inner, cap, id) => `<div class="item"><div class="fr"><div class="sl ${cls}"${id ? ` id="${id}"` : ''}>${inner}</div></div><p class="cap">${cap}</p></div>`;
+const fit = (t, sizes) => { const L = [...t].length; for (const [max, px] of sizes) if (L <= max) return px; return sizes[sizes.length - 1][1]; };
+$('nAll').textContent = N; $('eEnd').textContent = N;
+
+/* 재료 */
+$('themes').innerHTML = Object.entries(TH).map(([k, name]) => { const L = inTh(k); return `<div class="th"><h3>${name}<span>${L.length}</span></h3><p>${L.map((r) => esc(r[0])).join(' <i>/</i> ')}</p></div>`; }).join('');
+$('alltbl').innerHTML = TITLES.map((r) => `<div><b>${esc(r[0])}</b><span>${esc(r[3])} · ${r[1]} - ${r[2]}</span></div>`).join('');
+
+/* B — 유행(b.html과 같음: 같은 말에 밑줄 · 묶음 제목 전부 · 마지막 장) */
+const fillB = (() => {
+const SE = '<span class="se">졸전 제목</span>';
+/* 실을 묶음(처음 판과 같은 6개, 같은 순서) */
+const ORDER = ['pc', 'way', 'yet', 'han', 'talk', 'eye'];
+/* 같은 말 — 밑줄 그을 곳 */
+const HL = {
+  pc: /\.exe|Hello, World!|HELLO WORLD|RENDERING|렌더링|Rendering|생성하기로|새로고침|최종출력|LOADING…|OFF-LINE|captcha!|\.?ZIP|SYNC!|LOG : IN|내보내기|Export|다른 이름으로 저장하기|DEBUG|BUG|Checkpoint : Save Progress|BIT/g,
+  way: /0, 0, 0|0,0,0|ORIGIN|COORDINATE|좌표|경로를 탐색합니다|목적지를 설정하세요|PATHWAY|Pathforward|PASSAGE|궤적|ODYSSEY|DEPARTURES|항해|VOYAGE|RIDE THE WAVE|COSMOS|To The Next Ground|루트|길을 건너는|INFLECTION|변곡점/g,
+  yet: /\[ \]|\[\]|[A-Za-z]*_[A-Za-z]*|\( \)|\(COM\)|아직|Not Final Yet|MISSING PIECE|불완전|미완/g,
+  han: /[㐀-䶿一-鿿豈-﫿]+/g,
+  talk: /내 말 잘 들려\?|내 말은 그게 아니라|당기세요|좋아하나요\?|WHO\?|않아|꽂히곤 하지|남았는데,|부칠까요\?|Bring Yours|센다|건배한다|같지 않다|WELCOME|POP-UP!/g,
+  eye: /시선|Eyes On|VIEW|VISION|LENS|렌즈|바라보는|보다|눈은|FOCUS|PARALLAX|AXIS|re:think/g,
+};
+/* 크게 놓는 순서 — 짝이 보이는 것부터(제안, 내가 고름). 나머지는 날짜 순 */
+const FEAT = {
+  pc: ['Hello, World!', 'HELLO WORLD', 'LOADING…', 'LOADING… [ ]', 'OPEN THE ZIP', '.ZIP', '43.exe', '토큰이 없어 내일 제목을 생성하기로 했다.'],
+  way: ['0, 0, 0', '0,0,0 : ORIGIN', '좌표', '좌표 없는 점들', 'COORDINATE', '새로운 경로를 탐색합니다', '목적지를 설정하세요', '항해록'],
+  yet: ['MEET [ ] MOMENT', 'FORM [ ] CONNECTION', 'SP[]CE', 'AFTER_ : we are gone, it remains', 'FOR_ : What is design for?', '_core : Find Your Own _core', '때로는 ( )을 믿는 마음으로', 'BE(COM)ING'],
+  han: ['結', '結 : 결', '餘白', '無音', '단금지교 斷金之交', '무주소 無住所', '異音(이음)', '공명 共鳴'],
+  talk: ['추신, 내 말 잘 들려?', '아니 내 말은 그게 아니라', '당기세요 당기세요 당기세요', '당신은 무엇을 좋아하나요?', 'U! WHO?', 'WHO LIVES HERE?', '오해는 풀고싶지 않아', '아직 할 말이 남았는데,'],
+  eye: ['MESSAGE: 시선', '개미의 시선', '절반을 바라보는 시선', 'AXIS : 시선의 축', 'RE:VIEW — 시선의 재구성', '양평 四色十二圖 : 양평을 바라보는 열두 시선', 're:think | 익숙한 것을 새로운 시선으로', '눈은 칸 밖에 있다'],
+};
+/* 두 묶음에 드는 제목은 한 장에만 — 기본은 앞 장, 이것만 뒤로 */
+const OWN = { '아직 할 말이 남았는데,': 'talk' };
+const ownerOf = (r) => OWN[r[0]] || ORDER.find((k) => r[4].includes(k));
+const inB = (k) => TITLES.filter((r) => r[4].includes(k) && ownerOf(r) === k);
+
+/* 밑줄: 긴 제목 안에 숨은 같은 말에만(제목 전체가 그 말이면 긋지 않음). 표지 벽은 밑줄 대신 밝게(em) */
+const hl = (t, k, tag = 'u') => {
+  if (!k) return esc(t);
+  const ms = [...t.matchAll(HL[k])].filter((m) => m[0]);
+  if (tag === 'u' && ms.some((m) => m[0].trim() === t.trim())) return esc(t);
+  let out = '', last = 0;
+  for (const m of ms) { out += esc(t.slice(last, m.index)) + `<${tag}>${esc(m[0])}</${tag}>`; last = m.index + m[0].length; }
+  return out + esc(t.slice(last));
+};
+/* 학교만(캠퍼스 이름은 남김) */
+const CAMPUS = /^(ERICA|GLOCAL|WISE)$/;
+const school = (s) => { const w = s.split(' '); return CAMPUS.test(w[1] || '') ? `${w[0]} ${w[1]}` : w[0]; };
+const card = (cls, inner, cap, id) => `<div class="item"><div class="fr"><div class="sl ${cls}"${id ? ` id="${id}"` : ''}>${inner}</div></div><p class="cap">${cap}</p></div>`;
+
+/* 날짜 범위(연도 앞) */
+const md = (s) => s.split('.').map(Number); const cmp = (a, b) => { const [m1, d1] = md(a), [m2, d2] = md(b); return m1 - m2 || d1 - d2; };
+const first = TITLES.map((r) => r[1]).sort(cmp)[0], last = TITLES.map((r) => r[2]).sort(cmp).pop();
+
+/* 표지 · 안쪽 6장 · 마지막 장 */
+(() => {
+  const wall = TITLES.map((r) => `<i>${hl(r[0], ORDER.includes(ownerOf(r)) ? ownerOf(r) : null, 'em')}</i>`).join('');
+  const cover = card('k', `${DU}${SE}<div class="bgwall" aria-hidden="true">${wall}</div><div class="fadeb"></div><div class="bt"><h3>올해 졸업전시 제목<br>${N}개를 읽었습니다</h3><div class="meta">2026.${first} - ${last} · 졸업전시 공지 기준</div></div>`, '1 · 표지', 'cB');
+  const slides = ORDER.map((k, i) => card('', `${DU}${SE}<div class="hd"><h3>${TH[k]}<small>${inB(k).length}</small></h3></div><div class="tl" data-k="${k}"></div>`, `${i + 2} · ${TH[k]}`));
+  const end = card('k', `${DU}${SE}<div class="bt"><h3>빠진 제목은<br>댓글로 알려 주세요</h3><div class="meta">다음 편 · ${['start', 'heat', 'edge'].map((k) => TH[k]).join(' · ')}</div></div>`, `${ORDER.length + 2} · 마지막 장(제안)`);
+  $('rowB').innerHTML = cover + slides.join('') + end;
+})();
+
+/* 안쪽 장 채우기: 위에 크게 f개 + 나머지 이어서, 들어가는 가장 큰 f(글꼴을 불러온 뒤 높이로 잼) */
+const H = 1254 - 340;
+const fillB = () => document.querySelectorAll('#rowB .tl[data-k]').forEach((tl) => {
+  const k = tl.dataset.k; const L = inB(k);
+  const feat = FEAT[k].map((t) => L.find((r) => r[0] === t)).filter(Boolean);
+  if (feat.length !== FEAT[k].length) console.warn('FEAT 제목을 못 찾음', k, FEAT[k].filter((t) => !L.find((r) => r[0] === t)));
+  let fitN = -1;
+  for (let f = feat.length; f >= 0; f--) {
+    const top = feat.slice(0, f); const rest = L.filter((r) => !top.includes(r));
+    tl.innerHTML = top.map((r) => `<div class="fe"><b>${hl(r[0], k)}</b><span>${esc(r[3])}</span></div>`).join('')
+      + (rest.length ? `<div class="rs">${rest.map((r) => `<i>${hl(r[0], k)} <span>${esc(school(r[3]))}</span></i>`).join('')}</div>` : '');
+    if (tl.offsetHeight <= H) { fitN = f; break; }
+  }
+  if (fitN < 0) console.warn('한 장에 안 들어감', k);
+  tl.dataset.f = fitN;
+});
+return fillB;
+})();
+
+/* A — 한 장 한 제목 */
+const PICK_A = ['토큰이 없어 내일 제목을 생성하기로 했다.', '추신, 내 말 잘 들려?', '우리는 물로 건배한다 We Toast with Water', '눈은 칸 밖에 있다', '돌에 새겨진 건 없다', '보이지 않는 것들은 언제나 가장 늦게 도착한다.', '영원처럼 잠깐', '우리들은 양을 센다', '때로는 ( )을 믿는 마음으로', '번지지 않은 채로'];
+(() => {
+  const html = PICK_A.map((t, i) => {
+    const r = TITLES.find((x) => x[0] === t); const dark = i % 3 === 2;
+    const px = fit(t, [[6, 200], [10, 160], [16, 136], [24, 116], [32, 100], [99, 88]]);
+    return card(dark ? 'k' : '', `${DU}<span class="se">졸전 제목 No.${String(i + 1).padStart(2, '0')}</span><div class="one" style="font-size:${px}px">${esc(t)}</div><div class="foot"><b>${esc(r[3])}</b><div class="meta">${rng(r[1], r[2])}</div></div>`, `No.${String(i + 1).padStart(2, '0')}`, `cA${i}`);
+  }).join('');
+  $('rowA').innerHTML = html;
+})();
+
+/* C — 벽(날짜 순, 넘치면 다음 장) — 글자 높이로 나누므로 글꼴을 불러온 뒤 */
+const buildC = () => {
+  const row = $('rowC'); const se = `<span class="se">졸전 제목 ${N}</span>`;
+  const sorted = [...TITLES].sort((a, b) => a[1].localeCompare(b[1]));
+  // 두 번 채움: 먼저 몇 장인지 세고, 다음엔 장마다 고르게 나눔(마지막 장이 비지 않게)
+  const fill = (quota) => {
+    row.innerHTML = ''; let idx = 0, page = 0; const per = [];
+    while (idx < sorted.length && page < 8) {
+      const first = page === 0; const top = first ? 400 : 200; const H = 1254 - top;
+      row.insertAdjacentHTML('beforeend', card('', `${DU}${se}${first ? `<div class="hd"><h3 style="font-size:72px">올해 졸업전시 제목 <small style="font-size:72px">${N}</small></h3></div>` : ''}<div class="wall" style="top:${top}px"></div>`, '', page === 0 ? 'cC' : ''));
+      const w = row.lastElementChild.querySelector('.wall'); let c = 0;
+      while (idx < sorted.length && (!quota || c < quota[page])) { const el = document.createElement('i'); el.textContent = sorted[idx][0]; w.appendChild(el); if (w.offsetHeight > H) { w.removeChild(el); break; } idx++; c++; }
+      per.push(c); page++;
+    }
+    return per;
+  };
+  const first = fill(null); const P = first.length;
+  if (P > 1) {
+    const capF = first[0], capO = first[1] >= first[P - 1] ? first[1] : capF; const caps = Array.from({ length: P }, (_, i) => (i === 0 ? capF : capO));
+    const ratio = N / caps.reduce((a, b) => a + b, 0); const q = caps.map((c) => Math.floor(c * ratio)); let left = N - q.reduce((a, b) => a + b, 0);
+    for (let i = 0; left > 0; i = (i + 1) % P) { q[i]++; left--; }
+    fill(q);
+  }
+  const page = row.children.length;
+  [...row.querySelectorAll('.cap')].forEach((c, i) => { c.textContent = `${i + 1} / ${page}`; });
+  $('nC').textContent = page;
+};
+
+/* D — 색인(가나다 · ABC · 숫자·기호 · 한자) */
+const buildD = () => {
+  const row = $('rowD'); const se = '<span class="se">졸전 제목 색인</span>';
+  const CHO = 'ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ';
+  const key = (t) => { const s = t.replace(/^[\s._<\[(《「'"“‘]+/, ''); const c = s[0] || ''; const code = c.charCodeAt(0);
+    if (code >= 0xAC00 && code <= 0xD7A3) { const ch = CHO[Math.floor((code - 0xAC00) / 588)]; return { g: 0, h: ({ 'ㄲ': 'ㄱ', 'ㄸ': 'ㄷ', 'ㅃ': 'ㅂ', 'ㅆ': 'ㅅ', 'ㅉ': 'ㅈ' })[ch] || ch, s }; }
+    if (/[A-Za-z]/.test(c)) return { g: 1, h: c.toUpperCase(), s };
+    if (/[一-鿿]/.test(c)) return { g: 3, h: '漢', s };
+    return { g: 2, h: '#', s }; };
+  const L = TITLES.map((r) => ({ r, ...key(r[0]) })).sort((a, b) => a.g - b.g || a.s.localeCompare(b.s, 'ko'));
+  // 같은 제목 두 번(학과 둘)은 학교를 이어 붙임
+  const M = []; L.forEach((x) => { const p = M[M.length - 1]; if (p && p.r[0] === x.r[0]) p.extra = (p.extra || []).concat(x.r[3]); else M.push({ ...x }); });
+  const meas = document.createElement('div'); meas.className = 'sl'; meas.style.cssText = 'position:absolute;left:-99999px;top:0;transform:none;visibility:hidden';
+  meas.innerHTML = '<div class="cols" style="position:static;display:block;width:420px"></div>'; document.body.appendChild(meas); const mc = meas.firstChild;
+  const h = (html) => { mc.innerHTML = html; return mc.offsetHeight; };
+  const blocks = []; let last = null;
+  M.forEach((x) => { if (x.h !== last) { blocks.push({ html: `<div class="ixh">${x.h}</div>` }); last = x.h; } blocks.push({ html: `<div class="ix"><b>${esc(x.r[0])}</b><span>${esc([x.r[3], ...(x.extra || [])].join(' · '))}</span></div>` }); });
+  blocks.forEach((b) => { b.hgt = h(b.html); }); meas.remove();
+  const pages = []; let i = 0;
+  while (i < blocks.length && pages.length < 12) {
+    const first = pages.length === 0; const top = first ? 340 : 200; const H = 1254 - top; const cols = [[], []];
+    for (let c = 0; c < 2 && i < blocks.length; c++) { let used = 0; while (i < blocks.length) { const b = blocks[i]; const isHead = /ixh/.test(b.html); const need = b.hgt + (isHead && blocks[i + 1] ? blocks[i + 1].hgt : 0); if (used + need > H) break; cols[c].push(b.html); used += b.hgt; i++; } }
+    pages.push({ first, top, cols });
+  }
+  row.innerHTML = pages.map((p, n) => card('', `${DU}${se}${p.first ? `<div class="hd"><h3 style="font-size:64px">2026 졸업전시 제목 색인</h3></div>` : ''}<div class="cols" style="top:${p.top}px">${p.cols.map((c) => `<div class="col">${c.join('')}</div>`).join('')}</div>`, `${n + 1} / ${pages.length}`, n === 0 ? 'cD' : '')).join('');
+  $('nD').textContent = pages.length;
+};
+
+/* E — 릴스: 0.28초마다 다음 제목(움직임 줄이기면 멈춤으로 시작) */
+(() => {
+  const pickE = TITLES.filter((_, i) => i % 4 === 1).slice(0, 45);
+  const b = $('flip').querySelector('b'), s = $('flip').querySelector('span'), cnt = $('cnt');
+  let i = 0, timer = null;
+  const show = () => { const r = pickE[i % pickE.length]; b.textContent = r[0]; b.style.fontSize = fit(r[0], [[4, 220], [8, 180], [14, 140], [22, 112], [32, 92], [99, 76]]) + 'px'; s.textContent = r[3]; cnt.textContent = `${String((i % pickE.length) + 1).padStart(2, '0')} / ${pickE.length}`; i++; };
+  const play = () => { if (!timer) timer = setInterval(show, 280); $('playE').textContent = '멈추기'; $('playE').setAttribute('aria-pressed', 'true'); };
+  const stop = () => { clearInterval(timer); timer = null; $('playE').textContent = '재생'; $('playE').setAttribute('aria-pressed', 'false'); };
+  show();
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) stop(); else play();
+  $('playE').addEventListener('click', () => (timer ? stop() : play()));
+  document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); });
+  $('safeE').addEventListener('click', (e) => { const on = document.body.classList.toggle('showsafe'); e.currentTarget.setAttribute('aria-pressed', String(on)); });
+})();
+
+/* 격자: B 표지 · C 첫 장 · A 1 / A 2 · D 첫 장 · A 3 */
+const buildGrid = () => ['cB', 'cC', 'cA0', 'cA1', 'cD', 'cA2'].forEach((id) => { const src = $(id); if (!src) return; const t = document.createElement('div'); t.className = 'tile'; const c = src.cloneNode(true); c.removeAttribute('id'); t.appendChild(c); $('grid').appendChild(t); });
+(document.fonts ? document.fonts.ready : Promise.resolve()).then(() => { fillB(); buildC(); buildD(); buildGrid(); });
+
+/* 캡션 */
+const r0 = TITLES.find((x) => x[0] === PICK_A[0]);
+const CAP = {
+  capB: `올해 대학 졸업전시 제목 ${N}개를 모아 읽어 봤습니다.\n컴퓨터처럼 말하는 제목, 길을 찾는 제목, 빈칸을 남겨 둔 제목이 자주 보였습니다.\n\n제목은 각 전시의 공지를 기준으로 했고, 학교와 학과를 함께 적었습니다.\n빠진 제목은 댓글로 알려 주세요.\n\n#졸업전시 #졸전 #디유`,
+  capE: `2026 졸업전시 제목 ${N}개 중 45개.\n\n#졸업전시 #졸전 #디유`,
+  capA: `「${PICK_A[0]}」\n${r0[3]} 졸업전시\n${rng(r0[1], r0[2])}\n\n@전시계정\n\n#졸업전시 #졸전제목 #디유`,
+  capC: `올해 대학 졸업전시 제목 ${N}개를 날짜 순서대로 이었습니다.\n확대해서 우리 학교 제목을 찾아보세요.\n\n제목 출처: 각 전시 공식 공지\n#졸업전시 #졸전 #디유`,
+  capD: `2026 대학 졸업전시 제목 색인입니다.\n가나다, ABC, 한자 순서로 정리했습니다.\n\n제목 출처: 각 전시 공식 공지\n#졸업전시 #디유`,
+};
+for (const [id, t] of Object.entries(CAP)) $(id).textContent = t;
+
+/* 복사 + 토스트 */
+let tt;
+function toast(m) { const t = $('toast'); t.textContent = m; t.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('on'), 1600); }
+async function copy(text) {
+  try { await navigator.clipboard.writeText(text); return true; } catch (e) {
+    const ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch (_) {} ta.remove(); return ok;
+  }
+}
+document.addEventListener('click', async (e) => { const b = e.target.closest('[data-copy]'); if (!b) return; const ok = await copy(CAP[b.dataset.copy] || ''); toast(ok ? '복사했어요' : '복사하지 못했어요'); });
+</script>
+</body>
+</html>
