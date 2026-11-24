@@ -1,0 +1,476 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>디유 인스타 게시물 후보</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/* 마케팅 팀 전달용 배포 사본(11-24, U-189) — 원본은 review/ig-posts-v1/index.html(시안 v2).
+   고칠 땐 원본을 고친 뒤 review/ig-posts-v1/build-deploy.py로 다시 만들고 ./sync.sh ig-posts/index.html.
+   카드 = 실제 크기 1080×1350(4:5)을 줄여 보여 줌 — 카드 안 글자 크기는 인스타 이미지용.
+   틀: 왼쪽 위 DU · 오른쪽 위 갈래 이름 · 무채색. 사실 정보만, 포스터·작품 사진은 허락받은 것만. */
+:root {
+  --text-primary: #18181b; --text-secondary: #3f3f47; --text-teritary: #71717b;
+  --bg-secondary: #f4f4f5; --line: #e4e4e7; --ink: #18181b; --mute: #a1a1aa;
+  --ease-out: cubic-bezier(.23, 1, .32, 1);
+  --pad: 20px; --k: .3; --g: .117;
+}
+@media (min-width: 440px) { :root { --g: .128; } }
+@media (min-width: 768px) { :root { --pad: 32px; --k: .34; } }
+@media (min-width: 1100px) { :root { --pad: 48px; } }
+*, *::before, *::after { box-sizing: border-box; letter-spacing: -0.03em; line-height: 1.4; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: #fff; color: var(--text-primary); font: 400 14px/1.4 "Pretendard Variable", Pretendard, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; word-break: keep-all; overflow-wrap: anywhere; }
+::selection { background: var(--ink); color: #fff; }
+a { color: inherit; text-decoration-color: var(--mute); text-underline-offset: 3px; }
+@media (hover: hover) and (pointer: fine) { a:hover { text-decoration-color: currentColor; } }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; letter-spacing: -0.03em; }
+:focus-visible { outline: 2px solid var(--text-primary); outline-offset: 2px; border-radius: 4px; }
+b { font-weight: 600; }
+.wrap { max-width: 1200px; margin: 0 auto; padding: 32px var(--pad) 64px; }
+h1 { margin: 0; font-size: 20px; font-weight: 700; text-wrap: balance; }
+.lead { margin: 8px 0 0; color: var(--text-secondary); max-width: 72ch; text-wrap: pretty; }
+section { margin-top: 56px; }
+h2 { margin: 0; font-size: 18px; font-weight: 600; text-wrap: balance; }
+h2 small { font-size: 14px; font-weight: 500; color: var(--text-teritary); }
+.part { margin-top: 72px; padding-top: 16px; border-top: 1px solid var(--ink); }
+.part > h2 { font-size: 20px; font-weight: 700; }
+.part > .sub { margin-top: 4px; }
+.part section { margin-top: 40px; }
+.sub { margin: 4px 0 0; color: var(--text-teritary); font-size: 12px; font-weight: 500; max-width: 76ch; text-wrap: pretty; }
+
+/* 아이디어 · 알아 둘 것 */
+.ideas { margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); gap: 24px 32px; max-width: 1100px; }
+.idea { padding-top: 12px; border-top: 1px solid var(--ink); }
+.idea h3 { margin: 0; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 16px; font-weight: 600; text-wrap: balance; }
+.idea h3 small { flex: none; font-size: 12px; font-weight: 500; color: var(--text-teritary); }
+.idea p { margin: 6px 0 0; color: var(--text-secondary); text-wrap: pretty; }
+.idea a { display: inline-block; margin-top: 4px; padding-block: 12px; font-weight: 600; }
+.note { margin: 12px 0 0; padding-left: 18px; max-width: 76ch; color: var(--text-secondary); }
+.note li + li { margin-top: 6px; }
+
+/* 넘겨 보기 줄 */
+.row { margin-top: 16px; display: flex; gap: 12px; overflow-x: auto; padding-bottom: 12px; scroll-snap-type: x mandatory; }
+.row::-webkit-scrollbar { height: 6px; } .row::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+.item { flex: none; scroll-snap-align: start; width: calc(1080px * var(--k)); }
+.fr { width: calc(1080px * var(--k)); height: calc(1350px * var(--k)); overflow: hidden; outline: 1px solid var(--line); outline-offset: -1px; position: relative; }
+.cap { margin: 6px 0 0; font-size: 12px; font-weight: 500; color: var(--text-teritary); font-variant-numeric: tabular-nums; }
+
+/* 격자 미리보기(3:4로 잘림 — 양옆 34씩) */
+.grid { margin-top: 16px; display: grid; grid-template-columns: repeat(3, calc(1012px * var(--g))); gap: 2px; }
+.tile { position: relative; width: calc(1012px * var(--g)); height: calc(1350px * var(--g)); overflow: hidden; }
+.tile .sl { transform: scale(var(--g)); left: calc(-34px * var(--g)); }
+
+/* ── 카드 안(1080 기준 px) ── */
+.sl { position: absolute; inset: 0 auto auto 0; width: 1080px; height: 1350px; transform: scale(var(--k)); transform-origin: 0 0; overflow: hidden; background: #fff; color: var(--ink); }
+.sl .du { position: absolute; top: 96px; left: 96px; width: 92px; height: 52px; display: block; fill: currentColor; }
+.sl .se { position: absolute; top: 104px; right: 96px; font-size: 30px; font-weight: 500; color: var(--mute); letter-spacing: -0.01em; }
+.sl h3 { margin: 0; font-weight: 600; letter-spacing: -0.04em; line-height: 1.2; text-wrap: balance; }
+.sl .meta { font-size: 36px; font-weight: 500; color: var(--text-teritary); letter-spacing: 0; font-variant-numeric: tabular-nums; }
+.sl .hd { position: absolute; top: 200px; left: 96px; right: 96px; }
+.sl .hd h3 { margin-top: 4px; font-size: 72px; }
+.sl .hd h3 small { font-size: 72px; font-weight: 500; color: var(--mute); }
+/* 목록 줄: 기간 | 학교 학과 */
+.sl .rows { position: absolute; top: 384px; left: 96px; right: 96px; }
+.sl .rw { display: grid; grid-template-columns: 224px minmax(0, 1fr); gap: 0 16px; padding: 8px 0; border-top: 2px solid var(--line); font-size: 28px; }
+.sl .rw:first-child { border-top-color: var(--ink); }
+.sl .rw i { font-style: normal; font-weight: 500; color: var(--text-teritary); letter-spacing: 0; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.sl .rw b { font-weight: 600; }
+.sl .rw span { color: var(--text-secondary); }
+/* 목록 표지 */
+.sl .cv { position: absolute; top: 200px; left: 96px; right: 96px; }
+.sl .cv h3 { margin-top: 8px; font-size: 112px; }
+.sl .strip { position: absolute; left: 96px; right: 96px; bottom: 96px; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; border-top: 2px solid var(--ink); padding-top: 20px; }
+.sl .strip div { display: grid; gap: 4px; }
+.sl .strip em { font-style: normal; font-size: 112px; font-weight: 600; letter-spacing: -0.05em; line-height: 1; font-variant-numeric: tabular-nums; }
+.sl .strip span { font-size: 30px; font-weight: 500; color: var(--text-teritary); letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+/* 숫자: 검정 */
+.sl.k { background: var(--ink); color: #fff; }
+.sl.k .se { color: #71717b; }
+.sl.k .meta { color: #a1a1aa; }
+.sl .big { position: absolute; left: 84px; top: 300px; font-size: 400px; font-weight: 600; letter-spacing: -0.06em; line-height: 1; font-variant-numeric: tabular-nums; }
+.sl .big small { font-size: 160px; letter-spacing: -0.04em; margin-left: 12px; }
+.sl .bt { position: absolute; left: 96px; right: 96px; bottom: 96px; }
+.sl.k .bt h3 { font-size: 80px; color: #e4e4e7; }
+.sl.k .bt .meta { margin-top: 20px; }
+.sl .kv { margin-top: 40px; display: grid; }
+.sl .kv div { display: grid; grid-template-columns: 1fr auto; gap: 24px; padding: 14px 0; border-top: 2px solid #3f3f46; font-size: 34px; }
+.sl .kv div span { color: #a1a1aa; }
+.sl .kv div b { font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: 0; }
+.sl.k .rw { border-top-color: #3f3f46; font-size: 26px; padding: 7px 0; grid-template-columns: 206px minmax(0, 1fr); }
+.sl.k .rw:first-child { border-top-color: #a1a1aa; }
+.sl.k .rw i { color: #a1a1aa; } .sl.k .rw span { color: #d4d4d8; }
+/* 현장: 사진 가득 + 홈 포스터 그라데이션(D안 곡선) */
+.sl.b { background: #52525b; color: #fff; }
+.sl .ph { position: absolute; display: grid; place-items: center; text-align: center; font-size: 30px; font-weight: 500; letter-spacing: -0.01em; }
+.sl.b .ph { inset: 0; padding-bottom: 240px; color: #a1a1aa; }
+.sl.b .sh { position: absolute; inset: 0; background: linear-gradient(to bottom, rgb(0 0 0 / 0) 60%, rgb(0 0 0 / .012) 64%, rgb(0 0 0 / .049) 68%, rgb(0 0 0 / .109) 72%, rgb(0 0 0 / .191) 76%, rgb(0 0 0 / .293) 80%, rgb(0 0 0 / .412) 84%, rgb(0 0 0 / .546) 88%, rgb(0 0 0 / .691) 92%, rgb(0 0 0 / .844) 96%, rgb(0 0 0) 100%); }
+.sl.b .se { color: rgb(255 255 255 / .7); }
+.sl.b .bt h3 { font-size: 88px; }
+.sl.b .bt .meta { margin-top: 20px; color: rgb(255 255 255 / .78); }
+.sl.b.full .ph { padding-bottom: 0; }
+/* 정보 칸: 전시 상세 정보 줄(라벨 + 값) */
+.sl .info { position: absolute; left: 96px; right: 96px; bottom: 96px; display: grid; }
+.sl .info div { display: grid; grid-template-columns: 148px minmax(0, 1fr); gap: 16px; padding: 22px 0; border-top: 2px solid var(--line); font-size: 38px; }
+.sl .info div:first-child { border-top-color: var(--ink); }
+.sl .info span { color: var(--text-teritary); font-size: 34px; padding-top: 2px; }
+.sl .info b { font-weight: 500; font-variant-numeric: tabular-nums; }
+/* 작품 한 점: 연한 회색 위 전체 */
+.sl.c { background: var(--bg-secondary); }
+.sl.c .ph { background: #d4d4d8; color: var(--text-teritary); }
+.sl.c .ph.one { top: 208px; left: 240px; width: 600px; height: 800px; }
+.sl.c .bt { bottom: 88px; }
+.sl.c .bt h3 { font-size: 64px; }
+.sl.c .bt .meta { margin-top: 8px; font-size: 32px; letter-spacing: -0.01em; }
+.sl.c .quad { position: absolute; top: 208px; left: 96px; right: 96px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.sl.c .quad .ph { position: static; aspect-ratio: 3 / 4; }
+.sl .qt { position: absolute; left: 96px; right: 96px; top: 300px; margin: 0; font-size: 76px; font-weight: 500; letter-spacing: -0.04em; line-height: 1.3; text-wrap: balance; }
+.sl .qt + .meta { position: absolute; left: 96px; bottom: 96px; }
+/* 디유 쓰는 법 */
+.sl .how { position: absolute; left: 96px; right: 96px; bottom: 96px; display: grid; }
+.sl .how div { display: grid; grid-template-columns: 72px 1fr; padding: 16px 0; border-top: 2px solid var(--line); font-size: 44px; font-weight: 500; }
+.sl .how div:first-child { border-top-color: var(--ink); }
+.sl .how em { font-style: normal; color: var(--mute); font-variant-numeric: tabular-nums; letter-spacing: 0; }
+.sl .st { position: absolute; top: 200px; left: 96px; right: 96px; }
+.sl .st h3 { font-size: 80px; }
+.sl .st h3 em { font-style: normal; color: var(--mute); margin-right: 20px; font-variant-numeric: tabular-nums; letter-spacing: 0; }
+.sl .st .meta { margin-top: 8px; }
+.sl .scr { position: absolute; top: 470px; left: 239px; width: 603px; height: 1072px; overflow: hidden; outline: 2px solid var(--line); background: #fff; }
+.ifr { position: absolute; inset: 0 auto auto 0; width: 402px; height: 715px; border: 0; transform: scale(1.5); transform-origin: 0 0; pointer-events: none; background: #fff; }
+
+/* 캡션·메모 */
+.meta-row { margin-top: 8px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 12px 32px; max-width: 1040px; }
+.capbox { padding: 14px 16px; background: var(--bg-secondary); white-space: pre-line; color: var(--text-primary); }
+.meta-row h3 { margin: 0 0 6px; font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+.meta-row ul { margin: 0; padding-left: 18px; color: var(--text-secondary); }
+.meta-row li + li { margin-top: 4px; }
+.meta-row li { text-wrap: pretty; }
+.tags { font-size: 12px; color: var(--text-teritary); }
+.tags b { color: var(--text-secondary); font-weight: 600; }
+.acts { margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; }
+.cp { height: 32px; padding: 0 12px; border-radius: 16px; background: var(--bg-secondary); font-size: 12px; font-weight: 600; position: relative; transition: transform .16s var(--ease-out), background-color .16s ease; }
+.cp::after { content: ""; position: absolute; inset: -6px -4px; }
+.cp:active { transform: scale(.96); }
+@media (hover: hover) and (pointer: fine) { .cp:hover { background: var(--line); } }
+.toast { position: fixed; left: 50%; bottom: 24px; height: 40px; display: flex; align-items: center; padding: 0 18px; border-radius: 8px; background: var(--ink); color: #fff; font-size: 14px; font-weight: 500; white-space: nowrap; opacity: 0; transform: translate(-50%, 8px); pointer-events: none; transition: opacity .2s var(--ease-out), transform .2s var(--ease-out); }
+.toast.on { opacity: 1; transform: translate(-50%, 0); }
+@media (prefers-reduced-motion: reduce) { .toast { transform: translate(-50%, 0); } *, *::before, *::after { transition-duration: .01ms !important; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- DU: favicon.svg와 같은 D·U 조각, 상자 36.39 × 20.38 -->
+    <symbol id="du" viewBox="0 0 36.39 20.38"><g transform="translate(0 -2.2277)"><path d="M0 22.2812V2.29672H7.05864C14.0867 2.29672 17.7536 6.29972 17.7536 12.2889C17.7536 18.2782 14.0867 22.2812 7.05864 22.2812H0ZM4.95022 17.6976H7.05864C11.0616 17.6976 12.7422 15.6197 12.7422 12.2889C12.7422 8.9582 11.0616 6.88031 7.05864 6.88031H4.95022V17.6976Z"/><path transform="translate(-81.046 0)" d="M109.001 22.6094C103.501 22.6094 100.446 19.3703 100.446 14.2062V2.2277H105.396V14.2062C105.396 16.6507 106.526 18.0258 108.971 18.0258C111.477 18.0258 112.607 16.6813 112.607 14.2062V2.2277H117.435V14.2062C117.435 19.3398 114.41 22.6094 109.001 22.6094Z"/></g></symbol>
+  </defs>
+</svg>
+
+<main class="wrap">
+  <h1>디유 인스타 게시물 후보</h1>
+  <p class="lead">디유 인스타그램에 올릴 게시물 후보예요. 처음 올릴 3개, 허락을 받은 뒤 쓸 틀 2개, 오픈 때 고정할 1개, 그리고 아직 그림이 없는 자체 콘텐츠 아이디어 순서예요. 목록은 11·12월 졸업전시 목록에서 날짜로 골랐고, 장소가 없어서 지역 대신 날짜로 묶었어요.</p>
+
+  <section aria-labelledby="h-grid">
+    <h2 id="h-grid">세 개를 올리면</h2>
+    <p class="sub">프로필 격자는 새 글이 왼쪽. 4:5 게시물이 3:4로 보여 양옆이 조금 잘려요.</p>
+    <div class="grid" id="grid" aria-hidden="true"></div>
+  </section>
+
+  <div class="part">
+    <h2>처음 올릴 3개</h2>
+    <p class="sub">날짜가 지나면 쓸 수 없는 목록이라 틀로 봐 주세요. 지금 든 목록은 11.23 - 11.29 · 12월 기준이에요.</p>
+
+    <section aria-labelledby="h-wk">
+      <h2 id="h-wk">① 이번 주 여는 졸업전시 <small>게시물 5장 · 매주 월요일</small></h2>
+      <div class="row" id="rowWk" aria-label="이번 주 여는 졸업전시 카드"></div>
+      <div class="meta-row">
+        <div><h3>캡션</h3><div class="capbox" id="capWk"></div><div class="acts"><button class="cp" type="button" data-copy="capWk">캡션 복사</button></div></div>
+        <div><h3>메모</h3><ul><li>매주 같은 틀로 반복. 표지 아래 요일별 숫자만 바뀜.</li><li>전시 장소가 모이면 지역별로도 묶을 수 있어요.</li><li>각 장에 그 장 전시 계정을 사진 태그(인스타 태그 한도는 올릴 때 확인).</li><li class="tags" id="tagWk"></li></ul></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-num">
+      <h2 id="h-num">② 숫자로 보는 2026 졸업전시 <small>게시물 5장</small></h2>
+      <div class="row" id="rowNum" aria-label="숫자로 보는 졸업전시 카드"></div>
+      <div class="meta-row">
+        <div><h3>캡션</h3><div class="capbox" id="capNum"></div><div class="acts"><button class="cp" type="button" data-copy="capNum">캡션 복사</button></div></div>
+        <div><h3>메모</h3><ul><li>숫자는 11·12월 졸업전시 목록 251건(10.19 - 12.29 · 95개 학교) 기준이에요. 올리기 전에 최신 목록으로 다시 세야 해요.</li><li>‘같은 날 열려 있던 전시’ = 시작일 ≤ 그날 ≤ 끝나는 날인 전시 수.</li><li>학과 낱말은 이름에 든 글자로 셈(‘시각’은 시각디자인 · 시각정보디자인 등 포함).</li><li class="tags" id="tagSeoul"></li></ul></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-dec">
+      <h2 id="h-dec">③ 12월 졸업전시 총정리 <small>게시물 <span id="hDecN">5</span>장 · 매달 말</small></h2>
+      <div class="row" id="rowDec" aria-label="12월 졸업전시 총정리 카드"></div>
+      <div class="meta-row">
+        <div><h3>캡션</h3><div class="capbox" id="capDec"></div><div class="acts"><button class="cp" type="button" data-copy="capDec">캡션 복사</button></div></div>
+        <div><h3>메모</h3><ul><li>12월에 시작하는 전시만(11월에 시작해 12월까지 이어지는 곳은 이번 주 · 다음 주 목록에).</li><li>한 장 15줄 넘으면 둘로 나눔. 매달 같은 틀.</li><li class="tags" id="tagDec"></li></ul></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="part">
+    <h2>허락을 받은 뒤 쓰는 틀</h2>
+    <p class="sub">현장 사진 · 작품은 전시팀과 작가에게 허락을 받은 것만. 회색 칸이 사진 자리, ○○는 채울 자리예요.</p>
+
+    <section aria-labelledby="h-site">
+      <h2 id="h-site">현장 <small>게시물 3장 이상 · 2주에 1번</small></h2>
+      <div class="row" aria-label="현장 틀 카드">
+        <div class="item"><div class="fr"><div class="sl b"><div class="ph">현장 사진 · 전시팀 허락</div><div class="sh"></div><svg class="du" aria-hidden="true"><use href="#du"/></svg><span class="se">현장</span><div class="bt"><h3>○○대학교 ○○과<br>《전시 제목》</h3><div class="meta">2026.12.01 - 12.06 · 장소</div></div></div></div><p class="cap">1 · 표지</p></div>
+        <div class="item"><div class="fr"><div class="sl b full"><div class="ph">현장 사진<br>공간 · 관람 장면 위주, 여러 장</div></div></div><p class="cap">2 - · 사진만</p></div>
+        <div class="item"><div class="fr"><div class="sl"><svg class="du" aria-hidden="true"><use href="#du"/></svg><span class="se">현장</span><div class="hd"><div class="meta">○○대학교 ○○과 졸업전시</div><h3>《전시 제목》</h3></div>
+          <div class="info"><div><span>일정</span><b>2026.12.01 - 12.06</b></div><div><span>운영</span><b>10:00 - 18:00</b></div><div><span>장소</span><b>○○대학교 ○○관 ○층</b></div><div><span>계정</span><b>@○○○○</b></div></div></div></div><p class="cap">끝 · 정보 칸(전시 상세 정보 줄과 같은 짜임)</p></div>
+      </div>
+      <div class="meta-row">
+        <div><h3>캡션 틀</h3><div class="capbox" id="capSite"></div><div class="acts"><button class="cp" type="button" data-copy="capSite">캡션 복사</button></div></div>
+        <div><h3>메모</h3><ul><li>전시팀 계정과 공동 게시로 올리면 두 계정 피드에 같이 떠요.</li><li>작품이 크게 나오는 사진은 그 작가 동의까지.</li><li>밝은 사진이면 표지 제목 자리 어둡기를 따로 봐야 해요.</li></ul></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-work">
+      <h2 id="h-work">작품 한 점 <small>게시물 3장 이상 · 2주에 1번</small></h2>
+      <div class="row" aria-label="작품 한 점 틀 카드">
+        <div class="item"><div class="fr"><div class="sl c"><svg class="du" aria-hidden="true"><use href="#du"/></svg><span class="se">작품 한 점</span><div class="ph one">작품 사진 · 작가 허락</div><div class="bt"><h3>○○○, 「작품 제목」</h3><div class="meta">○○대학교 ○○과 졸업작품</div></div></div></div><p class="cap">1 · 표지(자르지 않고 전체)</p></div>
+        <div class="item"><div class="fr"><div class="sl c"><svg class="du" aria-hidden="true"><use href="#du"/></svg><span class="se">작품 한 점</span><div class="quad"><div class="ph">과정 사진</div><div class="ph">과정 사진</div><div class="ph">과정 사진</div><div class="ph">과정 사진</div></div></div></div><p class="cap">2 - · 작업 과정</p></div>
+        <div class="item"><div class="fr"><div class="sl"><svg class="du" aria-hidden="true"><use href="#du"/></svg><span class="se">작품 한 점</span><p class="qt">“작가가 고른 한 문장”</p><div class="meta">○○○ · ○○대학교 ○○과</div></div></div><p class="cap">끝 · 작가의 한 문장</p></div>
+      </div>
+      <div class="meta-row">
+        <div><h3>캡션 틀</h3><div class="capbox" id="capWork"></div><div class="acts"><button class="cp" type="button" data-copy="capWork">캡션 복사</button></div></div>
+        <div><h3>메모</h3><ul><li>작가 동의 필수. 한 문장은 작가가 직접 고른 것만(대신 쓰지 않음).</li><li>칭찬하는 말 없이 사실(학교 · 학과 · 작품 · 작가의 말)만.</li></ul></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="part">
+    <h2>오픈 때 고정</h2>
+    <p class="sub">화면은 지금 데모라, 오픈 때 실제 화면으로 바꿔 찍어요.</p>
+    <section aria-labelledby="h-how">
+      <h2 id="h-how">디유에 졸업전시를 올리는 순서 <small>게시물 6장 · 오픈 날</small></h2>
+      <div class="row" id="rowHow" aria-label="디유 쓰는 법 카드"></div>
+      <div class="meta-row">
+        <div><h3>캡션</h3><div class="capbox" id="capHow"></div><div class="acts"><button class="cp" type="button" data-copy="capHow">캡션 복사</button></div></div>
+        <div><h3>메모</h3><ul><li>순서와 말은 확정 정책 그대로(학교 이메일 인증 → 전시 등록 → 등록 요청 → 승인되면 공개, 공개 뒤에도 수정 가능).</li><li>‘운영팀이 대신 등록’ 같은 런칭 전 말은 넣지 않음.</li></ul></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="part">
+    <h2>자체 콘텐츠 아이디어</h2>
+    <p class="sub">제목 모음 · 작은 것들 말고는 아직 그림이 없어요. 고르면 시안으로 만들어요.</p>
+    <div class="ideas"><div class="idea"><h3>졸전 제목 모음<small>시안 있음</small></h3><p>올해 졸업전시 제목을 모아 같은 말 · 같은 꼴로 묶어 보여 줘요. 제목은 공개된 정보라 허락 걱정이 적어요.</p><a href="../ig-titles/">시안 보기</a></div><div class="idea"><h3>졸전의 작은 것들<small>시안 있음</small></h3><p>작품 곁에 있는 것들(리플렛, 굿즈, 작품 설명, 방명록, 입구 안내)을 작품처럼 연한 회색 위에 하나씩, 미술관 캡션을 붙여 보여 줘요. 사진은 전시팀에 온라인으로 허락을 받고 써요.</p><a href="../ig-small/">시안 보기</a></div><div class="idea"><h3>처음 가는 사람을 위한 졸전 안내<small>아이디어</small></h3><p>학생이 아니어도 졸업전시에 갈 수 있다는 것부터 알려 줘요. 입장료 · 예약은 전시마다 달라서 확인이 필요해요.</p></div><div class="idea"><h3>졸업작품은 전시가 끝나면 어디로 가나요?<small>아이디어</small></h3><p>질문 하나로 시작해 댓글을 모으고, 학생 몇 명과 짧게 이야기하는 순서예요. 디유가 작품을 남기는 곳이라는 것과 바로 이어져요.</p></div></div>
+  </div>
+
+  <section aria-labelledby="h-note">
+    <h2 id="h-note">알아 둘 것</h2>
+    <ul class="note">
+      <li>목록 · 숫자는 11·12월 졸업전시 목록(졸업전시 일정 계정 @joljoon_we 게시물) 기준이에요. 올리기 전에 각 전시 계정에서 한 번 더 확인해 주세요.</li>
+      <li>이번 주 · 12월 목록은 날짜가 지나면 쓸 수 없어서, 올릴 때마다 새 목록으로 채워요.</li>
+      <li>현장 · 작품 한 점은 전시팀 · 작가에게 허락받은 사진만 써요. 회색 칸은 사진 자리, ○○는 채울 자리예요.</li>
+      <li>디유 쓰는 법의 화면은 지금 데모라, 오픈 때 실제 화면으로 바꿔요.</li>
+      <li>실제로 올릴 이미지(1080×1350)는 안을 고른 뒤 따로 만들어요.</li>
+    </ul>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+/* 자료 — 11·12월 졸업전시 목록 + 확인한 전시 계정. [시작, 끝, 학교 학과, 계정] · 사실 정보만 */
+const WK = [
+  ["11.23", "11.29", "강원대학교 강릉 도자디자인전공", []],
+  ["11.23", "11.28", "경기대학교 산업디자인전공", ["kgu_id"]],
+  ["11.23", "12.04", "상명대학교 조형예술전공", ["smufa.grad"]],
+  ["11.23", "11.27", "조선대학교 실내디자인전공", ["csid.export_29"]],
+  ["11.23", "11.28", "청주대학교 만화애니메이션학과", ["cca_19th"]],
+  ["11.23", "11.28", "홍익대학교 회화과", ["hongik_painters"]],
+  ["11.24", "11.29", "강원대학교 미술학과", ["knu_fineart_2026"]],
+  ["11.24", "11.26", "경성대학교 영상애니메이션학부", ["ksu_screenarts26"]],
+  ["11.24", "11.30", "목원대학교 입체조형학부", ["mwu_formative.art"]],
+  ["11.24", "11.29", "영남대학교 회화과 · 2부", ["yufineart.ex.hibit2026"]],
+  ["11.24", "11.29", "원광대학교 미술과", ["2026_wku_aoro"]],
+  ["11.24", "11.29", "이화여자대학교 도자예술전공", ["ewha_ceramic_art"]],
+  ["11.24", "11.29", "이화여자대학교 동양화전공", ["2026_ewha_koreanart"]],
+  ["11.24", "11.29", "이화여자대학교 서양화전공", ["ewha_fineart_2026"]],
+  ["11.24", "11.29", "이화여자대학교 섬유예술전공", ["2026ewhafiberart"]],
+  ["11.24", "11.29", "충남대학교 조소과", ["cnu_expo26"]],
+  ["11.24", "11.28", "호서대학교 애니메이션스쿨", ["2026_hoseo.animationschool"]],
+  ["11.25", "11.30", "단국대학교 미술학부 공예전공 · 서울전", ["dku_craft2026"]],
+  ["11.25", "12.21", "동국대학교 WISE 디자인미술학과", []],
+  ["11.25", "11.30", "성균관대학교 미술학과 · 1부", []],
+  ["11.25", "11.25", "수원대학교 패션디자인과 졸업패션쇼", ["swfd_official"]],
+  ["11.25", "11.30", "수원대학교 회화과 서양화·동양화", ["usw_painting_2026"]],
+  ["11.25", "11.30", "영산대학교 웹툰학과", ["COSMOS_with.us_2026"]],
+  ["11.25", "12.01", "인천가톨릭대학교 회화과 · 인천전", ["iccufineart2026"]],
+  ["11.25", "11.30", "중앙대학교 공예학과", ["caucraft_67th"]],
+  ["11.25", "11.29", "한성대학교 ICT융합디자인학과", []],
+  ["11.25", "11.30", "한양대학교 ERICA 산업디자인학과", ["hyid.degreeshow"]],
+  ["11.26", "12.02", "경희대학교 조소·한국화전공", ["khu_finearts_grad"]],
+  ["11.26", "12.01", "덕성여자대학교 텍스타일디자인전공", []],
+  ["11.26", "11.28", "동서대학교 웹툰학과", ["dsuwt2026"]],
+  ["11.26", "11.29", "동아방송예술대학교 뉴미디어콘텐츠과", []],
+  ["11.26", "11.29", "서울대학교 동양화과", ["snu_orientalpainting2026"]],
+  ["11.26", "11.29", "수원대학교 디지털콘텐츠전공", ["usw_dicon_2026"]],
+  ["11.26", "11.29", "연성대학교 웹툰만화콘텐츠학과", []],
+  ["11.27", "11.30", "건양대학교 시각디자인학과", ["kyu_flare"]],
+  ["11.27", "11.30", "홍익대학교 디자인컨버전스학부", []]
+];
+const DEC = [
+  ["12.01", "12.19", "국민대학교 회화", ["kookmin_fineart"]],
+  ["12.01", "12.06", "명지전문대 커뮤니케이션디자인", ["nexture.2026"]],
+  ["12.01", "12.04", "백석예술대학교 게임그래픽·만화애니메이션", ["bau_tooni", "bau_gamegraphics"]],
+  ["12.01", "12.07", "서울과학기술대학교 문예창작", ["not_literature"]],
+  ["12.01", "12.08", "서울과학기술대학교 조형예술", ["snad_fa"]],
+  ["12.01", "12.06", "제주대학교 융합디자인", ["jnucd_salto26"]],
+  ["12.01", "12.05", "한경국립대학교 제품공간디자인 DDP전", ["hknu_psd"]],
+  ["12.01", "12.05", "한양대학교 ERICA 영상디자인 DDP전", []],
+  ["12.02", "12.12", "KAIST 산업디자인", ["kaist_id_exhibition"]],
+  ["12.02", "12.07", "동덕여자대학교 회화과", ["dwu.fineart_2026"]],
+  ["12.02", "12.07", "상명대학교 디지털만화영상", ["smu.dcv"]],
+  ["12.02", "12.05", "숭실대 글로벌미래교육원 시각디자인", ["ssugfi_design"]],
+  ["12.03", "12.12", "고려대학교 디자인조형학부", ["kiid_gradshow_2026"]],
+  ["12.03", "12.06", "동아방송예술대학교 무대미술", ["dima_scenography_12th"]],
+  ["12.03", "12.06", "서울대학교 서양화", ["snupainting_gradshow"]],
+  ["12.03", "12.09", "인천가톨릭대학교 회화과 서울전", ["iccufineart2026"]],
+  ["12.04", "12.07", "경남정보대학교 AI시각디자인", ["artificial.bug"]],
+  ["12.04", "12.08", "계원예술대학교 사진예술", ["kw.photography_27th"]],
+  ["12.04", "12.06", "동아방송예술대학교 디지털영상디자인", ["did_yuyeong_2026"]],
+  ["12.04", "12.05", "신한대학교 모델콘텐츠", ["shinhan_model"]],
+  ["12.04", "12.08", "중부대학교 산업디자인", ["joongbu.id"]],
+  ["12.07", "12.12", "중앙대학교 서양화", []],
+  ["12.07", "12.12", "홍익대학교 도예유리", ["hongik_ceramicsglass"]],
+  ["12.08", "12.13", "계명대학교 공예디자인", ["kmu_craftexhibit"]],
+  ["12.08", "12.13", "성신여자대학교 공예과 도자", ["sswuceramic"]],
+  ["12.08", "12.13", "성신여자대학교 공예과 섬유·텍스타일", ["sswu_textile_2026"]],
+  ["12.08", "12.13", "제주대학교 미술학과", ["jnu_fineart_51th"]],
+  ["12.09", "12.15", "가천대학교 회화", ["gachon_fineart_gradshow"]],
+  ["12.09", "12.14", "덕성여자대학교 동양화", []],
+  ["12.09", "12.14", "덕성여자대학교 서양화", ["dswufineart.26"]],
+  ["12.09", "12.15", "동아대학교 현대미술", ["dau_59th"]],
+  ["12.09", "12.14", "서울대학교 디자인", ["snudesign"]],
+  ["12.09", "12.14", "용인대학교 회화", ["yiu_fineart.2026"]],
+  ["12.11", "12.18", "동아대학교 목공예", ["dau_woodcraft"]],
+  ["12.11", "12.14", "연세대학교 산업디자인 서울전", []],
+  ["12.12", "12.16", "한성대학교 시각·미디어디자인", ["hdge_2026_"]],
+  ["12.15", "12.20", "계명대학교 영상애니메이션", ["kmu_va_2026_oddfestival"]],
+  ["12.15", "12.20", "성신여자대학교 동양화", ["2026_sungshin_orientalpainting"]],
+  ["12.16", "12.21", "서울여자대학교 공예·컬렉터블디자인", ["swu_2026_ceramics"]],
+  ["12.17", "12.20", "강남대학교 건축", []],
+  ["12.21", "12.28", "정화예술대학교 시각디자인", ["gamgak.vdesign"]],
+  ["12.21", "12.28", "정화예술대학교 웹툰애니메이션", ["gamgak.webtoonani"]],
+  ["12.23", "12.28", "동국대학교 WISE 불교미술 서울전", ["dgw_buddhist.art"]],
+  ["12.23", "12.29", "충남대학교 회화과 한국화 서울전", ["2026_cnu_koreanart"]],
+  ["12.26", "12.28", "한양대학교 ERICA 주얼리·패션디자인", ["hyu_jfd_2026"]]
+];
+const SEOUL = [
+  ["11.05", "11.08", "건국대학교 GLOCAL 산업디자인학과 서울전", []],
+  ["11.11", "11.15", "상명대학교 세라믹디자인전공 서울전", ["smu.mic_2026"]],
+  ["11.11", "11.16", "건국대학교 GLOCAL 금속공예전공 서울전", []],
+  ["11.11", "11.17", "국립순천대학교 사진미디어학과 상업전공 서울전", ["scnu_photo"]],
+  ["11.18", "11.23", "단국대학교 동양화과 서울전", ["dku_orientalpainting_2026"]],
+  ["11.19", "11.22", "상지대학교 산업융합디자인학과 서울전", ["sjid_graduation"]],
+  ["11.25", "11.30", "단국대학교 미술학부 공예전공 서울전", ["dku_craft2026"]],
+  ["12.01", "12.05", "한경국립대학교 제품공간디자인 DDP전", ["hknu_psd"]],
+  ["12.01", "12.05", "한양대학교 ERICA 영상디자인 DDP전", []],
+  ["12.03", "12.09", "인천가톨릭대학교 회화과 서울전", ["iccufineart2026"]],
+  ["12.11", "12.14", "연세대학교 산업디자인 서울전", []],
+  ["12.23", "12.28", "동국대학교 WISE 불교미술 서울전", ["dgw_buddhist.art"]],
+  ["12.23", "12.29", "충남대학교 회화과 한국화 서울전", ["2026_cnu_koreanart"]]
+];
+
+/* 카드 조각 */
+const DU = '<svg class="du" aria-hidden="true"><use href="#du"/></svg>';
+const rng = (s, e) => s === e ? s : `${s} - ${e}`;
+const nm = (n) => { const i = n.indexOf(' '); return i < 0 ? `<b>${esc(n)}</b>` : `<b>${esc(n.slice(0, i))}</b> <span>${esc(n.slice(i + 1))}</span>`; };
+const rows = (list) => `<div class="rows">${list.map(([s, e, n]) => `<div class="rw"><i>${rng(s, e)}</i><div>${nm(n)}</div></div>`).join('')}</div>`;
+const card = (cls, inner, cap, id) => `<div class="item"><div class="fr"><div class="sl ${cls}"${id ? ` id="${id}"` : ''}>${inner}</div></div><p class="cap">${cap}</p></div>`;
+const listCard = (se, meta, h, list, cap) => card('', `${DU}<span class="se">${se}</span><div class="hd"><div class="meta">${meta}</div><h3>${h}</h3></div>${rows(list)}`, cap);
+const by = (L, f) => L.filter(f);
+const tagLine = (L) => { const a = [...new Set(L.flatMap((r) => r[3] || []))]; const none = L.filter((r) => !(r[3] || []).length).length; return `${a.map((x) => '@' + esc(x)).join(' ')}${none ? ` · <b>계정 미확인 ${none}곳</b>` : ''}`; };
+
+/* ① 이번 주(11.23 월 - 11.29 일 시작) */
+(() => {
+  const D = [['11.23', '월'], ['11.24', '화'], ['11.25', '수'], ['11.26', '목'], ['11.27', '금']];
+  const n = (d) => WK.filter((r) => r[0] === d).length;
+  const se = '이번 주 졸업전시';
+  const cover = card('', `${DU}<span class="se">${se}</span><div class="cv"><div class="meta">2026.11.23 - 11.29</div><h3>이번 주 여는<br>졸업전시 ${WK.length}곳</h3></div><div class="strip">${D.map(([d, w]) => `<div><em>${n(d)}</em><span>${w} ${d}</span></div>`).join('')}</div>`, '1 · 표지', 'cWk');
+  const day = (d, w, c) => listCard(se, `2026.${d}`, `${w}요일 <small>${n(d)}곳</small>`, by(WK, (r) => r[0] === d), c);
+  const L4 = by(WK, (r) => r[0] >= '11.26');
+  const s4 = listCard(se, '2026.11.26 - 11.27', `목 · 금요일 <small>${L4.length}곳</small>`, L4, '5 · 목 · 금');
+  $('rowWk').innerHTML = cover + day('11.23', '월', '2 · 월') + day('11.24', '화', '3 · 화') + day('11.25', '수', '4 · 수') + s4;
+  $('tagWk').innerHTML = '<b>태그할 계정</b> ' + tagLine(WK);
+})();
+
+/* ② 숫자 — 251건에서 센 값: 같은 날 최대 11.20 60곳 · 기간 6일 80곳 · 하루 1곳 · 27일 1곳 · '디자인' 137 · 시각 36 · 산업디자인 25 · 영상 20 · 공예 18 · 회화 16 */
+(() => {
+  const se = '<span class="se">숫자로 보는 졸업전시</span>';
+  const c1 = card('k', `${DU}${se}<div class="big">251</div><div class="bt"><h3>디유가 모은<br>2026 졸업전시</h3><div class="meta">10.19 - 12.29 · 95개 학교</div></div>`, '1 · 표지', 'cNum');
+  const c2 = card('k', `${DU}${se}<div class="big">60</div><div class="bt"><h3>11월 20일 하루에<br>같이 열려 있던 졸업전시</h3><div class="meta">올해 가장 많이 겹친 날</div></div>`, '2 · 가장 겹친 날');
+  const c3 = card('k', `${DU}${se}<div class="big">6<small>일</small></div><div class="bt"><h3>가장 흔한 전시 기간</h3><div class="kv"><div><span>6일 동안 여는 전시</span><b>80곳</b></div><div><span>가장 짧은 · 수원대 패션디자인과 졸업패션쇼</span><b>하루</b></div><div><span>가장 긴 · 경북대 미술학과</span><b>27일</b></div></div></div>`, '3 · 기간');
+  const c4 = card('k', `${DU}${se}<div class="big" style="font-size:320px;top:200px">137</div><div class="bt"><h3>학과 이름에 ‘디자인’이<br>들어간 전시</h3><div class="kv"><div><span>시각</span><b>36</b></div><div><span>산업디자인</span><b>25</b></div><div><span>영상</span><b>20</b></div><div><span>공예</span><b>18</b></div><div><span>회화</span><b>16</b></div></div></div>`, '4 · 학과 낱말');
+  const c5 = card('k', `${DU}${se}<div class="big" style="font-size:240px;top:200px">${SEOUL.length}</div><div class="hd" style="top:440px"><h3 style="font-size:64px;color:#e4e4e7">서울에서 한 번 더 여는 졸업전시</h3></div><div class="rows" style="top:560px">${SEOUL.map(([s, e, n]) => `<div class="rw"><i>${rng(s, e)}</i><div>${nm(n)}</div></div>`).join('')}</div>`, '5 · 서울전 · DDP전');
+  $('rowNum').innerHTML = c1 + c2 + c3 + c4 + c5;
+  $('tagSeoul').innerHTML = '<b>5장 태그할 계정</b> ' + tagLine(SEOUL);
+})();
+
+/* ③ 12월 총정리(월요일 기준 주, 12.01은 화요일) */
+(() => {
+  const W = [['12.01', '12.06'], ['12.07', '12.13'], ['12.14', '12.20'], ['12.21', '12.31']];
+  const inW = ([a, b]) => DEC.filter((r) => r[0] >= a && r[0] <= b);
+  const lab = ['12.01 - 06', '12.07 - 13', '12.14 - 20', '12.21 - 27'];
+  const se = '12월 졸업전시';
+  const cover = card('', `${DU}<span class="se">${se}</span><div class="cv"><div class="meta">2026.12.01 - 12.29</div><h3>12월에 여는<br>졸업전시 ${DEC.length}곳</h3></div><div class="strip">${W.map((w, i) => `<div><em>${inW(w).length}</em><span>${lab[i]}</span></div>`).join('')}</div>`, '1 · 표지', 'cDec');
+  // 한 장 15줄까지, 넘으면 반으로 나눔
+  const G = [['첫째 주', '12.01 - 12.06', inW(W[0])], ['둘째 주', '12.07 - 12.13', inW(W[1])], ['셋째 · 넷째 주', '12.14 - 12.27', [...inW(W[2]), ...inW(W[3])]]];
+  const chunk = (L) => L.length <= 15 ? [L] : [L.slice(0, Math.ceil(L.length / 2)), L.slice(Math.ceil(L.length / 2))];
+  let no = 1;
+  const s = G.flatMap(([name, r, L]) => { const P = chunk(L); return P.map((part, i) => listCard(se, name + (P.length > 1 ? ` · ${i + 1}/${P.length}` : ''), `${r} <small>${L.length}곳</small>`, part, `${++no} · ${name}`)); });
+  $('rowDec').innerHTML = cover + s.join('');
+  $('hDecN').textContent = no;
+  $('tagDec').innerHTML = '<b>태그할 계정</b> ' + tagLine(DEC);
+})();
+
+/* 디유 쓰는 법(오픈 때) — 확정 정책 순서 */
+(() => {
+  const se = '<span class="se">디유 쓰는 법</span>';
+  const ST = [
+    ['가입', '카카오 또는 Google 계정으로', '../onboarding.html'],
+    ['작가 인증', '학교 이메일로 본인 확인', '../verify.html'],
+    ['전시 등록', '포스터 · 기간 · 장소', '../exhibition-new.html'],
+    ['등록 요청', '디유가 확인한 뒤 공개', '../hub.html'],
+    ['공개', '공개한 뒤에도 고칠 수 있어요', '../exhibition.html'],
+  ];
+  const cover = card('', `${DU}${se}<div class="cv"><h3>디유에<br>졸업전시를<br>올리는 순서</h3></div><div class="how">${ST.map(([t], i) => `<div><em>${i + 1}</em>${t}</div>`).join('')}</div>`, '1 · 표지', 'cHow');
+  const steps = ST.map(([t, m, src], i) => card('', `${DU}${se}<div class="st"><h3><em>${i + 1}</em>${t}</h3><div class="meta">${m}</div></div><div class="scr"><iframe class="ifr" src="${src}" loading="lazy" title="${t} 화면" tabindex="-1"></iframe></div>`, `${i + 2} · ${t}`)).join('');
+  $('rowHow').innerHTML = cover + steps;
+})();
+
+/* 격자: 새 글이 왼쪽(12월 · 숫자 · 이번 주) */
+['cDec', 'cNum', 'cWk'].forEach((id) => { const t = document.createElement('div'); t.className = 'tile'; const s = $(id).cloneNode(true); s.removeAttribute('id'); t.appendChild(s); $('grid').appendChild(t); });
+
+/* 캡션 */
+const CAP = {
+  capWk: `11월 23일부터 29일까지 새로 여는 대학 졸업전시 ${WK.length}곳입니다.\n전시 정보는 각 전시 계정에서 한 번 더 확인해 주세요.\n목록에 없는 졸업전시는 댓글로 알려 주세요.\n\n#졸업전시 #대학전시 #이번주전시 #디유`,
+  capNum: `10월 19일부터 12월 29일까지 열리는 대학 졸업전시 251곳을 세어 봤습니다.\n가장 많이 겹친 날은 11월 20일로, 60곳이 같은 날 열려 있었습니다.\n목록에 없는 졸업전시는 댓글로 알려 주세요.\n\n#졸업전시 #대학전시 #디유`,
+  capDec: `12월에 여는 대학 졸업전시 ${DEC.length}곳을 날짜순으로 모았습니다.\n전시 정보는 각 전시 계정에서 한 번 더 확인해 주세요.\n목록에 없는 졸업전시는 댓글로 알려 주세요.\n\n#졸업전시 #대학전시 #12월전시 #디유`,
+  capSite: `《전시 제목》\n○○대학교 ○○과 졸업전시\n\n일정 2026.12.01 - 12.06\n운영 10:00 - 18:00\n장소 ○○대학교 ○○관 ○층\n\n@전시계정\n\n#졸업전시 #디유`,
+  capWork: `○○○, 「작품 제목」\n○○대학교 ○○과 졸업작품\n\n“작가가 고른 한 문장”\n\n작가 @○○○ · 전시 @○○○\n\n#졸업작품 #디유`,
+  capHow: `디유에 졸업전시를 올리는 순서입니다.\n학교 이메일로 작가 인증을 마치면 전시를 등록할 수 있고, 디유가 확인한 뒤 공개됩니다.\n\n#졸업전시 #디유 #displayU`,
+};
+for (const [id, t] of Object.entries(CAP)) $(id).textContent = t;
+
+/* 복사 + 토스트 */
+let tt;
+function toast(m) { const t = $('toast'); t.textContent = m; t.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('on'), 1600); }
+async function copy(text) {
+  try { await navigator.clipboard.writeText(text); return true; } catch (e) {
+    const ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch (_) {} ta.remove(); return ok;
+  }
+}
+document.addEventListener('click', async (e) => { const b = e.target.closest('[data-copy]'); if (!b) return; const ok = await copy(CAP[b.dataset.copy] || ''); toast(ok ? '복사했어요' : '복사하지 못했어요'); });
+</script>
+</body>
+</html>

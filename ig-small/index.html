@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>졸전의 작은 것들 · 시안</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/* 마케팅 팀에 묻는 배포 사본(11-24, U-190) — 원본은 review/ig-small-v1/index.html, 끝의 질문 칸은 이 사본에만. 고칠 땐 원본을 고친 뒤 build-deploy.py로 다시 만들고 ./sync.sh ig-small/index.html.
+   생각: 작품 곁의 것(리플렛 · 굿즈 · 작품 설명 · 방명록 · 입구 안내)을 작품처럼 다룸 — 연한 회색 위에 물건 하나(작품 상세와 같은 '전체 보이기 + 연한 회색'),
+   아래에 미술관 작품 캡션 문법(이름 / 어느 전시 / 재료·꼴). 후보 A 한 전시의 작은 것들 · B 같은 물건 모아 보기 · C 한 장 한 물건.
+   사진이 아직 없어 회색 칸에 선 그림(사진 자리)만. 실제 전시 이름·사진은 쓰지 않음(○○ = 채울 자리).
+   카드 = 1080×1350을 줄여 보여 줌 — 카드 안 글자 크기는 인스타 이미지용. 틀은 ig-posts-v1과 같음: 왼쪽 위 DU · 오른쪽 위 연재 이름 · 무채색. */
+:root {
+  --text-primary: #18181b; --text-secondary: #3f3f47; --text-teritary: #71717b;
+  --bg-secondary: #f4f4f5; --line: #e4e4e7; --ink: #18181b; --mute: #a1a1aa;
+  --ease-out: cubic-bezier(.23, 1, .32, 1);
+  --pad: 20px; --k: .335; --g: .117;
+}
+@media (min-width: 440px) { :root { --k: .37; --g: .128; } }
+@media (min-width: 768px) { :root { --pad: 32px; --k: .36; } }
+@media (min-width: 1100px) { :root { --pad: 48px; } }
+*, *::before, *::after { box-sizing: border-box; letter-spacing: -0.03em; line-height: 1.4; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: #fff; color: var(--text-primary); font: 400 14px/1.4 "Pretendard Variable", Pretendard, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; word-break: keep-all; overflow-wrap: anywhere; }
+::selection { background: var(--ink); color: #fff; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; letter-spacing: -0.03em; }
+:focus-visible { outline: 2px solid var(--text-primary); outline-offset: 2px; border-radius: 4px; }
+b { font-weight: 600; }
+.wrap { max-width: 1200px; margin: 0 auto; padding: 32px var(--pad) 64px; }
+h1 { margin: 0; font-size: 20px; font-weight: 700; text-wrap: balance; }
+.lead { margin: 8px 0 0; color: var(--text-secondary); max-width: 68ch; text-wrap: pretty; }
+section { margin-top: 56px; }
+h2 { margin: 0; font-size: 18px; font-weight: 600; text-wrap: balance; }
+h2 small { font-size: 14px; font-weight: 500; color: var(--text-teritary); }
+.sub { margin: 4px 0 0; color: var(--text-teritary); font-size: 12px; font-weight: 500; max-width: 76ch; text-wrap: pretty; }
+
+/* 추천 */
+.rec { margin-top: 16px; padding: 16px 20px; background: var(--bg-secondary); max-width: 80ch; }
+.rec > b { display: block; font-size: 16px; }
+.rec ol { margin: 8px 0 0; padding-left: 20px; color: var(--text-secondary); }
+.rec li + li { margin-top: 4px; }
+
+/* 넘겨 보기 줄 */
+.row { margin: 16px calc(var(--pad) * -1) 0; padding: 0 var(--pad) 12px; display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--pad); overscroll-behavior-x: contain; }
+.row::-webkit-scrollbar { height: 6px; } .row::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+.item { flex: none; scroll-snap-align: start; width: calc(1080px * var(--k)); }
+.fr { width: calc(1080px * var(--k)); height: calc(1350px * var(--k)); overflow: hidden; outline: 1px solid var(--line); outline-offset: -1px; position: relative; }
+.cap { margin: 6px 0 0; font-size: 12px; font-weight: 500; color: var(--text-teritary); font-variant-numeric: tabular-nums; }
+
+/* 격자(3:4로 잘림 — 양옆 34씩) */
+.grid { margin-top: 16px; display: grid; grid-template-columns: repeat(3, calc(1012px * var(--g))); gap: 2px; }
+.tile { position: relative; width: calc(1012px * var(--g)); height: calc(1350px * var(--g)); overflow: hidden; }
+.tile .sl { transform: scale(var(--g)); left: calc(-34px * var(--g)); }
+
+/* ── 카드 안(1080 기준 px) ── */
+.sl { position: absolute; inset: 0 auto auto 0; width: 1080px; height: 1350px; transform: scale(var(--k)); transform-origin: 0 0; overflow: hidden; background: var(--bg-secondary); color: var(--ink); }
+.sl.w { background: #fff; }
+.sl .du { position: absolute; top: 96px; left: 96px; width: 92px; height: 52px; display: block; fill: currentColor; }
+.sl .se { position: absolute; top: 104px; right: 96px; font-size: 30px; font-weight: 500; color: #71717b; letter-spacing: -0.01em; }
+.sl h3 { margin: 0; font-weight: 600; letter-spacing: -0.04em; line-height: 1.2; text-wrap: balance; }
+/* 사진 자리: 연한 회색 위 전체 보이기(작품 상세와 같은 방식) — 지금은 선 그림 */
+.sl .obj { position: absolute; left: 96px; right: 96px; top: 200px; height: 800px; }
+.sl .obj svg { display: block; width: 100%; height: 100%; }
+.sl .obj .tag { position: absolute; left: 0; right: 0; bottom: 4px; text-align: center; font-size: 26px; font-weight: 500; color: var(--mute); letter-spacing: -0.01em; }
+/* 작품 캡션처럼: 이름 / 어느 전시 / 재료·꼴 */
+.sl .lb { position: absolute; left: 96px; right: 96px; bottom: 96px; }
+.sl .lb b { display: block; font-size: 48px; font-weight: 600; letter-spacing: -0.04em; line-height: 1.25; }
+.sl .lb span { display: block; margin-top: 10px; font-size: 32px; font-weight: 500; color: var(--text-secondary); letter-spacing: -0.02em; }
+.sl .lb i { display: block; margin-top: 2px; font-style: normal; font-size: 32px; color: var(--text-teritary); letter-spacing: -0.02em; }
+.sl .lb h3 { font-size: 72px; }
+.sl .lb h3 + span { margin-top: 16px; }
+/* B 표지: 네 칸 */
+.sl .quad { position: absolute; left: 96px; right: 96px; top: 200px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.sl .quad div { position: relative; height: 380px; background: #ebebed; }
+.sl .quad svg { display: block; width: 100%; height: 100%; }
+/* 끝 장: 정보 칸(전시 상세 정보 줄과 같은 짜임) · 실린 전시 목록 */
+.sl .hd { position: absolute; top: 200px; left: 96px; right: 96px; }
+.sl .hd .m { font-size: 36px; font-weight: 500; color: var(--text-teritary); letter-spacing: -0.01em; }
+.sl .hd h3 { margin-top: 4px; font-size: 72px; }
+.sl .info { position: absolute; left: 96px; right: 96px; bottom: 96px; display: grid; }
+.sl .info div { display: grid; grid-template-columns: 148px minmax(0, 1fr); gap: 16px; padding: 22px 0; border-top: 2px solid var(--line); font-size: 38px; }
+.sl .info div:first-child { border-top-color: var(--ink); }
+.sl .info span { color: var(--text-teritary); font-size: 34px; padding-top: 2px; }
+.sl .info b { font-weight: 500; font-variant-numeric: tabular-nums; }
+.sl .list { position: absolute; left: 96px; right: 96px; top: 420px; display: grid; }
+.sl .list > div { display: grid; grid-template-columns: 72px minmax(0, 1fr); padding: 20px 0; border-top: 2px solid var(--line); font-size: 36px; }
+.sl .list > div:first-child { border-top-color: var(--ink); }
+.sl .list em { font-style: normal; color: var(--mute); font-variant-numeric: tabular-nums; letter-spacing: 0; }
+.sl .list b { display: block; font-weight: 600; }
+.sl .list span { display: block; margin-top: 2px; font-size: 30px; color: var(--text-teritary); }
+
+/* 마케팅 팀에 묻고 싶은 것 */
+.lead a { color: inherit; text-decoration-color: var(--mute); text-underline-offset: 3px; padding-block: 12px; }
+.qs fieldset { margin: 28px 0 0; padding: 0; border: 0; min-width: 0; }
+.qs legend { padding: 0; font-size: 16px; font-weight: 600; text-wrap: balance; }
+.qs .opts { margin-top: 4px; display: grid; max-width: 560px; }
+.qs .op { display: flex; align-items: center; gap: 12px; min-height: 44px; cursor: pointer; color: var(--text-secondary); }
+.qs .op input { flex: none; width: 20px; height: 20px; margin: 0; accent-color: var(--ink); }
+.qs .op input:checked + span { color: var(--text-primary); font-weight: 600; }
+.qs .ta { display: block; width: 100%; max-width: 560px; height: 128px; margin-top: 8px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; font: inherit; font-size: 16px; line-height: 1.4; color: var(--text-primary); background: #fff; resize: none; transition: border-color .2s ease; }
+.qs .ta::placeholder { color: var(--text-teritary); }
+.qs .ta:focus { border-color: var(--ink); }
+.qs .send { margin-top: 32px; width: 100%; max-width: 560px; height: 44px; border-radius: 12px; background: var(--ink); color: #fff; font-size: 16px; font-weight: 600; transition: transform .16s var(--ease-out); }
+.qs .send:active { transform: scale(.96); }
+.qs .hint { margin: 8px 0 0; font-size: 12px; color: var(--text-teritary); }
+
+/* 캡션·메모·버튼 */
+.meta-row { margin-top: 8px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 16px 32px; max-width: 1040px; }
+.capbox { padding: 14px 16px; background: var(--bg-secondary); white-space: pre-line; color: var(--text-primary); }
+.meta-row h3 { margin: 0 0 6px; font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+.meta-row ul { margin: 0; padding-left: 18px; color: var(--text-secondary); }
+.meta-row li + li { margin-top: 4px; }
+.meta-row li { text-wrap: pretty; }
+.acts { margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; }
+.cp { height: 32px; padding: 0 12px; border-radius: 16px; background: var(--bg-secondary); font-size: 12px; font-weight: 600; position: relative; transition: transform .16s var(--ease-out), background-color .16s ease; }
+.cp::after { content: ""; position: absolute; inset: -6px -4px; }
+.cp:active { transform: scale(.96); }
+@media (hover: hover) and (pointer: fine) { .cp:hover { background: var(--line); } }
+.toast { position: fixed; left: 50%; bottom: 24px; height: 40px; display: flex; align-items: center; padding: 0 18px; border-radius: 8px; background: var(--ink); color: #fff; font-size: 14px; font-weight: 500; white-space: nowrap; opacity: 0; transform: translate(-50%, 8px); pointer-events: none; transition: opacity .2s var(--ease-out), transform .2s var(--ease-out); }
+.toast.on { opacity: 1; transform: translate(-50%, 0); }
+@media (prefers-reduced-motion: reduce) { .toast { transform: translate(-50%, 0); } *, *::before, *::after { transition-duration: .01ms !important; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- DU: favicon.svg와 같은 D·U 조각, 상자 36.39 × 20.38 -->
+    <symbol id="du" viewBox="0 0 36.39 20.38"><g transform="translate(0 -2.2277)"><path d="M0 22.2812V2.29672H7.05864C14.0867 2.29672 17.7536 6.29972 17.7536 12.2889C17.7536 18.2782 14.0867 22.2812 7.05864 22.2812H0ZM4.95022 17.6976H7.05864C11.0616 17.6976 12.7422 15.6197 12.7422 12.2889C12.7422 8.9582 11.0616 6.88031 7.05864 6.88031H4.95022V17.6976Z"/><path transform="translate(-81.046 0)" d="M109.001 22.6094C103.501 22.6094 100.446 19.3703 100.446 14.2062V2.2277H105.396V14.2062C105.396 16.6507 106.526 18.0258 108.971 18.0258C111.477 18.0258 112.607 16.6813 112.607 14.2062V2.2277H117.435V14.2062C117.435 19.3398 114.41 22.6094 109.001 22.6094Z"/></g></symbol>
+  </defs>
+</svg>
+
+<main class="wrap">
+  <h1>졸전의 작은 것들 · 시안</h1>
+  <p class="lead">작품 곁에 있는 것들(리플렛, 굿즈, 작품 설명, 방명록, 입구 안내)을 모으는 연재예요. 연한 회색 위에 물건 하나를 놓고, 아래에 미술관 작품 캡션처럼 이름 · 어느 전시 · 재료를 붙여요. 회색 칸의 선 그림은 사진 자리, ○○는 채울 자리예요. 시안을 보신 뒤 <a href="#h-q">맨 아래 질문</a>에 골라 답해 주세요.</p>
+
+  <div class="rec">
+    <b>제안하는 순서</b>
+    <ol>
+      <li><b>A 한 전시의 작은 것들</b>을 첫 편으로. 허락은 전시팀 한 번이면 되고, 전시 계정과 공동 게시할 수 있어요.</li>
+      <li>사진이 여러 전시에서 모이면 <b>B 같은 물건 모아 보기</b>로 묶어요(리플렛, 스티커, 방명록 …).</li>
+      <li>A · B에 못 실은 한 장은 <b>C 한 장 한 물건</b>으로 매주.</li>
+    </ol>
+  </div>
+
+  <section aria-labelledby="h-grid">
+    <h2 id="h-grid">격자에서 보면</h2>
+    <p class="sub">A 표지 · B 표지 · C를 올렸을 때. 4:5가 3:4로 보여 양옆이 조금 잘려요.</p>
+    <div class="grid" id="grid" aria-hidden="true"></div>
+  </section>
+
+  <section aria-labelledby="h-a">
+    <h2 id="h-a">A · 한 전시의 작은 것들 <small>게시물 7장 · 2주에 1번 · 첫 편 추천</small></h2>
+    <p class="sub">표지 한 장, 물건 다섯 장, 끝에 전시 정보. 물건은 있는 것만(세 장 이상이면 충분해요).</p>
+    <div class="row" id="rowA" aria-label="A 카드"></div>
+    <div class="meta-row">
+      <div><h3>캡션</h3><div class="capbox" id="capA"></div><div class="acts"><button class="cp" type="button" data-copy="capA">캡션 복사</button></div></div>
+      <div><h3>메모</h3><ul><li>사진은 전시팀이 허락한 것만. 작품이 크게 보이는 사진은 그 작가 동의까지.</li><li>방명록은 관람객 이름 · 연락처가 보이지 않는 쪽만.</li><li>받은 사진은 자르지 않고 연한 회색 위에 전체(디유 작품 상세와 같은 방식).</li><li>재료 · 크기는 전시팀이 알려 준 만큼만. 모르면 꼴(3단 접기, 한 장 …)만.</li></ul></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-b">
+    <h2 id="h-b">B · 같은 물건 모아 보기 <small>게시물 6장 · 한 달에 1번</small></h2>
+    <p class="sub">예: 올해 졸전의 리플렛. 표지에 네 개를 모으고, 한 장에 한 전시, 끝에 실린 전시 목록.</p>
+    <div class="row" id="rowB" aria-label="B 카드"></div>
+    <div class="meta-row">
+      <div><h3>캡션</h3><div class="capbox" id="capB"></div><div class="acts"><button class="cp" type="button" data-copy="capB">캡션 복사</button></div></div>
+      <div><h3>메모</h3><ul><li>전시 4 ~ 8곳, 물건은 한 종류만.</li><li>사진 찍은 바닥 · 빛이 전시마다 달라도 회색 칸 안에 전체로 놓으면 한 줄로 읽혀요.</li><li>평가하는 말 없이 모으기만.</li></ul></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-c">
+    <h2 id="h-c">C · 한 장 한 물건 <small>한 장짜리 게시물 · 매주</small></h2>
+    <p class="sub">A · B의 한 장과 같은 짜임. 표지 없이 물건과 캡션만.</p>
+    <div class="row" id="rowC" aria-label="C 카드"></div>
+    <div class="meta-row">
+      <div><h3>캡션</h3><div class="capbox" id="capC"></div><div class="acts"><button class="cp" type="button" data-copy="capC">캡션 복사</button></div></div>
+      <div><h3>메모</h3><ul><li>연재 태그 #졸전의작은것들 로 모아 보이게.</li></ul></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-dm">
+    <h2 id="h-dm">사진 허락 요청 메시지 <small>초안</small></h2>
+    <p class="sub">전시팀에 인스타 DM으로. 전시 연락 문구와 같은 말투예요.</p>
+    <div class="meta-row">
+      <div><div class="capbox" id="capDm"></div><div class="acts"><button class="cp" type="button" data-copy="capDm">메시지 복사</button></div></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-q" class="qs">
+    <h2 id="h-q">마케팅 팀에 묻고 싶은 것</h2>
+    <p class="sub">고른 뒤 ‘답변 복사’를 눌러 메신저로 보내 주세요. (제안)은 시안을 만든 쪽의 추천이에요.</p>
+    <form id="qf" onsubmit="return false"></form>
+    <button class="send" type="button" id="qcopy">답변 복사</button>
+    <p class="hint">고른 답은 이 기기의 브라우저에만 남아요.</p>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const DU = '<svg class="du" aria-hidden="true"><use href="#du"/></svg>';
+const SE = '<span class="se">졸전의 작은 것들</span>';
+const card = (cls, inner, cap, id) => `<div class="item"><div class="fr"><div class="sl ${cls}"${id ? ` id="${id}"` : ''}>${inner}</div></div><p class="cap">${cap}</p></div>`;
+
+/* 사진 자리 선 그림(888 × 800 안 가운데) — 사진이 오면 이 자리에 전체 보이기 */
+const P = 'fill="#fff" stroke="#a1a1aa" stroke-width="4" stroke-linejoin="round"';
+const BAR = 'fill="#e4e4e7"';
+const DRAW = {
+  leaflet: `<g transform="translate(174 170)"><rect width="540" height="420" ${P}/><path d="M180 0v420M360 0v420" stroke="#a1a1aa" stroke-width="3" stroke-dasharray="10 10"/><rect x="216" y="40" width="108" height="150" ${BAR}/><rect x="216" y="214" width="96" height="14" ${BAR}/><rect x="216" y="242" width="72" height="10" ${BAR}/><rect x="30" y="50" width="120" height="12" ${BAR}/><rect x="30" y="76" width="96" height="10" ${BAR}/><rect x="30" y="96" width="110" height="10" ${BAR}/><rect x="390" y="300" width="120" height="10" ${BAR}/><rect x="390" y="320" width="90" height="10" ${BAR}/></g>`,
+  goods: `<g transform="translate(150 140) rotate(-5 150 220)"><rect width="300" height="430" rx="20" ${P}/><circle cx="90" cy="100" r="54" ${P}/><circle cx="210" cy="190" r="44" ${P}/><rect x="40" y="270" width="140" height="110" rx="30" ${P}/></g><g transform="translate(450 300) rotate(7 190 130)"><rect width="380" height="260" ${P}/><rect x="28" y="28" width="170" height="204" ${BAR}/><rect x="226" y="40" width="120" height="10" ${BAR}/><rect x="226" y="60" width="90" height="10" ${BAR}/></g>`,
+  caption: `<g transform="translate(214 250)"><rect width="460" height="300" ${P}/><rect x="40" y="48" width="200" height="22" fill="#d4d4d8"/><rect x="40" y="92" width="150" height="14" ${BAR}/><rect x="40" y="140" width="380" height="12" ${BAR}/><rect x="40" y="166" width="360" height="12" ${BAR}/><rect x="40" y="192" width="370" height="12" ${BAR}/><rect x="40" y="218" width="220" height="12" ${BAR}/></g>`,
+  guest: `<g transform="translate(124 190)"><path d="M320 20C230 0 110 0 0 20v400c110-20 230-20 320 0z" ${P}/><path d="M320 20c90-20 210-20 320 0v400c-110-20-230-20-320 0z" ${P}/><g fill="none" stroke="#c4c4c8" stroke-width="4" stroke-linecap="round"><path d="M44 90c20-14 40 14 60 0s40 14 60 0 40 14 60 0 30 10 40 4"/><path d="M44 150c24-12 44 12 68 0s40 12 60 0"/><path d="M44 210c18-14 36 14 54 0s36 14 54 0 36 14 54 0"/><path d="M364 100c22-14 42 14 64 0s40 14 62 0 38 12 56 2"/><path d="M364 170c20-12 40 12 60 0"/><path d="M364 240c22-14 44 14 66 0s44 14 66 0 40 12 50 4"/><path d="M364 300c18-12 38 12 56 0s36 12 56 0"/></g></g>`,
+  lfTall: `<rect x="324" y="110" width="240" height="520" ${P}/><rect x="356" y="150" width="176" height="230" ${BAR}/><rect x="356" y="410" width="120" height="12" ${BAR}/><rect x="356" y="434" width="90" height="10" ${BAR}/>`,
+  lfSquare: `<rect x="219" y="145" width="450" height="450" ${P}/><rect x="259" y="185" width="190" height="20" fill="#d4d4d8"/><rect x="259" y="225" width="140" height="12" ${BAR}/><rect x="259" y="520" width="370" height="12" ${BAR}/>`,
+  lfBook: `<rect x="300" y="186" width="320" height="440" ${P}/><rect x="284" y="170" width="320" height="440" ${P}/><rect x="316" y="214" width="180" height="20" fill="#d4d4d8"/><rect x="316" y="252" width="120" height="12" ${BAR}/>`,
+  sign: `<g transform="translate(244 110)"><rect width="400" height="520" ${P}/><rect x="40" y="48" width="220" height="26" fill="#d4d4d8"/><rect x="40" y="94" width="160" height="14" ${BAR}/><path d="M80 330h220m-70-70 70 70-70 70" fill="none" stroke="#a1a1aa" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M90 520l-40 70M310 520l40 70" stroke="#a1a1aa" stroke-width="4"/></g>`,
+};
+const obj = (k, tag = '사진 자리') => `<div class="obj"><svg viewBox="0 0 888 800" aria-hidden="true">${DRAW[k]}</svg><div class="tag">${tag}</div></div>`;
+const lb = (name, from, what) => `<div class="lb"><b>${esc(name)}</b><span>${esc(from)}</span><i>${esc(what)}</i></div>`;
+
+/* B 네 칸: 꼴이 다른 리플렛 넷 */
+const MINI = [
+  `<rect x="148" y="40" width="140" height="300" fill="#fff" stroke="#a1a1aa" stroke-width="3"/><rect x="170" y="70" width="96" height="120" ${BAR}/>`,
+  `<rect x="98" y="70" width="240" height="240" fill="#fff" stroke="#a1a1aa" stroke-width="3"/><rect x="128" y="100" width="100" height="12" ${BAR}/>`,
+  `<rect x="68" y="90" width="300" height="200" fill="#fff" stroke="#a1a1aa" stroke-width="3"/><path d="M168 90v200M268 90v200" stroke="#a1a1aa" stroke-width="2" stroke-dasharray="8 8"/>`,
+  `<rect x="128" y="50" width="180" height="250" fill="#fff" stroke="#a1a1aa" stroke-width="3"/><rect x="136" y="58" width="180" height="250" fill="#fff" stroke="#a1a1aa" stroke-width="3"/><rect x="160" y="90" width="120" height="10" ${BAR}/>`,
+];
+const quad = `<div class="quad">${MINI.map((m) => `<div><svg viewBox="0 0 436 380" aria-hidden="true">${m}</svg></div>`).join('')}</div>`;
+
+const SHOW = { t: '《전시 제목》', s: '○○대학교 ○○과' };
+const FROM = `${SHOW.t} · ${SHOW.s}`;
+
+/* A — 한 전시의 작은 것들 */
+const A = [
+  ['leaflet', '리플렛', '종이에 인쇄 · 3단 접기'],
+  ['goods', '스티커 · 엽서', '전시장에서 나눠 준 것'],
+  ['caption', '작품 설명', '작품 옆 벽 · 종이'],
+  ['guest', '방명록', '관람객이 남긴 글'],
+  ['sign', '입구 안내', '전시장 입구'],
+];
+(() => {
+  const cover = card('', `${DU}${SE}${obj('leaflet')}<div class="lb"><h3>${SHOW.t}의<br>작은 것들</h3><span>${SHOW.s} 졸업전시</span></div>`, '1 · 표지', 'cA');
+  const items = A.map(([k, n, w], i) => card('', `${DU}${SE}${obj(k)}${lb(n, FROM, w)}`, `${i + 2} · ${n}`)).join('');
+  const end = card('w', `${DU}${SE}<div class="hd"><div class="m">${SHOW.s} 졸업전시</div><h3>${SHOW.t}</h3></div><div class="info"><div><span>일정</span><b>2026.12.01 - 12.06</b></div><div><span>운영</span><b>10:00 - 18:00</b></div><div><span>장소</span><b>○○대학교 ○○관 ○층</b></div><div><span>사진</span><b>@○○○○ 제공</b></div></div>`, '7 · 전시 정보');
+  $('rowA').innerHTML = cover + items + end;
+})();
+
+/* B — 같은 물건 모아 보기(예: 리플렛) */
+const B = [['lfTall', '접지 · 세로'], ['lfSquare', '한 장 · 정사각'], ['leaflet', '3단 접기'], ['lfBook', '책자 · 16쪽']];
+(() => {
+  const cover = card('', `${DU}${SE}${quad}<div class="lb"><h3>올해 졸전의<br>리플렛</h3><span>졸업전시 ${B.length}곳</span></div>`, '1 · 표지', 'cB');
+  const items = B.map(([k, w], i) => card('', `${DU}${SE}${obj(k)}${lb('리플렛', FROM, w)}`, `${i + 2} · 전시 ${i + 1}`)).join('');
+  const end = card('w', `${DU}${SE}<div class="hd"><div class="m">사진 제공</div><h3>실린 전시</h3></div><div class="list">${B.map((_, i) => `<div><em>${i + 1}</em><div><b>《전시 제목》</b><span>○○대학교 ○○과 · @○○○○</span></div></div>`).join('')}</div>`, `${B.length + 2} · 실린 전시`);
+  $('rowB').innerHTML = cover + items + end;
+})();
+
+/* C — 한 장 한 물건 */
+(() => {
+  $('rowC').innerHTML = card('', `${DU}${SE}${obj('caption')}${lb('작품 설명', FROM, '작품 옆 벽 · 종이')}`, '한 장', 'cC')
+    + card('', `${DU}${SE}${obj('sign')}${lb('입구 안내', FROM, '전시장 입구')}`, '다음 주');
+})();
+
+/* 격자: 새 글이 왼쪽 */
+['cC', 'cB', 'cA'].forEach((id) => { const t = document.createElement('div'); t.className = 'tile'; const s = $(id).cloneNode(true); s.removeAttribute('id'); t.appendChild(s); $('grid').appendChild(t); });
+
+/* 캡션 · 메시지 */
+const CAP = {
+  capA: `${SHOW.t}에서 작품 곁에 있던 것들을 모았습니다.\n리플렛, 스티커와 엽서, 작품 설명, 방명록, 입구 안내.\n\n${SHOW.s} 졸업전시\n2026.12.01 - 12.06 · ○○대학교 ○○관 ○층\n\n사진 제공 @○○○○\n\n#졸전의작은것들 #졸업전시 #디유`,
+  capB: `올해 졸업전시의 리플렛 ${B.length}개를 모았습니다.\n\n사진 제공 @○○○○ @○○○○ @○○○○ @○○○○\n\n#졸전의작은것들 #졸업전시 #리플렛 #디유`,
+  capC: `작품 설명 · ${SHOW.t}\n${SHOW.s} 졸업전시\n\n사진 제공 @○○○○\n\n#졸전의작은것들 #디유`,
+  capDm: `안녕하세요, ${SHOW.t} 담당자님!\n대학생 전시와 작품을 한곳에 기록하는 플랫폼 '디유(displayU)'입니다.\n\n디유 인스타그램에서 졸업전시의 리플렛, 굿즈, 작품 설명, 방명록처럼 작품 곁에 있는 것들을 소개하려고 합니다. ${SHOW.t}의 사진을 함께 소개해도 될지 여쭙고자 연락드렸습니다.\n이미 올리신 사진 중에서 골라 주셔도 되고, 새로 보내 주셔도 좋습니다. 게시물에는 전시 계정을 함께 적고, 원하지 않으시면 바로 내리겠습니다.\n\n괜찮으시다면 답장 부탁드립니다.\n감사합니다.\n디유(displayU) 홍보팀 드림`,
+};
+for (const [id, t] of Object.entries(CAP)) $(id).textContent = t;
+
+/* 복사 + 토스트 */
+let tt;
+function toast(m) { const t = $('toast'); t.textContent = m; t.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('on'), 1600); }
+async function copy(text) {
+  try { await navigator.clipboard.writeText(text); return true; } catch (e) {
+    const ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch (_) {} ta.remove(); return ok;
+  }
+}
+document.addEventListener('click', async (e) => { const b = e.target.closest('[data-copy]'); if (!b) return; const ok = await copy(CAP[b.dataset.copy] || ''); toast(ok ? '복사했어요' : '복사하지 못했어요'); });
+
+/* 마케팅 팀에 묻고 싶은 것 — 고른 답은 이 기기에만(localStorage), 복사해 보냄 */
+const QS = [
+  { id: 'q1', t: '어느 형식으로 시작할까요?', o: ['A 한 전시의 작은 것들 (제안)', 'B 같은 물건 모아 보기', 'C 한 장 한 물건', '셋을 번갈아'] },
+  { id: 'q2', t: '사진은 어떻게 받을까요?', o: ['전시팀이 이미 올린 사진에서 고르기', '전시팀에 새로 부탁하기', '둘 다'] },
+  { id: 'q3', t: '얼마나 자주 올릴까요?', o: ['매주', '2주에 1번 (제안)', '한 달에 1번'] },
+  { id: 'q4', t: '사진 허락 요청 메시지 초안은 어떤가요?', o: ['그대로 써도 돼요', '고칠 곳이 있어요 (아래 의견에 적어 주세요)'] },
+  { id: 'q5', t: '첫 편으로 연락해 볼 전시가 있나요?', text: true },
+  { id: 'q6', t: '그 밖에 의견', text: true },
+];
+const QKEY = 'ig-small-answers';
+const qload = () => { try { return JSON.parse(localStorage.getItem(QKEY) || '{}'); } catch (e) { return {}; } };
+const qsave = (v) => { try { localStorage.setItem(QKEY, JSON.stringify(v)); } catch (e) {} };
+(() => {
+  const saved = qload();
+  $('qf').innerHTML = QS.map((q, n) => `<fieldset><legend>${n + 1}. ${esc(q.t)}</legend>${q.text
+    ? `<textarea class="ta" name="${q.id}" aria-label="${esc(q.t)}" placeholder="입력해주세요">${esc(saved[q.id] || '')}</textarea>`
+    : `<div class="opts">${q.o.map((o) => `<label class="op"><input type="radio" name="${q.id}" value="${esc(o)}"${saved[q.id] === o ? ' checked' : ''}><span>${esc(o)}</span></label>`).join('')}</div>`}</fieldset>`).join('');
+  const read = () => { const f = new FormData($('qf')); const v = {}; QS.forEach((q) => { v[q.id] = (f.get(q.id) || '').toString(); }); return v; };
+  $('qf').addEventListener('input', () => qsave(read()));
+  $('qf').addEventListener('change', () => qsave(read()));
+  $('qcopy').addEventListener('click', async () => {
+    const v = read();
+    const text = ['[졸전의 작은 것들 · 마케팅 팀 답변]', ...QS.map((q, n) => `${n + 1}. ${q.t}\n→ ${(v[q.id] || '').replace(/ \(제안\)$/, '').trim() || '—'}`)].join('\n\n');
+    const ok = await copy(text); toast(ok ? '답변을 복사했어요' : '복사하지 못했어요');
+  });
+})();
+</script>
+</body>
+</html>
