@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>작품 여러 점 · 프로토 확인</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+/* 프론트엔드 전달용 확인 페이지(11-25, U-192) — 실제 프로토 화면(../work-new.html · ../work.html?w=0)을 그대로 틀에 넣고, 화면 · 보기를 버튼으로 바꿈.
+   보기 고정(한 장씩 / 이어서 보기 / 크게 보기)은 틀 안 페이지의 setMode · 크게 보기 버튼을 불러 맞춤(같은 주소라 가능). 좁은 화면(실제 폰)에서는 틀 없이 링크 목록.
+   전달 문서: handoff/work-multi-1125/DEV-SPEC.md. 틀 모양은 review/work-multi-v2 비교 틀과 같음. */
+:root { --ink: #18181b; --z6: #52525c; --z5: #71717b; --bg2: #f4f4f5; --ease: cubic-bezier(.23, 1, .32, 1); --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif; }
+*, *::before, *::after { box-sizing: border-box; letter-spacing: -0.03em; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: #fff; color: var(--ink); font: 500 14px/1.4 var(--font); -webkit-font-smoothing: antialiased; word-break: keep-all; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+h1, p { margin: 0; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; border-radius: 4px; }
+.top { padding: 20px 24px 0; }
+.top h1 { font-size: 20px; font-weight: 700; }
+.top p { margin-top: 4px; color: var(--z6); }
+.bar { position: sticky; top: 0; z-index: 2; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; padding: 12px 24px; background: #fff; border-bottom: 1px solid var(--bg2); }
+.seg { display: flex; gap: 4px; flex-wrap: wrap; }
+.seg button { min-height: 44px; padding: 0 16px; border-radius: 9999px; color: var(--z5); font-weight: 600; transition: background-color .2s, color .2s, transform .16s var(--ease); }
+.seg button:active { transform: scale(.96); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: #fff; }
+@media (hover: hover) { .seg button:not([aria-pressed="true"]):hover { color: var(--ink); } }
+.step { display: flex; gap: 4px; }
+.step button { min-height: 44px; padding: 0 14px; border-radius: 9999px; background: var(--bg2); font-weight: 600; transition: transform .16s var(--ease), background-color .2s; }
+.step button:active { transform: scale(.96); }
+@media (hover: hover) { .step button:hover { background: #e4e4e7; } }
+.step[hidden] { display: none; }
+.note { max-width: 1040px; padding: 16px 24px 0; color: var(--z6); text-wrap: pretty; }
+.note b { color: var(--ink); font-weight: 600; }
+.stagebox { display: flex; justify-content: center; gap: 16px; padding: 16px 24px 48px; }
+.col { display: grid; gap: 8px; justify-items: center; }
+.col p { font-size: 12px; font-weight: 600; color: var(--z5); }
+.col a { font-size: 12px; font-weight: 500; color: var(--z5); text-decoration: underline; text-underline-offset: 3px; padding-block: 12px; }
+.fr { position: relative; overflow: hidden; background: var(--bg2); box-shadow: 0 0 0 1px rgba(0, 0, 0, .1); }
+.fr iframe { position: absolute; left: 0; top: 0; border: 0; transform-origin: 0 0; background: #fff; }
+.list { display: none; }
+@media (max-width: 699px) {
+  .bar, .note, .stagebox { display: none; }
+  .list { display: grid; padding: 24px 20px 40px; }
+  .list a { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 4px 16px; padding: 20px 0; border-bottom: 1px solid var(--bg2); }
+  .list a:active { opacity: .6; }
+  .list strong { font-size: 20px; font-weight: 600; }
+  .list span { grid-column: 1; color: var(--z5); text-wrap: pretty; }
+  .list svg { grid-column: 2; grid-row: 1 / span 2; width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition-duration: .01ms !important; } }
+</style>
+</head>
+<body>
+<div class="top">
+  <h1>작품 페이지 하나에 작품 여러 점</h1>
+  <p>실제 프로토 화면이에요. 틀 안에서 눌러 보고, 넘겨 볼 수 있어요.</p>
+</div>
+<div class="bar">
+  <div class="seg" id="ws"><button type="button" data-w="reg">등록</button><button type="button" data-w="one">상세 · 한 장씩</button><button type="button" data-w="stack">상세 · 이어서 보기</button><button type="button" data-w="web">웹 상세</button><button type="button" data-w="big">웹 · 크게 보기</button><button type="button" data-w="card">목록 카드</button></div>
+  <div class="step" id="step"><button type="button" data-d="-1" aria-label="이전 사진">‹ 이전 사진</button><button type="button" data-d="1" aria-label="다음 사진">다음 사진 ›</button></div>
+</div>
+<p class="note" id="note"></p>
+<div class="stagebox" id="stage"></div>
+<nav class="list" aria-label="화면 목록">
+  <a href="../work-new.html"><strong>등록 · 처음</strong><span>작품 하나 — 규격 아래 "+ 작품 추가 · 선택"과 설명 두 줄</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  <a href="../work-new.html?demo=multi"><strong>등록 · 작품 세 점</strong><span>작품 1 + 작품 2 · 3 칸이 채워진 모습(확인용)</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  <a href="../work.html?w=0"><strong>상세</strong><span>사진을 넘기면 4번째까지 '접으면 달라지는 지도', 5번째 'WALK', 6번째 '세 지점의 수첩'</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  <a href="../exhibition.html?e=0&amp;tab=works"><strong>목록 카드</strong><span>전시 작품 탭 — 첫 번째 작품명으로 보임</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+</nav>
+<script>
+const SIZE = { phone: [402, 874], web: [1280, 800] };
+/* [제목, 주소, 할 일] — 할 일: scroll = 그 요소가 위에 오게, mode = 'one' | 'stack', big = 크게 보기 열기 */
+const SETS = {
+  reg: ['phone', [['처음 (작품 하나)', '../work-new.html', { scroll: '#addwk' }], ['작품 세 점 · 위', '../work-new.html?demo=multi', { scroll: '#wk1-h' }], ['작품 세 점 · 아래', '../work-new.html?demo=multi', { scroll: '#more' }]]],
+  one: ['phone', [['한 장씩', '../work.html?w=0', { mode: 'one' }]]],
+  stack: ['phone', [['이어서 보기', '../work.html?w=0', { mode: 'stack' }]]],
+  web: ['web', [['웹 · 한 장씩', '../work.html?w=0', { mode: 'one' }]]],
+  big: ['web', [['웹 · 크게 보기', '../work.html?w=0', { mode: 'one', big: true }]]],
+  card: ['phone', [['전시 작품 탭', '../exhibition.html?e=0&tab=works', { scroll: '.tabs' }]]],
+};
+const NOTE = {
+  reg: '<b>처음</b>: 작품 하나일 때는 지금과 같고, 규격 아래에 "+ 작품 추가 · 선택"과 설명 두 줄("작가와 작품 설명이 같은 작품을 한 페이지에 함께 올려요 / 검색과 작품 카드에는 첫 번째 작품의 작품명이 보여요")만 더해져요. <b>작품 세 점</b>: 누르면 생기는 "작품 2 · 3" 칸 — 사진·영상 · 작품명* · 제작 연도 | 재료 / 매체 · 규격, ✕는 확인 없이 바로 지움. 작품을 더하면 맨 위 "작품 1" 머리, 작품 설명 아래 "모든 작품에 함께 보여요", 작품분야 아래 "모든 작품에 함께 적용돼요". 사진·영상은 모든 작품 합쳐 10개 — 어느 칸이든 장수는 합계(세 점 = 5/10), 10개면 추가 칸이 사라지고 더 고르면 "작품 이미지는 최대 10장까지 올릴 수 있어요". 영상은 어느 작품에나, 개수 제한 없음(10개 안에서).',
+  one: '사진 순서 = 작품 1(4장) → 작품 2(1장) → 작품 3(1장). 넘기다 다른 작품의 사진에 닿으면 제목과 정보 줄(분야 · 연도 · 재료 / 매체 · 규격)이 그 작품 것으로 바뀌어요. 같은 작품끼리는 그대로, 제목 위 표시는 없음. 작가 · 설명 · 좋아요 · 저장 · 방명록은 페이지 하나. 위 버튼으로 넘겨 보세요.',
+  stack: '이어서 보기: 각 작품의 마지막 사진 바로 아래에 그 작품 캡션 한 줄(작품명 + 연도 · 재료 / 매체 · 규격). 같은 작품의 여러 컷 사이에는 없음. 스크롤하면 아래 제목도 따라 바뀌어요.',
+  web: '웹(900 이상): 왼쪽 사진을 넘기면(아래 ‹ n / 6 ›) 오른쪽 제목(28)과 정보 줄이 작품에 맞춰 바뀌어요. 장수는 사진 기준.',
+  big: '크게 보기(웹): 위 띠 제목이 보고 있는 작품으로 바뀌고, 각 작품 마지막 사진 아래에 캡션. 틀 안에서 스크롤해 보세요.',
+  card: '목록 · 검색: 다른 작품 카드와 똑같이 대표 사진(작품 1 첫 사진) + 첫 번째 작품명. 여러 점이라는 표시는 없음, 검색도 첫 번째 작품명만.',
+};
+const q = new URLSearchParams(location.search);
+let w = SETS[q.get('w')] ? q.get('w') : 'reg';
+const $ = (id) => document.getElementById(id), stage = $('stage');
+function fit() {
+  const cols = [...stage.children], n = cols.length, [W, Hh] = SIZE[SETS[w][0]], avail = (innerWidth - 48 - 16 * (n - 1)) / n, k = Math.min(1, avail / W, (innerHeight - 260) / Hh);
+  cols.forEach((c) => { const fr = c.querySelector('.fr'), f = c.querySelector('iframe'); fr.style.width = Math.round(W * k) + 'px'; fr.style.height = Math.round(Hh * k) + 'px'; f.style.width = W + 'px'; f.style.height = Hh + 'px'; f.style.transform = `scale(${k})`; });
+}
+function prep(f, o) {
+  f.addEventListener('load', () => {
+    try {
+      const cw = f.contentWindow;
+      if (o.mode) cw.eval(`setMode('${o.mode}', false)`);
+      if (o.scroll) setTimeout(() => { const el = cw.document.querySelector(o.scroll); if (el) { el.scrollIntoView({ block: 'start' }); cw.scrollBy(0, -16); } }, 300);
+      if (o.big) setTimeout(() => { const b = cw.document.querySelector('[data-m="big"]'); if (b) b.click(); }, 500);
+    } catch (e) {}
+  });
+}
+function show() {
+  stage.innerHTML = SETS[w][1].map(([l, u]) => `<div class="col"><p>${l}</p><div class="fr"><iframe title="${l}" src="${u}"></iframe></div><a href="${u}" target="_blank" rel="noopener">새 창으로 열기</a></div>`).join('');
+  [...stage.querySelectorAll('iframe')].forEach((f, i) => prep(f, SETS[w][1][i][2] || {}));
+  document.querySelectorAll('#ws button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.w === w));
+  $('step').hidden = !['one', 'stack', 'web'].includes(w);
+  $('note').innerHTML = NOTE[w]; fit();
+  try { history.replaceState(null, '', location.pathname + `?w=${w}`); } catch (e) {}
+}
+$('ws').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; w = b.dataset.w; show(); });
+$('step').addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b) return; const d = +b.dataset.d;
+  stage.querySelectorAll('iframe').forEach((f) => { try { f.contentWindow.eval(`(mode === 'stack' ? scrollToImg(Math.max(0, Math.min(photos - 1, cur + ${d}))) : go(cur + ${d}))`); } catch (err) {} });
+});
+addEventListener('resize', fit);
+if (matchMedia('(min-width: 700px)').matches) show(); else matchMedia('(min-width: 700px)').addEventListener('change', (e) => { if (e.matches) show(); });
+</script>
+</body>
+</html>

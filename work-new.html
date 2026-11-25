@@ -339,7 +339,7 @@ picker.addEventListener('change', async () => {
   for (const f of files) {
     if ((key === 'media' ? mediaTotal() : list.length) >= max) { msg = `${key === 'media' ? '작품 이미지' : '작업 과정 사진'}는 최대 ${max}장까지 올릴 수 있어요`; break; }
     if (key === 'media' && MEDIA.isVideo(f)) {
-      if (list.some((m) => m.video)) { msg = '영상은 1개만 올릴 수 있어요'; continue; }
+      /* 11-25 U-192: '영상은 1개만' 제한 풀림 — 사진·영상 합쳐 MAXM장(작품 여러 점이면 모든 작품 합계) */
       if (f.size > MEDIA.work.mb * 1024 * 1024) { msg = `영상은 ${MEDIA.work.mb}MB 이하로 올려주세요`; continue; }
       try { const v = await readVideo(f); if (v.duration > MEDIA.work.sec) { URL.revokeObjectURL(v.url); msg = '영상은 3분 이내로 올려주세요'; continue; } list.push({ video: true, name: f.name, ...v }); } catch (e) { bad = true; }
     } else if (MEDIA.isImage(f) && f.size <= MEDIA.maxImageMB * 1024 * 1024) list.push({ url: URL.createObjectURL(f), name: f.name, file: f });
@@ -361,7 +361,7 @@ picker.addEventListener('change', async () => {
 [['media', 'm-row', '작품 이미지'], ['proc', 'p-row', '작업 과정 사진']].forEach(([key, id, noun]) => Reorder.attach($(id), { item: '.tile', noun, onMove: (a, b) => { const l = st[key]; l.splice(b, 0, l.splice(a, 1)[0]); renderRow(key); } }));
 
 /* ---------- 작품 추가(11-25 U-191) — 작품 2부터 칸. 사진·작품명·제작 연도·재료 / 매체·규격, 사진은 모든 작품 합쳐 MAXM장 ---------- */
-const xpick = document.createElement('input'); xpick.type = 'file'; xpick.multiple = true; xpick.hidden = true; xpick.accept = 'image/jpeg,image/png,image/webp,image/heic,image/heif'; document.body.appendChild(xpick);
+const xpick = document.createElement('input'); xpick.type = 'file'; xpick.multiple = true; xpick.hidden = true; xpick.accept = 'image/jpeg,image/png,image/webp,image/heic,image/heif,video/mp4,video/quicktime,video/webm';   // U-192 작품 2부터도 영상 document.body.appendChild(xpick);
 let xpickK = 0;
 const fullMsg = () => toast(`작품 이미지는 최대 ${MAXM}장까지 올릴 수 있어요`);
 function renderExtra() {
@@ -370,7 +370,7 @@ function renderExtra() {
   $('more').innerHTML = st.extra.map((w, k) => `<section class="wk2" data-k="${k}" aria-labelledby="wk2-h${k}">
     <div class="wk2-h"><h3 class="sec-h" id="wk2-h${k}">작품 ${k + 2}</h3><button type="button" class="rm2" data-x="del" aria-label="작품 ${k + 2} 지우기"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button></div>
     <div class="field" style="margin-top:12px"><div class="mh"><span id="wk2-l${k}">작품 이미지<span class="req" aria-hidden="true">*</span></span><span class="ct">${n}/${MAXM}</span></div>
-      <div class="row" role="list" aria-labelledby="wk2-l${k}">${room ? '<button type="button" class="add" data-x="add"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg>사진 추가</button>' : ''}${w.media.map((m, i) => `<div class="tile" role="listitem"><img src="${esc2(m.url)}" alt="작품 ${k + 2} 사진 ${i + 1}"><button type="button" class="x" data-x="rm" data-i="${i}" aria-label="${i + 1}번째 삭제"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button></div>`).join('')}</div></div>
+      <div class="row" role="list" aria-labelledby="wk2-l${k}">${room ? '<button type="button" class="add" data-x="add"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg>사진·영상 추가</button>' : ''}${w.media.map((m, i) => `<div class="tile${m.video ? ' v' : ''}" role="listitem"><img src="${esc2(m.video ? m.thumb : m.url)}" alt="작품 ${k + 2} ${m.video ? '영상 썸네일' : '사진'} ${i + 1}">${m.video ? `<span class="vbadge"><svg class="i" aria-hidden="true"><use href="#i-play"/></svg>${mmss(m.duration)}</span><button type="button" class="chg" data-x="chg" data-i="${i}" aria-label="영상 썸네일 변경">썸네일</button>` : ''}<button type="button" class="x" data-x="rm" data-i="${i}" aria-label="${i + 1}번째 삭제"><svg class="i" aria-hidden="true"><use href="#i-close"/></svg></button></div>`).join('')}</div></div>
     <div class="field" style="margin-top:24px"><label for="wk2-t${k}"><span>작품명<span class="req" aria-hidden="true">*</span></span></label><div class="ul"><input id="wk2-t${k}" data-f="t" type="text" maxlength="60" placeholder="입력해주세요" value="${esc2(w.t)}"></div></div>
     <div class="two-c" style="margin-top:24px"><div class="field" style="margin-top:0"><label for="wk2-y${k}"><span>제작 연도</span></label><div class="ul"><input id="wk2-y${k}" data-f="y" type="text" inputmode="numeric" maxlength="4" pattern="[0-9]*" placeholder="YYYY" value="${esc2(w.y)}"></div></div>
       <div class="field" style="margin-top:0"><label for="wk2-m${k}"><span>재료 / 매체 <span class="opt-i">· 선택</span></span></label><div class="ul"><input id="wk2-m${k}" data-f="m" type="text" maxlength="40" placeholder="입력해주세요" value="${esc2(w.m)}"></div></div></div>
@@ -388,6 +388,7 @@ $('addwk').addEventListener('click', () => {
 $('more').addEventListener('click', (e) => {
   const b = e.target.closest('[data-x]'); if (!b) return; const k = +b.closest('.wk2').dataset.k, w = st.extra[k];
   if (b.dataset.x === 'add') { xpickK = k; xpick.click(); }
+  else if (b.dataset.x === 'chg') { const m = w.media[+b.dataset.i]; thumbSheet(m, (t) => { m.thumb = t; renderExtra(); }); }
   else if (b.dataset.x === 'rm') { const m = w.media.splice(+b.dataset.i, 1)[0]; if (m && m.url && m.url.startsWith('blob:')) URL.revokeObjectURL(m.url); renderRow('media'); renderExtra(); }
   else if (b.dataset.x === 'del') { w.media.forEach((m) => { if (m.url && m.url.startsWith('blob:')) URL.revokeObjectURL(m.url); }); st.extra.splice(k, 1); renderRow('media'); renderExtra(); }
 });
@@ -396,12 +397,17 @@ $('more').addEventListener('input', (e) => {
   if (f === 'y') e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4);
   w[f] = e.target.value; validate();
 });
-xpick.addEventListener('change', () => {
+xpick.addEventListener('change', async () => {
   const w = st.extra[xpickK]; let over = false, bad = '';
-  for (const f of [...xpick.files]) {
-    if (!MEDIA.isImage(f)) { bad = '작품 2부터는 사진만 올릴 수 있어요'; continue; }
-    if (f.size > MEDIA.maxImageMB * 1024 * 1024) { bad = `사진은 장당 ${MEDIA.maxImageMB}MB 이하로 올려주세요`; continue; }
+  for (const f of [...xpick.files]) {   // 작품 1과 같은 규칙(사진 장당 20MB · 영상 3분 · 500MB), 개수는 사진·영상 합쳐 모든 작품 MAXM장
     if (mediaTotal() >= MAXM) { over = true; break; }
+    if (MEDIA.isVideo(f)) {
+      if (f.size > MEDIA.work.mb * 1024 * 1024) { bad = `영상은 ${MEDIA.work.mb}MB 이하로 올려주세요`; continue; }
+      try { const v = await readVideo(f); if (v.duration > MEDIA.work.sec) { URL.revokeObjectURL(v.url); bad = '영상은 3분 이내로 올려주세요'; continue; } w.media.push({ video: true, name: f.name, ...v }); } catch (e) { bad = '올릴 수 없는 파일이에요'; }
+      continue;
+    }
+    if (!MEDIA.isImage(f)) { bad = '올릴 수 없는 파일이에요'; continue; }
+    if (f.size > MEDIA.maxImageMB * 1024 * 1024) { bad = `사진은 장당 ${MEDIA.maxImageMB}MB 이하로 올려주세요`; continue; }
     w.media.push({ url: URL.createObjectURL(f), name: f.name, file: f });
   }
   xpick.value = ''; renderRow('media'); renderExtra(); if (over) fullMsg(); else if (bad) toast(bad);
@@ -429,7 +435,7 @@ $('form').addEventListener('submit', async (ev) => {
   const img = first.video ? first.thumb : (first.existing ? first.url : ((first.file ? await imageThumb(first.file) : null) || first.url));
   const work = { id: 'w' + Date.now().toString(36), exId: ex.id, title: $('title').value.trim(), fields: [...st.fields], year: $('year').value, medium: $('medium').value.trim(), size: $('size').value.trim(), desc: $('desc').value.trim(), authors: [author, ...st.co.map((c) => c.n)], media: st.media.length, video: st.media.some((m) => m.video), proc: st.proc.length, thumb: img, crop: first.crop || null, mode, autoMode };
   const parts = [];   // U-191 작품 2부터(작품 1은 위 title · year · medium · size)
-  for (const w of st.extra) { const m0 = w.media[0]; parts.push({ title: w.t.trim(), year: w.y || work.year, medium: w.m.trim(), size: w.s.trim(), media: w.media.length, img: m0 ? ((m0.file ? await imageThumb(m0.file) : null) || m0.url) : null }); }
+  for (const w of st.extra) { const m0 = w.media[0]; parts.push({ title: w.t.trim(), year: w.y || work.year, medium: w.m.trim(), size: w.s.trim(), media: w.media.length, video: w.media.some((m) => m.video), img: m0 ? (m0.video ? m0.thumb : ((m0.file ? await imageThumb(m0.file) : null) || m0.url)) : null }); }
   work.parts = parts;
   if (editing) {
     ExData.updateWork(ex.id, editing.id, { title: work.title, fields: work.fields, year: work.year, medium: work.medium, img, crop: st.media[0].crop || null, mode, autoMode, parts });
@@ -458,6 +464,20 @@ if (editing) {
   $('fcnt').textContent = `${st.fields.size}/${MAXF}`;
   st.media = [{ url: editing.img, name: '등록된 이미지', existing: true, crop: editing.crop || null, mode: editing.mode || null }];
   st.extra = (editing.parts || []).map((p) => ({ media: p.img ? [{ url: p.img, existing: true }] : [], t: p.title || '', y: p.year || '', m: p.medium || '', s: p.size || '' }));   // U-191
+}
+/* 확인용(제품 화면 아님, U-192): ?demo=multi → 작품 세 점이 채워진 등록 화면(작품 상세 데모 work.html?w=0과 같은 내용). 나갈 때 확인 창은 띄우지 않음 */
+if (!editing && q.get('demo') === 'multi') {
+  const P = 'assets/img/work/opt/';
+  st.media = ['main', 's2', 's5'].map((n) => ({ url: P + n + '.jpg', name: n + '.jpg' }));
+  $('title').value = '접으면 달라지는 지도'; $('year').value = '2026'; $('medium').value = '종이에 리소 인쇄, 접지'; $('size').value = '42 × 59.4 cm';
+  $('desc').value = '학교 뒷산 산책로를 세 구간으로 나눠 접지 지도와 소책자로 만들었다. 지도는 다 펼쳐야 길이 이어지고, 접으면 구간마다 따로 읽힌다. 실제로 걸으면서 접는 순서를 몇 번이고 바꿔 봤다.\nA2 접지 지도, 소책자 2종';
+  $('desc-n').textContent = `${$('desc').value.length} / 1500`;
+  st.fields = new Set(['그래픽']); [...$('chips').children].forEach((c) => { const on = st.fields.has(c.dataset.f); c.setAttribute('aria-pressed', on); c.innerHTML = (on ? '<svg class="i" aria-hidden="true"><use href="#i-check"/></svg>' : '') + c.dataset.f; }); $('fcnt').textContent = `${st.fields.size}/${MAXF}`;
+  st.extra = [
+    { media: [{ url: P + 's3.jpg', name: 's3.jpg' }], t: 'WALK', y: '2026', m: '종이에 리소 인쇄, 아코디언 접지', s: '10.5 × 14.8 cm' },
+    { media: [{ url: P + 's4.jpg', name: 's4.jpg' }], t: '세 지점의 수첩', y: '2026', m: '종이에 인쇄, 실 제본', s: '9 × 12 cm' },
+  ];
+  st.left = true;
 }
 renderAuthors(); renderRow('media'); renderRow('proc'); renderExtra(); validate();
 </script>
