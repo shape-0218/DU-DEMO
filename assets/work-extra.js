@@ -9,7 +9,12 @@ const WORK_EXTRA = [
   "p": {
    "img": "assets/img/supplement/w00-process.jpg",
    "a": "접으면 달라지는 지도의 제작 과정 재현: 지도 접지 더미 제작"
-  }
+  },
+  "parts": [
+   { "t": "접으면 달라지는 지도", "y": "2026", "m": "종이에 리소 인쇄, 접지", "s": "42 × 59.4 cm", "ph": [["assets/img/work/opt/main.jpg", "assets/img/work/opt/th1.jpg"], ["assets/img/work/opt/s2.jpg", "assets/img/work/opt/th2.jpg"], ["assets/img/work/opt/s5.jpg", "assets/img/work/opt/th5.jpg"], ["assets/img/supplement/w00-detail.jpg", "assets/img/supplement/w00-detail.jpg"]] },
+   { "t": "WALK", "y": "2026", "m": "종이에 리소 인쇄, 아코디언 접지", "s": "10.5 × 14.8 cm", "ph": [["assets/img/work/opt/s3.jpg", "assets/img/work/opt/th3.jpg"]] },
+   { "t": "세 지점의 수첩", "y": "2026", "m": "종이에 인쇄, 실 제본", "s": "9 × 12 cm", "ph": [["assets/img/work/opt/s4.jpg", "assets/img/work/opt/th4.jpg"]] }
+  ]
  },
  {
   "d": "바퀴 달린 철제 프레임 위에 크기가 다른 테라코타 화분을 얹었습니다. 볕이 드는 쪽으로 밀어 옮길 수 있고, 화분은 하나씩 빼서 바꿀 수 있습니다. 전시가 끝나면 학교 화단으로 옮겨 계속 키울 예정입니다.",
