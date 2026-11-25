@@ -241,8 +241,10 @@ dialog.modal::backdrop { background: rgba(0, 0, 0, .42); }
 const $ = (id) => document.getElementById(id);
 const q = new URLSearchParams(location.search);
 /* 이어질 화면: 마이에서 오면 인증 후 마이, 초대 수락에서 오면 초대함으로 */
+/* 11-25 U-193 다시 인증(?re=1): 인증 1년이 지나 새 전시 등록·초대 수락 때 마이 모달에서 들어옴 — 대학교 칸에 지금 학교가 채워진 채 시작, 인증번호 확인 뒤 작가 프로필명·분야 단계 없이 '인증 완료' → 온 곳으로(마이면 토스트 '다시 인증했어요') */
+const RE = q.get('re') === '1';
 const NEXT = q.get('next') && /^[\w.-]+\.html(\?[\w=&.-]*)?$/.test(q.get('next')) ? q.get('next') : 'my.html?state=after';
-const BACK = q.get('from') && /^[\w.-]+\.html(\?[\w=&.-]*)?$/.test(q.get('from')) ? q.get('from') : 'my.html?state=before';
+const BACK = q.get('from') && /^[\w.-]+\.html(\?[\w=&.-]*)?$/.test(q.get('from')) ? q.get('from') : (RE ? 'my.html?state=after' : 'my.html?state=before');
 /* 이동 기록(11-08): 수정·인증 화면은 '거쳐 가는 화면'이라 기록에 남기지 않음 — 저장·나가기는 교체(replace), 온 곳이 돌아갈 곳이면 history.back()
    (이렇게 하지 않으면 작가 프로필에서 뒤로 가기를 눌렀을 때 방금 나온 수정 화면으로 되돌아감) */
 const leaveTo = (dest) => { let ref = ''; try { const u = new URL(document.referrer); if (u.origin === location.origin) ref = u.pathname.split('/').pop(); } catch (e) {} if (ref && ref === dest.split('?')[0] && history.length > 1) history.back(); else location.replace(dest); };
@@ -253,13 +255,14 @@ const SCHOOLS = [
   { n: '한빛대학교', d: 'hanbit.ac.kr' }, { n: '한빛예술대학교', d: 'hanbitart.ac.kr' },
   { n: '새봄대학교', d: 'saebom.ac.kr' }, { n: '새봄디자인대학교', d: 'saebomdesign.ac.kr' },
   { n: '가온대학교', d: 'gaon.ac.kr' }, { n: '늘솔대학교', d: 'neulsol.ac.kr' },
-  { n: '다온예술대학교', d: 'daonart.ac.kr' }, { n: '이음대학교', d: 'ieum.ac.kr' }
+  { n: '다온예술대학교', d: 'daonart.ac.kr' }, { n: '이음대학교', d: 'ieum.ac.kr' },
+  { n: '모아디자인대학교', d: 'moadesign.ac.kr' }   /* 11-25: 마이 데모의 기본 학교(다시 인증 때 채워 둠) */
 ];
 const FIELDS = ['회화', '조소', '사진', '그래픽', '브랜딩', '제품', '영상', '공간', '건축', 'UXUI', '공예', '기타'];
 const MAX = 2, LIMIT = 300;
 
 const st = { school: null, sent: false, verified: false, fields: new Set(), left: 0, timer: null };
-const dirty = () => !!($('school').value || $('email').value || $('pname').value || st.fields.size);
+const dirty = () => RE ? !!$('email').value : !!($('school').value || $('email').value || $('pname').value || st.fields.size);
 
 /* ---------- 스낵바 ---------- */
 let st1; function snack(msg) { const s = $('snack'); s.textContent = msg; s.classList.add('on'); clearTimeout(st1); st1 = setTimeout(() => s.classList.remove('on'), 2600); }
@@ -350,6 +353,7 @@ $('check').addEventListener('click', () => {
   clearInterval(st.timer); st.verified = true;
   $('f-code').hidden = true; email.readOnly = true; $('send').hidden = true;
   setMailHelp('학교 이메일 인증이 완료됐어요');
+  if (RE) { update(); $('submit').focus(); return; }   /* 다시 인증은 작가 프로필이 이미 있어 이름·분야 단계 없음 */
   $('f-name').hidden = false; $('f-field').hidden = false; $('pname').focus(); update();
 });
 
@@ -374,14 +378,18 @@ function update() {
   $('send').disabled = !(st.school && validMail(email.value.trim()));
   $('check').disabled = !(st.sent && !st.verified && code.value.length === 6 && st.left > 0);
   $('fcnt').textContent = `${st.fields.size} / ${MAX}`;
-  $('submit').disabled = !(st.verified && $('pname').value.trim() && st.fields.size >= 1);
+  $('submit').disabled = !(st.verified && (RE || ($('pname').value.trim() && st.fields.size >= 1)));
   $('demo').hidden = st.verified;
 }
 
 /* ---------- 제출 · 이탈 ---------- */
 $('form').addEventListener('submit', (e) => {
   e.preventDefault(); if ($('submit').disabled) return;
-  try { localStorage.setItem('du.cert', JSON.stringify({ school: st.school && st.school.n, name: $('pname').value.trim(), fields: [...st.fields], img: '' })); } catch (err) {}
+  if (RE) {   /* 학교·인증일만 새로, 작가 프로필은 그대로 */
+    try { const c = JSON.parse(localStorage.getItem('du.cert')) || {}; c.school = st.school && st.school.n; c.at = Date.now(); localStorage.setItem('du.cert', JSON.stringify(c)); } catch (err) {}
+    location.replace(NEXT + (NEXT.startsWith('my.html') ? (NEXT.includes('?') ? '&' : '?') + 'reok=1' : '')); return;
+  }
+  try { localStorage.setItem('du.cert', JSON.stringify({ school: st.school && st.school.n, name: $('pname').value.trim(), fields: [...st.fields], img: '', at: Date.now() })); } catch (err) {}   /* 11-25: 인증일(at) — 1년 지나면 새 전시 등록·초대 수락 때 다시 인증 */
   $('s-form').hidden = true; $('s-done').hidden = false; window.scrollTo(0, 0); $('done-h').focus({ preventScroll: true });
 });
 const leave = $('leave');
@@ -392,6 +400,11 @@ $('exit').addEventListener('click', () => leaveTo(BACK));
 /* 완료 화면의 이동도 기록에서 인증 화면을 뺌: 작가 프로필 가기 → 거기서 뒤로 가면 마이 */
 ['go', 'ok'].forEach((id) => $(id).addEventListener('click', (e) => { e.preventDefault(); location.replace($(id).href); }));
 leave.addEventListener('click', (e) => { if (e.target === leave) leave.close(); });
+if (RE) {   /* 지금 인증한 학교를 채워 둠(포커스는 옮기지 않음) */
+  const cur = (() => { try { return (JSON.parse(localStorage.getItem('du.cert')) || {}).school; } catch (e) { return ''; } })() || '모아디자인대학교';
+  const s = SCHOOLS.find((x) => x.n === cur) || SCHOOLS[SCHOOLS.length - 1];
+  st.school = s; input.value = s.n; email.disabled = false;
+}
 update();
 </script>
 <script src="assets/auth.js"></script>

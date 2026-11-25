@@ -278,6 +278,15 @@ dialog.modal::backdrop { background: rgba(0, 0, 0, .42); }
 .modal .acts { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8px; margin-top: 16px; }
 .toast { position: fixed; left: 50%; bottom: calc(110px + env(safe-area-inset-bottom)); transform: translate(-50%, 16px); opacity: 0; pointer-events: none; z-index: 95; padding: 14px 18px; border-radius: 8px; background: #000; color: #fff; font-size: 14px; font-weight: 500; line-height: 1.4; white-space: nowrap; transition: opacity .25s, transform .35s var(--ease); }   /* 11-07 Figma 대조: 토스트 검은 사각 반경 8, 14/18 */
 .toast.on { opacity: 1; transform: translate(-50%, 0); }
+/* 11-25 U-193 문의 시트: 바텀시트(.sheet.bot 손잡이 + 제목 20 Bold) 안에 '자주 묻는 질문 ›' + 주소 한 줄 + 버튼 짝(회색 보조 · 검정 주) — 모달 acts·jbtn과 같은 44 · 반경 12. 홈 바닥글은 같은 모양을 assets/contact.js로 */
+.sheet.bot .ct-faq { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 56px; margin-top: 16px; border-block: 1px solid var(--bg-teritary); font-size: 16px; font-weight: 500; color: var(--text-primary); }   /* 드로어 메뉴 줄(.dr .cert 16 · 56)과 같은 크기 */
+.sheet.bot .ct-faq .i { flex: none; color: var(--text-primary); }
+@media (hover: hover) { .sheet.bot .ct-faq:hover span { text-decoration: underline; text-underline-offset: 3px; } }
+.sheet.bot .ct-mail { margin-top: 16px; font-size: 16px; font-weight: 500; color: var(--text-primary); word-break: break-all; user-select: all; }
+.sheet.bot .ct-acts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 24px; }
+.sheet.bot .ct-btn { display: grid; place-items: center; height: 44px; border-radius: var(--r12); background: var(--text-primary); color: #fafafa; font-size: 14px; font-weight: 600; transition: transform .16s var(--ease); }
+.sheet.bot .ct-btn.sub { background: var(--bg-secondary); color: var(--text-primary); }
+.sheet.bot .ct-btn:active { transform: scale(.96); }
 
 /* 하단 알약 탭 (마이 활성) */
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; } }
@@ -363,7 +372,11 @@ dialog.modal::backdrop { background: rgba(0, 0, 0, .42); }
 <script>
 /* ============ 예시 데이터 (가상) ============ */
 const Q = new URLSearchParams(location.search);
-const verified = Q.get('state') !== 'before';             /* ?state=before : 작가 인증 전 */
+const verified = Q.get('state') !== 'before';
+/* 11-25 U-193 작가 인증 1년(C안): 기록·작가 프로필·이미 연 전시는 그대로, 새 전시 등록·초대 수락 순간에만 인증 1년이 지났으면 다시 인증. 인증일 = du.cert.at(verify.html이 저장), 데모는 ?cert=old */
+const CERT = (() => { try { return JSON.parse(localStorage.getItem('du.cert')) || {}; } catch (e) { return {}; } })();
+const CERT_OLD = verified && (Q.get('cert') === 'old' || (CERT.at && Date.now() - CERT.at > 365 * 864e5));
+const RV = 'verify.html?re=1';   /* 다시 인증(이름·분야 단계 없음) */             /* ?state=before : 작가 인증 전 */
 const nInv = Math.max(0, Math.min(5, Q.has('invites') ? +Q.get('invites') : 1));   /* ?invites=0~5 */
 const nNoti = Math.max(0, Math.min(9, Q.has('noti') ? +Q.get('noti') : 1));        /* ?noti=0 : 안 읽은 알림 없음 */
 const hasOwner = Q.get('owner') === '1';                  /* ?owner=1 : 대표로 있는 전시가 있는 계정(탈퇴 불가 모달) */
@@ -505,6 +518,7 @@ function openInvites() {
     const b = e.target.closest('[data-a]'); if (!b) return; const i = +b.dataset.i, v = invites[i];
     if (b.dataset.a === 'no') modal({ title: '초대를 거절할까요?', body: '거절하면 이 전시의 팀원으로 참여할 수 없어요\n참여하려면 대표자가 다시 초대해야 해요', acts: [{ label: '취소', cls: 'btn-soft' }, { label: '거절하기', cls: 'btn-dark', fn: () => { invites.splice(i, 1); syncInv(); s.innerHTML = render(); s.querySelectorAll('[data-close]').forEach((x) => x.addEventListener('click', closeSheet)); } }] });
     else if (!verified) modal({ title: '전시에 참여하려면<br>작가 인증이 필요해요', body: '학교 이메일로 인증한 뒤<br>초대를 수락할 수 있어요', acts: [{ label: '나중에', cls: 'btn-soft' }, { label: '작가 인증하기', cls: 'btn-dark', fn: () => { location.href = 'verify.html?next=' + encodeURIComponent('my.html?state=after'); } }] });
+    else if (CERT_OLD) modal({ title: '전시에 참여하려면<br>다시 인증이 필요해요', body: '인증한 지 1년이 지났어요<br>학교 이메일로 다시 인증해주세요', acts: [{ label: '나중에', cls: 'btn-soft' }, { label: '다시 인증하기', cls: 'btn-dark', fn: () => { location.href = RV + '&next=' + encodeURIComponent('my.html?state=after'); } }] });   /* 11-25 U-193 */
     else joinFlow(v, i);
   });
 }
@@ -512,6 +526,7 @@ function syncInv() { $('n-inv-rw').textContent = invites.length; $('li-inv').hid
 $('rw-inv').addEventListener('click', openInvites);
 /* 새 전시 등록: 인증 전이면 그 순간에 인증 안내 → 인증(1~3분) 후 전시 등록으로 돌아옴 */
 $('rw-new').addEventListener('click', (e) => {
+  if (CERT_OLD) { e.preventDefault(); modal({ title: '전시를 등록하려면<br>다시 인증이 필요해요', body: '인증한 지 1년이 지났어요<br>학교 이메일로 다시 인증해주세요', acts: [{ label: '나중에', cls: 'btn-soft' }, { label: '다시 인증하기', cls: 'btn-dark', fn: () => { location.href = RV + '&next=' + encodeURIComponent('exhibition-new.html'); } }] }); return; }   /* 11-25 U-193 */
   if (verified) return;
   e.preventDefault();
   modal({ title: '전시를 등록하려면<br>작가 인증이 필요해요', body: '학교 이메일로 인증한 뒤<br>전시를 등록할 수 있어요', acts: [{ label: '나중에', cls: 'btn-soft' }, { label: '작가 인증하기', cls: 'btn-dark', fn: () => { location.href = 'verify.html?next=' + encodeURIComponent('exhibition-new.html'); } }] });
@@ -529,6 +544,14 @@ function applyProfile(root) {
 applyProfile(document.getElementById('me'));
 
 /* ============ 설정 드로어 ============ */
+/* 11-25 U-193 문의하기: 드로어 맨 아래 글자 줄 '이용약관 | 개인정보처리방침 | 문의하기' → 문의 시트(맨 위 자주 묻는 질문 ›, 주소, 주소 복사·메일 보내기) */
+const CT_MAIL = 'displayu.official@gmail.com';   /* 약관의 문의 창구 */
+function openContact() {
+  const s = showSheet('bot', `<div class="gr" aria-hidden="true"></div><h2>문의하기</h2><a class="ct-faq" href="terms.html?doc=faq"><span>자주 묻는 질문</span>${ic('i-chev')}</a><p class="ct-mail">${CT_MAIL}</p><div class="ct-acts"><button type="button" class="ct-btn sub" id="ct-copy">주소 복사</button><a class="ct-btn" id="ct-send" href="mailto:${CT_MAIL}">메일 보내기</a></div>`, '문의하기');
+  s.querySelector('#ct-copy').addEventListener('click', async () => { try { await navigator.clipboard.writeText(CT_MAIL); } catch (e) {} closeSheet(); toast('주소를 복사했어요'); });
+  s.querySelector('#ct-send').addEventListener('click', () => setTimeout(closeSheet, 300));
+  return s;
+}
 $('btn-set').addEventListener('click', () => {
   const s = showSheet('right', `<div class="dr"><button class="sh-x" data-close aria-label="닫기" style="position:absolute;right:12px;top:12px">${ic('i-close')}</button>
     <a class="logo" href="home.html" aria-label="Display U. 홈"><img src="assets/img/logo.svg" alt="Display U." width="124" height="28"></a>
@@ -536,8 +559,9 @@ $('btn-set').addEventListener('click', () => {
     ${verified ? `<button class="cert" id="dr-cert"><span>작가 인증</span><small>${SCHOOL} 인증 완료</small></button>` : `<button class="cert act" id="dr-cert"><span><b>작가 인증하기</b><small>학교 이메일로 인증해요</small></span>${ic('i-chev')}</button>`}
     <div class="grow"></div>
     <div class="bot"><button id="dr-out">로그아웃</button><button class="mute" id="dr-del">회원 탈퇴</button></div>
-    <div class="foot"><nav><a href="terms.html?doc=service">이용약관</a><i></i><a href="terms.html?doc=privacy">개인정보처리방침</a></nav><small>© 2026 displayU. All rights reserved.</small></div></div>`, '설정');
+    <div class="foot"><nav><a href="terms.html?doc=service">이용약관</a><i></i><a href="terms.html?doc=privacy">개인정보처리방침</a><i></i><a href="mailto:${CT_MAIL}" data-contact>문의하기</a></nav><small>© 2026 displayU. All rights reserved.</small></div></div>`, '설정');
   applyProfile(s.querySelector('#dr-prof'));
+  s.querySelectorAll('[data-contact]').forEach((x) => x.addEventListener('click', (e) => { e.preventDefault(); openContact(); }));
   s.querySelector('#dr-prof').addEventListener('click', () => { location.href = 'profile-edit.html?kind=basic'; });
   s.querySelector('#dr-cert').addEventListener('click', () => { if (!verified) location.href = 'verify.html'; });
   s.querySelector('#dr-out').addEventListener('click', () => modal({ title: '로그아웃할까요?', body: '로그아웃 후에도 저장한 전시와 기록은\n계정에 유지돼요', acts: [{ label: '취소', cls: 'btn-soft' }, { label: '로그아웃하기', cls: 'btn-dark', fn: () => { closeSheet(); if (window.Auth) Auth.logout(); location.href = 'home.html'; } }] }));
@@ -548,5 +572,6 @@ $('btn-set').addEventListener('click', () => {
 </script>
 <script src="assets/auth.js"></script>
 <script src="assets/tap.js"></script>
+<script>if (new URLSearchParams(location.search).get('reok') === '1') { const go = () => toast('다시 인증했어요'); if (document.readyState === 'complete') setTimeout(go, 400); else addEventListener('load', () => setTimeout(go, 400)); }   /* 11-25 U-193: 다시 인증하고 돌아왔을 때 */</script>
 </body>
 </html>

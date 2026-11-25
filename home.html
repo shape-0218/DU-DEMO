@@ -316,7 +316,7 @@ img { display: block; }
     <footer class="foot">
       <div class="inner">
         <a class="logo" href="#" aria-label="Display U. 홈"><img src="assets/img/logo-footer.svg" width="99" height="23" alt="Display U."></a>
-        <div class="links"><a href="terms.html?doc=service">이용약관</a><i></i><a href="terms.html?doc=privacy">개인정보처리방침</a></div>
+        <div class="links"><a href="terms.html?doc=service">이용약관</a><i></i><a href="terms.html?doc=privacy">개인정보처리방침</a><i></i><a href="mailto:displayu.official@gmail.com" data-contact>문의하기</a></div>   <!-- 11-25 U-193: 누르면 문의 시트(assets/contact.js), 스크립트가 없으면 메일 앱 -->
         <small>© 2026 displayU. All rights reserved.</small>
       </div>
     </footer>
@@ -505,6 +505,7 @@ if (DULoad.slow) {
 document.fonts && document.fonts.ready.then(() => slots.length && go(active, false));
 </script>
 <script src="assets/auth.js"></script>
+<script src="assets/contact.js"></script>
 <script src="assets/tap.js"></script>
 </body>
 </html>
